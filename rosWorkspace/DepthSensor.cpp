@@ -8,11 +8,14 @@ depthSensor()
 	float pressure = 0.0;
 	float tpressure = 0.0;
 	int numVariables = 10;
+	string line;
 
 	timer  pressureTimer;
 	pressureTimer.start(1, 0);
 	ros::Publisher pressurePub = nh.advertise<std_msgs::Float32>("Pressure_Data", 1000);
 	int scanVal;
+    line = getTTYLine(fd);
+
 	 if ((scanfVal = sscanf(line.c_str(), "%f", &tpressure)) == numVariables)
 	 {
 		if (pressure != tpressure || pressureTimer.isTimeout())
