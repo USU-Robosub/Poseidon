@@ -4,7 +4,7 @@
 
 To use the `PidControllerLibrary` simply add 
 
-<depend package="PidControllerLibrary"/>
+`<depend package="PidControllerLibrary"/>`
 
 To the manifest.xml of the package that will be using the library.
 
