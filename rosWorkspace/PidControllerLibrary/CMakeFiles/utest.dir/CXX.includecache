@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/aaron/mk-gilligan/rosWorkspace/PidControllerLibrary/test/../include/PidControllerLibrary/PidController.hpp
+boost/date_time/posix_time/posix_time_types.hpp
+/home/aaron/mk-gilligan/rosWorkspace/PidControllerLibrary/test/../include/PidControllerLibrary/boost/date_time/posix_time/posix_time_types.hpp
+iostream
+-
+
+/home/aaron/mk-gilligan/rosWorkspace/PidControllerLibrary/test/utest.cpp
+../include/PidControllerLibrary/PidController.hpp
+/home/aaron/mk-gilligan/rosWorkspace/PidControllerLibrary/test/../include/PidControllerLibrary/PidController.hpp
+gtest/gtest.h
+-
+
