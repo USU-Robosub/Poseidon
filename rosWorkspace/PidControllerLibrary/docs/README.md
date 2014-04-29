@@ -1,4 +1,5 @@
-## PIDControllerLibrary
+PIDControllerLibrary
+====================
 
 Use of the library
 ====================
