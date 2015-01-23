@@ -1,7 +1,0 @@
-set(_CATKIN_CURRENT_PACKAGE "helm")
-set(helm_MAINTAINER "brian <brian@todo.todo>")
-set(helm_DEPRECATED "")
-set(helm_VERSION "0.0.0")
-set(helm_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
-set(helm_RUN_DEPENDS "roscpp" "rospy" "std_msgs")
-set(helm_BUILDTOOL_DEPENDS "catkin")

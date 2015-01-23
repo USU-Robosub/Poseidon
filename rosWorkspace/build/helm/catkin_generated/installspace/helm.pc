@@ -1,8 +1,0 @@
-prefix=/home/brian/mk-proto/rosWorkspace/install
-
-Name: helm
-Description: Description of helm
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/brian/mk-proto/rosWorkspace/install/lib 
-Requires: 
