@@ -1,7 +1,7 @@
 Poseidon
 ===========
 
-Software for the Gilligan, USU's latest autonomous submarine.
+Software for the Poseidon, USU's latest autonomous submarine.
 
 This submarine is the third generation of the Robosub, built by the mechanical, electronic, and software engineers at Utah State University.
 
