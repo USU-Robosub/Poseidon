@@ -50,6 +50,53 @@ DivingMaster::~DivingMaster()
 
 
 
+void DivingMaster::achieveXSpeed(float goal, int by)
+{
+    std::cout << goal << std::endl;
+    std::cout.flush();
+}
+
+
+
+void DivingMaster::achieveYSpeed(float goal, int by)
+{
+
+}
+
+
+
+void DivingMaster::achieveZSpeed(float goal, int by)
+{
+
+}
+
+
+
+void DivingMaster::achievePitchRate(float goal, int by)
+{
+
+}
+
+
+
+void DivingMaster::achieveYawRate(float goal, int by)
+{
+
+}
+
+
+
+void DivingMaster::achieveRollRate(float goal, int by)
+{
+
+}
+
+
+
+// **************************** PRIVATE METHODS *****************************
+
+
+
 void DivingMaster::setXThrust(float rate)
 {
     setLeftXThrust(rate);
@@ -162,4 +209,12 @@ uint DivingMaster::rateToDuty(float rate)
         return static_cast<uint>(ceil(PWM_NEUTRAL + rate * (PWM_MIN - PWM_NEUTRAL)));
     else
         return static_cast<uint>(floor(PWM_NEUTRAL + rate * (PWM_MAX - PWM_NEUTRAL)));
+}
+
+
+
+float DivingMaster::logisticFn(float x, float k, float x0)
+{
+    static const float E = 2.7182818284f;
+    return static_cast<float>(1 / (1 + pow(E, -k * (x - x0))));
 }

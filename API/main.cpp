@@ -1,10 +1,12 @@
 
+#include "API/DivingMaster.h"
 #include <iostream>
 
 
 int main(int argc, char** argv)
 {
-    std::cout << "hello world" << std::endl;
+    DivingMaster dm = DivingMaster::getInstance();
+    dm.achieveXSpeed(1);
 
     return EXIT_SUCCESS;
 }

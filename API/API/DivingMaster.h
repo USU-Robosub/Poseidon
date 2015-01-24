@@ -30,6 +30,7 @@ class DivingMaster
         static const int DEFAULT_SECONDS = 2;
 
         static DivingMaster& getInstance();
+        ~DivingMaster();
 
         void achieveXSpeed(float, int by = DEFAULT_SECONDS);
         void achieveYSpeed(float, int by = DEFAULT_SECONDS);
@@ -41,7 +42,6 @@ class DivingMaster
 
     private:
         DivingMaster();
-        ~DivingMaster();
         static DivingMaster* singleton_;
 
         static const uint PWM_PERIOD = 2000000;
@@ -70,6 +70,7 @@ class DivingMaster
         void setRightZThrust(float);
 
         uint rateToDuty(float);
+        float logisticFn(float, float, float);
 };
 
 #endif

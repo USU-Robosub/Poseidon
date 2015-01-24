@@ -36,6 +36,7 @@ class Registry
 
     private:
         uint addr;          // beginning address of register
+        bool showRegWarning;
 
 };
 
