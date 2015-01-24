@@ -288,7 +288,7 @@ void ThrustController::setRightZThrust(float rate)
 uint ThrustController::rateToDuty(float rate)
 {
     if (rate < 0)
-        return static_cast<uint>(ceil(PWM_NEUTRAL + rate * (PWM_NEUTRAL - PWM_MIN)));
+        return static_cast<uint>(ceil(PWM_NEUTRAL - rate * (PWM_NEUTRAL - PWM_MIN)));
     else
         return static_cast<uint>(floor(PWM_NEUTRAL + rate * (PWM_MAX - PWM_NEUTRAL)));
 }
