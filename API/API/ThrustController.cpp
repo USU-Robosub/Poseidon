@@ -20,8 +20,7 @@ ThrustController& ThrustController::getInstance()
 
 
 
-ThrustController::ThrustController():
-    thrustState_(ThrustVector(0)), yawState_(0), rollState_(0)
+ThrustController::ThrustController()
 {
     std::cout << "Initializing ThrusterController..." << std::endl;
 
@@ -48,11 +47,11 @@ ThrustController::~ThrustController()
     std::cout << "Tearing down ThrusterController..." << std::endl;
 
     //stop all thrusters
-    setXThrust(NEUTRAL);
-    setYThrust(NEUTRAL);
-    setZThrust(NEUTRAL);
+    achieveXRate(NEUTRAL, 1);
+    achieveYRate(NEUTRAL, 1);
+    achieveZRate(NEUTRAL, 1);
 
-    //stop all thrusters
+    //disable all PWM thruster modules
     pwmX_->stop();
     pwmY_->stop();
     pwmZ_->stop();
@@ -60,59 +59,80 @@ ThrustController::~ThrustController()
 
 
 
-void ThrustController::achieveXSpeed(float goal, uint by)
+void ThrustController::achieveXRate(float goal, uint by)
 {
     if (by == 0)
         throw std::invalid_argument("Impossible X acceleration!");
 
-    //linearly accelerate to target by the desired number of seconds
     auto updateCount = by * 1000 / UPDATE_DELAY_MS;
-    auto oldThrust = thrustState_.x_;
+    auto oldLX = leftThrusters_.x_;
+    auto oldRX = rightThrusters_.x_;
+
+    if (std::fabs(oldLX - goal) + std::fabs(oldRX - goal) <= PRECISION)
+        return; //because the thrusters are already at the target
+
+    //linearly accelerate to target by the desired number of seconds
     for (uint n = 1; n <= updateCount; n++)
     {
-        setXThrust(oldThrust + n * (goal - oldThrust) / updateCount);
+        setLeftXThrust(oldLX  + n * (goal - oldLX) / updateCount);
+        setRightXThrust(oldRX + n * (goal - oldRX) / updateCount);
         std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    thrustState_.x_ = goal;
+    leftThrusters_.x_  = goal;
+    rightThrusters_.x_ = goal;
 }
 
 
 
-void ThrustController::achieveYSpeed(float goal, uint by)
+void ThrustController::achieveYRate(float goal, uint by)
 {
     if (by == 0)
         throw std::invalid_argument("Impossible Y acceleration!");
 
-    //linearly accelerate to target by the desired number of seconds
     auto updateCount = by * 1000 / UPDATE_DELAY_MS;
-    auto oldThrust = thrustState_.y_;
+    auto oldLY = leftThrusters_.y_;
+    auto oldRY = rightThrusters_.y_;
+
+    if (std::fabs(oldLY - goal) + std::fabs(oldRY - goal) <= PRECISION)
+        return; //because the thrusters are already at the target
+
+    //linearly accelerate to target by the desired number of seconds
     for (uint n = 1; n <= updateCount; n++)
     {
-        setYThrust(oldThrust + n * (goal - oldThrust) / updateCount);
+        setLeftYThrust(oldLY  + n * (goal - oldLY) / updateCount);
+        setRightYThrust(oldRY + n * (goal - oldRY) / updateCount);
         std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    thrustState_.y_ = goal;
+    leftThrusters_.y_  = goal;
+    rightThrusters_.y_ = goal;
 }
 
 
 
-void ThrustController::achieveZSpeed(float goal, uint by)
+void ThrustController::achieveZRate(float goal, uint by)
 {
     if (by == 0)
         throw std::invalid_argument("Impossible Z acceleration!");
 
-    //linearly accelerate to target by the desired number of seconds
     auto updateCount = by * 1000 / UPDATE_DELAY_MS;
-    auto oldThrust = thrustState_.z_;
+    auto oldLZ = leftThrusters_.z_;
+    auto oldRZ = rightThrusters_.z_;
+
+    if (std::fabs(oldLZ - goal) + std::fabs(oldRZ - goal) <= PRECISION)
+        return; //because the thrusters are already at the target
+
+    //linearly accelerate to target by the desired number of seconds
     for (uint n = 1; n <= updateCount; n++)
     {
-        setZThrust(oldThrust + n * (goal - oldThrust) / updateCount);
+        setLeftZThrust(oldLZ  + n * (goal - oldLZ) / updateCount);
+        setRightZThrust(oldRZ + n * (goal - oldRZ) / updateCount);
         std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    thrustState_.z_ = goal;
+    leftThrusters_.z_  = goal;
+    rightThrusters_.z_ = goal;
 }
 
 
@@ -122,16 +142,23 @@ void ThrustController::achieveYawRate(float goal, uint by)
     if (by == 0)
         throw std::invalid_argument("Impossible yaw acceleration!");
 
-    //linearly accelerate to target by the desired number of seconds
     auto updateCount = by * 1000 / UPDATE_DELAY_MS;
-    auto oldThrust = yawState_;
-    for (uint n = 0; n <= updateCount; n++)
+    auto oldLX = leftThrusters_.x_;
+    auto oldRX = rightThrusters_.x_;
+
+    if (std::fabs(oldLX - goal) + std::fabs(oldRX + goal) <= PRECISION)
+        return; //because the thrusters are already at the target
+
+    //linearly accelerate to target by the desired number of seconds
+    for (uint n = 1; n <= updateCount; n++)
     {
-        setYawRate(oldThrust + n * (goal - oldThrust) / updateCount);
+        setLeftXThrust(oldLX  + n * (goal - oldLX)  / updateCount);
+        setRightXThrust(oldRX + n * (-goal - oldRX) / updateCount);
         std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    yawState_ = goal;
+    leftThrusters_.x_  = goal;
+    rightThrusters_.x_ = -goal;
 }
 
 
@@ -141,16 +168,23 @@ void ThrustController::achieveRollRate(float goal, uint by)
     if (by == 0)
         throw std::invalid_argument("Impossible roll acceleration!");
 
-    //linearly accelerate to target by the desired number of seconds
     auto updateCount = by * 1000 / UPDATE_DELAY_MS;
-    auto oldThrust = yawState_;
-    for (uint n = 0; n <= updateCount; n++)
+    auto oldLZ = leftThrusters_.z_;
+    auto oldRZ = rightThrusters_.z_;
+
+    if (std::fabs(oldLZ - goal) + std::fabs(oldRZ + goal) <= PRECISION)
+        return; //because the thrusters are already at the target
+
+    //linearly accelerate to target by the desired number of seconds
+    for (uint n = 1; n <= updateCount; n++)
     {
-        setRollRate(oldThrust + n * (goal - oldThrust) / updateCount);
+        setLeftZThrust(oldLZ  + n * (goal - oldLZ)  / updateCount);
+        setRightZThrust(oldRZ + n * (-goal - oldRZ) / updateCount);
         std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    rollState_ = goal;
+    leftThrusters_.z_  = goal;
+    rightThrusters_.z_ = -goal;
 }
 
 
@@ -159,42 +193,16 @@ void ThrustController::achieveRollRate(float goal, uint by)
 
 
 
-void ThrustController::setXThrust(float rate)
+void ThrustController::setAllThrust(float rate)
 {
     setLeftXThrust(rate);
     setRightXThrust(rate);
-}
 
-
-
-void ThrustController::setYThrust(float rate)
-{
     setLeftYThrust(rate);
     setRightYThrust(rate);
-}
 
-
-
-void ThrustController::setZThrust(float rate)
-{
     setLeftZThrust(rate);
     setRightZThrust(rate);
-}
-
-
-
-void ThrustController::setYawRate(float rate)
-{
-    setLeftXThrust(rate);
-    setRightXThrust(-rate);
-}
-
-
-
-void ThrustController::setRollRate(float rate)
-{
-    setLeftZThrust(rate);
-    setRightZThrust(-rate);
 }
 
 
@@ -230,7 +238,7 @@ void ThrustController::setLeftYThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for left Y thrust rate!");
 
-    std::cout << "left Y:  " << rate << std::endl;
+    //std::cout << "left Y:  " << rate << std::endl;
 
     if (pwmY_->setDutyA(rateToDuty(rate)) != 0)
         throw std::runtime_error("Failure to set left PWM_Y's duty!");
@@ -243,7 +251,7 @@ void ThrustController::setRightYThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for right Y thrust rate!");
 
-    std::cout << "right Y: " << rate << std::endl;
+    //std::cout << "right Y: " << rate << std::endl;
 
     if (pwmY_->setDutyB(rateToDuty(rate)) != 0)
         throw std::runtime_error("Failure to set right PWM_Y's duty!");
@@ -256,7 +264,7 @@ void ThrustController::setLeftZThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for left Z thrust rate!");
 
-    std::cout << "left Z:  " << rate << std::endl;
+    //std::cout << "left Z:  " << rate << std::endl;
 
     if (pwmZ_->setDutyA(rateToDuty(rate)) != 0)
         throw std::runtime_error("Failure to set left PWM_Z's duty!");
@@ -269,7 +277,7 @@ void ThrustController::setRightZThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for right Z thrust rate!");
 
-    std::cout << "right Z: " << rate << std::endl;
+    //std::cout << "right Z: " << rate << std::endl;
 
     if (pwmZ_->setDutyB(rateToDuty(rate)) != 0)
         throw std::runtime_error("Failure to set right PWM_Z's duty!");
@@ -280,7 +288,7 @@ void ThrustController::setRightZThrust(float rate)
 uint ThrustController::rateToDuty(float rate)
 {
     if (rate < 0)
-        return static_cast<uint>(ceil(PWM_NEUTRAL + rate * (PWM_MIN - PWM_NEUTRAL)));
+        return static_cast<uint>(ceil(PWM_NEUTRAL + rate * (PWM_NEUTRAL - PWM_MIN)));
     else
         return static_cast<uint>(floor(PWM_NEUTRAL + rate * (PWM_MAX - PWM_NEUTRAL)));
 }

@@ -29,6 +29,8 @@ class ThrustController
         static constexpr float FULL_REVERSE = -1;
 
         static const uint DEFAULT_SECONDS = 2;
+        static constexpr float PRECISION = 1 / 64.0f;
+
         static const int UPDATE_DELAY_MS = 25;
         static constexpr auto UPDATE_DELAY = std::chrono::milliseconds(UPDATE_DELAY_MS);
 
@@ -53,9 +55,9 @@ class ThrustController
         ~ThrustController();
 
         //void achieveThrustVector(ThrustVector, uint by = DEFAULT_SECONDS);
-        void achieveXSpeed(float, uint by = DEFAULT_SECONDS);
-        void achieveYSpeed(float, uint by = DEFAULT_SECONDS);
-        void achieveZSpeed(float, uint by = DEFAULT_SECONDS);
+        void achieveXRate(float, uint by = DEFAULT_SECONDS);
+        void achieveYRate(float, uint by = DEFAULT_SECONDS);
+        void achieveZRate(float, uint by = DEFAULT_SECONDS);
 
         void achieveYawRate(float, uint by = DEFAULT_SECONDS);
         void achieveRollRate(float, uint by = DEFAULT_SECONDS);
@@ -72,17 +74,11 @@ class ThrustController
         std::shared_ptr<PWM> pwmY_;
         std::shared_ptr<PWM> pwmZ_;
 
-        ThrustVector thrustState_;
-        float yawState_, rollState_;
+        ThrustVector leftThrusters_;
+        ThrustVector rightThrusters_;
 
         ThrustController();
-
-        void setXThrust(float);
-        void setYThrust(float);
-        void setZThrust(float);
-
-        void setYawRate(float);  //positive means clockwise
-        void setRollRate(float); //positive means clockwise
+        void setAllThrust(float);
 
         void setLeftXThrust(float);
         void setRightXThrust(float);
