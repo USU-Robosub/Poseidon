@@ -65,16 +65,16 @@ void PWM::stop()
 
 int PWM::setPeriod(uint ns)
 {
-    if(ns < dutyA || ns < dutyB)
+    if (ns < dutyA || ns < dutyB)
         return -1;
     period = ns;
 
     uint prd = ns / 10;
     uint cidx = 0; // division index
     cdiv = 1;      // clock divider
-    if(prd > 0xFFFF)
+    if (prd > 0xFFFF)
     {
-        for(uint i = 0; i <= 7; i++)
+        for (uint i = 0; i <= 7; i++)
         {
             uint n = (i + 1) * 2;
             if ((prd / n) <= 0xFFFF)
@@ -99,7 +99,7 @@ int PWM::setPeriod(uint ns)
 
 int PWM::setDutyA(uint ns)
 {
-    if(ns > period)
+    if (ns > period)
         return -1;
     dutyA = ns;
 
@@ -117,7 +117,7 @@ int PWM::setDutyA(uint ns)
 
 int PWM::setDutyB(uint ns)
 {
-    if(ns > period)
+    if (ns > period)
         return -1;
     dutyB = ns;
 
@@ -139,7 +139,7 @@ void PWM::setPolarityA(uint dir)
     // Mask 0xFFFF0000 + clear left
     uint aqctlA = addr.read(PWM_AQCTLA) & 0x0000FFFF;
 
-    if(polA)
+    if (polA)
     {
         // set CAU = 2, PRD = 1, ZRO = 1
         aqctlA |= ((2<<4) | (1<<2) | 1) << 16;
@@ -163,7 +163,7 @@ void PWM::setPolarityB(uint dir)
     // Mask: 0x0000FFFF + clear right
     uint aqctlB = addr.read(PWM_AQCTLB) & 0xFFFF0000;
 
-    if(polB)
+    if (polB)
     {
         // set CAU = 2, PRD = 1, ZRO = 1
         aqctlB |= ((2<<4) | (1<<2) | 1);

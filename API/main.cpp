@@ -8,3 +8,6 @@ int main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
+
+//void setRelativeDepth(float depth);
+//void setRelativePosition(float x, float y);
