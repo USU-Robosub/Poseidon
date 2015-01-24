@@ -13,8 +13,8 @@ include_directories(.)
 #organized by importance
 add_executable(PoseidonAPI
     main.cpp
-    API/DivingMaster.cpp
-    API/SubmarineSensors.cpp
+    API/ThrustController.cpp
+    API/IMUSensor.cpp
 
     drivers/PWM.cpp
     drivers/I2C.cpp

@@ -1,12 +1,14 @@
 
-#include "API/DivingMaster.h"
+#include "API/ThrustController.h"
 #include <iostream>
 
 
 int main(int argc, char** argv)
 {
-    DivingMaster dm = DivingMaster::getInstance();
-    dm.achieveXSpeed(1);
+    ThrustController dm = ThrustController::getInstance();
+    dm.achieveXSpeed(1, 2);
+    dm.achieveXSpeed(0.75, 1);
+    dm.achieveXSpeed(0, 1);
 
     return EXIT_SUCCESS;
 }

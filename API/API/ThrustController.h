@@ -4,6 +4,7 @@
 
 #include "../drivers/PWM.h"
 #include <memory>
+#include <chrono>
 #include <cassert>
 
 /*
@@ -14,7 +15,7 @@
             z: positive pointing down, negative pointing up
 */
 
-class DivingMaster
+class ThrustController
 {
     public:
         static constexpr float FULL_AHEAD = 1;
@@ -27,31 +28,54 @@ class DivingMaster
         static constexpr float TWO_THIRDS_REVERSE = -2 / 3.0f;
         static constexpr float FULL_REVERSE = -1;
 
-        static const int DEFAULT_SECONDS = 2;
+        static const uint DEFAULT_SECONDS = 2;
+        static const int UPDATE_DELAY_MS = 25;
+        static constexpr auto UPDATE_DELAY = std::chrono::milliseconds(UPDATE_DELAY_MS);
 
-        static DivingMaster& getInstance();
-        ~DivingMaster();
+        struct ThrustVector
+        {
+            ThrustVector():
+                ThrustVector(0)
+            {}
 
-        void achieveXSpeed(float, int by = DEFAULT_SECONDS);
-        void achieveYSpeed(float, int by = DEFAULT_SECONDS);
-        void achieveZSpeed(float, int by = DEFAULT_SECONDS);
+            ThrustVector(float val):
+                ThrustVector(val, val, val)
+            {}
 
-        void achievePitchRate(float, int by = DEFAULT_SECONDS);
-        void achieveYawRate(float, int by = DEFAULT_SECONDS);
-        void achieveRollRate(float, int by = DEFAULT_SECONDS);
+            ThrustVector(float x, float y, float z):
+                x_(x), y_(y), z_(z)
+            {}
+
+            float x_, y_, z_;
+        };
+
+        static ThrustController& getInstance();
+        ~ThrustController();
+
+        //void achieveThrustVector(ThrustVector, uint by = DEFAULT_SECONDS);
+        void achieveXSpeed(float, uint by = DEFAULT_SECONDS);
+        void achieveYSpeed(float, uint by = DEFAULT_SECONDS);
+        void achieveZSpeed(float, uint by = DEFAULT_SECONDS);
+
+        void achieveYawRate(float, uint by = DEFAULT_SECONDS);
+        void achieveRollRate(float, uint by = DEFAULT_SECONDS);
 
     private:
-        DivingMaster();
-        static DivingMaster* singleton_;
-
         static const uint PWM_PERIOD = 2000000;
         static const uint PWM_MIN = 1000000;
         static const uint PWM_MAX = 2000000;
         static const uint PWM_NEUTRAL = 1520000;
 
+        static ThrustController* singleton_;
+
         std::shared_ptr<PWM> pwmX_;
         std::shared_ptr<PWM> pwmY_;
         std::shared_ptr<PWM> pwmZ_;
+
+        ThrustVector thrustState_;
+        float yawState_, rollState_;
+
+        ThrustController();
 
         void setXThrust(float);
         void setYThrust(float);
