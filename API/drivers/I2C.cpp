@@ -22,8 +22,6 @@ I2C::I2C(uint lane):
 
 uint I2C::read(uint s_addr, uint s_reg)
 {
-    int res = 0;
-
     reset();
     addr.write(I2C_SA  , s_addr); // slave address
     addr.write(I2C_CNT , 0x0001); // write 1 byte
@@ -60,7 +58,7 @@ uint I2C::read(uint s_addr, uint s_reg)
     wait_IRQ(3);
 
     // read one byte
-    res = addr.read(I2C_DATA);
+    uint res = addr.read(I2C_DATA);
 
     // wait for ARDY command
     wait_IRQ(2); // - CAUTION -
@@ -115,7 +113,7 @@ uint I2C::isBusBusy()
 void I2C::reset()
 {
     // remove interrupt flags
-    int irq = addr.read(I2C_IRQENABLE_SET); // (0x2C)
+    uint irq = addr.read(I2C_IRQENABLE_SET); // (0x2C)
     addr.write(I2C_IRQENABLE_CLR, irq);     // (0x30)
 
     // [-- Set system settings --]

@@ -13,21 +13,20 @@ Registry::Registry(uint _addr_):
 {}
 
 
-unsigned int Registry::read(uint off)
+uint Registry::read(uint off)
 {
-    int val = 0;
     int mem_fd = open("/dev/mem", O_RDWR);
     if (mem_fd < 0)
         printf("Failed to open /dev/mem (%s)\n", strerror(errno));
 
-    unsigned long* ddrMem = (unsigned long *)mmap(0, 0x0000FFFF, PROT_WRITE | PROT_READ, MAP_SHARED, mem_fd, addr);
+    auto ddrMem = static_cast<ulong*>(mmap(0, 0x0000FFFF, PROT_WRITE | PROT_READ, MAP_SHARED, mem_fd, addr));
     if (ddrMem == NULL)
     {
         printf("Failed to map the device (%s)\n", strerror(errno));
         close(mem_fd);
     }
 
-    val = ddrMem[off/4];
+    uint val = static_cast<uint>(ddrMem[off/4]);
 
     munmap(ddrMem, 0x0000FFFF);
     close(mem_fd);
@@ -43,7 +42,7 @@ void Registry::write(uint off, uint val)
     if (mem_fd < 0)
         printf("Failed to open /dev/mem (%s)\n", strerror(errno));
 
-    unsigned long* ddrMem = (unsigned long *)mmap(0, 0x0000FFFF, PROT_WRITE | PROT_READ, MAP_SHARED, mem_fd, addr);
+    auto ddrMem = static_cast<ulong*>(mmap(0, 0x0000FFFF, PROT_WRITE | PROT_READ, MAP_SHARED, mem_fd, addr));
     if (ddrMem == NULL)
     {
         printf("Failed to map the device (%s)\n", strerror(errno));

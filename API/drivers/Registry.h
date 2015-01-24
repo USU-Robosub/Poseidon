@@ -19,9 +19,6 @@
 class Registry
 {
     public:
-        // released used resources
-        virtual ~Registry();
-
         // open a direct path to physical space
         Registry(uint _addr_);
 
