@@ -3,6 +3,6 @@ require 'mkmf-rice'
 $CXX = "/usr/bin/clang++"
 $CC = "/usr/bin/clang"
 
-$CXXFLAGS += " -O3 --std=c++11 -Wno-c++98-compat-pedantic -pedantic -Weverything -Wno-unused-parameter -Wno-global-constructors -Wno-exit-time-destructors -Wno-non-virtual-dtor -Wno-weak-vtables -Wno-padded -Wno-cast-align -Wno-gnu -Wno-nested-anon-types -Wno-documentation-unknown-command -Wno-unknown-pragmas"
+$CXXFLAGS += " -O3 --std=c++11 -Wno-c++98-compat-pedantic -pedantic -Weverything -Wno-old-style-cast -Wno-sign-conversion -Wno-disabled-macro-expansion -Wno-documentation -Wno-deprecated -Wno-global-constructors -Wno-exit-time-destructors -Wno-weak-vtables -Wno-padded -Wno-cast-align -Wno-zero-length-array"
 
-create_makefile('ThrustControllerAPI')
+create_makefile('APIWrapper')
