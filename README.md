@@ -11,7 +11,7 @@ Unlike the previous versions, this submarine itself was planned by the engineers
 
 > 1. **sudo apt-get install ruby ruby-dev autoconf automake g++ replace**
 > 2. **sudo gem install rice**
-> 3. **cd API**
-> 4. **./compile.sh**
+> 3. **./run.sh**
 
+On the first call to ./run.sh, the API and drivers will be compiled and then main.rb will run, but subsequent calls to ./run.sh will not recompile the API because the Ruby code will just link against the generated .so file. You will need root privileges in order for the drivers to work, and run.sh will ask you for the admin password if you are not running as root. The code should work regardless of whether or not PWM/I2C motors are actually attached, though if they are hooked up to the right channels they will follow the instructions in main.rb, the high-level Ruby orchestration script.
 
