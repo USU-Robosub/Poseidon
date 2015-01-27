@@ -6,7 +6,8 @@
 #include "API/IMUSensor.h" //todo: expand
 
 extern "C"
-void Init_APIWrapper()
+void Init_DiveMaster();
+void Init_DiveMaster()
 {
     Rice::Data_Type<ThrustController> rb_cThrustController =
         Rice::define_class<ThrustController>("ThrustController")

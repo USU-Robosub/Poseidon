@@ -1,9 +1,7 @@
 #!/bin/bash
 
-if [ ! -f API/APIWrapper.so ]; then
-    cd API
-    ./compile.sh
-    cd ..
-fi
+cd API
+./compile.sh
+cd ..
 
 sudo ruby main.rb

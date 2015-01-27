@@ -210,7 +210,7 @@ void ThrustController::setLeftXThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for left X thrust rate!");
 
-    std::cout << "left X:  " << rate << std::endl;
+    //std::cout << "left X:  " << rate << std::endl;
 
     if (pwmX_->setDutyA(rateToDuty(rate)) != 0)
         throw std::runtime_error("Failure to set left PWM_X's duty!");
@@ -223,7 +223,7 @@ void ThrustController::setRightXThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for right X thrust rate!");
 
-    std::cout << "right X: " << rate << std::endl;
+    //std::cout << "right X: " << rate << std::endl;
 
     if (pwmX_->setDutyB(rateToDuty(rate)) != 0)
         throw std::runtime_error("Failure to set right PWM_X's duty!");
