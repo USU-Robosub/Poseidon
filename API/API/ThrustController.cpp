@@ -8,20 +8,14 @@
 
 //list static members so I can reference them
 constexpr std::chrono::milliseconds ThrustController::UPDATE_DELAY;
-
-
-ThrustController* ThrustController::singleton_ = 0;
-ThrustController& ThrustController::getInstance()
-{
-    if (!singleton_)
-        singleton_ = new ThrustController();
-    return *singleton_;
-}
-
+int ThrustController::instanceCount_;
 
 
 ThrustController::ThrustController()
 {
+    if (instanceCount_ >= 1)
+        throw new std::runtime_error("Cannot have more than one ThrustController!");
+
     std::cout << "Initializing ThrusterController..." << std::endl;
 
     //create and initialize all PWM thruster modules
@@ -38,6 +32,8 @@ ThrustController::ThrustController()
     pwmX_->start();
     pwmY_->start();
     pwmZ_->start();
+
+    instanceCount_++;
 }
 
 
@@ -55,6 +51,8 @@ ThrustController::~ThrustController()
     pwmX_->stop();
     pwmY_->stop();
     pwmZ_->stop();
+
+    instanceCount_--;
 }
 
 

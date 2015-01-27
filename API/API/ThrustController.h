@@ -51,7 +51,7 @@ class ThrustController
             float x_, y_, z_;
         };
 
-        static ThrustController& getInstance();
+        ThrustController();
         ~ThrustController();
 
         //void achieveThrustVector(ThrustVector, uint by = DEFAULT_SECONDS);
@@ -68,7 +68,7 @@ class ThrustController
         static const uint PWM_MAX = 2000000;
         static const uint PWM_NEUTRAL = 1520000;
 
-        static ThrustController* singleton_;
+        static int instanceCount_;
 
         std::shared_ptr<PWM> pwmX_;
         std::shared_ptr<PWM> pwmY_;
@@ -77,7 +77,6 @@ class ThrustController
         ThrustVector leftThrusters_;
         ThrustVector rightThrusters_;
 
-        ThrustController();
         void setAllThrust(float);
 
         void setLeftXThrust(float);
