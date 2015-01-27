@@ -31,7 +31,7 @@ class ThrustController
         static const uint DEFAULT_SECONDS = 2;
         static constexpr float PRECISION = 1 / 64.0f;
 
-        static const int UPDATE_DELAY_MS = 25;
+        static const int UPDATE_DELAY_MS = 10;
         static constexpr auto UPDATE_DELAY = std::chrono::milliseconds(UPDATE_DELAY_MS);
 
         struct ThrustVector
