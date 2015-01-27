@@ -9,8 +9,9 @@ Unlike the previous versions, this submarine itself was planned by the engineers
 
 ### Installation
 
-> 1. **sudo apt-get install ruby-dev autoconf automake**
+> 1. **sudo apt-get install ruby ruby-dev autoconf automake g++ replace**
 > 2. **sudo gem install rice**
-
+> 3. **cd API**
+> 4. **./compile.sh**
 
 
