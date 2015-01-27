@@ -36,17 +36,14 @@ class ThrustController
 
         struct ThrustVector
         {
-            ThrustVector():
-                ThrustVector(0)
-            {}
+            ThrustVector()
+            { ThrustVector(0); }
 
-            ThrustVector(float val):
-                ThrustVector(val, val, val)
-            {}
+            ThrustVector(float val)
+            { ThrustVector(val, val, val); }
 
-            ThrustVector(float x, float y, float z):
-                x_(x), y_(y), z_(z)
-            {}
+            ThrustVector(float x, float y, float z)
+            { x_ = x; y_ = y; z_ = z; }
 
             float x_, y_, z_;
         };
