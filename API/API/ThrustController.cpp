@@ -32,6 +32,15 @@ ThrustController::ThrustController()
     pwmX_->start();
     pwmY_->start();
     pwmZ_->start();
+    
+    //initialize ThrustVectors
+    // (not doing so will result in garbage values that will later throw errors)
+    leftThrusters_.x_ = 0;
+    leftThrusters_.y_ = 0;
+    leftThrusters_.z_ = 0;
+    rightThrusters_.x_ = 0;
+    rightThrusters_.y_ = 0;
+    rightThrusters_.z_ = 0;
 
     instanceCount_++;
 }
