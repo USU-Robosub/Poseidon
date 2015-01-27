@@ -7,7 +7,7 @@
 
 
 extern "C"
-void Init_test()
+void Init_APIWrapper()
 {
     Rice::Data_Type<ThrustController> rb_cThrustController =
         Rice::define_class("ThrustController")
