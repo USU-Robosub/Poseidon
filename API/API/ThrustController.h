@@ -3,6 +3,7 @@
 #define DIVING_MASTER
 
 #include "../drivers/PWM/PWM.h"
+#include "../drivers/Vector3D.h"
 #include <memory>
 #include <chrono>
 #include <cassert>
@@ -34,20 +35,6 @@ class ThrustController
         static const int UPDATE_DELAY_MS = 10;
         static constexpr auto UPDATE_DELAY = std::chrono::milliseconds(UPDATE_DELAY_MS);
 
-        struct ThrustVector
-        {
-            ThrustVector()
-            { ThrustVector(0); }
-
-            ThrustVector(float val)
-            { ThrustVector(val, val, val); }
-
-            ThrustVector(float x, float y, float z)
-            { x_ = x; y_ = y; z_ = z; }
-
-            float x_, y_, z_;
-        };
-
         ThrustController();
         ~ThrustController();
 
@@ -71,8 +58,8 @@ class ThrustController
         std::shared_ptr<PWM> pwmY_;
         std::shared_ptr<PWM> pwmZ_;
 
-        ThrustVector leftThrusters_;
-        ThrustVector rightThrusters_;
+        Vector3D leftThrusters_;
+        Vector3D rightThrusters_;
 
         void setAllThrust(float);
 
@@ -85,8 +72,8 @@ class ThrustController
         void setLeftZThrust(float);
         void setRightZThrust(float);
 
-        uint rateToDuty(float);
-        float logisticFn(float, float, float);
+        uint rateToDuty(float) const;
+        float logisticFn(float, float, float) const;
 };
 
 #endif
