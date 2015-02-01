@@ -9,9 +9,9 @@
 
 /*
     Conventions:
-        coordinate system is defined as:
-            x: positive pointing right, negative pointing left relative to orientation
-            y: positive pointing ahead, negative pointing behind relative to orientation
+        coordinate system mirrors aerospace, so it is defined as:
+            x: positive pointing ahead, negative pointing behind relative to orientation
+            y: positive pointing right, negative pointing left relative to orientation
             z: positive pointing down, negative pointing up
 */
 

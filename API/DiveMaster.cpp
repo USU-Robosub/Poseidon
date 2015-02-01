@@ -3,7 +3,7 @@
 #include "rice/Constructor.hpp"
 
 #include "API/ThrustController.h"
-#include "API/IMUSensor.h" //todo: expand
+#include "API/IMUSensor.h"
 
 extern "C"
 void Init_DiveMaster();
@@ -17,4 +17,12 @@ void Init_DiveMaster()
         .define_method("achieveZRate", &ThrustController::achieveZRate)
         .define_method("achieveYawRate", &ThrustController::achieveYawRate)
         .define_method("achieveRollRate", &ThrustController::achieveRollRate);
+
+    Rice::Data_Type<IMUSensor> rb_cIMUSensor =
+        Rice::define_class<IMUSensor>("IMUSensor")
+        .define_constructor(Rice::Constructor<IMUSensor>())
+        .define_method("readInteriorTemperature", &IMUSensor::readInteriorTemperature)
+        .define_method("readPressure", &IMUSensor::readPressure)
+        .define_method("readSealevelPressure", &IMUSensor::readSealevelPressure)
+        .define_method("readAltitude", &IMUSensor::readAltitude);
 }

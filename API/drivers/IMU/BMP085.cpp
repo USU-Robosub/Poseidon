@@ -13,8 +13,8 @@
 
 
 BMP085::BMP085(uint _bus_):
-    bus(_bus_), ac1(0), ac2(0), ac3(0), ac4(0), ac5(0), ac6(0),
-    b1(0), b2(0), mb(0), mc(0), md(0), oversampling(0)
+    bus(_bus_), ac1(0), ac2(0), ac3(0), b1(0), b2(0), mb(0), mc(0), md(0),
+    ac4(0), ac5(0), ac6(0), oversampling(0)
 {}
 
 
@@ -98,7 +98,8 @@ uint32_t BMP085::readRawPressure(void)
 {
     uint32_t raw;
 
-    write8(IMU_ENVIRONMENT_CONTROL, IMU_ENVIRONMENT_PRESSURE0 + (oversampling << 6));
+    write8(IMU_ENVIRONMENT_CONTROL, IMU_ENVIRONMENT_PRESSURE0 +
+        static_cast<uint8_t>(oversampling << 6));
 
     switch (oversampling)
     {
@@ -253,7 +254,7 @@ float BMP085::readTemperature(void)
     //fprintf(stderr, "UT = %d\n", UT);
     B5 = computeB5(UT);
     //fprintf(stderr, "B5 = %d\n", B5);
-    temp = (B5+8) / 16.0;
+    temp = (B5 + 8) / 16.0f;
     temp /= 10;
 
     return temp;
@@ -264,9 +265,9 @@ float BMP085::readTemperature(void)
 float BMP085::readAltitude(float sealevelPressure)
 {
     float pressure = readPressure();
-    float altitude = 44330 * (1.0 - pow(pressure /sealevelPressure, 0.1903));
+    double altitude = 44330 * (1.0 - pow(pressure /sealevelPressure, 0.1903));
 
-    return altitude;
+    return static_cast<float>(altitude);
 }
 
 
@@ -275,7 +276,7 @@ float BMP085::readAltitude(float sealevelPressure)
 
 uint8_t BMP085::read8(uint8_t a)
 {
-    return bus.read(IMU_ENVIRONMENT_ADDR, a);
+    return static_cast<uint8_t>(bus.read(IMU_ENVIRONMENT_ADDR, a));
 }
 
 
@@ -283,7 +284,7 @@ uint8_t BMP085::read8(uint8_t a)
 uint16_t BMP085::read16(uint8_t a)
 {
     uint16_t ret;
-    ret = bus.read(IMU_ENVIRONMENT_ADDR, a) << 8;
+    ret = static_cast<uint16_t>(bus.read(IMU_ENVIRONMENT_ADDR, a) << 8);
     ret |= bus.read(IMU_ENVIRONMENT_ADDR, a + 1);
 
     return ret;

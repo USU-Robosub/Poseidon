@@ -62,9 +62,9 @@ class BMP085
         uint8_t endian8(uint8_t x);
 
         I2C bus;
-        uint8_t oversampling;
         int16_t ac1, ac2, ac3, b1, b2, mb, mc, md;
         uint16_t ac4, ac5, ac6;
+        uint8_t oversampling;
 };
 
 #endif /* BMP085_H_ */
