@@ -1,3 +1,6 @@
+
+# extconf file specific to the BeagleBone Black
+require 'rubygems'
 require 'mkmf-rice'
 
 $CXX = "/usr/bin/clang++"

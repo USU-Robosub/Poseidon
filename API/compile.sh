@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ruby extconfGCC.rb
+ruby extconf.rb
 
 ./fixMakefile.sh
 
