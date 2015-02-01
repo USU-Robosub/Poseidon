@@ -2,7 +2,7 @@
 #ifndef DIVING_MASTER
 #define DIVING_MASTER
 
-#include "../drivers/PWM.h"
+#include "../drivers/PWM/PWM.h"
 #include <memory>
 #include <chrono>
 #include <cassert>

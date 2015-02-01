@@ -9,7 +9,7 @@
 #define I2C_H_
 
 #include "I2C_Const.h"
-#include "Registry.h"
+#include "../Registry.h"
 
 class I2C
 {

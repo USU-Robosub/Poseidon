@@ -1,8 +1,7 @@
 #!/bin/bash
 
-rm -f *.o
-rm -f API/*.o
-rm -f drivers/*.o
+#remove .o, Makefiles, and .so
+find . -name "*.o" -type f -delete
 rm -f Makefile
 rm -f *.so
 

@@ -9,7 +9,7 @@
 #define PWM_H_
 
 #include "PWM_Const.h"
-#include "Registry.h"
+#include "../Registry.h"
 
 class PWM
 {
