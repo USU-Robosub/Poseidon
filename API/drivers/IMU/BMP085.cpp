@@ -230,7 +230,8 @@ int32_t BMP085::readPressure(void)
 int32_t BMP085::readSealevelPressure(float altitude_meters)
 {
     float pressure = readPressure();
-    return (int32_t)(pressure / pow(1.0 - altitude_meters / 44330, 5.255));
+    float conversion = pow(1.0f - altitude_meters / 44330.0f, 5.255f);
+    return (int32_t)(pressure / conversion);
 }
 
 

@@ -32,7 +32,7 @@ ThrustController::ThrustController()
     pwmX_->start();
     pwmY_->start();
     pwmZ_->start();
-    
+
     //initialize ThrustVectors
     // (not doing so will result in garbage values that will later throw errors)
     leftThrusters_.x_ = 0;
@@ -79,7 +79,7 @@ void ThrustController::achieveXRate(float goal, uint by)
         return; //because the thrusters are already at the target
 
     //linearly accelerate to target by the desired number of seconds
-    for (uint n = 1; n <= updateCount; n++)
+    for (uint n = 1; n < updateCount + 1; n++)
     {
         setLeftXThrust(oldLX  + n * (goal - oldLX) / updateCount);
         setRightXThrust(oldRX + n * (goal - oldRX) / updateCount);
@@ -105,7 +105,7 @@ void ThrustController::achieveYRate(float goal, uint by)
         return; //because the thrusters are already at the target
 
     //linearly accelerate to target by the desired number of seconds
-    for (uint n = 1; n <= updateCount; n++)
+    for (uint n = 1; n < updateCount + 1; n++)
     {
         setLeftYThrust(oldLY  + n * (goal - oldLY) / updateCount);
         setRightYThrust(oldRY + n * (goal - oldRY) / updateCount);
@@ -131,7 +131,7 @@ void ThrustController::achieveZRate(float goal, uint by)
         return; //because the thrusters are already at the target
 
     //linearly accelerate to target by the desired number of seconds
-    for (uint n = 1; n <= updateCount; n++)
+    for (uint n = 1; n < updateCount + 1; n++)
     {
         setLeftZThrust(oldLZ  + n * (goal - oldLZ) / updateCount);
         setRightZThrust(oldRZ + n * (goal - oldRZ) / updateCount);
@@ -157,7 +157,7 @@ void ThrustController::achieveYawRate(float goal, uint by)
         return; //because the thrusters are already at the target
 
     //linearly accelerate to target by the desired number of seconds
-    for (uint n = 1; n <= updateCount; n++)
+    for (uint n = 1; n < updateCount + 1; n++)
     {
         setLeftXThrust(oldLX  + n * (goal - oldLX)  / updateCount);
         setRightXThrust(oldRX + n * (-goal - oldRX) / updateCount);
@@ -183,7 +183,7 @@ void ThrustController::achieveRollRate(float goal, uint by)
         return; //because the thrusters are already at the target
 
     //linearly accelerate to target by the desired number of seconds
-    for (uint n = 1; n <= updateCount; n++)
+    for (uint n = 1; n < updateCount + 1; n++)
     {
         setLeftZThrust(oldLZ  + n * (goal - oldLZ)  / updateCount);
         setRightZThrust(oldRZ + n * (-goal - oldRZ) / updateCount);
