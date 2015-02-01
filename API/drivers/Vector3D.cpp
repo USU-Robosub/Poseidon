@@ -13,12 +13,12 @@ Vector3D::Vector3D(float x, float y, float z):
 {}
 
 
-
+/*
 void Vector3D::setTo(float newVal)
 {
     x_ = y_ = z_ = newVal;
 }
-
+*/
 
 
 void Vector3D::setTo(float newX, float newY, float newZ)

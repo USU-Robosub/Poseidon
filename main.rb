@@ -17,6 +17,20 @@ end
 print "Creating ThrustController instance...\n"
 thrustController = ThrustController.new
 
+print "Creating IMUSensor instance...\n"
+imuSensor = IMUSensor.new
+
+print imuSensor.readInteriorTemperature();
+
+/
+imuSensor.readInteriorTemperature();
+imuSensor.readPressure();
+imuSensor.readSealevelPressure();
+imuSensor.readAltitude();
+imuSensor.readCompass();
+/
+
+/
 print "Pausing for a while...\n"
 sleep(5)
 
@@ -60,5 +74,5 @@ print "Backing down...\n"
 thrustController.achieveZRate(Thrust::NEUTRAL,  3);
 thrustController.achieveYRate(Thrust::NEUTRAL,  3);
 thrustController.achieveXRate(Thrust::NEUTRAL,  3);
-
+/
 print "Test complete!\n"

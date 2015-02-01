@@ -2,14 +2,12 @@
 #ifndef VECTOR3D_H
 #define VECTOR3D_H
 
-
 class Vector3D
 {
     public:
         Vector3D(float val);
         Vector3D(float x = 0, float y = 0, float z = 0);
 
-        void setTo(float newVal);
         void setTo(float newX, float newY, float newZ);
 
         void setX(float newVal);

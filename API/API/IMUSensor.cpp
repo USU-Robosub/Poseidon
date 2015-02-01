@@ -14,9 +14,20 @@ IMUSensor::IMUSensor()
 
     std::cout << "Initializing IMUSensor..." << std::endl;
 
-    //create and initialize IMU BMP085 module
-    sensorBMP085_ = std::make_shared<BMP085>(0x0); //TODO: need bus ptr
+    //create and initialize IMU BMP085 (pressure/temp) module
+    std::cout << "Setting up BMP085 chip..." << std::endl;
+    sensorBMP085_ = std::make_shared<BMP085>(IMU_ENVIRONMENT_ADDR);
     sensorBMP085_->initialize();
+
+    //create and initialize IMU HMC5883L (compass) module
+    std::cout << "Setting up HMC5883L chip..." << std::endl;
+    sensorHMC5883L_ = std::make_shared<HMC5883L>(IMU_COMPASS_ADDR);
+    sensorHMC5883L_->setSampleAverage(HMC5883L::Sample::Sx4);
+    sensorHMC5883L_->setOutputRate(HMC5883L::Rate::Hz75);
+    //sensorHMC5883L_->setGain(HMC5883L::Gain::G8_1);
+    sensorHMC5883L_->setMode(HMC5883L::Mode::Single);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 
@@ -53,4 +64,11 @@ int32_t IMUSensor::readSealevelPressure(float altitudeMeters)
 float IMUSensor::readAltitude(float sealevelPressure)
 {
     return sensorBMP085_->readAltitude(sealevelPressure);
+}
+
+
+
+Vector3D IMUSensor::readCompass()
+{
+    return Vector3D(sensorHMC5883L_->X(), sensorHMC5883L_->Y(), sensorHMC5883L_->Z());
 }
