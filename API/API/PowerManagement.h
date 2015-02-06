@@ -1,8 +1,7 @@
-
 #ifndef POWER_MANAGEMENT
 #define POWER_MANAGEMENT
 
-#include "../drivers/I2C/I2C.h"
+#include "../drivers/PowerModule/CMPR.h"
 
 class PowerManagement
 {
@@ -16,7 +15,7 @@ class PowerManagement
     private:
         static int instanceCount_;
 
-        I2C bus_;
+        PowerModule module;
 };
 
 #endif
