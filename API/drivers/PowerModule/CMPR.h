@@ -8,7 +8,7 @@
 #ifndef CMPR_H_
 #define CMPR_H_
 
-#include "I2C.h"
+#include "../I2C/I2C.h"
 #include "CMPR_Const.h"
 #include "stdint.h"
 
