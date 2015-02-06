@@ -4,6 +4,7 @@
 
 #include "API/ThrustController.h"
 #include "API/IMUSensor.h"
+#include "API/PowerManagement.h"
 
 extern "C"
 void Init_DiveMaster();
@@ -43,4 +44,11 @@ void Init_DiveMaster()
         .define_method("getAcceleration", &IMUSensor::getAcceleration)
         .define_method("getGyro", &IMUSensor::getGyro)
         .define_method("getTemp", &IMUSensor::getTemp);
+
+    //expose PowerManagement class
+    Rice::Data_Type<PowerManagement> rb_cPowerManagement =
+        Rice::define_class<PowerManagement>("PowerManagement")
+        .define_constructor(Rice::Constructor<PowerManagement>())
+        .define_method("turnOnESCs", &PowerManagement::turnOnESCs)
+        .define_method("turnOffESCs", &PowerManagement::turnOffESCs);
 }
