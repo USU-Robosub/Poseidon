@@ -1,4 +1,3 @@
-
 #include "PowerManagement.h"
 #include <stdexcept>
 #include <iostream>
@@ -8,7 +7,7 @@ int PowerManagement::instanceCount_;
 
 
 PowerManagement::PowerManagement():
-    bus_(I2C_SUB2)
+    module(I2C_SUB2)
 {
     if (instanceCount_ >= 1)
         throw new std::runtime_error("Cannot have more than one PowerManagement!");
@@ -24,12 +23,13 @@ PowerManagement::~PowerManagement()
 
 void PowerManagement::turnOnESCs()
 {
-    bus_.write(0x02, 0x02, 0x3F);
+    module.burstEnableESC();
 }
 
 
 
 void PowerManagement::turnOffESCs()
 {
-    bus_.write(0x02, 0x02, 0x0);
+    module.burstDisableESC();
 }
+
