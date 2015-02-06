@@ -1,0 +1,13 @@
+#define CMPR_ADDR    0x02
+#define CMPR_SYSV    0x00
+#define CMPR_SYSS    0x01
+#define CMPR_THST    0x02
+#define CMPR_SLED    0x03
+#define CMPR_A_HI    0x04
+#define CMPR_A_LO    0x05
+#define CMPR_B_HI    0x06
+#define CMPR_B_LO    0x07
+#define CMPR_C_HI    0x08
+#define CMPR_C_LO    0x09
+#define CMPR_D_HI    0x0A
+#define CMPR_D_LO    0x0B
