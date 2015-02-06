@@ -16,12 +16,12 @@ IMUSensor::IMUSensor()
 
     //create and initialize IMU BMP085 (pressure/temp) module
     std::cout << "Setting up BMP085 chip..." << std::endl;
-    sensorBMP085_ = std::make_shared<BMP085>(IMU_ENVIRONMENT_ADDR);
+    sensorBMP085_ = std::make_shared<BMP085>(I2C_SUB2);
     sensorBMP085_->initialize();
 
     //create and initialize IMU HMC5883L (compass) module
     std::cout << "Setting up HMC5883L chip..." << std::endl;
-    sensorHMC5883L_ = std::make_shared<HMC5883L>(IMU_COMPASS_ADDR);
+    sensorHMC5883L_ = std::make_shared<HMC5883L>(I2C_SUB2);
     sensorHMC5883L_->setSampleAverage(HMC5883L::Sample::Sx4);
     sensorHMC5883L_->setOutputRate(HMC5883L::Rate::Hz75);
     //sensorHMC5883L_->setGain(HMC5883L::Gain::G8_1);
@@ -31,7 +31,7 @@ IMUSensor::IMUSensor()
 
     //create and initialize IMU MPU6050 (gyro) module
     std::cout << "Setting up MPU6050 chip..." << std::endl;
-    sensorBMP085_ = std::make_shared<BMP085>(IMU_MOTION_ADDR_A);
+    sensorBMP085_ = std::make_shared<BMP085>(I2C_SUB2);
 }
 
 

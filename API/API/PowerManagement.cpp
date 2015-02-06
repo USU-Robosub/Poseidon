@@ -8,7 +8,7 @@ int PowerManagement::instanceCount_;
 
 
 PowerManagement::PowerManagement():
-    bus_(0x0) //to do: fix this
+    bus_(I2C_SUB2)
 {
     if (instanceCount_ >= 1)
         throw new std::runtime_error("Cannot have more than one PowerManagement!");
@@ -31,5 +31,5 @@ void PowerManagement::turnOnESCs()
 
 void PowerManagement::turnOffESCs()
 {
-    bus_.write(0x02, 0x02, 0x0); //is this the value to turn them off?
+    bus_.write(0x02, 0x02, 0x0);
 }
