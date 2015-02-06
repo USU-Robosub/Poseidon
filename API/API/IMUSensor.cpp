@@ -28,6 +28,10 @@ IMUSensor::IMUSensor()
     sensorHMC5883L_->setMode(HMC5883L::Mode::Single);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    //create and initialize IMU MPU6050 (gyro) module
+    std::cout << "Setting up MPU6050 chip..." << std::endl;
+    sensorBMP085_ = std::make_shared<BMP085>(IMU_MOTION_ADDR_A);
 }
 
 
@@ -71,4 +75,27 @@ float IMUSensor::readAltitude(float sealevelPressure)
 Vector3D IMUSensor::readCompass()
 {
     return Vector3D(sensorHMC5883L_->X(), sensorHMC5883L_->Y(), sensorHMC5883L_->Z());
+}
+
+
+
+Vector3D IMUSensor::getAcceleration()
+{
+    return Vector3D(sensorMPU6050_->accel_X(),
+        sensorMPU6050_->accel_Y(), sensorMPU6050_->accel_Z());
+}
+
+
+
+Vector3D IMUSensor::getGyro()
+{
+    return Vector3D(sensorMPU6050_->gyro_X(),
+        sensorMPU6050_->gyro_Y(), sensorMPU6050_->gyro_Z());
+}
+
+
+
+int16_t IMUSensor::getTemp()
+{
+    return sensorMPU6050_->temp();
 }

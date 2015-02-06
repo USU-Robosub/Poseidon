@@ -39,5 +39,8 @@ void Init_DiveMaster()
         .define_method("readPressure", &IMUSensor::readPressure)
         .define_method("readSealevelPressure", &IMUSensor::readSealevelPressure)
         .define_method("readAltitude", &IMUSensor::readAltitude)
-        .define_method("readCompass", &IMUSensor::readCompass);
+        .define_method("readCompass", &IMUSensor::readCompass)
+        .define_method("getAcceleration", &IMUSensor::getAcceleration)
+        .define_method("getGyro", &IMUSensor::getGyro)
+        .define_method("getTemp", &IMUSensor::getTemp);
 }

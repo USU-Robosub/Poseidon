@@ -8,7 +8,7 @@
 #ifndef MPU6050_H_
 #define MPU6050_H_
 
-#include "I2C.h"
+#include "../I2C/I2C.h"
 #include "IMU_Const.h"
 #include "stdint.h"
 #include <stdexcept>
