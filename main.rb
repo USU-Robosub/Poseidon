@@ -17,42 +17,40 @@ end
 print "Creating ThrustController instance...\n"
 thrustController = ThrustController.new
 
-print "Creating IMUSensor instance...\n"
-imuSensor = IMUSensor.new
-
-print imuSensor.readInteriorTemperature();
-
-/
-imuSensor.readInteriorTemperature();
-imuSensor.readPressure();
-imuSensor.readSealevelPressure();
-imuSensor.readAltitude();
-imuSensor.readCompass();
-/
-
-/
 print "Pausing for a while...\n"
-sleep(5)
-
-print "Exploring extremes of left and right thrusters...\n"
-thrustController.achieveXRate(Thrust::FULL_AHEAD,   10);
-thrustController.achieveXRate(Thrust::FULL_REVERSE,  15);
-thrustController.achieveXRate(Thrust::NEUTRAL,      5);
+sleep(60 * 5)
 
 print "Exploring extremes of forward and backwards thrusters...\n"
+thrustController.achieveXRate(Thrust::FULL_AHEAD,   10);
+thrustController.achieveXRate(Thrust::FULL_REVERSE, 15);
+thrustController.achieveXRate(Thrust::NEUTRAL,      5);
+
+print "Pausing for a while...\n"
+sleep(3)
+
+print "Exploring extremes of left and right thrusters...\n"
 thrustController.achieveYRate(Thrust::FULL_AHEAD,   10);
 thrustController.achieveYRate(Thrust::FULL_REVERSE, 15);
 thrustController.achieveYRate(Thrust::NEUTRAL,      5);
+
+print "Pausing for a while...\n"
+sleep(3)
 
 print "Exploring extremes of up and down thrusters...\n"
 thrustController.achieveZRate(Thrust::FULL_AHEAD,   10);
 thrustController.achieveZRate(Thrust::FULL_REVERSE, 15);
 thrustController.achieveZRate(Thrust::NEUTRAL,      5);
 
+print "Pausing for a while...\n"
+sleep(3)
+
 print "Exploring extremes of yaw rates...\n"
 thrustController.achieveYawRate(Thrust::FULL_AHEAD,     10);
 thrustController.achieveYawRate(Thrust::FULL_REVERSE,   15);
 thrustController.achieveYawRate(Thrust::NEUTRAL,        5);
+
+print "Pausing for a while...\n"
+sleep(3)
 
 print "Attempting to roll the sub over...\n"
 thrustController.achieveRollRate(Thrust::FULL_AHEAD,    5);
@@ -74,5 +72,27 @@ print "Backing down...\n"
 thrustController.achieveZRate(Thrust::NEUTRAL,  3);
 thrustController.achieveYRate(Thrust::NEUTRAL,  3);
 thrustController.achieveXRate(Thrust::NEUTRAL,  3);
-/
+
 print "Test complete!\n"
+
+print "Pausing for a while...\n"
+sleep(60)
+
+print "Beginning sensor test\n"
+
+print "Creating IMUSensor instance...\n"
+imuSensor = IMUSensor.new
+
+print imuSensor.readInteriorTemperature();
+print imuSensor.readPressure();
+print imuSensor.readSealevelPressure();
+print imuSensor.readAltitude();
+print imuSensor.getTemp();
+
+=begin
+Vector3D readCompass();
+Vector3D getAcceleration();
+Vector3D getGyro();
+=end
+
+print "Sensor test complete!\n"
