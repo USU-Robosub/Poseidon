@@ -23,13 +23,13 @@ PowerManagement::~PowerManagement()
 
 void PowerManagement::turnOnESCs()
 {
-    module.burstEnableESC();
+    module.burstEnableESC(0xE7); // B11100111
 }
 
 
 
 void PowerManagement::turnOffESCs()
 {
-    module.burstDisableESC();
+    module.burstDisableESC(0x00);
 }
 

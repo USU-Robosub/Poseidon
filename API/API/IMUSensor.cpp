@@ -99,3 +99,28 @@ int16_t IMUSensor::getTemp()
 {
     return sensorMPU6050_->temp();
 }
+
+
+Array ruby_Gyro() {
+    Array tmp;
+    tmp.push(sensorMPU6050_->gyro_X());
+    tmp.push(sensorMPU6050_->gyro_Y());
+    tmp.push(sensorMPU6050_->gyro_Z());
+    return tmp;
+}
+
+Array ruby_Acceleration() {
+    Array tmp;
+    tmp.push(sensorMPU6050_->accel_X());
+    tmp.push(sensorMPU6050_->accel_Y());
+    tmp.push(sensorMPU6050_->accel_Z());
+    return tmp;
+}
+
+Array ruby_Compass() {
+    Array tmp;
+    tmp.push(sensorHMC5883L_->X());
+    tmp.push(sensorHMC5883L_->Y());
+    tmp.push(sensorHMC5883L_->Z());
+    return tmp;
+}

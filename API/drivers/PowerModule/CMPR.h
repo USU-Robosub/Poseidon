@@ -22,8 +22,7 @@ public:
 	void disableESC(uint8_t esc);
 
 	// control power to all ESCs
-	void burstEnableESC();
-	void burstDisableESC();
+	void burstEnableESC(uint8_t esc);
 
 	// values returned range from 0 to 1024
 	uint16_t getAmperageA();
