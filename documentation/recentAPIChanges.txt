@@ -1,0 +1,8 @@
+
+This file documents new changes that have been made to the API so that maintainers of the Ruby scripts will know what needs updating. Hidden, exposed, or functionality changes will be listed briefly here. Once the change has been applied to Ruby, move the change down to the other section.
+-------------------------------
+------ RECENT CHANGES ---------
+
+
+
+------ APPLIED CHANGES --------

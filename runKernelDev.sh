@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd API
+cd kernel
 ./compile.sh
 cd ..
 
-sudo ruby main.rb
+sudo ruby kernelDev.rb

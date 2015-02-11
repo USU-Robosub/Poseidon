@@ -1,7 +1,6 @@
 
-require Dir.pwd + "/API/DiveMaster"
+# for testing new sub controls and maneuvers
 
-#wasn't able to import these from C++, so redefined them here
 module Thrust
     FULL_AHEAD = 1
     TWO_THIRDS_AHEAD = 2 / 3
@@ -78,28 +77,3 @@ thrustController.achieveYRate(Thrust::NEUTRAL,  3)
 thrustController.achieveXRate(Thrust::NEUTRAL,  3)
 
 print "Test complete!\n"
-
-print "Pausing for a while...\n"
-sleep(60)
-
-print "Beginning sensor test\n"
-
-print "Creating IMUSensor instance...\n"
-imuSensor = IMUSensor.new
-
-print imuSensor.readInteriorTemperature()
-print imuSensor.readPressure()
-print imuSensor.readSealevelPressure()
-print imuSensor.readAltitude()
-puts  imuSensor.readCompass()
-puts  imuSensor.readAcceleration()
-puts  imuSensor.readGyro()
-print imuSensor.readTemperature()
-
-=begin
-Vector3D readCompass();
-Vector3D getAcceleration();
-Vector3D getGyro();
-=end
-
-print "Sensor test complete!\n"
