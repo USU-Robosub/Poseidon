@@ -19,7 +19,7 @@ class IMUSensor
         int32_t readPressure();
         int32_t readSealevelPressure(float altitudeMeters = 0);
         float readAltitude(float sealevelPressure = 101325);
-        
+
         Vector3D readCompass();
         Vector3D getAcceleration();
         Vector3D getGyro();
@@ -27,9 +27,9 @@ class IMUSensor
 
         // A more native way for working with data types in Ruby
         // removing the hassle of wrapping them from C++
-        Array ruby_Compass();
-        Array ruby_Acceleration();
-        Array ruby_Gyro();
+        Rice::Array ruby_Compass();
+        Rice::Array ruby_Acceleration();
+        Rice::Array ruby_Gyro();
 
     private:
         static int instanceCount_;
