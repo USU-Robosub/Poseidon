@@ -30,6 +30,6 @@ void PowerManagement::turnOnESCs()
 
 void PowerManagement::turnOffESCs()
 {
-    module.burstDisableESC(0x00);
+    module.burstEnableESC(0x00);
 }
 

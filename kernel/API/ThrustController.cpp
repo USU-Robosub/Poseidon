@@ -173,6 +173,7 @@ void ThrustController::achieveRollRate(float goal, uint by)
     if (std::fabs(oldLZ - goal) + std::fabs(oldRZ + goal) <= PRECISION)
         return; //because the thrusters are already at the target
 
+
     //linearly accelerate to target by the desired number of seconds
     for (uint n = 1; n < updateCount + 1; n++)
     {

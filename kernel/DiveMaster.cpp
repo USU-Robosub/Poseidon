@@ -26,7 +26,7 @@ void Init_DiveMaster()
     Rice::Data_Type<ThrustController> rb_cThrustController =
         Rice::define_class<ThrustController>("ThrustController")
         .define_constructor(Rice::Constructor<ThrustController>())
-        .define_method("achieveXRate", &ThrustController::achieveXRate)
+	.define_method("achieveXRate", &ThrustController::achieveXRate)
         .define_method("achieveYRate", &ThrustController::achieveYRate)
         .define_method("achieveZRate", &ThrustController::achieveZRate)
         .define_method("achieveYawRate", &ThrustController::achieveYawRate)

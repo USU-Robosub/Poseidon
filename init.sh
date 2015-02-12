@@ -1,7 +1,3 @@
-#!/bin/sh
-
-# this script sets up the hardware, it must be run once
-
 # mux and initialize PWM pins
 echo bone_pwm_P9_21 >> $SLOTS # Subsystem 0
 echo bone_pwm_P9_22 >> $SLOTS

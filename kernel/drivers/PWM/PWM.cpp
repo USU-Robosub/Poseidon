@@ -46,12 +46,12 @@ void PWM::stop()
 {
     // since PWM stores two tags in one register
     // the mask is used to separate the left tag from the right tag
-    uint tbctl  = addr.read(PWM_TBCTL) & 0xFFFF2FFF;
-    uint aqsfrc = addr.read(PWM_AQSFRC) & 0x0000FFFF;
+    uint tbctl  = addr.read(PWM_TBCTL);
+    uint aqsfrc = 0;
     uint aqcsfrc= 0;
 
     // FREE,SOFT = 0
-    //tbctl &= 0xFFFF2FFF;
+    tbctl &= 0xFFFF2FFF;
     // RLDCSF = 3
     aqsfrc |= ((3<<6) << 16);
     // CSFB = 1, CSFA = 1
