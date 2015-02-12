@@ -26,11 +26,12 @@ PWM::PWM(uint _addr_) :
 void PWM::start()
 {
     uint tbctl  = addr.read(PWM_TBCTL) & 0xFFFF2FFF; // Mask: 0x0000FFFF
+    uint aqsfrc = addr.read(PWM_AQSFRC)& 0x0000FFFF; // Mask: 0xFFFF0000
 
     // FREE,SOFT = 3
     tbctl |= (3<<14);
     // RLDCSF = 0
-    uint aqsfrc = 0; // Mask: 0xFFFF0000
+    //uint aqsfrc = 0; // Mask: 0xFFFF0000
     // CSFB = 0, CSFA = 0
     uint aqcsfrc= 0; // Mask: 0x0000FFFF
 
@@ -45,12 +46,12 @@ void PWM::stop()
 {
     // since PWM stores two tags in one register
     // the mask is used to separate the left tag from the right tag
-    uint tbctl  = addr.read(PWM_TBCTL);
-    uint aqsfrc = 0;
+    uint tbctl  = addr.read(PWM_TBCTL) & 0xFFFF2FFF;
+    uint aqsfrc = addr.read(PWM_AQSFRC) & 0x0000FFFF;
     uint aqcsfrc= 0;
 
     // FREE,SOFT = 0
-    tbctl &= 0xFFFF2FFF;
+    //tbctl &= 0xFFFF2FFF;
     // RLDCSF = 3
     aqsfrc |= ((3<<6) << 16);
     // CSFB = 1, CSFA = 1
@@ -88,9 +89,12 @@ int PWM::setPeriod(uint ns)
 
     // clear clock divider
     uint tbctl = addr.read(PWM_TBCTL) & 0xFFFFFC7F;
+    uint tbprd = addr.read(PWM_TBPRD) & 0x0000FFFF;
     // set new clock divider: HSPCLKDIV = cidx
     tbctl |= (cidx << 7);
+    tbprd |= (((prd / cdiv) & 0x0000FFFF) << 16);
     addr.write(PWM_TBCTL, tbctl);
+    addr.write(PWM_TBPRD, tbprd);
 
     return 0;
 }
