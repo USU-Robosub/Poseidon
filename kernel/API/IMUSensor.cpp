@@ -101,24 +101,24 @@ int16_t IMUSensor::getTemp()
 }
 
 
-Array ruby_Gyro() {
-    Array tmp;
+Rice::Array IMUSensor::ruby_Gyro() {
+    Rice::Array tmp;
     tmp.push(sensorMPU6050_->gyro_X());
     tmp.push(sensorMPU6050_->gyro_Y());
     tmp.push(sensorMPU6050_->gyro_Z());
     return tmp;
 }
 
-Array ruby_Acceleration() {
-    Array tmp;
+Rice::Array IMUSensor::ruby_Acceleration() {
+    Rice::Array tmp;
     tmp.push(sensorMPU6050_->accel_X());
     tmp.push(sensorMPU6050_->accel_Y());
     tmp.push(sensorMPU6050_->accel_Z());
     return tmp;
 }
 
-Array ruby_Compass() {
-    Array tmp;
+Rice::Array IMUSensor::ruby_Compass() {
+    Rice::Array tmp;
     tmp.push(sensorHMC5883L_->X());
     tmp.push(sensorHMC5883L_->Y());
     tmp.push(sensorHMC5883L_->Z());
