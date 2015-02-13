@@ -14,3 +14,13 @@ module Thrust
     TWO_THIRDS_REVERSE = -2 / 3
     FULL_REVERSE = -1
 end
+
+# enable ESCs otherwise they won't run
+power = PowerManagement.new
+power.turnOnESCs()
+
+print "Creating ThrustController instance...\n"
+thrustController = ThrustController.new
+
+print "Pausing for a while...\n"
+sleep(5)

@@ -19,8 +19,8 @@ ThrustController::ThrustController()
     std::cout << "Initializing ThrusterController..." << std::endl;
 
     //create and initialize all PWM thruster modules
-    pwmX_ = std::make_shared<PWM>(PWM_SUB1);
-    pwmY_ = std::make_shared<PWM>(PWM_SUB0);
+    pwmX_ = std::make_shared<PWM>(PWM_SUB0);
+    pwmY_ = std::make_shared<PWM>(PWM_SUB1);
     pwmZ_ = std::make_shared<PWM>(PWM_SUB2);
 
     //set all thrusters to neutral
