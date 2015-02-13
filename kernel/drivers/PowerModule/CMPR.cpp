@@ -21,14 +21,14 @@ PowerModule::~PowerModule() {
 void PowerModule::enableESC(uint8_t esc) {
 	uint8_t dat = bus.read(CMPR_ADDR, CMPR_THST);
 
-	dat |= 1 << esc;
+	dat &= ~(1 << esc);
 
 	bus.write(CMPR_ADDR, CMPR_THST, dat);
 }
 void PowerModule::disableESC(uint8_t esc) {
 	uint8_t dat = bus.read(CMPR_ADDR, CMPR_THST);
 
-	dat &= ~(1 << esc);
+	dat |= (1 << esc);
 
 	bus.write(CMPR_ADDR, CMPR_THST, dat);
 }
@@ -37,7 +37,7 @@ void PowerModule::disableESC(uint8_t esc) {
 
 
 void PowerModule::burstEnableESC(uint8_t esc) {
-	bus.write(CMPR_ADDR, CMPR_THST, esc);
+	bus.write(CMPR_ADDR, CMPR_THST, ~esc);
 }
 
 

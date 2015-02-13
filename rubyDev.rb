@@ -1,6 +1,8 @@
 
 # for testing new sub controls and maneuvers
 
+require Dir.pwd + "/kernel/DiveMaster"
+
 module Thrust
     FULL_AHEAD = 1
     TWO_THIRDS_AHEAD = 2 / 3
@@ -21,7 +23,7 @@ print "Creating ThrustController instance...\n"
 thrustController = ThrustController.new
 
 print "Pausing for a while...\n"
-sleep(60 * 5)
+sleep(5)
 
 print "Exploring extremes of forward and backwards thrusters...\n"
 thrustController.achieveXRate(Thrust::FULL_AHEAD,   10)
