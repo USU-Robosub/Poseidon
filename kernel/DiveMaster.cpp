@@ -26,11 +26,14 @@ void Init_DiveMaster()
     Rice::Data_Type<ThrustController> rb_cThrustController =
         Rice::define_class<ThrustController>("ThrustController")
         .define_constructor(Rice::Constructor<ThrustController>())
-	.define_method("achieveXRate", &ThrustController::achieveXRate)
-        .define_method("achieveYRate", &ThrustController::achieveYRate)
-        .define_method("achieveZRate", &ThrustController::achieveZRate)
-        .define_method("achieveYawRate", &ThrustController::achieveYawRate)
-        .define_method("achieveRollRate", &ThrustController::achieveRollRate);
+	    .define_method("setForwardThrust", &ThrustController::setForwardThrust)
+        .define_method("setDriftThrust", &ThrustController::setDriftThrust)
+        .define_method("setDiveThrust", &ThrustController::setDiveThrust)
+        .define_method("setYawThrust", &ThrustController::setYawThrust)
+        .define_method("accelerateForward", &ThrustController::accelerateForward)
+        .define_method("accelerateDrift", &ThrustController::accelerateDrift)
+        .define_method("accelerateDive", &ThrustController::accelerateDive)
+        .define_method("accelerateYaw", &ThrustController::accelerateYaw);
 
     //expose IMUSensor class
     Rice::Data_Type<IMUSensor> rb_cIMUSensor =

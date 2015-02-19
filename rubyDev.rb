@@ -26,56 +26,51 @@ print "Pausing for a while...\n"
 sleep(5)
 
 print "Exploring extremes of forward and backwards thrusters...\n"
-thrustController.achieveXRate(Thrust::FULL_AHEAD,   10)
-thrustController.achieveXRate(Thrust::FULL_REVERSE, 15)
-thrustController.achieveXRate(Thrust::NEUTRAL,      5)
+thrustController.accelerateForward(Thrust::FULL_AHEAD,   10)
+thrustController.accelerateForward(Thrust::FULL_REVERSE, 15)
+thrustController.accelerateForward(Thrust::NEUTRAL,      5)
 
 print "Pausing for a while...\n"
 sleep(3)
 
 print "Exploring extremes of left and right thrusters...\n"
-thrustController.achieveYRate(Thrust::FULL_AHEAD,   10)
-thrustController.achieveYRate(Thrust::FULL_REVERSE, 15)
-thrustController.achieveYRate(Thrust::NEUTRAL,      5)
+thrustController.accelerateDrift(Thrust::FULL_AHEAD,   10)
+thrustController.accelerateDrift(Thrust::FULL_REVERSE, 15)
+thrustController.accelerateDrift(Thrust::NEUTRAL,      5)
 
 print "Pausing for a while...\n"
 sleep(3)
 
 print "Exploring extremes of up and down thrusters...\n"
-thrustController.achieveZRate(Thrust::FULL_AHEAD,   10)
-thrustController.achieveZRate(Thrust::FULL_REVERSE, 15)
-thrustController.achieveZRate(Thrust::NEUTRAL,      5)
+thrustController.accelerateDive(Thrust::FULL_AHEAD,   10)
+thrustController.accelerateDive(Thrust::FULL_REVERSE, 15)
+thrustController.accelerateDive(Thrust::NEUTRAL,      5)
 
 print "Pausing for a while...\n"
 sleep(3)
 
 print "Exploring extremes of yaw rates...\n"
-thrustController.achieveYawRate(Thrust::FULL_AHEAD,     10)
-thrustController.achieveYawRate(Thrust::FULL_REVERSE,   15)
-thrustController.achieveYawRate(Thrust::NEUTRAL,        5)
+thrustController.accelerateYaw(Thrust::FULL_AHEAD,     10)
+thrustController.accelerateYaw(Thrust::FULL_REVERSE,   15)
+thrustController.accelerateYaw(Thrust::NEUTRAL,        5)
 
 print "Pausing for a while...\n"
 sleep(3)
-
-print "Attempting to roll the sub over...\n"
-thrustController.achieveRollRate(Thrust::FULL_AHEAD,    5)
-thrustController.achieveRollRate(Thrust::FULL_REVERSE,  10)
-thrustController.achieveRollRate(Thrust::NEUTRAL,       5)
 
 print "Pausing for a while...\n"
 sleep(5)
 
 print "Firing all thrusters...\n"
-thrustController.achieveXRate(Thrust::FULL_AHEAD,   3)
-thrustController.achieveYRate(Thrust::FULL_AHEAD,   3)
-thrustController.achieveZRate(Thrust::FULL_AHEAD,   3)
+thrustController.accelerateForward(Thrust::FULL_AHEAD, 4)
+thrustController.accelerateDrift(Thrust::FULL_AHEAD,   4)
+thrustController.accelerateDive(Thrust::FULL_AHEAD,    4)
 
 print "Pausing for a while...\n"
 sleep(5)
 
 print "Backing down...\n"
-thrustController.achieveZRate(Thrust::NEUTRAL,  3)
-thrustController.achieveYRate(Thrust::NEUTRAL,  3)
-thrustController.achieveXRate(Thrust::NEUTRAL,  3)
+thrustController.accelerateForward(Thrust::NEUTRAL, 4)
+thrustController.accelerateDrift(Thrust::NEUTRAL,   4)
+thrustController.accelerateDive(Thrust::NEUTRAL,    4)
 
 print "Test complete!\n"
