@@ -2,12 +2,15 @@
 #include <RCServer.hpp>
 #include <netdb.h>
 #include <unistd.h>
+#include <libs/jsoncpp-1.5.0/json/json.h>
 #include <iostream>
 
 
-RCServer::RCServer(int port)
+RCServer::RCServer(int port):
+    ioBuffer_(new char[IO_BUFF_LEN])
 {
     std::cout << "RC Server: initializing..." << std::endl;
+    memset(ioBuffer_, 0, IO_BUFF_LEN);
 
     struct sockaddr_in serv_addr;
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -27,11 +30,15 @@ RCServer::RCServer(int port)
 
 
 
+RCServer::~RCServer()
+{
+    delete ioBuffer_;
+}
+
+
+
 void RCServer::start()
 {
-    char* ioBuff = new char[IO_BUFF_LEN];
-    memset(ioBuff, 0, IO_BUFF_LEN);
-
     std::cout << "RC Server: listening..." << std::endl;
 
     // receive incoming connection
@@ -39,31 +46,41 @@ void RCServer::start()
 
     std::cout << "RC Server: accepted" << std::endl;
 
-    std::string input;
+    bool keepAlive = true;
 
     do
     {
-        // read data from client
-        auto len = read(connfd, ioBuff, IO_BUFF_LEN);
-        std::string input(ioBuff, len);
+        auto len = read(connfd, ioBuffer_, IO_BUFF_LEN); // read data from client
+        keepAlive = process(connfd, std::string(ioBuffer_, len));
 
-        std::cout << "RC Server: received " << len << std::endl;
-        std::cout << input << std::endl;
+    } while (keepAlive);
 
-        // do something
-        // ioBuff = data array
-        // IO_BUFF_LEN = size of array
-
-        // write data back to client
-        std::string res("result");
-        memcpy(ioBuff, res.c_str(), res.size() + 1);
-        write(connfd, ioBuff, res.size() + 1);
-
-        // continue to read and write until '-1' is received
-    } while (input != "close");
-
-    // close connection and repeat
+    // close connection
     close(connfd);
-    delete ioBuff;
-    sleep(10);
+    //sleep(10);
+}
+
+
+
+bool RCServer::process(int connfd, const std::string& input)
+{
+    std::cout << "RC Server: received " << input << std::endl;
+    std::cout << input << std::endl;
+
+
+    Json::Value obj;
+    obj["ret"] = "hi";
+
+    Json::FastWriter writer;
+    send(connfd, writer.write(obj));
+
+    return true;
+}
+
+
+
+void RCServer::send(int connfd, const std::string& data)
+{
+    memcpy(ioBuffer_, data.c_str(), data.size() + 1);
+    write(connfd, ioBuffer_, data.size() + 1);
 }
