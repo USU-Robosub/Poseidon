@@ -10,7 +10,7 @@ class RCServer
         const std::size_t IO_BUFF_LEN = 1024;
 
         RCServer(int port);
-        [[ noreturn ]] void start();
+        void start();
 
     private:
         int listenfd_;
