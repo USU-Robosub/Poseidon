@@ -16,7 +16,8 @@ include_directories(. libs/jsoncpp-1.1.0)
 
 #organized by importance
 add_executable(RCServer
-    Server.cpp
+    main.cpp
+    RCServer.cpp
 
     ${JSONCPP_CPP}
 )
