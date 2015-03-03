@@ -16,7 +16,7 @@ const int PERIOD = 2000000;
 
 int main()
 {
-	initialize();
+	//initialize();
 
     int listenfd = 0, connfd = 0;
     struct sockaddr_in serv_addr;
@@ -56,7 +56,7 @@ int main()
             write(connfd, ioBuff, BUFF);
 
             // continue to read and write until '-1' is received
-        } while(!getBit(ioBuff[0], 7));
+        } while(true);
 
         // close connection and repeat
         close(connfd);
