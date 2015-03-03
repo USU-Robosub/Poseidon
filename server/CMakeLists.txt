@@ -9,16 +9,21 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 endif()
 
 #https://stackoverflow.com/questions/13638408/cmake-override-compile-flags-for-single-files
-SET (JSONCPP_CPP libs/jsoncpp-1.5.0/jsoncpp.cpp)
+SET(JSONCPP_CPP libs/jsoncpp-1.5.0/jsoncpp.cpp)
 set_source_files_properties(${JSONCPP_CPP} PROPERTIES COMPILE_FLAGS "-w")
 
 include_directories(. libs/jsoncpp-1.5.0)
+
+file(GLOB_RECURSE API_CPPS ../kernel/API/*.cpp)
+file(GLOB_RECURSE DRIVER_CPPS ../kernel/drivers/*.cpp)
 
 #organized by importance
 add_executable(RCServer
     main.cpp
     RCServer.cpp
 
+    ${API_CPPS}
+    ${DRIVER_CPPS}
     ${JSONCPP_CPP}
 )
 

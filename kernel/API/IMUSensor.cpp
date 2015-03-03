@@ -100,7 +100,7 @@ int16_t IMUSensor::getTemp()
     return sensorMPU6050_->temp();
 }
 
-
+/*
 Rice::Array IMUSensor::ruby_Gyro() {
     Rice::Array tmp;
     tmp.push(sensorMPU6050_->gyro_X());
@@ -124,3 +124,4 @@ Rice::Array IMUSensor::ruby_Compass() {
     tmp.push(sensorHMC5883L_->Z());
     return tmp;
 }
+*/

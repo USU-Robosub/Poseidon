@@ -2,7 +2,7 @@
 #ifndef IMU_SENSOR
 #define IMU_SENSOR
 
-#include "rice/Array.hpp"
+//#include "rice/Array.hpp"
 #include "../drivers/IMU/BMP085.h"
 #include "../drivers/IMU/HMC5883L.h"
 #include "../drivers/IMU/MPU6050.h"
@@ -27,9 +27,9 @@ class IMUSensor
 
         // A more native way for working with data types in Ruby
         // removing the hassle of wrapping them from C++
-        Rice::Array ruby_Compass();
-        Rice::Array ruby_Acceleration();
-        Rice::Array ruby_Gyro();
+        //Rice::Array ruby_Compass();
+        //Rice::Array ruby_Acceleration();
+        //Rice::Array ruby_Gyro();
 
     private:
         static int instanceCount_;
