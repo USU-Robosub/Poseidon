@@ -1,0 +1,51 @@
+<script src="../lib/client/webtcp-0.0.1.min.js"></script>
+
+<script>
+
+/*
+This is a Socket example. First run an example of tcp echo server:
+   $ node examples/echo_server.js
+
+Then open examples/socket_client.html in your browser.
+Now you can send data to echo server from your js console:
+    socket.write("hi")
+*/
+
+// Create a sockjs tunnel. Generally you'll need only
+// one tunnel for all your sockets.
+var net = new WebTCP('localhost', 9999);
+
+// standard socket options
+options = {
+  encoding: "utf-8",
+  timeout: 0,
+  noDelay: true, // disable/enable Nagle algorithm
+  keepAlive: false, //default is false
+  initialDelay: 0 // for keepAlive. default is 0
+}
+
+// Create a socket. You can specify host and port of any TCP server here
+var socket = net.createSocket("127.0.0.1", 1337, options);
+
+// On connection callback
+socket.on('connect', function(){
+  console.log('connected');
+})
+
+// This gets called every time new data for this socket is received
+socket.on('data', function(data) {
+  console.log("received: " + data);
+});
+
+socket.on('end', function(data) {
+  console.log("socket is closed ");
+});
+
+// Send data to the server
+socket.write("hello world"); 
+
+// To get socket options 
+// socket.getSockOpts();
+// console.log( socket.sockOpts );
+
+</script>

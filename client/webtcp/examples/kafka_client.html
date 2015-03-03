@@ -1,0 +1,29 @@
+<script src="../lib/client/webtcp-0.0.1.min.js"></script>
+<script src="../lib/client/kafka.js"></script>
+
+<script>
+// Kafka client example
+// Currently work in progress.
+// This client misses messages sometimes
+var net = new WebTCP('127.0.0.1', 9999);
+
+var consumer = new kafka.Consumer({
+  // these are the default values
+  host:         'localhost',
+  port:          9092,
+  pollInterval:  2000,
+  maxSize:       1048576 // 1MB
+})
+
+consumer.on('message', function(topic, message) { 
+  console.log('reply:')
+  console.log(message)
+})
+
+consumer.connect(function(){
+  console.log('connected')
+});
+
+consumer.subscribeTopic({name: 'c27', partition: 0})
+
+</script>
