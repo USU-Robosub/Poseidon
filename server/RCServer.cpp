@@ -79,44 +79,72 @@ bool RCServer::process(int connfd, const std::string& input)
     Json::Value received;
     Json::Reader reader;
 
-    bool parsedSuccess = reader.parse(input, received);
+    if (!reader.parse(input, received))
+        return true;
 
-   // std::cout << parsedSuccess << std::endl;
     auto effect = received["effect"].asString();
     auto action = received["action"].asString();
-    //std::cout << effect << " | " << action << std::endl;
-    //std::cout.flush();
 
     if (effect == "power")
     {
         if (action == "enable power")
-            std::cout << "enabling ESCs..." << std::endl;//power_->turnOnESCs();
+        {
+            std::cout << "enabling ESCs..." << std::endl;
+            power_->turnOnESCs();
+        }
         else if (action == "disable power")
-            std::cout << "disabling ESCs..." << std::endl; //power_->turnOffESCs();
+        {
+            std::cout << "disabling ESCs..." << std::endl;
+            power_->turnOffESCs();
+        }
     }
     else if (effect == "thrust")
     {
         float newVal = received.get("value", "UTF-8").asFloat();
 
         if (action == "set forward")
-            std::cout << "Forward thrust to " << newVal << std::endl; //thrust_->setForwardThrust(0.5);
+        {
+            std::cout << "Forward thrust to " << newVal << std::endl;
+            thrust_->setForwardThrust(newVal);
+        }
         else if (action == "set drift")
-            std::cout << "Drift thrust to " << newVal << std::endl; //thrust_->setDriftThrust(0.5);
+        {
+            std::cout << "Drift thrust to " << newVal << std::endl;
+            thrust_->setDriftThrust(newVal);
+        }
         else if (action == "set dive")
-            std::cout << "Dive thrust to " << newVal << std::endl; //thrust_->setDiveThrust(0.5);
+        {
+            std::cout << "Dive thrust to " << newVal << std::endl;
+            thrust_->setDiveThrust(newVal);
+        }
         else if (action == "set yaw")
-            std::cout << "Yaw thrust to " << newVal << std::endl; //thrust_->setYawThrust(0.5);
+        {
+            std::cout << "Yaw thrust to " << newVal << std::endl;
+            thrust_->setYawThrust(newVal);
+        }
     }
     else if (effect == "get")
     {
         if (action == "sensors")
+        {
+            std::cout << "Sensor report requested. Sending..." << std::endl;
             sendSensorReport(connfd);
+        }
+        else if (action == "log")
+        {
+            //todo
+        }
     }
     else if (effect == "network")
     {
         if (action == "close")
+        {
+            std::cout << "Closing network connection." << std::endl;
             return false;
+        }
     }
+
+    std::cout << "Action complete" << std::endl;
 
     return true;
 }
