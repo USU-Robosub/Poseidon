@@ -1,2 +1,0 @@
-
-Documentation on the available calls to the API, how to use them, and what they do.

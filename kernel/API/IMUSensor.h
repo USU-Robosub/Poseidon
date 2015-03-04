@@ -15,9 +15,9 @@ class IMUSensor
         IMUSensor();
         ~IMUSensor();
 
-        float readInteriorTemperature();
+        float readTemperature();
         int32_t readPressure();
-        int32_t readSealevelPressure(float altitudeMeters = 0);
+        int32_t readSealevel(float altitudeMeters = 0);
         float readAltitude(float sealevelPressure = 101325);
 
         Vector3D readCompass();

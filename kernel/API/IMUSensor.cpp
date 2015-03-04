@@ -44,7 +44,7 @@ IMUSensor::~IMUSensor()
 
 
 
-float IMUSensor::readInteriorTemperature()
+float IMUSensor::readTemperature()
 {
     return sensorBMP085_->readTemperature();
 }
@@ -58,7 +58,7 @@ int32_t IMUSensor::readPressure()
 
 
 
-int32_t IMUSensor::readSealevelPressure(float altitudeMeters)
+int32_t IMUSensor::readSealevel(float altitudeMeters)
 {
     return sensorBMP085_->readSealevelPressure(altitudeMeters);
 }

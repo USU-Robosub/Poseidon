@@ -34,9 +34,9 @@ print "Pausing for a while...\n"
 sleep(3)
 
 print "Exploring extremes of left and right thrusters...\n"
-thrustController.accelerateDrift(Thrust::FULL_AHEAD,   10)
-thrustController.accelerateDrift(Thrust::FULL_REVERSE, 15)
-thrustController.accelerateDrift(Thrust::NEUTRAL,      5)
+thrustController.acceleratePan(Thrust::FULL_AHEAD,   10)
+thrustController.acceleratePan(Thrust::FULL_REVERSE, 15)
+thrustController.acceleratePan(Thrust::NEUTRAL,      5)
 
 print "Pausing for a while...\n"
 sleep(3)
@@ -62,7 +62,7 @@ sleep(5)
 
 print "Firing all thrusters...\n"
 thrustController.accelerateForward(Thrust::FULL_AHEAD, 4)
-thrustController.accelerateDrift(Thrust::FULL_AHEAD,   4)
+thrustController.acceleratePan(Thrust::FULL_AHEAD,   4)
 thrustController.accelerateDive(Thrust::FULL_AHEAD,    4)
 
 print "Pausing for a while...\n"
@@ -70,7 +70,7 @@ sleep(5)
 
 print "Backing down...\n"
 thrustController.accelerateForward(Thrust::NEUTRAL, 4)
-thrustController.accelerateDrift(Thrust::NEUTRAL,   4)
+thrustController.acceleratePan(Thrust::NEUTRAL,   4)
 thrustController.accelerateDive(Thrust::NEUTRAL,    4)
 
 print "Test complete!\n"
