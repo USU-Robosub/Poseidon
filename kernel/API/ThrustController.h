@@ -30,12 +30,12 @@ class ThrustController
         ~ThrustController();
 
         void setForwardThrust(float);
-        void setDriftThrust(float);
+        void setPanThrust(float);
         void setDiveThrust(float);
         void setYawThrust(float);
 
         void accelerateForward(float, uint by = DEFAULT_SECONDS);
-        void accelerateDrift(float, uint by = DEFAULT_SECONDS);
+        void acceleratePan(float, uint by = DEFAULT_SECONDS);
         void accelerateDive(float, uint by = DEFAULT_SECONDS);
         void accelerateYaw(float, uint by = DEFAULT_SECONDS);
 
@@ -51,7 +51,7 @@ class ThrustController
         static int instanceCount_;
 
         std::shared_ptr<PWM> pwmForward_;
-        std::shared_ptr<PWM> pwmDrift_;
+        std::shared_ptr<PWM> pwmPan_;
         std::shared_ptr<PWM> pwmDive_;
 
         float leftForward_, rightForward_;
@@ -63,8 +63,8 @@ class ThrustController
         void setLeftForwardThrust(float);
         void setRightForwardThrust(float);
 
-        void setLeftDriftThrust(float);
-        void setRightDriftThrust(float);
+        void setLeftPanThrust(float);
+        void setRightPanThrust(float);
 
         void setLeftDiveThrust(float);
         void setRightDiveThrust(float);
