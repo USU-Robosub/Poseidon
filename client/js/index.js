@@ -20,8 +20,8 @@ socket.on('connect', function(){
 
 // This gets called every time new data for this socket is received
 socket.on('data', function(data) {
-    console.log(Date.now());
-    console.log("Socket received: " + data);
+    //console.log(Date.now());
+    console.log("Client received: " + data);
 });
 
 socket.on('end', function(data) {
@@ -29,8 +29,48 @@ socket.on('end', function(data) {
 });
 
 
-$("#go").click(function() {
+$("#enable").click(function() {
     // Send data to the server
-    console.log(Date.now());
-    socket.write("hello world");
+
+    var jsonData = {};
+    jsonData['effect'] = "power";
+    jsonData['action'] = "enable power";
+
+    console.log(jsonData);
+    socket.write(JSON.stringify(jsonData));
+});
+
+$("#forward").click(function() {
+    // Send data to the server
+
+    var jsonData = {};
+    jsonData['effect'] = "thrust";
+    jsonData['action'] = "set forward";
+    jsonData['value'] = 0.6;
+
+    console.log(jsonData);
+    socket.write(JSON.stringify(jsonData));
+});
+
+$("#yaw").click(function() {
+    // Send data to the server
+
+    var jsonData = {};
+    jsonData['effect'] = "thrust";
+    jsonData['action'] = "set yaw";
+    jsonData['value'] = 0.4;
+
+    console.log(jsonData);
+    socket.write(JSON.stringify(jsonData));
+});
+
+$("#sensors").click(function() {
+    // Send data to the server
+
+    var jsonData = {};
+    jsonData['effect'] = "get";
+    jsonData['action'] = "sensors";
+
+    console.log(jsonData);
+    socket.write(JSON.stringify(jsonData));
 });

@@ -13,8 +13,8 @@
 RCServer::RCServer(int port):
     ioBuffer_(new char[IO_BUFF_LEN]),
     power_(std::make_shared<PowerManagement>()),
-    thrust_(std::make_shared<ThrustController>()),
-    imu_(std::make_shared<IMUSensor>())
+    thrust_(std::make_shared<ThrustController>())
+    //imu_(std::make_shared<IMUSensor>())
 {
     std::cout << "RC Server: initializing..." << std::endl;
     memset(ioBuffer_, 0, IO_BUFF_LEN);
@@ -76,26 +76,47 @@ bool RCServer::process(int connfd, const std::string& input)
 {
     std::cout << "RC Server: received " << input << std::endl;
 
-    Json::Value received(input);
-    auto action = received.get("action", "UTF-8").asString();
-    std::cout << action << std::endl;
+    Json::Value received;
+    Json::Reader reader;
 
-    if (action == "enable power")
-        power_->turnOnESCs();
-    else if (action == "disable power")
-        power_->turnOffESCs();
-    else if (action == "set forward")
-        thrust_->setForwardThrust(0.5);
-    else if (action == "set drift")
-        thrust_->setDriftThrust(0.5);
-    else if (action == "set dive")
-        thrust_->setDiveThrust(0.5);
-    else if (action == "set yaw")
-        thrust_->setYawThrust(0.5);
-    else if (action == "get sensors")
-        sendSensorReport(connfd);
-    else if (action == "close connection")
-        return false;
+    bool parsedSuccess = reader.parse(input, received);
+
+   // std::cout << parsedSuccess << std::endl;
+    auto effect = received["effect"].asString();
+    auto action = received["action"].asString();
+    //std::cout << effect << " | " << action << std::endl;
+    //std::cout.flush();
+
+    if (effect == "power")
+    {
+        if (action == "enable power")
+            std::cout << "enabling ESCs..." << std::endl;//power_->turnOnESCs();
+        else if (action == "disable power")
+            std::cout << "disabling ESCs..." << std::endl; //power_->turnOffESCs();
+    }
+    else if (effect == "thrust")
+    {
+        float newVal = received.get("value", "UTF-8").asFloat();
+
+        if (action == "set forward")
+            std::cout << "Forward thrust to " << newVal << std::endl; //thrust_->setForwardThrust(0.5);
+        else if (action == "set drift")
+            std::cout << "Drift thrust to " << newVal << std::endl; //thrust_->setDriftThrust(0.5);
+        else if (action == "set dive")
+            std::cout << "Dive thrust to " << newVal << std::endl; //thrust_->setDiveThrust(0.5);
+        else if (action == "set yaw")
+            std::cout << "Yaw thrust to " << newVal << std::endl; //thrust_->setYawThrust(0.5);
+    }
+    else if (effect == "get")
+    {
+        if (action == "sensors")
+            sendSensorReport(connfd);
+    }
+    else if (effect == "network")
+    {
+        if (action == "close")
+            return false;
+    }
 
     return true;
 }
@@ -105,7 +126,8 @@ bool RCServer::process(int connfd, const std::string& input)
 void RCServer::sendSensorReport(int connfd)
 {
     Json::Value obj;
-    obj["ret"] = "hi";
+    obj["return"] = "sensors";
+    obj["sampleSensor"] = 42;
 
     Json::FastWriter writer;
     send(connfd, writer.write(obj));
