@@ -107,10 +107,10 @@ bool RCServer::process(int connfd, const std::string& input)
             std::cout << "Forward thrust to " << newVal << std::endl;
             thrust_->setForwardThrust(newVal);
         }
-        else if (action == "set drift")
+        else if (action == "set pan")
         {
-            std::cout << "Drift thrust to " << newVal << std::endl;
-            thrust_->setDriftThrust(newVal);
+            std::cout << "Pan thrust to " << newVal << std::endl;
+            thrust_->setPanThrust(newVal);
         }
         else if (action == "set dive")
         {

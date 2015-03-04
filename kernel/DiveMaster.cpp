@@ -43,10 +43,10 @@ void Init_DiveMaster()
         .define_method("readPressure", &IMUSensor::readPressure)
         .define_method("readSealevel", &IMUSensor::readSealevel)
         .define_method("readAltitude", &IMUSensor::readAltitude)
-        .define_method("readCompass", &IMUSensor::ruby_Compass)
-        .define_method("readAcceleration", &IMUSensor::ruby_Acceleration)
-        .define_method("readGyro", &IMUSensor::ruby_Gyro)
-        .define_method("readTemperature", &IMUSensor::getTemp);
+        //.define_method("readCompass", &IMUSensor::ruby_Compass)
+        //.define_method("readAcceleration", &IMUSensor::ruby_Acceleration)
+        //.define_method("readGyro", &IMUSensor::ruby_Gyro)
+        .define_method("readTemp", &IMUSensor::getTemp);
 
     //expose PowerManagement class
     Rice::Data_Type<PowerManagement> rb_cPowerManagement =
