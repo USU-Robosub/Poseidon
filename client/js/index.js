@@ -59,7 +59,6 @@ socket.on('data', function(data) {
         $("#connection button").html("Connected");
 
         var delay = Date.now() - pingSent;
-        console.log(delay);
         $("#sidebar textarea").val(delay + " ping\n" + val);
     }
     else {
