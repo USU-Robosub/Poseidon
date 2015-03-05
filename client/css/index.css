@@ -30,19 +30,90 @@ body
    text-align: center;
 }
 
-#content #logoWrapper
+#content #sidebar
 {
    float: right;
    width: 250px;
 }
 
-#content #logoWrapper img
+#content #sidebar img
 {
    width: 100%;
 }
 
+#content #sidebar #connection
+{
+   padding-top: 30px;
+}
+
+#content #sidebar #connection input
+{
+   width: 140px;
+   font-size: 1em;
+}
+
+#content #sidebar #connection .status
+{
+   width: 66%;
+   height: 35px;
+   margin: 0px auto;
+   background-color: red;
+   border-radius: 10px;
+   margin-top: 10px;
+}
+
 #controls
 {
+   padding-top: 30px;
    padding-left: 20px;
    width: 70%;
+}
+
+#power
+{
+   width: 25%;
+   margin: 0px auto;
+}
+
+#power input[type=checkbox]
+{
+   width: 25px;
+   height: 25px;
+   background:white;
+   border-radius:5px;
+   border:2px solid #555;
+}
+
+#power input[type='checkbox']:checked
+{
+   background: #abd;
+}
+
+#power label
+{
+   position: relative;
+   top: -7px;
+}
+
+#sensors
+{
+   width: 66%;
+   margin: 0px auto;
+}
+
+#sensors button
+{
+   width: 40%;
+   height: 40px;
+   font-size: 1em;
+}
+
+#sensors button:first-child
+{
+   float: left;
+}
+
+#sensors button:last-child
+{
+   float: right;
 }

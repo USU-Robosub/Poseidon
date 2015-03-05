@@ -17,34 +17,36 @@
       <div id="contentWrap">
          <div id="content">
 
-            <div id="logoWrapper">
+            <div id="sidebar">
                <img src="images/USUb logo.png"/>
+               <div id="connection">
+                  <input id="ip" type="text">
+                  <label for="ip">Submarine IP</label>
+                  <div class="status"></div>
+               </div>
             </div>
             <div id="title">Poseidon USUb Remote Control</div>
 
             <div id="controls">
                <div id="power">
-                  <button id="enable">Enable Thrusters</button>
-                  <button id="enable">Disable Thrusters</button>
+                  <div id="engines">
+                     <input id="cb" type="checkbox">
+                     <label for="cb">Engines Active</label>
+                  </div>
                </div>
 
                <hr class="fancy"></hr>
 
                <div id="thrust">
-                  <button id="forward">Set Forward Thrust</button>
-                  <div id="slider"></div>
-                  <button id="yaw">Set Yaw Thrust</button>
+                  <div id="forwardSlider"></div>
+                  <div id="panSlider"></div>
+                  <div id="yawSlider"></div>
                </div>
 
                <hr class="fancy"></hr>
 
                <div id="sensors">
                   <button id="sensors">Get Sensors</button>
-               </div>
-
-               <hr class="fancy"></hr>
-
-               <div id="advanced">
                   <button id="speed">Perform Speedtest</button>
                </div>
             </div>

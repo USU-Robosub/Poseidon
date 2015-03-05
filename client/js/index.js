@@ -29,7 +29,10 @@ socket.on('end', function(data) {
 });
 
 
-$( "#slider" ).slider();
+//make sliders
+$("#forwardSlider").slider();
+$("#panSlider").slider();
+$("#yawSlider").slider();
 
 
 $("#enable").click(function() {
