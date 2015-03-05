@@ -7,6 +7,7 @@
 #include <libs/jsoncpp-1.5.0/json/json.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <thread>
 #include <iostream>
 
 
@@ -54,19 +55,24 @@ void RCServer::start()
         // receive incoming connection
         int connfd = accept(listenfd_, NULL, NULL);
 
-        std::cout << "RC Server: accepted" << std::endl;
+        std::thread handler([connfd, this](){
+            std::cout << "RC Server: accepted" << std::endl;
+            std::cout.flush();
 
-        bool keepAlive = true;
+            bool keepAlive = true;
 
-        do
-        {
-            auto len = read(connfd, ioBuffer_, IO_BUFF_LEN); // read data from client
-            keepAlive = process(connfd, std::string(ioBuffer_, len));
+            do
+            {
+                auto len = read(connfd, ioBuffer_, IO_BUFF_LEN); // read data from client
+                keepAlive = process(connfd, std::string(ioBuffer_, len));
 
-        } while (keepAlive);
+            } while (keepAlive);
 
-        close(connfd); // close connection
-        sleep(50);
+            close(connfd); // close connection
+            sleep(50);
+        });
+
+        handler.detach();
     }
 }
 
@@ -92,14 +98,14 @@ bool RCServer::process(int connfd, const std::string& input)
 
     if (effect == "power")
     {
-        if (action == "enable power")
+        if (action == "enable")
         {
             answer = "Enabling ESCs...";
             power_->turnOnESCs();
         }
-        else if (action == "disable power")
+        else if (action == "disable")
         {
-            answer = "disabling ESCs...";
+            answer = "Disabling ESCs...";
             power_->turnOffESCs();
         }
     }
@@ -135,7 +141,7 @@ bool RCServer::process(int connfd, const std::string& input)
     {
         if (action == "sensors")
         {
-            answer = "Sensor report requested. Sending...";
+            //answer = "Sensor report requested.";
             sendSensorReport(connfd);
         }
         else if (action == "log")

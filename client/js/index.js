@@ -22,20 +22,22 @@ var ip = $("#connection input").val();
 if (ip == undefined || ip == "")
     ip = "localhost";
 var socket = net.createSocket(ip, 4322, options);
+var pingSent;
 
 setTimeout(function () {
     var jsonData = {};
     jsonData['effect'] = "network";
     jsonData['action'] = "ping";
+    pingSent = Date.now();
     socket.write(JSON.stringify(jsonData));
 }, 750);
 
 
 
 // https://stackoverflow.com/questions/770523/escaping-strings-in-javascript
-String.prototype.addSlashes = function() {
-   return this.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
-}
+//String.prototype.addSlashes = function() {
+//   return this.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+//}
 
 
 
@@ -43,18 +45,24 @@ String.prototype.addSlashes = function() {
 socket.on('connect', function(){
     var val = $("#sidebar textarea").val();
     $("#sidebar textarea").val("TCP connection established.\n" + val);
-    $("#connection button").css({ "background-color": "green" });
-    $("#connection button").val("Connected");
 });
 
 // This gets called every time new data for this socket is received
 socket.on('data', function(data) {
     data = data.trim();
     console.log("Client received: \"" + data + "\"");
+    var val = $("#sidebar textarea").val();
 
     var obj = JSON.parse(data);
-    if (obj['return'] != "pong") {
-        var val = $("#sidebar textarea").val();
+    if (obj['return'] == "pong") {
+        $("#connection button").css({ "background-color": "green" });
+        $("#connection button").html("Connected");
+
+        var delay = Date.now() - pingSent;
+        console.log(delay);
+        $("#sidebar textarea").val(delay + " ping\n" + val);
+    }
+    else {
         if (obj['return'] == "sensors")
             $("#sidebar textarea").val(obj['sampleSensor'] + "\n" + val);
         else
@@ -66,7 +74,7 @@ socket.on('end', function(data) {
     var val = $("#sidebar textarea").val();
     $("#sidebar textarea").val(val + "Sub connection closed.\n");
     $("#connection button").css({ "background-color": "red" });
-    $("#connection button").val("Connect");
+    $("#connection button").html("Connect");
 });
 
 
@@ -146,6 +154,15 @@ $("#yawThrust .slider").slider({
 
 
 
+$("#engines input").click(function() {
+    var jsonData = {};
+    jsonData['effect'] = "power";
+    jsonData['action'] = $(this).is(":checked") ? "enable" : "disable";
+
+    console.log(jsonData);
+    socket.write(JSON.stringify(jsonData));
+});
+/*
 $("#connection button").click(function() {
     var ip = $("#connection input").val();
     if (ip == undefined || ip == "")
@@ -153,7 +170,17 @@ $("#connection button").click(function() {
 
     socket = net.createSocket(ip, 4322, options);
     console.log(socket);
-});
+    $("#connection button").css({ "background-color": "red" });
+    $("#connection button").html("Connect");
+
+    setTimeout(function () {
+        var jsonData = {};
+        jsonData['effect'] = "network";
+        jsonData['action'] = "ping";
+        pingSent = Date.now();
+        socket.write(JSON.stringify(jsonData));
+    }, 250);
+});*/
 
 $("#sensors #get").click(function() {
 
@@ -164,14 +191,14 @@ $("#sensors #get").click(function() {
     console.log(jsonData);
     socket.write(JSON.stringify(jsonData));
 });
-/*
+
 $("#sensors #speed").click(function() {
 
     var jsonData = {};
-    jsonData['effect'] = "power";
-    jsonData['action'] = "enable power";
+    jsonData['effect'] = "network";
+    jsonData['action'] = "ping";
 
     console.log(jsonData);
+    pingSent = Date.now();
     socket.write(JSON.stringify(jsonData));
 });
-*/
