@@ -30,39 +30,37 @@ body
    text-align: center;
 }
 
-#content #sidebar
+#sidebar
 {
    float: right;
    width: 300px;
 }
 
-#content #sidebar .imgWrapper
+#sidebar .imgWrapper
 {
    width: 80%;
    margin: 0px auto;
 }
 
-#content #sidebar img
+#sidebar img
 {
    width: 100%;
 }
 
-#content #sidebar #connection
+#sidebar #connection
 {
    padding-top: 30px;
    width: 80%;
    margin: 0px auto;
 }
 
-#content #sidebar #connection input
+#sidebar #connection input
 {
    width: 140px;
    font-size: 1em;
-
-
 }
 
-#content #sidebar #connection .connect
+#sidebar #connection .connect
 {
    width: 66%;
    height: 35px;
@@ -72,6 +70,14 @@ body
    background-color: red;
    border-radius: 15px;
    margin-top: 10px;
+}
+
+#sidebar textarea
+{
+   resize: none;
+   width: 97%;
+   height: 200px;
+   margin-top: 15px;
 }
 
 #controls
