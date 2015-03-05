@@ -11,10 +11,10 @@
 
 
 RCServer::RCServer(int port):
-    ioBuffer_(new char[IO_BUFF_LEN]),
     power_(std::make_shared<PowerManagement>()),
-    thrust_(std::make_shared<ThrustController>())
+    thrust_(std::make_shared<ThrustController>()),
     //imu_(std::make_shared<IMUSensor>())
+    ioBuffer_(new char[IO_BUFF_LEN])
 {
     std::cout << "RC Server: initializing..." << std::endl;
     memset(ioBuffer_, 0, IO_BUFF_LEN);
@@ -66,7 +66,7 @@ void RCServer::start()
         } while (keepAlive);
 
         close(connfd); // close connection
-        //sleep(10);
+        sleep(50);
     }
 }
 
@@ -74,27 +74,32 @@ void RCServer::start()
 
 bool RCServer::process(int connfd, const std::string& input)
 {
+    if (input.length() == 0)
+        return false;
+
     std::cout << "RC Server: received " << input << std::endl;
 
     Json::Value received;
     Json::Reader reader;
 
     if (!reader.parse(input, received))
-        return true;
+        return false;
 
     auto effect = received["effect"].asString();
     auto action = received["action"].asString();
+
+    std::string answer;
 
     if (effect == "power")
     {
         if (action == "enable power")
         {
-            std::cout << "enabling ESCs..." << std::endl;
+            answer = "Enabling ESCs...";
             power_->turnOnESCs();
         }
         else if (action == "disable power")
         {
-            std::cout << "disabling ESCs..." << std::endl;
+            answer = "disabling ESCs...";
             power_->turnOffESCs();
         }
     }
@@ -104,30 +109,33 @@ bool RCServer::process(int connfd, const std::string& input)
 
         if (action == "set forward")
         {
-            std::cout << "Forward thrust to " << newVal << std::endl;
+            answer = "Forward thrust to " + std::to_string(newVal);
             thrust_->setForwardThrust(newVal);
         }
         else if (action == "set pan")
         {
-            std::cout << "Pan thrust to " << newVal << std::endl;
+            answer = "Pan thrust to " + std::to_string(newVal);
             thrust_->setPanThrust(newVal);
         }
         else if (action == "set dive")
         {
-            std::cout << "Dive thrust to " << newVal << std::endl;
+            answer = "Dive thrust to " + std::to_string(newVal);
             thrust_->setDiveThrust(newVal);
         }
         else if (action == "set yaw")
         {
-            std::cout << "Yaw thrust to " << newVal << std::endl;
+            answer = "Yaw thrust to " + std::to_string(newVal);
             thrust_->setYawThrust(newVal);
         }
+
+        //trim trailing zeros
+        answer.erase (answer.find_last_not_of('0') + 1, std::string::npos);
     }
     else if (effect == "get")
     {
         if (action == "sensors")
         {
-            std::cout << "Sensor report requested. Sending..." << std::endl;
+            answer = "Sensor report requested. Sending...";
             sendSensorReport(connfd);
         }
         else if (action == "log")
@@ -139,13 +147,22 @@ bool RCServer::process(int connfd, const std::string& input)
     {
         if (action == "ping")
         {
-            send(connfd, "pong");
+            answer = "pong";
         }
         else if (action == "close")
         {
             std::cout << "Closing network connection." << std::endl;
             return false;
         }
+    }
+
+    if (!answer.empty())
+    {
+        //send reply back to client
+        Json::Value obj;
+        obj["return"] = answer;
+        Json::FastWriter writer;
+        send(connfd, writer.write(obj));
     }
 
     std::cout << "Action complete" << std::endl;
@@ -169,6 +186,6 @@ void RCServer::sendSensorReport(int connfd)
 
 void RCServer::send(int connfd, const std::string& data)
 {
-    memcpy(ioBuffer_, data.c_str(), data.size() + 1);
-    write(connfd, ioBuffer_, data.size() + 1);
+    memcpy(ioBuffer_, data.c_str(), data.size());
+    write(connfd, ioBuffer_, data.size());
 }

@@ -1,5 +1,12 @@
 
 var net = new WebTCP('localhost', 9999);
+setTimeout(function () {
+    var val = $("#sidebar textarea").val();
+    if (net.ready)
+        $("#sidebar textarea").val("Client software is ready.\n" + val);
+    else
+        $("#sidebar textarea").val("init.sh is not running!\n" + val);
+}, 500);
 
 // standard socket options
 options = {
@@ -10,22 +17,56 @@ options = {
     initialDelay: 0 // for keepAlive. default is 0
 }
 
-// Create a socket. You can specify host and port of any TCP server here
-var socket = net.createSocket("localhost", 4322, options);
+// Create a socket
+var ip = $("#connection input").val();
+if (ip == undefined || ip == "")
+    ip = "localhost";
+var socket = net.createSocket(ip, 4322, options);
+
+setTimeout(function () {
+    var jsonData = {};
+    jsonData['effect'] = "network";
+    jsonData['action'] = "ping";
+    socket.write(JSON.stringify(jsonData));
+}, 750);
+
+
+
+// https://stackoverflow.com/questions/770523/escaping-strings-in-javascript
+String.prototype.addSlashes = function() {
+   return this.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+
+
 
 // On connection callback
 socket.on('connect', function(){
-    console.log('Socket confirmed open');
-})
+    var val = $("#sidebar textarea").val();
+    $("#sidebar textarea").val("TCP connection established.\n" + val);
+    $("#connection button").css({ "background-color": "green" });
+    $("#connection button").val("Connected");
+});
 
 // This gets called every time new data for this socket is received
 socket.on('data', function(data) {
-    //console.log(Date.now());
-    console.log("Client received: " + data);
+    data = data.trim();
+    console.log("Client received: \"" + data + "\"");
+
+    var obj = JSON.parse(data);
+    if (obj['return'] != "pong") {
+        var val = $("#sidebar textarea").val();
+        if (obj['return'] == "sensors")
+            $("#sidebar textarea").val(obj['sampleSensor'] + "\n" + val);
+        else
+            $("#sidebar textarea").val(obj['return'] + "\n" + val);
+    }
 });
 
 socket.on('end', function(data) {
-    console.log("Socket is now closed");
+    var val = $("#sidebar textarea").val();
+    $("#sidebar textarea").val(val + "Sub connection closed.\n");
+    $("#connection button").css({ "background-color": "red" });
+    $("#connection button").val("Connect");
 });
 
 
@@ -38,6 +79,14 @@ $("#forwardThrust .slider").slider({
     step: 0.025,
     slide: function(event, ui) {
         $("#forwardThrust label span").html(ui.value);
+
+        var jsonData = {};
+        jsonData['effect'] = "thrust";
+        jsonData['action'] = "set forward";
+        jsonData['value'] = ui.value;
+
+        console.log(jsonData);
+        socket.write(JSON.stringify(jsonData));
     }
 });
 
@@ -48,6 +97,14 @@ $("#panThrust .slider").slider({
     step: 0.025,
     slide: function(event, ui) {
         $("#panThrust label span").html(ui.value);
+
+        var jsonData = {};
+        jsonData['effect'] = "thrust";
+        jsonData['action'] = "set pan";
+        jsonData['value'] = ui.value;
+
+        console.log(jsonData);
+        socket.write(JSON.stringify(jsonData));
     }
 });
 
@@ -58,6 +115,14 @@ $("#diveThrust .slider").slider({
     step: 0.025,
     slide: function(event, ui) {
         $("#diveThrust label span").html(ui.value);
+
+        var jsonData = {};
+        jsonData['effect'] = "thrust";
+        jsonData['action'] = "set dive";
+        jsonData['value'] = ui.value;
+
+        console.log(jsonData);
+        socket.write(JSON.stringify(jsonData));
     }
 });
 
@@ -68,50 +133,29 @@ $("#yawThrust .slider").slider({
     step: 0.025,
     slide: function(event, ui) {
         $("#yawThrust label span").html(ui.value);
+
+        var jsonData = {};
+        jsonData['effect'] = "thrust";
+        jsonData['action'] = "set yaw";
+        jsonData['value'] = ui.value;
+
+        console.log(jsonData);
+        socket.write(JSON.stringify(jsonData));
     }
 });
 
 
 
+$("#connection button").click(function() {
+    var ip = $("#connection input").val();
+    if (ip == undefined || ip == "")
+        ip = "localhost";
 
-
-$("#enable").click(function() {
-    // Send data to the server
-
-    var jsonData = {};
-    jsonData['effect'] = "power";
-    jsonData['action'] = "enable power";
-
-    console.log(jsonData);
-    socket.write(JSON.stringify(jsonData));
+    socket = net.createSocket(ip, 4322, options);
+    console.log(socket);
 });
 
-$("#forward").click(function() {
-    // Send data to the server
-
-    var jsonData = {};
-    jsonData['effect'] = "thrust";
-    jsonData['action'] = "set forward";
-    jsonData['value'] = 0.6;
-
-    console.log(jsonData);
-    socket.write(JSON.stringify(jsonData));
-});
-
-$("#yaw").click(function() {
-    // Send data to the server
-
-    var jsonData = {};
-    jsonData['effect'] = "thrust";
-    jsonData['action'] = "set yaw";
-    jsonData['value'] = 0.4;
-
-    console.log(jsonData);
-    socket.write(JSON.stringify(jsonData));
-});
-
-$("#sensors").click(function() {
-    // Send data to the server
+$("#sensors #get").click(function() {
 
     var jsonData = {};
     jsonData['effect'] = "get";
@@ -120,3 +164,14 @@ $("#sensors").click(function() {
     console.log(jsonData);
     socket.write(JSON.stringify(jsonData));
 });
+/*
+$("#sensors #speed").click(function() {
+
+    var jsonData = {};
+    jsonData['effect'] = "power";
+    jsonData['action'] = "enable power";
+
+    console.log(jsonData);
+    socket.write(JSON.stringify(jsonData));
+});
+*/
