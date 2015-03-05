@@ -33,7 +33,13 @@ body
 #content #sidebar
 {
    float: right;
-   width: 250px;
+   width: 300px;
+}
+
+#content #sidebar .imgWrapper
+{
+   width: 80%;
+   margin: 0px auto;
 }
 
 #content #sidebar img
@@ -44,21 +50,27 @@ body
 #content #sidebar #connection
 {
    padding-top: 30px;
+   width: 80%;
+   margin: 0px auto;
 }
 
 #content #sidebar #connection input
 {
    width: 140px;
    font-size: 1em;
+
+
 }
 
-#content #sidebar #connection .status
+#content #sidebar #connection .connect
 {
    width: 66%;
    height: 35px;
+   font-size: 1em;
    margin: 0px auto;
+   display:block;
    background-color: red;
-   border-radius: 10px;
+   border-radius: 15px;
    margin-top: 10px;
 }
 
@@ -66,12 +78,12 @@ body
 {
    padding-top: 30px;
    padding-left: 20px;
-   width: 70%;
+   width: 65%;
 }
 
 #power
 {
-   width: 25%;
+   width: 150px;
    margin: 0px auto;
 }
 
@@ -93,6 +105,18 @@ body
 {
    position: relative;
    top: -7px;
+}
+
+#forwardThrust, #panThrust, #diveThrust, #yawThrust
+{
+   width: 75%;
+   margin: 20px auto;
+}
+
+#thrust label
+{
+   padding-left: 20px;
+   padding-bottom: 5px;
 }
 
 #sensors

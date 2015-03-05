@@ -18,11 +18,13 @@
          <div id="content">
 
             <div id="sidebar">
-               <img src="images/USUb logo.png"/>
+               <div class="imgWrapper">
+                  <img src="images/USUb logo.png"/>
+               </div>
                <div id="connection">
                   <input id="ip" type="text">
                   <label for="ip">Submarine IP</label>
-                  <div class="status"></div>
+                  <button class="connect">Connect</button>
                </div>
             </div>
             <div id="title">Poseidon USUb Remote Control</div>
@@ -38,9 +40,22 @@
                <hr class="fancy"></hr>
 
                <div id="thrust">
-                  <div id="forwardSlider"></div>
-                  <div id="panSlider"></div>
-                  <div id="yawSlider"></div>
+                  <div id="forwardThrust">
+                     <label>Forward Throttle: <span></span></label>
+                     <div class="slider"></div>
+                  </div>
+                  <div id="panThrust">
+                     <label>Pan Throttle: <span></span></label>
+                     <div class="slider"></div>
+                  </div>
+                  <div id="diveThrust">
+                     <label>Dive Throttle: <span></span></label>
+                     <div class="slider"></div>
+                  </div>
+                  <div id="yawThrust">
+                     <label>Yaw Throttle: <span></span></label>
+                     <div class="slider"></div>
+                  </div>
                </div>
 
                <hr class="fancy"></hr>

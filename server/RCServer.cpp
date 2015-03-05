@@ -137,7 +137,11 @@ bool RCServer::process(int connfd, const std::string& input)
     }
     else if (effect == "network")
     {
-        if (action == "close")
+        if (action == "ping")
+        {
+            send(connfd, "pong");
+        }
+        else if (action == "close")
         {
             std::cout << "Closing network connection." << std::endl;
             return false;

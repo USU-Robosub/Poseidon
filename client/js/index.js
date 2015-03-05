@@ -29,10 +29,50 @@ socket.on('end', function(data) {
 });
 
 
-//make sliders
-$("#forwardSlider").slider();
-$("#panSlider").slider();
-$("#yawSlider").slider();
+
+
+//make forward slider
+$("#forwardThrust .slider").slider({
+    max: 1,
+    min: -1,
+    step: 0.025,
+    slide: function(event, ui) {
+        $("#forwardThrust label span").html(ui.value);
+    }
+});
+
+//make panning slider
+$("#panThrust .slider").slider({
+    max: 1,
+    min: -1,
+    step: 0.025,
+    slide: function(event, ui) {
+        $("#panThrust label span").html(ui.value);
+    }
+});
+
+//make diving slider
+$("#diveThrust .slider").slider({
+    max: 1,
+    min: -1,
+    step: 0.025,
+    slide: function(event, ui) {
+        $("#diveThrust label span").html(ui.value);
+    }
+});
+
+//make yaw slider
+$("#yawThrust .slider").slider({
+    max: 1,
+    min: -1,
+    step: 0.025,
+    slide: function(event, ui) {
+        $("#yawThrust label span").html(ui.value);
+    }
+});
+
+
+
 
 
 $("#enable").click(function() {
