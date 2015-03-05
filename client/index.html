@@ -4,17 +4,53 @@
    <head>
       <title>Poseidon Remote Control</title>
       <meta charset="UTF-8">
+      <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css"/>
+      <link rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css"/>
+      <link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css"/>
+      <link rel="stylesheet" type="text/css" href="css/fancyHR.css"/>
       <link rel="stylesheet" type="text/css" href="css/index.css"/>
       <script src="js/jquery-1.11.2.min.js"></script>
+      <script src="js/jquery-ui.min.js"></script>
+      <script src="webtcp/lib/client/webtcp-0.0.1.min.js"></script>
    </head>
    <body>
-      <button id="enable">Enable Thrusters</button>
-      <button id="forward">Set Forward Thrust</button>
-      <!--<button id="drift">Set Drift Thrust</button>
-      <button id="dive">Set Dive Thrust</button>-->
-      <button id="yaw">Set Yaw Thrust</button>
-      <button id="sensors">Get Sensors</button>
+      <div id="contentWrap">
+         <div id="content">
+
+            <div id="logoWrapper">
+               <img src="images/USUb logo.png"/>
+            </div>
+            <div id="title">Poseidon USUb Remote Control</div>
+
+            <div id="controls">
+               <div id="power">
+                  <button id="enable">Enable Thrusters</button>
+                  <button id="enable">Disable Thrusters</button>
+               </div>
+
+               <hr class="fancy"></hr>
+
+               <div id="thrust">
+                  <button id="forward">Set Forward Thrust</button>
+                  <div id="slider"></div>
+                  <button id="yaw">Set Yaw Thrust</button>
+               </div>
+
+               <hr class="fancy"></hr>
+
+               <div id="sensors">
+                  <button id="sensors">Get Sensors</button>
+               </div>
+
+               <hr class="fancy"></hr>
+
+               <div id="advanced">
+                  <button id="speed">Perform Speedtest</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script src="js/index.js"></script>
    </body>
-   <script src="webtcp/lib/client/webtcp-0.0.1.min.js"></script>
    <script src="js/index.js"></script>
 </html>

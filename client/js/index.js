@@ -29,6 +29,9 @@ socket.on('end', function(data) {
 });
 
 
+$( "#slider" ).slider();
+
+
 $("#enable").click(function() {
     // Send data to the server
 

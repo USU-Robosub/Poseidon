@@ -1,0 +1,48 @@
+body
+{
+   margin: 0px;
+   background-color: #3882cd;
+}
+
+#contentWrap
+{
+   padding: 25px 128px 100px 128px;
+}
+
+#content
+{
+   padding: 10px;
+   border-radius: 15px;
+   position: relative;
+   background-color: #F0F8FF;
+   min-width: 770px;
+   min-height: 500px;
+   font-family: Georgia, "Times New Roman", serif;
+}
+
+#content #title
+{
+   font-weight: bold;
+   font-size: 2.0em;
+   margin: 0px 460px 0px 100px;
+   padding: 10px 0px;
+   border-bottom: 2px dotted green;
+   text-align: center;
+}
+
+#content #logoWrapper
+{
+   float: right;
+   width: 250px;
+}
+
+#content #logoWrapper img
+{
+   width: 100%;
+}
+
+#controls
+{
+   padding-left: 20px;
+   width: 70%;
+}
