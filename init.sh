@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #SLOTS=/sys/devices/bone_capemgr.*/slots
-source ~/.bashrc
+#source ~/.bashrc
+source kernel/kernel.sh
 
 # mux and initialize PWM pins
 echo bone_pwm_P9_21 >> $SLOTS # Subsystem 0
