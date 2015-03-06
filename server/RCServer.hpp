@@ -9,11 +9,11 @@
 #include <cstring>
 #include <string>
 
+#define IO_BUFF_LEN 1024
+
 class RCServer
 {
     public:
-        const std::size_t IO_BUFF_LEN = 1024;
-
         RCServer(int port);
         ~RCServer();
         void start();
@@ -31,3 +31,4 @@ class RCServer
 };
 
 #endif
+

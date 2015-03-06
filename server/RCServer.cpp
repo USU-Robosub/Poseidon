@@ -11,12 +11,12 @@
 #include <iostream>
 
 
-RCServer::RCServer(int port):
-    power_(std::make_shared<PowerManagement>()),
-    thrust_(std::make_shared<ThrustController>()),
-    //imu_(std::make_shared<IMUSensor>())
-    ioBuffer_(new char[IO_BUFF_LEN])
+RCServer::RCServer(int port)
 {
+    power_ = std::make_shared<PowerManagement>();
+    thrust_ = std::make_shared<ThrustController>();
+    ioBuffer_ = new char[IO_BUFF_LEN];
+
     std::cout << "RC Server: initializing..." << std::endl;
     memset(ioBuffer_, 0, IO_BUFF_LEN);
 
