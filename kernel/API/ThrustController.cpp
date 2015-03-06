@@ -166,7 +166,9 @@ void ThrustController::setLeftForwardThrust(float rate)
     if (leftForward_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
         r += pwmForward_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, false));
+	std::this_thread::sleep_for(UPDATE_DELAY);
         r += pwmForward_->setDutyA(rateToDuty(0, false));
+	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
     r += pwmForward_->setDutyA(rateToDuty(rate, false));
@@ -190,7 +192,9 @@ void ThrustController::setRightForwardThrust(float rate)
     if (rightForward_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
         r += pwmForward_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, false));
+	std::this_thread::sleep_for(UPDATE_DELAY);
         r += pwmForward_->setDutyB(rateToDuty(0, false));
+	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
     r += pwmForward_->setDutyB(rateToDuty(rate, false));
@@ -214,7 +218,9 @@ void ThrustController::setLeftPanThrust(float rate)
     if (leftDrift_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
         r += pwmPan_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, true));
-        r += pwmPan_->setDutyA(rateToDuty(0, true));
+        std::this_thread::sleep_for(UPDATE_DELAY);
+	r += pwmPan_->setDutyA(rateToDuty(0, true));
+	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
     r += pwmPan_->setDutyA(rateToDuty(rate, true));
@@ -238,7 +244,9 @@ void ThrustController::setRightPanThrust(float rate)
     if (rightDrift_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
         r += pwmPan_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, true));
+	std::this_thread::sleep_for(UPDATE_DELAY);
         r += pwmPan_->setDutyB(rateToDuty(0, true));
+	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
     r += pwmPan_->setDutyB(rateToDuty(rate, true));
@@ -262,7 +270,9 @@ void ThrustController::setLeftDiveThrust(float rate)
     if (leftDive_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
         r += pwmDive_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, true));
+	std::this_thread::sleep_for(UPDATE_DELAY);
         r += pwmDive_->setDutyA(rateToDuty(0, true));
+	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
     r += pwmDive_->setDutyA(rateToDuty(rate, true));
@@ -286,7 +296,9 @@ void ThrustController::setRightDiveThrust(float rate)
     if (rightDive_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
         r += pwmDive_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, true));
+	std::this_thread::sleep_for(UPDATE_DELAY);
         r += pwmDive_->setDutyB(rateToDuty(0, true));
+	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
     r += pwmDive_->setDutyB(rateToDuty(rate, true));
