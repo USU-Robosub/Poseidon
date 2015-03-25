@@ -16,5 +16,6 @@ echo am33xx_pwm >> $SLOTS
 
 
 # Enable i2c_Sub2 clock
-writem 0x44E00000  0 0
-writem 0x44E00000 44 2
+#writem 0x44E00000  0 0
+#writem 0x44E00000 44 2
+i2cset -y 1 0x03 0x02 0xE7
