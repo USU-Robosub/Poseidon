@@ -14,6 +14,8 @@ echo bone_pwm_P8_36 >> $SLOTS
 echo am33xx_pwm >> $SLOTS
 
 
+i2cset -y 1 0x03 0x02 0xE7
+
 
 # Enable i2c_Sub2 clock
 writem 0x44E00000  0 0
