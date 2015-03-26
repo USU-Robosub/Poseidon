@@ -61,6 +61,8 @@ void ThrustController::setForwardThrust(float goal)
 {
     setLeftForwardThrust(goal);
     setRightForwardThrust(goal);
+	setLeftDiveThrust(-goal);
+    setRightDiveThrust(-goal);
 }
 
 
@@ -83,8 +85,8 @@ void ThrustController::setDiveThrust(float goal)
 
 void ThrustController::setYawThrust(float goal)
 {
-    setLeftPanThrust(goal);
-    setRightPanThrust(-goal);
+    setLeftForwardThrust(goal);
+    setRightForwardThrust(goal);
 }
 
 
