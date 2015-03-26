@@ -22,7 +22,7 @@ class VirtualVision
 		@trackPos = [randX.rand(100.0), randY.rand(100.0)]
 		@trackAngle = 0
 	end
-	def getBuoyPosition(buoyColor)
+	def getBallPosition(buoyColor)
 		return @buoyPos
 	end
 	def getGatePosition
@@ -31,7 +31,7 @@ class VirtualVision
 	def getTrackPosition(trackColor)
 		return @trackPos
 	end
-	def resetBuoyPos
+	def resetBallPos
 		@buoyPos = [randX.rand(100.0), randY.rand(100.0)]
 	end
 	def resetGatePos
