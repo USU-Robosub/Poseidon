@@ -77,6 +77,24 @@ socket.on('end', function(data) {
 });
 
 
+$("#sidebar #rubyGo").click(function() {
+
+    var jsonData = {};
+    jsonData['effect'] = "ruby";
+    jsonData['action'] = "code";
+    jsonData['value'] = $('#ruby #rubyCode').val();
+
+    socket.write(JSON.stringify(jsonData));
+});
+
+$("#sidebar #rubyGet").click(function() {
+
+    var jsonData = {};
+    jsonData['effect'] = "get";
+    jsonData['action'] = "rubyOut";
+
+    socket.write(JSON.stringify(jsonData));
+});
 
 
 //make forward slider

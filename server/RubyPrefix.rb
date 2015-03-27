@@ -1,4 +1,4 @@
-require Dir.pwd + "/kernel/DiveMaster"
+require Dir.pwd + "/../kernel/DiveMaster"
 
 module Thrust
     FULL_AHEAD = 1

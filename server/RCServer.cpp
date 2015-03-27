@@ -140,7 +140,7 @@ bool RCServer::process(int connfd, const std::string& input)
         //trim trailing zeros
         answer.erase (answer.find_last_not_of('0') + 1, std::string::npos);
     }
-    else if (effect == "network")
+    else if (effect == "ruby")
     {
         if (action == "code")
         {
@@ -185,9 +185,22 @@ bool RCServer::process(int connfd, const std::string& input)
             //answer = "Sensor report requested.";
             sendSensorReport(connfd);
         }
-        else if (action == "log")
+        else if (action == "rubyOut")
         {
-            //todo
+            std::ifstream rubyOut("RubyOut.txt");
+            std::stringstream rStream;
+            std::string line;
+
+            rStream << "--BEGIN--" << std::endl;
+            if (rubyOut.is_open())
+            {
+                while (getline(rubyOut, line))
+                    rStream << line << std::endl;
+                rubyOut.close();
+            }
+            rStream << "--END--" << std::endl;
+
+            answer = rStream.str();
         }
     }
     else if (effect == "network")
