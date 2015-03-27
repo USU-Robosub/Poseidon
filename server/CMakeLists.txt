@@ -12,7 +12,7 @@ endif()
 SET(JSONCPP_CPP libs/jsoncpp-1.5.0/jsoncpp.cpp)
 set_source_files_properties(${JSONCPP_CPP} PROPERTIES COMPILE_FLAGS "-w")
 
-include_directories(. libs/jsoncpp-1.5.0)
+include_directories(. libs/jsoncpp-1.5.0 libs/pstreams-0.8.1)
 
 file(GLOB_RECURSE API_CPPS ../kernel/API/*.cpp)
 file(GLOB_RECURSE DRIVER_CPPS ../kernel/drivers/*.cpp)

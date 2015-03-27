@@ -7,7 +7,10 @@
 #include <libs/jsoncpp-1.5.0/json/json.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <pstream.h>
 #include <thread>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 
 
@@ -136,6 +139,44 @@ bool RCServer::process(int connfd, const std::string& input)
 
         //trim trailing zeros
         answer.erase (answer.find_last_not_of('0') + 1, std::string::npos);
+    }
+    else if (effect == "network")
+    {
+        if (action == "code")
+        {
+            //receive the sent code
+            std::string code = received.get("value", "UTF-8").asString();
+
+            //read prefix file, save contents to rStream
+            std::ifstream prefixFile("RubyPrefix.rb");
+            std::stringstream rStream;
+            std::string line;
+            if (prefixFile.is_open())
+            {
+                while (getline(prefixFile, line))
+                    rStream << line << std::endl;
+                prefixFile.close();
+            }
+
+            //write to the Ruby file
+            std::ofstream rubyFile;
+            rubyFile.open("RubyRC.rb");
+            rubyFile << rStream.str() << std::endl << code;
+            rubyFile.close();
+
+            //execute the Ruby
+            //adapted from http://stackoverflow.com/questions/478898/how-to-execute-a-command-and-get-output-of-command-within-c
+            redi::ipstream proc("ruby RubyRC.rb > RubyOut.txt 2>&1", redi::pstreams::pstderr);
+
+            // read child's stdout
+            //while (std::getline(proc.out(), line))
+            //std::cout << "stdout: " << line << 'n';
+            // read child's stderr
+            //while (std::getline(proc.err(), line))
+            //std::cout << "stderr: " << line << 'n';
+
+            answer = "Ruby code running!";
+        }
     }
     else if (effect == "get")
     {
