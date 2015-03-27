@@ -1,4 +1,3 @@
-
 #include "ThrustController.h"
 #include <stdexcept>
 #include <cmath>
@@ -20,17 +19,17 @@ ThrustController::ThrustController()
 
     //create and initialize all PWM thruster modules
     pwmForward_ = std::make_shared<PWM>(PWM_SUB0);
-    pwmPan_     = std::make_shared<PWM>(PWM_SUB1);
+    pwmStrafe_     = std::make_shared<PWM>(PWM_SUB1);
     pwmDive_    = std::make_shared<PWM>(PWM_SUB2);
 
     //set all thrusters to neutral
     pwmForward_->setPeriod(PWM_PERIOD);
-    pwmPan_    ->setPeriod(PWM_PERIOD);
+    pwmStrafe_    ->setPeriod(PWM_PERIOD);
     pwmDive_   ->setPeriod(PWM_PERIOD);
 
     //enable all thrusters
     pwmForward_->start();
-    pwmPan_    ->start();
+    pwmStrafe_    ->start();
     pwmDive_   ->start();
 
     instanceCount_++;
@@ -44,12 +43,12 @@ ThrustController::~ThrustController()
 
     //stop all thrusters
     setForwardThrust(NEUTRAL);
-    setPanThrust(NEUTRAL);
+    setStrafeThrust(NEUTRAL);
     setYawThrust(NEUTRAL);
 
     //disable all PWM thruster modules
     pwmForward_->stop();
-    pwmPan_  ->stop();
+    pwmStrafe_  ->stop();
     pwmDive_   ->stop();
 
     instanceCount_--;
@@ -61,16 +60,14 @@ void ThrustController::setForwardThrust(float goal)
 {
     setLeftForwardThrust(goal);
     setRightForwardThrust(goal);
-	setLeftDiveThrust(-goal);
-    setRightDiveThrust(-goal);
 }
 
 
 
-void ThrustController::setPanThrust(float goal)
+void ThrustController::setStrafeThrust(float goal)
 {
-    setLeftPanThrust(goal);
-    setRightPanThrust(goal);
+    setLeftStrafeThrust(goal);
+    setRightStrafeThrust(goal);
 }
 
 
@@ -104,13 +101,13 @@ void ThrustController::accelerateForward(float goal, uint by)
 
 
 
-void ThrustController::acceleratePan(float goal, uint by)
+void ThrustController::accelerateStrafe(float goal, uint by)
 {
     //linearly accelerate to target by the desired number of seconds
     auto updateCount = by * 1000 / UPDATE_DELAY_MS;
     for (uint n = 1; n < updateCount + 1; n++)
     {
-        setPanThrust(n * goal / updateCount);
+        setStrafeThrust(n * goal / updateCount);
         std::this_thread::sleep_for(UPDATE_DELAY);
     }
 }
@@ -150,7 +147,7 @@ void ThrustController::accelerateYaw(float goal, uint by)
 void ThrustController::setAllThrust(float rate)
 {
     setForwardThrust(rate);
-    setPanThrust(rate);
+    setStrafeThrust(rate);
     setDiveThrust(rate);
 }
 
@@ -208,7 +205,7 @@ void ThrustController::setRightForwardThrust(float rate)
 
 
 
-void ThrustController::setLeftPanThrust(float rate)
+void ThrustController::setLeftStrafeThrust(float rate)
 {
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for LeftDrift thrust rate!");
@@ -219,13 +216,13 @@ void ThrustController::setLeftPanThrust(float rate)
 
     if (leftDrift_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
-        r += pwmPan_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, true));
+        r += pwmStrafe_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, true));
         std::this_thread::sleep_for(UPDATE_DELAY);
-	r += pwmPan_->setDutyA(rateToDuty(0, true));
+	r += pwmStrafe_->setDutyA(rateToDuty(0, true));
 	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    r += pwmPan_->setDutyA(rateToDuty(rate, true));
+    r += pwmStrafe_->setDutyA(rateToDuty(rate, true));
     leftDrift_ = rate;
 
     if (r > 0)
@@ -234,7 +231,7 @@ void ThrustController::setLeftPanThrust(float rate)
 
 
 
-void ThrustController::setRightPanThrust(float rate)
+void ThrustController::setRightStrafeThrust(float rate)
 {
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for RightDrift thrust rate!");
@@ -245,13 +242,13 @@ void ThrustController::setRightPanThrust(float rate)
 
     if (rightDrift_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
-        r += pwmPan_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, true));
+        r += pwmStrafe_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, true));
 	std::this_thread::sleep_for(UPDATE_DELAY);
-        r += pwmPan_->setDutyB(rateToDuty(0, true));
+        r += pwmStrafe_->setDutyB(rateToDuty(0, true));
 	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    r += pwmPan_->setDutyB(rateToDuty(rate, true));
+    r += pwmStrafe_->setDutyB(rateToDuty(rate, true));
     rightDrift_ = rate;
 
     if (r > 0)
