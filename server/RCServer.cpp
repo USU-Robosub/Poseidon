@@ -124,7 +124,7 @@ bool RCServer::process(int connfd, const std::string& input)
         else if (action == "set pan")
         {
             answer = "Pan thrust to " + std::to_string(newVal);
-            thrust_->setPanThrust(newVal);
+            thrust_->setStrafeThrust(newVal);
         }
         else if (action == "set dive")
         {
