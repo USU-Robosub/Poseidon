@@ -67,7 +67,7 @@ void Init_DiveMaster()
     Rice::Data_Type<IMUSensor> rb_cIMUSensor =
         Rice::define_class<IMUSensor>("Sensors")
         .define_constructor(Rice::Constructor<IMUSensor>())
-        .define_method("temperatureA", &dummy/*&IMUSensor::readTemperature)*/
+        .define_method("temperatureA", &dummy/*&IMUSensor::readTemperature)*/)
         .define_method("temperatureB", &dummy/*&IMUSensor::getTemp*/)
         .define_method("pressure", &dummy/*&IMUSensor::readPressure*/)
         .define_method("sealevel", &dummy/*&IMUSensor::readSealevel*/)
