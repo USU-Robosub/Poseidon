@@ -9,7 +9,7 @@ Unlike the previous versions, this submarine itself was planned by the engineers
 
 ### Installation
 
-> 1. **sudo apt-get install ruby ruby-dev autoconf automake g++ awk**
+> 1. **sudo apt-get install ruby ruby-dev libi2c-dev autoconf automake g++ awk**
 > 2. **sudo gem install rice**
 > 3. **./runStable.sh**
 
