@@ -6,6 +6,10 @@
 #include "API/IMUSensor.h"
 #include "API/PowerManagement.h"
 
+void dummy() {
+    printf("This feature is not yet implimented.\n");
+}
+
 extern "C"
 void Init_DiveMaster();
 void Init_DiveMaster()
@@ -27,31 +31,69 @@ void Init_DiveMaster()
         Rice::define_class<ThrustController>("ThrustController")
         .define_constructor(Rice::Constructor<ThrustController>())
         .define_method("setForwardThrust", &ThrustController::setForwardThrust)
-        .define_method("setPanThrust", &ThrustController::setPanThrust)
+        .define_method("setStrafeThrust", &ThrustController::setStrafeThrust)
         .define_method("setDiveThrust", &ThrustController::setDiveThrust)
         .define_method("setYawThrust", &ThrustController::setYawThrust)
+        // - BEGIN - prototyped functions for future development
+        .define_method("setRollThrust", &dummy)
+        /* provide a radius to follow and thrust velocity */
+        .define_method("travelArc", &dummy)
+        /* provide an XYZ point which define forward, strafe, and dive thrust
+           in order to travel a linear spacial line - provides convinience over
+           calling three methods sequentially */
+        .define_method("travelLine", &dummy)
+        /* stop all thrusters */
+        .define_method("stopAll", &dummy)
+        /* stop forward thrusters */
+        .define_method("stopForward", &dummy)
+        /* stop strafe thrusters */
+        .define_method("stopStrafe", &dummy)
+        /* stop dive thrusters */
+        .define_method("stopDive", &dummy)
+        /* Advanced User Access to Thrusters */
+        .define_method("setForwardA", &dummy)
+        .define_method("setForwardB", &dummy)
+        .define_method("setDiveA", &dummy)
+        .define_method("setDiveB", &dummy)
+        .define_method("setStrafeA", &dummy)
+        .define_method("setStrafeB", &dummy)
+        // -  END  - 
         .define_method("accelerateForward", &ThrustController::accelerateForward)
-        .define_method("acceleratePan", &ThrustController::acceleratePan)
+        .define_method("accelerateStrafe", &ThrustController::accelerateStrafe)
         .define_method("accelerateDive", &ThrustController::accelerateDive)
         .define_method("accelerateYaw", &ThrustController::accelerateYaw);
 
     //expose IMUSensor class
     Rice::Data_Type<IMUSensor> rb_cIMUSensor =
-        Rice::define_class<IMUSensor>("IMUSensor")
+        Rice::define_class<IMUSensor>("Sensors")
         .define_constructor(Rice::Constructor<IMUSensor>())
-        .define_method("readTemperature", &IMUSensor::readTemperature)
-        .define_method("readPressure", &IMUSensor::readPressure)
-        .define_method("readSealevel", &IMUSensor::readSealevel)
-        .define_method("readAltitude", &IMUSensor::readAltitude)
-        //.define_method("readCompass", &IMUSensor::ruby_Compass)
-        //.define_method("readAcceleration", &IMUSensor::ruby_Acceleration)
-        //.define_method("readGyro", &IMUSensor::ruby_Gyro)
-        .define_method("readTemp", &IMUSensor::getTemp);
+        .define_method("temperatureA", &dummy/*&IMUSensor::readTemperature)*/
+        .define_method("temperatureB", &dummy/*&IMUSensor::getTemp*/)
+        .define_method("pressure", &dummy/*&IMUSensor::readPressure*/)
+        .define_method("sealevel", &dummy/*&IMUSensor::readSealevel*/)
+        .define_method("altitude", &dummy/*&IMUSensor::readAltitude*/)
+        // - BEGIN - prototyped functions for future development
+        .define_method("accelX", &dummy)
+        .define_method("accelY", &dummy)
+        .define_method("accelZ", &dummy)
+        .define_method("gyroX", &dummy)
+        .define_method("gyroY", &dummy)
+        .define_method("gyroZ", &dummy)
+        .define_method("compassX", &dummy)
+        .define_method("compassY", &dummy)
+        .define_method("compassZ", &dummy)
+        .define_method("pingerDirection", &dummy)
+        .define_method("pingerMagnitude", &dummy);
+        // -  END  -
 
     //expose PowerManagement class
     Rice::Data_Type<PowerManagement> rb_cPowerManagement =
-        Rice::define_class<PowerManagement>("PowerManagement")
+        Rice::define_class<PowerManagement>("PowerController")
         .define_constructor(Rice::Constructor<PowerManagement>())
-        .define_method("turnOnESCs", &PowerManagement::turnOnESCs)
-        .define_method("turnOffESCs", &PowerManagement::turnOffESCs);
+        .define_method("turnOnESCs", &dummy/*&PowerManagement::turnOnESCs*/)
+        .define_method("turnOffESCs", &dummy/*&PowerManagement::turnOffESCs*/)
+        // - BEGIN - prototyped functions for future development
+        .define_method("voltage", &dummy)
+        .define_method("setLEDColor", &dummy);
+        // -  END  -
 }
