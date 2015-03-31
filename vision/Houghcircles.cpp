@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     cout << "reading " << filename << endl;
     
     Mat img = imread(filename, 0);
-    Mat img2 = imread( argv[1], 1 );
+    Mat img2 = imread( filename, 1 );
     imwrite("./color.jpg", img2);
     if(img.empty())
     {
@@ -34,16 +34,21 @@ int main(int argc, char** argv)
     
     cvtColor(img, cimg, COLOR_GRAY2BGR);
 
+    // void cv::HoughCircles(cv::InputArray, cv::OutputArray, int, double, double, double, double, int, int)’
+
     vector<Vec3f> circles;
-    HoughCircles(img, circles, CV_HOUGH_GRADIENT, 1, 10,
-                 100, 24, 1, (argc >= 3) ? atoi(argv[2]) : 30 // change the last two parameters
+    HoughCircles(img, circles, CV_HOUGH_GRADIENT, 1, 30,
+                 ((argc >= 5) ? atoi(argv[4]) : 100), ((argc >= 6) ? atoi(argv[5]) : 24), ((argc >= 3) ? atoi(argv[2]) : 1),  ((argc >= 4) ? atoi(argv[3]) : 30) // change the last two parameters
                                 // (min_radius & max_radius) to detect larger circles
+                                // default without command line parameters is 1 to 30
                  );
+                 
+    cout << "found a circle " << circles.size() << " times" << endl;
     for( size_t i = 0; i < circles.size(); i++ )
     {
         int x = 0;
         int y = 0;
-        cout << "found a circle " << circles.size() << " times" << endl;
+
         
         Vec3i c = circles[i];
         Point pt = Point(c[0], c[1]);
@@ -51,24 +56,31 @@ int main(int argc, char** argv)
         int b = pixel[0];
         int g = pixel[1];
         int r = pixel[2];
-        circle( cimg, Point(c[0], c[1]), c[2], Scalar(0,0,255), 3, CV_AA);
-        circle( cimg, Point(c[0], c[1]), 2, Scalar(0,255,0), 3, CV_AA);
+       
     
-        x = pt.x - 320;
-        if (pt.y <=  240)
+        x = pt.x - 640;
+        if (pt.y <=  360)
         {
-            y = 240 - pt.y;
+            y = 360 - pt.y;
         }
         else
         {
-            y = -(pt.y - 240);
+            y = -(pt.y - 360);
         }
-        cout << "x: " << x << "   y: " << y << endl
-             << "RGB: " << r << "," << g << "," << b << endl
-             << "Image location: " << pt.x << "  " << pt.y << endl;
+        if(r >= 100 && g < r/2 && b < r/2) //for red
+//      if(r >= 100 && g >= 100 && b < r/2) //for yellow
+//      if(r < g/2 && g >= 100 && b < g/2) //for green? not tested, need buoy color
+        {
+            circle( cimg, Point(c[0], c[1]), c[2], Scalar(0,0,255), 3, CV_AA);
+            circle( cimg, Point(c[0], c[1]), 2, Scalar(0,255,0), 3, CV_AA);
+            cout << "x: " << x << "   y: " << y << endl
+                 << "RGB: " << r << "," << g << "," << b << endl
+                 << "Image location: " << pt.x << "  " << pt.y << endl;
+        }
     }
 
     // imshow("detected circles", cimg);
+    cout << "writing output" << endl;
     imwrite("./found.jpg", cimg);
     // waitKey();
 
