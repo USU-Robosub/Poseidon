@@ -16,6 +16,7 @@
 #include "../drivers/IMU/HMC5883L.h"
 #include "../drivers/IMU/MPU6050.h"
 #include <memory>
+#include <mutex>
 
 #include "rice/Hash.hpp"
 #include "rice/String.hpp"
@@ -28,11 +29,14 @@ class IMUSensor
         IMUSensor();
         ~IMUSensor();
 
+        void setLoggingStatus(bool);
+        bool isLogging();
+
         /** \brief Returns the temperature reading from the BMP085 sensor in ± 0.1°C.
           */
         float readTemperature();
 
-        /** \brief Returns the pressure reading from the BMP085 sensor in Pascals (Pa). 
+        /** \brief Returns the pressure reading from the BMP085 sensor in Pascals (Pa).
           */
         int32_t readPressure();
 
@@ -111,10 +115,14 @@ class IMUSensor
         void turnOff();
 
     private:
+        void launchLoggingThread();
+
         static int instanceCount_;
         std::shared_ptr<BMP085> sensorBMP085_;
         std::shared_ptr<HMC5883L> sensorHMC5883L_;
         std::shared_ptr<MPU6050> sensorMPU6050_;
+        std::mutex sensorMutex_;
+        bool loggingEnabled_;
 };
 
 #endif

@@ -1,6 +1,6 @@
 
 #include "IMUSensor.h"
-
+#include <fstream>
 #include <iostream>
 
 
@@ -8,7 +8,8 @@
 int IMUSensor::instanceCount_;
 
 
-IMUSensor::IMUSensor()
+IMUSensor::IMUSensor():
+    loggingEnabled_(true)
 {
     if (instanceCount_ >= 1)
         throw new std::runtime_error("Cannot have more than one IMUSensor!");
@@ -33,6 +34,8 @@ IMUSensor::IMUSensor()
     //create and initialize IMU MPU6050 (gyro) module
     std::cout << "Setting up MPU6050 chip..." << std::endl;
     sensorMPU6050_ = std::make_shared<MPU6050>(I2C_SUB2);
+
+    launchLoggingThread();
 }
 
 
@@ -45,36 +48,116 @@ IMUSensor::~IMUSensor()
 
 
 
+void IMUSensor::launchLoggingThread()
+{
+    std::thread t([&]() {
+        //initialize constants
+        using namespace std::chrono;
+        const auto STATUS_POLL = milliseconds(100);
+        const auto LOG_SPEED = milliseconds(333);
+        auto startTime = steady_clock::now(); //relative time till we have a clock
+
+        //open file
+        std::ofstream logFile;
+        logFile.open("IMU.log", std::ofstream::out | std::ofstream::app);
+        logFile << "------------------------------" << std::endl; //marker
+
+        while (true)
+        {
+            while (loggingEnabled_)
+                std::this_thread::sleep_for(STATUS_POLL);
+
+            //get current time
+            auto now = steady_clock::now();
+            auto elapsed = duration_cast<milliseconds>(now - startTime).count();
+
+            //write variables
+            logFile << elapsed << " readTemperature: " << readTemperature() << std::endl;
+            logFile << elapsed << " readPressure: " << readPressure() << std::endl;
+            logFile << elapsed << " readSealevel: " << readSealevel() << std::endl;
+            logFile << elapsed << " readAltitude: " << readAltitude() << std::endl;
+            logFile << elapsed << " readCompassX: " << readCompassX() << std::endl;
+            logFile << elapsed << " readCompassY: " << readCompassY() << std::endl;
+            logFile << elapsed << " readCompassZ: " << readCompassZ() << std::endl;
+            logFile << elapsed << " readAccelX: " << readAccelX() << std::endl;
+            logFile << elapsed << " readAccelY: " << readAccelY() << std::endl;
+            logFile << elapsed << " readAccelZ: " << readAccelZ() << std::endl;
+            logFile << elapsed << " readGyroX: " << readGyroX() << std::endl;
+            logFile << elapsed << " readGyroY: " << readGyroY() << std::endl;
+            logFile << elapsed << " readGyroZ: " << readGyroZ() << std::endl;
+            logFile << elapsed << " getTemp: " << getTemp() << std::endl;
+            logFile.flush(); //write to file
+
+            //pause for a bit
+            std::this_thread::sleep_for(LOG_SPEED);
+        }
+    });
+}
+
+
+
+void IMUSensor::setLoggingStatus(bool enableLogging)
+{
+    loggingEnabled_ = enableLogging;
+}
+
+
+
+bool IMUSensor::isLogging()
+{
+    return loggingEnabled_;
+}
+
+
+
 float IMUSensor::readTemperature()
 {
-    return sensorBMP085_->readTemperature();
+    sensorMutex_.lock();
+    auto r = sensorBMP085_->readTemperature();
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 int32_t IMUSensor::readPressure()
 {
-    return sensorBMP085_->readPressure();
+    sensorMutex_.lock();
+    auto r = sensorBMP085_->readPressure();
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 int32_t IMUSensor::readSealevel(float altitudeMeters)
 {
-    return sensorBMP085_->readSealevelPressure(altitudeMeters);
+    sensorMutex_.lock();
+    auto r = sensorBMP085_->readSealevelPressure(altitudeMeters);
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 float IMUSensor::readAltitude(float sealevelPressure)
 {
-    return sensorBMP085_->readAltitude(sealevelPressure);
+    sensorMutex_.lock();
+    auto r = sensorBMP085_->readAltitude(sealevelPressure);
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 Rice::Object IMUSensor::readCompass()
 {
+    sensorMutex_.lock();
+
 	Rice::String x("X");
 	Rice::String y("Y");
 	Rice::String z("Z");
@@ -82,6 +165,9 @@ Rice::Object IMUSensor::readCompass()
 	h[x] = static_cast<int32_t>(sensorHMC5883L_->X());
 	h[y] = static_cast<int32_t>(sensorHMC5883L_->Y());
 	h[z] = static_cast<int32_t>(sensorHMC5883L_->Z());
+
+    sensorMutex_.unlock();
+
 	return h;
 }
 
@@ -89,27 +175,41 @@ Rice::Object IMUSensor::readCompass()
 
 int32_t IMUSensor::readCompassX()
 {
-	return static_cast<int32_t>(sensorHMC5883L_->X());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorHMC5883L_->X());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 int32_t IMUSensor::readCompassY()
 {
-	return static_cast<int32_t>(sensorHMC5883L_->Y());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorHMC5883L_->Y());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 int32_t IMUSensor::readCompassZ()
 {
-	return static_cast<int32_t>(sensorHMC5883L_->Z());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorHMC5883L_->Z());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 Rice::Object IMUSensor::readAccelerometer()
 {
+    sensorMutex_.lock();
+
 	Rice::String x("X");
 	Rice::String y("Y");
 	Rice::String z("Z");
@@ -117,6 +217,8 @@ Rice::Object IMUSensor::readAccelerometer()
 	h[x] = static_cast<int32_t>(sensorMPU6050_->accel_X());
 	h[y] = static_cast<int32_t>(sensorMPU6050_->accel_Y());
 	h[z] = static_cast<int32_t>(sensorMPU6050_->accel_Z());
+
+    sensorMutex_.unlock();
 	return h;
 }
 
@@ -124,27 +226,41 @@ Rice::Object IMUSensor::readAccelerometer()
 
 int32_t IMUSensor::readAccelX()
 {
-	return static_cast<int32_t>(sensorMPU6050_->accel_X());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorMPU6050_->accel_X());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 int32_t IMUSensor::readAccelY()
 {
-	return static_cast<int32_t>(sensorMPU6050_->accel_Y());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorMPU6050_->accel_Y());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 int32_t IMUSensor::readAccelZ()
 {
-	return static_cast<int32_t>(sensorMPU6050_->accel_Z());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorMPU6050_->accel_Z());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 Rice::Object IMUSensor::readGyroscope()
 {
+    sensorMutex_.lock();
+
 	Rice::String x("X");
 	Rice::String y("Y");
 	Rice::String z("Z");
@@ -152,6 +268,8 @@ Rice::Object IMUSensor::readGyroscope()
 	h[x] = static_cast<int32_t>(sensorMPU6050_->gyro_X());
 	h[y] = static_cast<int32_t>(sensorMPU6050_->gyro_Y());
 	h[z] = static_cast<int32_t>(sensorMPU6050_->gyro_Z());
+
+    sensorMutex_.unlock();
 	return h;
 }
 
@@ -159,38 +277,60 @@ Rice::Object IMUSensor::readGyroscope()
 
 int32_t IMUSensor::readGyroX()
 {
-	return static_cast<int32_t>(sensorMPU6050_->gyro_X());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorMPU6050_->gyro_X());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 int32_t IMUSensor::readGyroY()
 {
-	return static_cast<int32_t>(sensorMPU6050_->gyro_Y());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorMPU6050_->gyro_Y());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 int32_t IMUSensor::readGyroZ()
 {
-	return static_cast<int32_t>(sensorMPU6050_->gyro_Z());
+    sensorMutex_.lock();
+	auto r = static_cast<int32_t>(sensorMPU6050_->gyro_Z());
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
 float IMUSensor::getTemp()
 {
-    return sensorMPU6050_->temp();
+    sensorMutex_.lock();
+    auto r = sensorMPU6050_->temp();
+    sensorMutex_.unlock();
+
+    return r;
 }
 
 
 
-void IMUSensor::turnOn() {
+void IMUSensor::turnOn()
+{
+    sensorMutex_.lock();
     sensorMPU6050_->awake();
+    sensorMutex_.unlock();
 }
 
 
 
-void IMUSensor::turnOff() {
+void IMUSensor::turnOff()
+{
+    sensorMutex_.lock();
     sensorMPU6050_->sleep();
+    sensorMutex_.unlock();
 }
