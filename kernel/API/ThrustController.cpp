@@ -19,17 +19,17 @@ ThrustController::ThrustController()
 
     //create and initialize all PWM thruster modules
     pwmForward_ = std::make_shared<PWM>(PWM_SUB0);
-    pwmStrafe_     = std::make_shared<PWM>(PWM_SUB1);
+    pwmStrafe_  = std::make_shared<PWM>(PWM_SUB1);
     pwmDive_    = std::make_shared<PWM>(PWM_SUB2);
 
     //set all thrusters to neutral
     pwmForward_->setPeriod(PWM_PERIOD);
-    pwmStrafe_    ->setPeriod(PWM_PERIOD);
+    pwmStrafe_ ->setPeriod(PWM_PERIOD);
     pwmDive_   ->setPeriod(PWM_PERIOD);
 
     //enable all thrusters
     pwmForward_->start();
-    pwmStrafe_    ->start();
+    pwmStrafe_ ->start();
     pwmDive_   ->start();
 
     instanceCount_++;
@@ -48,7 +48,7 @@ ThrustController::~ThrustController()
 
     //disable all PWM thruster modules
     pwmForward_->stop();
-    pwmStrafe_  ->stop();
+    pwmStrafe_ ->stop();
     pwmDive_   ->stop();
 
     instanceCount_--;

@@ -21,8 +21,8 @@ HMC5883L::~HMC5883L()
 
 uint16_t HMC5883L::X()
 {
-    uint16_t v = bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_X_H) << 8;
-    v |= bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_X_L);
+    uint16_t v = bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_X_H) << 8;
+    v |= bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_X_L);
 
     return v;
 }
@@ -31,8 +31,8 @@ uint16_t HMC5883L::X()
 
 uint16_t HMC5883L::Y()
 {
-    uint16_t v = bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_Y_H) << 8;
-    v |= bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_Y_L);
+    uint16_t v = bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_Y_H) << 8;
+    v |= bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_Y_L);
     return v;
 }
 
@@ -40,8 +40,8 @@ uint16_t HMC5883L::Y()
 
 uint16_t HMC5883L::Z()
 {
-    uint16_t v = bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_Z_H) << 8;
-    v |= bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_Z_L);
+    uint16_t v = bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_Z_H) << 8;
+    v |= bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_Z_L);
     return v;
 }
 
@@ -49,14 +49,14 @@ uint16_t HMC5883L::Z()
 
 bool HMC5883L::isLocked()
 {
-    return (bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_STATUS) & 2) >> 1;
+    return (bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_STATUS) & 2) >> 1;
 }
 
 
 
 bool HMC5883L::isReady()
 {
-    return (bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_STATUS) & 1);
+    return (bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_STATUS) & 1);
 }
 
 
@@ -68,9 +68,9 @@ void HMC5883L::setSampleAverage(Sample ma)
 
     samples = ma;
 
-    uint cra = bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A) & 0x9F;
+    uint cra = bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A) & 0x9F;
     cra |= ma << 5;
-    bus.write(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A, cra);
+    bus.writeByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A, cra);
 }
 
 
@@ -82,9 +82,9 @@ void HMC5883L::setOutputRate(Rate dor)
 
     outRate = dor;
 
-    uint cra = bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A) & 0xE3;
+    uint cra = bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A) & 0xE3;
     cra |= dor << 2;
-    bus.write(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A, cra);
+    bus.writeByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A, cra);
 }
 
 
@@ -96,9 +96,9 @@ void HMC5883L::setGain(Gain gn)
 
     gain = gn;
 
-    uint crb = bus.read(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_B) & 0x1F;
+    uint crb = bus.readByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_B) & 0x1F;
     crb |= gn << 5;
-    bus.write(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_B, crb);
+    bus.writeByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_B, crb);
 }
 
 
@@ -110,7 +110,7 @@ void HMC5883L::setMode(Mode md)
 
     mode = md;
 
-    bus.write(IMU_COMPASS_ADDR, IMU_COMPASS_MODE, md);
+    bus.writeByte(IMU_COMPASS_ADDR, IMU_COMPASS_MODE, md);
 }
 
 

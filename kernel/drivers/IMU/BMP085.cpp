@@ -22,19 +22,37 @@ BMP085::BMP085(uint _bus_):
 BMP085::~BMP085()
 {}
 
+void BMP085::print_debug() {
+    fprintf(stderr, "ac1 = %d\n", ac1);
+    fprintf(stderr, "ac2 = %d\n", ac2);
+    fprintf(stderr, "ac3 = %d\n", ac3);
+    fprintf(stderr, "ac4 = %d\n", ac4);
+    fprintf(stderr, "ac5 = %d\n", ac5);
+    fprintf(stderr, "ac6 = %d\n", ac6);
 
+    fprintf(stderr, "b1 = %d\n", b1);
+    fprintf(stderr, "b2 = %d\n", b2);
+
+    fprintf(stderr, "mb = %d\n", mb);
+    fprintf(stderr, "mc = %d\n", mc);
+    fprintf(stderr, "md = %d\n", md);
+}
 
 bool BMP085::initialize(uint8_t mode)
 {
+    //fprintf(stderr, "BMP085 Mode = %d\n", mode);
+
     if (mode > IMU_ENVIRONMENT_ULTRAHIGHRES)
         mode = IMU_ENVIRONMENT_ULTRAHIGHRES;
     oversampling = mode;
 
-    if (read8(0xD0) != 0x55)
+    uint8_t devtest = read8(0xD0);
+    if (devtest != 0x55)
         return false;
 
     /* read calibration data */
     ac1 = read16(IMU_ENVIRONMENT_CAL_AC1);
+    //fprintf(stderr, "%X\n", ac1);
     ac2 = read16(IMU_ENVIRONMENT_CAL_AC2);
     ac3 = read16(IMU_ENVIRONMENT_CAL_AC3);
     ac4 = read16(IMU_ENVIRONMENT_CAL_AC4);
@@ -49,21 +67,8 @@ bool BMP085::initialize(uint8_t mode)
     md = read16(IMU_ENVIRONMENT_CAL_MD);
 
 #if BMP085_DEBUG == 1
-
-    fprintf(stderr, "ac1 = %d\n", ac1);
-    fprintf(stderr, "ac2 = %d\n", ac2);
-    fprintf(stderr, "ac3 = %d\n", ac3);
-    fprintf(stderr, "ac4 = %d\n", ac4);
-    fprintf(stderr, "ac5 = %d\n", ac5);
-    fprintf(stderr, "ac6 = %d\n", ac6);
-
-    fprintf(stderr, "b1 = %d\n", b1);
-    fprintf(stderr, "b2 = %d\n", b2);
-
-    fprintf(stderr, "mb = %d\n", mb);
-    fprintf(stderr, "mc = %d\n", mc);
-    fprintf(stderr, "md = %d\n", md);
-
+    fprintf(stderr, "First:\n");
+    print_debug();
 #endif
 
     return true;
@@ -75,7 +80,9 @@ int32_t BMP085::computeB5(int32_t UT)
 {
     int32_t X1 = (UT - (int32_t)ac6) * ((int32_t)ac5) >> 15;
     int32_t X2 = ((int32_t)mc << 11) / (X1 + (int32_t)md);
-    return X1 + X2;
+    int32_t out = X1 + X2;
+    //fprintf(stderr, "out = %d\nEnd\n", out);
+    return out;
 }
 
 
@@ -164,6 +171,9 @@ int32_t BMP085::readPressure(void)
     ac1 = 408;
     ac4 = 32741;
     oversampling = 0;
+    // initialize the following
+    X1 = 0;
+    X2 = 0;
 #endif
 
     B5 = computeB5(UT);
@@ -238,11 +248,14 @@ int32_t BMP085::readSealevelPressure(float altitude_meters)
 
 float BMP085::readTemperature(void)
 {
+    //fprintf(stderr, "First:\n");
+    //print_debug();
+
     int32_t UT, B5;     // following ds convention
-    float temp;
+    float temp = 0;
 
     UT = readRawTemperature();
-
+    
 #if BMP085_DEBUG == 1
     // use datasheet numbers!
     UT = 27898;
@@ -252,11 +265,12 @@ float BMP085::readTemperature(void)
     md = 2868;
 #endif
 
-    //fprintf(stderr, "UT = %d\n", UT);
+    // fprintf(stderr, "UT = %d\n", UT);
     B5 = computeB5(UT);
-    //fprintf(stderr, "B5 = %d\n", B5);
+
+     // fprintf(stderr, "B5 = %d\n", B5);
     temp = (B5 + 8) / 16.0f;
-    temp /= 10;
+    temp /= 10.0F;
 
     return temp;
 }
@@ -277,7 +291,7 @@ float BMP085::readAltitude(float sealevelPressure)
 
 uint8_t BMP085::read8(uint8_t a)
 {
-    return static_cast<uint8_t>(bus.read(IMU_ENVIRONMENT_ADDR, a));
+    return bus.readByte(IMU_ENVIRONMENT_ADDR, a);
 }
 
 
@@ -285,8 +299,8 @@ uint8_t BMP085::read8(uint8_t a)
 uint16_t BMP085::read16(uint8_t a)
 {
     uint16_t ret;
-    ret = static_cast<uint16_t>(bus.read(IMU_ENVIRONMENT_ADDR, a) << 8);
-    ret |= bus.read(IMU_ENVIRONMENT_ADDR, a + 1);
+    ret = static_cast<uint16_t>(bus.readByte(IMU_ENVIRONMENT_ADDR, a) << 8);
+    ret |= bus.readByte(IMU_ENVIRONMENT_ADDR, a + 1);
 
     return ret;
 }
@@ -295,7 +309,7 @@ uint16_t BMP085::read16(uint8_t a)
 
 void BMP085::write8(uint8_t a, uint8_t d)
 {
-    bus.write(IMU_ENVIRONMENT_ADDR, a, d);
+    bus.writeByte(IMU_ENVIRONMENT_ADDR, a, d);
 }
 
 

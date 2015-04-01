@@ -1,5 +1,6 @@
 
 #include "IMUSensor.h"
+
 #include <iostream>
 
 
@@ -17,7 +18,7 @@ IMUSensor::IMUSensor()
     //create and initialize IMU BMP085 (pressure/temp) module
     std::cout << "Setting up BMP085 chip..." << std::endl;
     sensorBMP085_ = std::make_shared<BMP085>(I2C_SUB2);
-    sensorBMP085_->initialize();
+    sensorBMP085_->initialize(1);
 
     //create and initialize IMU HMC5883L (compass) module
     std::cout << "Setting up HMC5883L chip..." << std::endl;
@@ -31,7 +32,7 @@ IMUSensor::IMUSensor()
 
     //create and initialize IMU MPU6050 (gyro) module
     std::cout << "Setting up MPU6050 chip..." << std::endl;
-    sensorBMP085_ = std::make_shared<BMP085>(I2C_SUB2);
+    sensorMPU6050_ = std::make_shared<MPU6050>(I2C_SUB2);
 }
 
 
@@ -72,56 +73,124 @@ float IMUSensor::readAltitude(float sealevelPressure)
 
 
 
-Vector3D IMUSensor::readCompass()
+Rice::Object IMUSensor::readCompass()
 {
-    return Vector3D(sensorHMC5883L_->X(), sensorHMC5883L_->Y(), sensorHMC5883L_->Z());
+	Rice::String x("X");
+	Rice::String y("Y");
+	Rice::String z("Z");
+	Rice::Hash h;
+	h[x] = static_cast<int32_t>(sensorHMC5883L_->X());
+	h[y] = static_cast<int32_t>(sensorHMC5883L_->Y());
+	h[z] = static_cast<int32_t>(sensorHMC5883L_->Z());
+	return h;
 }
 
 
 
-Vector3D IMUSensor::getAcceleration()
+int32_t IMUSensor::readCompassX()
 {
-    return Vector3D(sensorMPU6050_->accel_X(),
-        sensorMPU6050_->accel_Y(), sensorMPU6050_->accel_Z());
+	return static_cast<int32_t>(sensorHMC5883L_->X());
 }
 
 
 
-Vector3D IMUSensor::getGyro()
+int32_t IMUSensor::readCompassY()
 {
-    return Vector3D(sensorMPU6050_->gyro_X(),
-        sensorMPU6050_->gyro_Y(), sensorMPU6050_->gyro_Z());
+	return static_cast<int32_t>(sensorHMC5883L_->Y());
 }
 
 
 
-int16_t IMUSensor::getTemp()
+int32_t IMUSensor::readCompassZ()
+{
+	return static_cast<int32_t>(sensorHMC5883L_->Z());
+}
+
+
+
+Rice::Object IMUSensor::readAccelerometer()
+{
+	Rice::String x("X");
+	Rice::String y("Y");
+	Rice::String z("Z");
+	Rice::Hash h;
+	h[x] = static_cast<int32_t>(sensorMPU6050_->accel_X());
+	h[y] = static_cast<int32_t>(sensorMPU6050_->accel_Y());
+	h[z] = static_cast<int32_t>(sensorMPU6050_->accel_Z());
+	return h;
+}
+
+
+
+int32_t IMUSensor::readAccelX()
+{
+	return static_cast<int32_t>(sensorMPU6050_->accel_X());
+}
+
+
+
+int32_t IMUSensor::readAccelY()
+{
+	return static_cast<int32_t>(sensorMPU6050_->accel_Y());
+}
+
+
+
+int32_t IMUSensor::readAccelZ()
+{
+	return static_cast<int32_t>(sensorMPU6050_->accel_Z());
+}
+
+
+
+Rice::Object IMUSensor::readGyroscope()
+{
+	Rice::String x("X");
+	Rice::String y("Y");
+	Rice::String z("Z");
+	Rice::Hash h;
+	h[x] = static_cast<int32_t>(sensorMPU6050_->gyro_X());
+	h[y] = static_cast<int32_t>(sensorMPU6050_->gyro_Y());
+	h[z] = static_cast<int32_t>(sensorMPU6050_->gyro_Z());
+	return h;
+}
+
+
+
+int32_t IMUSensor::readGyroX()
+{
+	return static_cast<int32_t>(sensorMPU6050_->gyro_X());
+}
+
+
+
+int32_t IMUSensor::readGyroY()
+{
+	return static_cast<int32_t>(sensorMPU6050_->gyro_Y());
+}
+
+
+
+int32_t IMUSensor::readGyroZ()
+{
+	return static_cast<int32_t>(sensorMPU6050_->gyro_Z());
+}
+
+
+
+float IMUSensor::getTemp()
 {
     return sensorMPU6050_->temp();
 }
 
-/*
-Rice::Array IMUSensor::ruby_Gyro() {
-    Rice::Array tmp;
-    tmp.push(sensorMPU6050_->gyro_X());
-    tmp.push(sensorMPU6050_->gyro_Y());
-    tmp.push(sensorMPU6050_->gyro_Z());
-    return tmp;
+
+
+void IMUSensor::turnOn() {
+    sensorMPU6050_->awake();
 }
 
-Rice::Array IMUSensor::ruby_Acceleration() {
-    Rice::Array tmp;
-    tmp.push(sensorMPU6050_->accel_X());
-    tmp.push(sensorMPU6050_->accel_Y());
-    tmp.push(sensorMPU6050_->accel_Z());
-    return tmp;
-}
 
-Rice::Array IMUSensor::ruby_Compass() {
-    Rice::Array tmp;
-    tmp.push(sensorHMC5883L_->X());
-    tmp.push(sensorHMC5883L_->Y());
-    tmp.push(sensorHMC5883L_->Z());
-    return tmp;
+
+void IMUSensor::turnOff() {
+    sensorMPU6050_->sleep();
 }
-*/

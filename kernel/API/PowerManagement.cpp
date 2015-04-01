@@ -24,8 +24,6 @@ PowerManagement::~PowerManagement()
 void PowerManagement::turnOnESCs()
 {
     module.burstEnableESC(0xE7); // B11100111
-    module.burstEnableESC(0x00);
-    module.burstEnableESC(0xE7); // B11100111
 }
 
 
