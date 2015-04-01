@@ -1,0 +1,157 @@
+/*! \mainpage 
+ 
+\section intro_sec Welcome
+
+Here resides our open-source documentation of the software we are currently using for our autonomous systems.<br/>
+We will try to keep this as up to date as possible! 
+You can also find a copy of our source code on <a href="https://github.com/USU-Robosub"><b>GitHub</b></a>.<br/><br/>
+<b>List of Languages</b>
+- <span style="color:#8050F0;">C++</span> <i>for all fast processing, hardware interfaces, and advanced topics.</i>
+- <span style="color:#8050F0;">Ruby</span> <i>for decision making and on-the-fly testing.</i>
+- <span style="color:#8050F0;">JavaScript</span> <i>for a web-based remote interface.</i>
+<br/><br/>
+
+\section instruc_sec How to Use DiveMaster
+The source code has been built for and tested on an ARM-build of Debian Wheezy, kernel v3.8.<br/>
+However, it has been compiled and tested on Linux Mint for desktop. The code is specifically to be used on a <a href="http://beagleboard.org/BLACK">Beaglebone Black</a>.
+
+\subsection step1 Compiling
+Make sure the following packages are found on the system before compiling:
+- <span style="color:#8050F0;">ruby</span> for ruby based scripting.
+- <span style="color:#8050F0;">ruby-dev</span> for C based development using ruby.
+- <span style="color:#8050F0;">autoconf</span> a dependency for ruby extension development.
+- <span style="color:#8050F0;">automake</span> another dependency for ruby extension development.
+- <span style="color:#8050F0;">g++</span> for C/C++ compiling.
+- <span style="color:#8050F0;">awk</span> used to edit the generated rice Makefile.
+- <span style="color:#8050F0;">libi2c-dev</span> for accessing the i2c interface through the linux kernel.
+- <span style="color:#8050F0;">rice</span> for wrapping C++ code into a nice ruby module.
+
+You can install each in a linux terminal as follows:
+\code{.sh}
+apt-get install ruby ruby-dev libi2c-dev autoconf automake g++ awk
+gem install rice
+\endcode
+
+To compile the C++ code, navigate to <i>\\kernel</i> in the project's root directory and run compile.sh
+clean.sh will clean up reset the project, deleting any object files, allowing for a fresh re-compile.<br/><br/>
+
+
+
+\subsection step2 Using the PowerController in Ruby
+The PowerController manages all power based solutions and can be used to optimize power or to test system integrity.<br/><br/>
+In the terminal, navigate to <i>\\kernel</i> and run irb to enter the Ruby sandbox environment.
+Then type the following code seen below to see what happens.
+<div class="fragment">
+	<div class="line"><span style="color:#969896"># add the DiveMaster module to our sandbox</span></div>
+	<div class="line"><span style="color:#a71d5d">require</span> <span style="color:#0086b3">Dir</span>.pwd + <span style="color:#183691">"/DiveMaster"</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># create a new PowerController instance</span></div>
+	<div class="line">power <span style="color:#a71d5d">=</span> <span style="color:#0086b3">PowerController</span>.<span style="color:#a71d5d">new</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># turn on the thruster's ESCs</span></div>
+	<div class="line">power.turnOnESCs</div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># now turn them off</span></div>
+	<div class="line">power.turnOffESCs</div>
+</div><br/>
+
+
+
+\subsection step3 Using the Sensors interface in Ruby
+The Sensors interface provides simple sensor readings from all available hardware sensors. Some sensors include an accelerometer, gyroscope, barometric pressure, and temperature.<br/><br/>
+In the terminal, navigate to <i>\\kernel</i> and run irb to enter the Ruby sandbox environment.
+Then type the following code seen below to see what happens.
+<div class="fragment">
+	<div class="line"><span style="color:#969896"># add the DiveMaster module to our sandbox</span></div>
+	<div class="line"><span style="color:#a71d5d">require</span> <span style="color:#0086b3">Dir</span>.pwd + <span style="color:#183691">"/DiveMaster"</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># create a new Sensors instance</span></div>
+	<div class="line">dashboard <span style="color:#a71d5d">=</span> <span style="color:#0086b3">Sensors</span>.<span style="color:#a71d5d">new</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># let's enable the MPU6050 sensor on the IMU so we can</span></div>
+	<div class="line"><span style="color:#969896"># read live data from our accelerometer and gyroscope.</span></div>
+	<div class="line">dashboard.turnOnIMU</div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># we can turn it off again to save power by calling</span></div>
+	<div class="line"><span style="color:#969896"># dashboard.turnOffIMU</span></div>
+	<div class="line"><span style="color:#969896"># but we will leave it on for now.</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># one way to get information is to simply call the sensor's name</span></div>
+	<div class="line"><span style="color:#969896"># for example, to get the acceleration from all three axis, we can call</span></div>
+	<div class="line">var <span style="color:#a71d5d">=</span> dashboard.acceleration</div>
+	<div class="line"><span style="color:#969896"># this will return a hash that resembles the following ["X"=>10, "Y"=>0, "Z"=>-259]</span></div>
+	<div class="line"></div>
+	<div class="line">puts var[<span style="color:#183691">"X"</span>] <span style="color:#969896"># will print 10</span></div>
+	<div class="line">puts var[<span style="color:#183691">"Y"</span>] <span style="color:#969896"># will print 0 and</span></div>
+	<div class="line">puts var[<span style="color:#183691">"Z"</span>] <span style="color:#969896"># will print -259</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># you don't need to grab a hash if all you need is say, the Z-axis...</span></div>
+	<div class="line"><span style="color:#969896"># instead, you could just call</span></div>
+	<div class="line">var <span style="color:#a71d5d">=</span> dashboard.accelZ</div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># The compass and gyroscope are pretty much the same as the accelerometer:</span></div>
+	<div class="line">puts dashboard.compass <span style="color:#969896"># returns ["X"=>x, "Y"=>y, "Z"=>z]</span></div>
+	<div class="line">puts dashboard.gyroscope <span style="color:#969896"># returns ["X"=>x, "Y"=>y, "Z"=>z]</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># and individual calls</span></div>
+	<div class="line">puts dashboard.gyroX</div>
+	<div class="line">puts dashboard.compassX</div>
+</div><br/>
+
+
+
+\subsection step4 Using the ThrustController interface in Ruby
+The %ThrustController interface gives a user control over the system's displacement.<br/><br/>
+In the terminal, navigate to <i>\\kernel</i> and run irb to enter the Ruby sandbox encironment.
+Then type the following code seen below to see what happens.
+<div class="fragment">
+	<div class="line"><span style="color:#969896"># add the DiveMaster module to our sandbox</span></div>
+	<div class="line"><span style="color:#a71d5d">require</span> <span style="color:#0086b3">Dir</span>.pwd + "/DiveMaster"</div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># in order for the thrusters to move, they need to be turned on first,</span></div>
+	<div class="line"><span style="color:#969896"># otherwise nothing will happen when we call the %ThrustController functions</span></div>
+	<div class="line"><span style="color:#969896"># So let's create a new PowerController and turn them on...</span></div>
+	<div class="line">power <span style="color:#a71d5d">=</span> <span style="color:#0086b3">PowerController</span>.<span style="color:#a71d5d">new</span></div>
+	<div class="line">power.turnOnESCs</div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># next, create a new %ThrustController instance</span></div>
+	<div class="line">thrusters <span style="color:#a71d5d">=</span> <span style="color:#0086b3">%ThrustController</span>.<span style="color:#a71d5d">new</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># many of the general functions from the %ThrustController look those you might see</span></div>
+	<div class="line"><span style="color:#969896"># for a camera if you were developing a game. The idea is pretty much the same here.</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># To experiment, we will move the unit forward using only 50% of the throttle</span></div>
+	<div class="line">throttle <span style="color:#a71d5d">=</span> <span style="color:#cc66ff">50</span> / <span style="color:#cc66ff">100.0</span></div>
+	<div class="line">thrusters.setForwardThrust(thruttle)</div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># What if we wanted to go backwards or to just stop all together?</span></div>
+	<div class="line"><span style="color:#969896"># the latter is rather obvious, but to go backwards simply say move with -N  throttle</span></div>
+	<div class="line">throttle <span style="color:#a71d5d">=</span> <span style="color:#cc66ff">0</span> / <span style="color:#cc66ff">100.0</span> <span style="color:#969896"># will stop the unit from moving forward or backward</span></div>
+	<div class="line">throttle <span style="color:#a71d5d">=</span> <span style="color:#a71d5d">-</span><span style="color:#cc66ff">50</span> / <span style="color:#cc66ff">100.0</span> <span style="color:#969896"># will move the unit backwards using 50% of the throttle</span></div>
+	<div class="line">thrusters.setForwardThrust(throttle)</div>
+	<div class="line"><span style="color:#969896"># this works because throttle isn't just a percentage but a vector</span></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># you could also make the following calls</span></div>
+	<div class="line">thrusters.setStrafeThrust(<span style="color:#cc66ff">0.0</span>) <span style="color:#969896"># which is used to move side to side and</span></div>
+	<div class="line">thrusters.setDiveThrust(<span style="color:#cc66ff">0.0</span>) <span style="color:#969896"># which is used for, you guessed it, diving (or rising)</span></div>
+	<div class="line"></div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># now to do something interesting:</span></div>
+	<div class="line"><span style="color:#969896"># move the unit side to side in a Z-formation</span></div>
+	<div class="line">thrusters.accelerateStrafe(<span style="color:#cc66ff">1</span>, <span style="color:#cc66ff">2</span>)</div>
+	<div class="line">sleep(<span style="color:#cc66ff">5</span>) <span style="color:#969896"># wait for the functions to finish</span></div>
+	<div class="line">thrusters.accelerateForward(<span style="color:#cc66ff">0.5</span>, <span style="color:#cc66ff">5</span>)</div>
+	<div class="line">thrusters.accelerateStrafe(<span style="color:#a71d5d">-</span><span style="color:#cc66ff">1</span>, <span style="color:#cc66ff">2</span>)</div>
+	<div class="line">sleep(<span style="color:#cc66ff">5</span>)</div>
+	<div class="line">thrusters.accelerateForward(<span style="color:#cc66ff">0</span>, <span style="color:#cc66ff">1</span>)</div>
+	<div class="line">thrusters.accelerateStrafe(<span style="color:#cc66ff">1</span>, <span style="color:#cc66ff">2</span>)</div>
+	<div class="line">sleep(<span style="color:#cc66ff">5</span>)</div>
+	<div class="line">thrusters.accelerateStrafe(<span style="color:#cc66ff">0</span>, <span style="color:#cc66ff">1</span>)</div>
+	<div class="line"></div>
+	<div class="line"><span style="color:#969896"># What just happened above?</span></div>
+	<div class="line"><span style="color:#969896"># first we moved to the right at 100%, then move slant ways to the left,</span></div>
+	<div class="line"><span style="color:#969896"># finally by moving to the right again, and costing to a stop.</span></div>
+	<div class="line"><span style="color:#969896"># 'accelerate[X]' provides a way to gradually build speed or slow down,</span></div>
+	<div class="line"><span style="color:#969896"># therefore providing another way to save power.</span></div>
+</div><br/><br/>
+ */
