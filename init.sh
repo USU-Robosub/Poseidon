@@ -12,6 +12,8 @@ echo bone_pwm_P8_19 >> $SLOTS
 echo bone_pwm_P8_34 >> $SLOTS # Subsystem 1
 echo bone_pwm_P8_36 >> $SLOTS
 echo am33xx_pwm >> $SLOTS
+
+i2cset -y 1 0x03 0x02 0x00
 # -- End --
 
 
@@ -27,10 +29,9 @@ echo am33xx_pwm >> $SLOTS
 #writem 0x44E00000 D4 2 # Enable CM_PER_EPWMSS0_CLKCTRL.MODULEMODE = 2
 #writem 0x44E00000 CC 2 # Enable CM_PER_EPWMSS1_CLKCTRL.MODULEMODE = 2
 #writem 0x44E00000 D8 2 # Enable CM_PER_EPWMSS2_CLKCTRL.MODULEMODE = 2
+
+#i2cset -y 2 0x03 0x02 0xE7
 # -- End --
-
-
-i2cset -y 2 0x03 0x02 0xE7
 
 
 # Enable i2c_Sub2 clock
