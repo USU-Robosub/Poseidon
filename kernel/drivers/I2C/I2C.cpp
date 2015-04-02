@@ -7,10 +7,22 @@ I2C::I2C(uint lane)
 			addr = open("/dev/i2c-0", O_RDWR);
 			break;
 		case I2C_SUB1:
+#if KVERSION == 1
 			addr = open("/dev/i2c-2", O_RDWR);
+#elif KVERSION == 2
+			addr = open("/dev/i2c-1", O_RDWR);
+#else
+#error "undefined version number for i2c"
+#endif
 			break;
 		case I2C_SUB2:
+#if KVERSION == 1
 			addr = open("/dev/i2c-1", O_RDWR);
+#elif KVERSION == 2
+			addr = open("/dev/i2c-2", O_RDWR);
+#else
+#error "undefined version number for i2c"
+#endif
 			break;
 		default:
 			throw 1;
