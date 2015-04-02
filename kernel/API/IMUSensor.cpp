@@ -92,6 +92,8 @@ void IMUSensor::launchLoggingThread()
             std::this_thread::sleep_for(LOG_SPEED);
         }
     });
+
+    //t.detach();
 }
 
 
