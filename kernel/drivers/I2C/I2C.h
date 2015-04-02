@@ -13,6 +13,7 @@
 
 #include "I2C_Const.h"
 #include "../Registry.h"
+#include "../Environment.h"
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 
