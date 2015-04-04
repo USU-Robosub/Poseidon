@@ -4,6 +4,8 @@
 #include "rice/Hash.hpp"
 #include "rice/String.hpp"
 
+#include "Environment.h"
+
 #include "API/ThrustController.h"
 #include "API/IMUSensor.h"
 #include "API/PowerManagement.h"
@@ -74,15 +76,21 @@ void Init_DiveMaster()
         .define_method("pressure",          &IMUSensor::readPressure)
         .define_method("sealevel",          &IMUSensor::readSealevel)
         .define_method("altitude",          &IMUSensor::readAltitude)
+        #if SERVER != 1
         .define_method("acceleration",      &IMUSensor::readAccelerometer)
+        #endif
         .define_method("accelX",            &IMUSensor::readAccelX)
         .define_method("accelY",            &IMUSensor::readAccelY)
         .define_method("accelZ",            &IMUSensor::readAccelZ)
+        #if SERVER != 1
         .define_method("gyroscope",         &IMUSensor::readGyroscope)
+        #endif
         .define_method("gyroX",             &IMUSensor::readGyroX)
         .define_method("gyroY",             &IMUSensor::readGyroY)
         .define_method("gyroZ",             &IMUSensor::readGyroZ)
+        #if SERVER != 1
         .define_method("compass",           &IMUSensor::readCompass)
+        #endif
         .define_method("compassX",          &IMUSensor::readCompassX)
         .define_method("compassY",          &IMUSensor::readCompassY)
         .define_method("compassZ",          &IMUSensor::readCompassZ)
