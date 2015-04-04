@@ -1,10 +1,11 @@
+#include "../kernel/Environment.h"
+
 #if SERVER != 1
     #include "rice/Data_Type.hpp"
     #include "rice/Constructor.hpp"
 #endif
 
 #include "RCServer.hpp"
-#include "../kernel/Environment.h"
 
 int main()
 {
