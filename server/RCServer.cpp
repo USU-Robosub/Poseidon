@@ -1,20 +1,16 @@
+#include "RCServer.hpp"
 
-#include <RCServer.hpp>
-#include "../kernel/API/PowerManagement.h"
-#include "../kernel/API/ThrustController.h"
-#include "../kernel/API/IMUSensor.h"
-
-#include <libs/jsoncpp-1.5.0/json/json.h>
+#include "libs/jsoncpp-1.5.0/json/json.h"
 #include <netdb.h>
 #include <unistd.h>
-#include <pstream.h>
+#include "libs/pstreams-0.8.1/pstream.h"
 #include <thread>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
 
-RCServer::RCServer(int port)
+RCServer::RCServer()
 {
     power_ = std::make_shared<PowerManagement>();
     thrust_ = std::make_shared<ThrustController>();
@@ -23,9 +19,23 @@ RCServer::RCServer(int port)
     std::cout << "RC Server: initializing..." << std::endl;
     memset(ioBuffer_, 0, IO_BUFF_LEN);
 
+    listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
+    std::cout << "RC Server: done" << std::endl;
+}
+
+
+
+RCServer::~RCServer()
+{
+    delete ioBuffer_;
+}
+
+
+
+void RCServer::setPort(int port)
+{
     // set up socket
     struct sockaddr_in serv_addr;
-    listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
     memset(&serv_addr, '0', sizeof(serv_addr));
 
     // set socket properties
@@ -36,15 +46,6 @@ RCServer::RCServer(int port)
     // Initialize and start the socket
     bind(listenfd_, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     listen(listenfd_, 10);
-
-    std::cout << "RC Server: done" << std::endl;
-}
-
-
-
-RCServer::~RCServer()
-{
-    delete ioBuffer_;
 }
 
 
@@ -247,5 +248,6 @@ void RCServer::sendSensorReport(int connfd)
 void RCServer::send(int connfd, const std::string& data)
 {
     memcpy(ioBuffer_, data.c_str(), data.size());
-    write(connfd, ioBuffer_, data.size());
+    ssize_t ignore = write(connfd, ioBuffer_, data.size());
+    fprintf(stderr, "Write Result: %d\n", ignore);
 }
