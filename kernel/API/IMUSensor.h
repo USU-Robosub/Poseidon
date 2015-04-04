@@ -15,12 +15,13 @@
 #include "../drivers/IMU/BMP085.h"
 #include "../drivers/IMU/HMC5883L.h"
 #include "../drivers/IMU/MPU6050.h"
+#include "../Environment.h"
 #include <memory>
 #include <mutex>
 #include <chrono>
 #include <thread>
 
-#if SERVER == 1
+#if SERVER != 1
   #include "rice/Hash.hpp"
   #include "rice/String.hpp"
 #endif
@@ -55,7 +56,7 @@ class IMUSensor
           */
         float readAltitude(float sealevelPressure = 101929);
 
-#if SERVER == 1
+#if SERVER != 1
         /** \brief Returns a ruby hash containing all three coordinates aquired from HMC5883L's tri-axis data.
           *        Result in ruby: ["X"=>x, "Y"=>y, "Z"=>z]; They can be accessed as follows: puts var["X"]
           */
@@ -74,7 +75,7 @@ class IMUSensor
           */
     	int32_t readCompassZ();
 
-#if SERVER == 1
+#if SERVER != 1
         /** \brief Returns a ruby hash containing all three coordinates aquired from MPU6050's Accelerometer.
           *        Result in ruby: ["X"=>x, "Y"=>y, "Z"=>z]; They can be accessed as follows: puts var["X"]
           */
@@ -93,7 +94,7 @@ class IMUSensor
           */
     	int32_t readAccelZ();
 
-#if SERVER == 1
+#if SERVER != 1
         /** \brief Returns a ruby hash containing all three coordinates aquired from MPU6050's Gyroscope.
           *        Result in ruby: ["X"=>x, "Y"=>y, "Z"=>z]; They can be accessed as follows: puts var["X"]
           */
