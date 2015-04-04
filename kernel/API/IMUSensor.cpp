@@ -166,7 +166,7 @@ float IMUSensor::readAltitude(float sealevelPressure)
 }
 
 
-#if SERVER == 1
+#if SERVER != 1
 Rice::Object IMUSensor::readCompass()
 {
     sensorMutex_.lock();
@@ -218,7 +218,7 @@ int32_t IMUSensor::readCompassZ()
 }
 
 
-#if SERVER == 1
+#if SERVER != 1
 Rice::Object IMUSensor::readAccelerometer()
 {
     sensorMutex_.lock();
@@ -269,7 +269,7 @@ int32_t IMUSensor::readAccelZ()
 }
 
 
-#if SERVER == 1
+#if SERVER != 1
 Rice::Object IMUSensor::readGyroscope()
 {
     sensorMutex_.lock();
