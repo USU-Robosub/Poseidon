@@ -35,7 +35,7 @@ IMUSensor::IMUSensor():
     std::cout << "Setting up MPU6050 chip..." << std::endl;
     sensorMPU6050_ = std::make_shared<MPU6050>(I2C_SUB2);
 
-    launchLoggingThread();
+    //launchLoggingThread();
 }
 
 
@@ -50,28 +50,37 @@ IMUSensor::~IMUSensor()
 
 void IMUSensor::launchLoggingThread()
 {
+	fprintf(stderr, "logging thread...\n");
     std::thread t([&]() {
         //initialize constants
+	fprintf(stderr, "initializing...\n");
         using namespace std::chrono;
         const auto STATUS_POLL = milliseconds(100);
         const auto LOG_SPEED = milliseconds(333);
         auto startTime = steady_clock::now(); //relative time till we have a clock
 
+	fprintf(stderr, "creating log file...\n");
         //open file
         std::ofstream logFile;
         logFile.open("IMU.log", std::ofstream::out | std::ofstream::app);
         logFile << "------------------------------" << std::endl; //marker
 
+	fprintf(stderr, "loop\n");
         while (true)
         {
             while (loggingEnabled_)
+            {
+		fprintf(stderr, "loggingEnabled_\n");
                 std::this_thread::sleep_for(STATUS_POLL);
+            }
 
             //get current time
+		fprintf(stderr, "getting current time\n");
             auto now = steady_clock::now();
             auto elapsed = duration_cast<milliseconds>(now - startTime).count();
 
             //write variables
+		fprintf(stderr, "writing variables to file\n");
             logFile << elapsed << " readTemperature: " << readTemperature() << std::endl;
             logFile << elapsed << " readPressure: " << readPressure() << std::endl;
             logFile << elapsed << " readSealevel: " << readSealevel() << std::endl;
@@ -89,10 +98,12 @@ void IMUSensor::launchLoggingThread()
             logFile.flush(); //write to file
 
             //pause for a bit
+		fprintf(stderr, "pausing for a bit\n");
             std::this_thread::sleep_for(LOG_SPEED);
         }
     });
 
+	fprintf(stderr, "end of func\n");
     //t.detach();
 }
 
@@ -155,7 +166,7 @@ float IMUSensor::readAltitude(float sealevelPressure)
 }
 
 
-
+#if SERVER == 1
 Rice::Object IMUSensor::readCompass()
 {
     sensorMutex_.lock();
@@ -172,7 +183,7 @@ Rice::Object IMUSensor::readCompass()
 
 	return h;
 }
-
+#endif
 
 
 int32_t IMUSensor::readCompassX()
@@ -207,7 +218,7 @@ int32_t IMUSensor::readCompassZ()
 }
 
 
-
+#if SERVER == 1
 Rice::Object IMUSensor::readAccelerometer()
 {
     sensorMutex_.lock();
@@ -223,7 +234,7 @@ Rice::Object IMUSensor::readAccelerometer()
     sensorMutex_.unlock();
 	return h;
 }
-
+#endif
 
 
 int32_t IMUSensor::readAccelX()
@@ -258,7 +269,7 @@ int32_t IMUSensor::readAccelZ()
 }
 
 
-
+#if SERVER == 1
 Rice::Object IMUSensor::readGyroscope()
 {
     sensorMutex_.lock();
@@ -274,7 +285,7 @@ Rice::Object IMUSensor::readGyroscope()
     sensorMutex_.unlock();
 	return h;
 }
-
+#endif
 
 
 int32_t IMUSensor::readGyroX()
