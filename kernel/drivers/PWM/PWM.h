@@ -48,13 +48,13 @@ class PWM
           */
         int setDutyB(uint ns);
 
-        /** \bried Sets the polarity of the output on channel A.
+        /** \brief Sets the polarity of the output on channel A.
           * \param dir When the polarity is set to 0, the pulse will be held low during the duty cycle.
           *            When the polarity is set to 1, the pulse will be held high.
           */
         void setPolarityA(uint dir);
 
-        /** \bried Sets the polarity of the output on channel B.
+        /** \brief Sets the polarity of the output on channel B.
           * \param dir When the polarity is set to 0, the pulse will be held low during the duty cycle.
           *            When the polarity is set to 1, the pulse will be held high.
           */
