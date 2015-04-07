@@ -13,8 +13,8 @@ module Thrust
 end
 
 # enable ESCs otherwise they won't run
-#power = PowerController.new
-#power.turnOnESCs()
+power = PowerController.new
+power.turnOnESCs()
 
 print "Creating ThrustController instance...\n"
 thrusters = ThrustController.new
