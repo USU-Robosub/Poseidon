@@ -10,9 +10,9 @@ puts imuSensor.readTemperature
 puts imuSensor.readPressure
 puts imuSensor.readSealevel
 puts imuSensor.readAltitude
-#puts imuSensor.readCompass()
-#puts imuSensor.readAcceleration()
-#puts imuSensor.readGyro()
+puts imuSensor.readCompass
+puts imuSensor.readAcceleration
+puts imuSensor.readGyro
 puts imuSensor.readTemp
 
 sleep 5
