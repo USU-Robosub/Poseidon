@@ -1,0 +1,45 @@
+/*!
+@page version_page USU Poseidon Version Control
+Version Numbers are defined as follows: Major : Minor : Patch<br />
+The major is the milestone. This increments when all goals defined have been met and are confirmed stable.<br/>
+The minor is the sum of features added within a set time, currently defined as two or three (2 - 3) weeks.<br/>
+The Patch is the sum of bug fixes, tweaks, etc., made within a set time, currently defined as one (1) week.<br/>
+
+<span style="font-weight:bold;font-size:15px;">v0.3.3</span>
+- Fixed server compile errors
+- Temporarilly fixed logging errors by using a ruby script
+
+<span style="font-weight:bold;font-size:15px;">v0.3.2</span>
+- Fixed I2C driver by using kernel headers instead of experimental register access
+- Fixed parsing errors from HMC5883L and MPU6050 sensor reads
+- Removed duplicated initialization of BMP085 sensor
+
+<span style="font-weight:bold;font-size:15px;">v0.3.1</span>
+- Fixed server not executing ruby scripts sent via remote interface
+- Changed the way hardware is initialized, fixing some driver errors
+- Minor calibration of pwm for thruster ESCs
+
+<span style="font-weight:bold;font-size:15px;">v0.3.0</span>
+- Created RCServer for remote interfacing
+- Implimented sensor and data logging
+
+<span style="font-weight:bold;font-size:15px;">v0.2.1</span>
+- Tweaked %ThrustController's set functions to compensate for the auto-brake in some ESCs when going into reverse
+
+<span style="font-weight:bold;font-size:15px;">v0.2.0</span>
+- Created firmware for Arduino UNO as a power controller
+- Created driver for Arduino i2c interface (PowerModule)
+- Created interface for PowerManagement
+- Created Rice wrapper to link between C++ and Ruby
+
+<span style="font-weight:bold;font-size:15px;">v0.1.0</span>
+- Created driver for physical memory (Registry)
+- Created driver for PWM
+- Created driver for I2C
+- Created driver for MPU6050
+- Created driver for HMC5883L
+- Created driver for BMP085
+- Created interface for IMUSensor
+- Created interface for ThrustController
+
+*/
