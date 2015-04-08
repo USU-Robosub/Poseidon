@@ -17,16 +17,17 @@ endif()
 SET(JSONCPP_CPP ../libs/jsoncpp-1.5.0/jsoncpp.cpp)
 set_source_files_properties(${JSONCPP_CPP} PROPERTIES COMPILE_FLAGS "-w")
 
+find_package(Ruby)
 
 # -L/var/lib/gems/1.9.1/gems/rice-1.7.0/ruby/lib/lib
 # -Lrice
 include_directories(
-    #/var/lib/gems/1.9.1/gems/rice-1.7.0
-    #/var/lib/gems/1.9.1/gems/rice-1.7.0/rice
-    #/var/lib/gems/1.9.1/gems/rice-1.7.0/ruby/lib/include
-    #/usr/include/ruby-1.9.1
-    #/usr/include/ruby-1.9.1/ruby
-    #/usr/include/ruby-1.9.1/arm-linux-eabihf
+    /var/lib/gems/1.9.1/gems/rice-1.7.0
+    /var/lib/gems/1.9.1/gems/rice-1.7.0/rice
+    /var/lib/gems/1.9.1/gems/rice-1.7.0/ruby/lib/include
+    /usr/include/ruby-1.9.1
+    /usr/include/ruby-1.9.1/ruby
+    /usr/include/ruby-1.9.1/arm-linux-eabihf
     .
     libs/jsoncpp-1.5.0
     libs/pstreams-0.8.1
@@ -48,7 +49,8 @@ add_executable(RCServer
 )
 
 target_link_libraries(RCServer
-    #/var/lib/gems/1.9.1/gems/rice-1.7.0/rice/librice.a
-    #/var/lib/gems/1.9.1/gems/rice-1.7.0/ruby/lib/lib/librice.a
+    /var/lib/gems/1.9.1/gems/rice-1.7.0/rice/librice.a
+    /var/lib/gems/1.9.1/gems/rice-1.7.0/ruby/lib/lib/librice.a
     pthread
+    ${RUBY_LIBRARY}
 )
