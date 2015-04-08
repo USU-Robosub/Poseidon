@@ -9,13 +9,10 @@
 
 int main()
 {
-#if SERVER == 1
     RCServer server;
     server.setPort(4322);
     server.start();
-#endif
 }
-
 
 #if SERVER != 1
 extern "C"
