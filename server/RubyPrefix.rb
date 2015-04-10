@@ -1,4 +1,4 @@
-require Dir.pwd + "/../kernel/DiveMaster"
+require Dir.pwd + "/kernel/DiveMaster"
 
 module Thrust
     FULL_AHEAD = 1
@@ -12,9 +12,9 @@ module Thrust
     FULL_REVERSE = -1
 end
 
-# enable ESCs otherwise they won't run
-power = PowerController.new
-power.turnOnESCs()
-
-print "Creating ThrustController instance...\n"
+puts "Setting up environment..."
+power = PowerManagement.new
 thrusters = ThrustController.new
+sensors = Sensors.new
+puts "Done!\n"
+

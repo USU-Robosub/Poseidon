@@ -1,4 +1,3 @@
-
 # Generally reliable submarine control, containing pool-tested functionality
 
 require Dir.pwd + "/kernel/DiveMaster"
@@ -15,12 +14,9 @@ module Thrust
     FULL_REVERSE = -1
 end
 
-# enable ESCs otherwise they won't run
+puts "Setting up environment..."
 power = PowerManagement.new
-power.turnOnESCs
+thrusters = ThrustController.new
+sensors = Sensors.new
+puts "Done!\n"
 
-print "Creating ThrustController instance...\n"
-thrustController = ThrustController.new
-
-print "Pausing for a while...\n"
-sleep(5)
