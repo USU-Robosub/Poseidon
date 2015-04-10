@@ -59,8 +59,4 @@ def start_logging file
 	puts "End of log"
 end
 
-<<<<<<< HEAD
 start_logging "/home/debian/Desktop/Log"
-=======
-start_logging "/home/debian/Desktop/Log"
->>>>>>> origin/remote-control
