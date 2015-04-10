@@ -38,6 +38,7 @@ def start_logging file
 	pres = File.new(File.join(file, "/press_#{pidx}.log"), "w")
 	temp = File.new(File.join(file, "/temp_#{tidx}.log"), "w")
 	sensors = Sensors.new
+	sensors.turnOnIMU
 
 	stop = false
 	while !stop
@@ -57,3 +58,5 @@ def start_logging file
 	temp.close
 	puts "End of log"
 end
+
+start_logging "/home/debian/Desktop/Log"
