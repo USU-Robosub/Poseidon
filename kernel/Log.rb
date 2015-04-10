@@ -57,3 +57,5 @@ def start_logging file
 	temp.close
 	puts "End of log"
 end
+
+start_logging "/home/debian/Desktop/Log"
