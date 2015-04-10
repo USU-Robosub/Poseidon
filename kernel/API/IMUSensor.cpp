@@ -47,7 +47,7 @@ IMUSensor::~IMUSensor()
 }
 
 
-
+/*
 void IMUSensor::launchLoggingThread()
 {
 	fprintf(stderr, "logging thread...\n");
@@ -120,7 +120,7 @@ bool IMUSensor::isLogging()
 {
     return loggingEnabled_;
 }
-
+*/
 
 
 float IMUSensor::readTemperature()
