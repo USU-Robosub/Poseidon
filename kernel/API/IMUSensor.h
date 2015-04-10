@@ -34,8 +34,8 @@ class IMUSensor
         IMUSensor();
         ~IMUSensor();
 
-        void setLoggingStatus(bool);
-        bool isLogging();
+        //void setLoggingStatus(bool);
+        //bool isLogging();
 
         /** \brief Returns the temperature reading from the BMP085 sensor in ± 0.1°C.
           */
@@ -126,7 +126,7 @@ class IMUSensor
         void turnOff();
 
     private:
-        void launchLoggingThread();
+        //void launchLoggingThread();
 
         static int instanceCount_;
         std::shared_ptr<BMP085> sensorBMP085_;
