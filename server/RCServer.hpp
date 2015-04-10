@@ -24,8 +24,10 @@ class RCServer
     public:
         /** \brief Initializes a new instance of a server interface.
           */
-        RCServer(int port);
+        RCServer();
         ~RCServer();
+
+        void setPort(int port);
 
         /** \brief Starts up the server and begins listening for requests.
           */
