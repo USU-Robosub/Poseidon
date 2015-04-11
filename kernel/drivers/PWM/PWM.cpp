@@ -12,6 +12,11 @@ PWM::PWM(uint _addr_) :
     addr(_addr_), period(0), dutyA(0), dutyB(0),
     cdiv(1), polA(0), polB(0)
 {
+    // -- Working Configuration Values --
+    addr.write(PWM_TBCTL , 0x00010100);
+    addr.write(PWM_TBPHS , 0x00000000);
+    addr.write(PWM_CMPCTL, 0x00000000);
+    
     // Stop PWM Submodule and Reset Registers to default
     stop();
     setPolarityA(0);
