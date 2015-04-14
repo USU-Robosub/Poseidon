@@ -53,6 +53,7 @@ PWM::~PWM()
 {
 #if KVERSION == 2
     // put the pwm module to sleep - saves power
+    Registry pmem(0x44E00000);
     switch(addr.getAddr())
     {
         case PWM_SUB0:
