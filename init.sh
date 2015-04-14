@@ -13,7 +13,7 @@ init_version () {
         echo bone_pwm_P8_36 >> $SLOTS
         echo am33xx_pwm >> $SLOTS
         # turn on the ESCs by default
-        i2cset -y 1 0x03 0x02 0xE7
+        # i2cset -y 1 0x03 0x02 0x00
 
     elif [[ $version == 3.14* ]]; then
         echo "Setting up environment for $version"
@@ -25,10 +25,14 @@ init_version () {
         config-pin P8.34 pwm # Subsystem 1
         config-pin P8.36 pwm
         # turn on the ESCs by default
-        i2cset -y 2 0x03 0x02 0xE7
-        
+        # i2cset -y 2 0x03 0x02 0xE7
+
     else
         echo "Unsupported Version $version"
+    fi
+
+    if [[ $(lsmod | grep mindgem) != mindgem* ]]; then
+        insmod other/advmem/mindgem.ko
     fi
 }
 
