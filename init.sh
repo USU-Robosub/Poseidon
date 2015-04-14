@@ -13,7 +13,7 @@ init_version () {
         echo bone_pwm_P8_36 >> $SLOTS
         echo am33xx_pwm >> $SLOTS
         # turn on the ESCs by default
-        i2cset -y 1 0x03 0x02 0x00
+        i2cset -y 1 0x03 0x02 0xE7
 
     elif [[ $version == 3.14* ]]; then
         echo "Setting up environment for $version"
