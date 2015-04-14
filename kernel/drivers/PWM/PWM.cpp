@@ -16,7 +16,28 @@ PWM::PWM(uint _addr_) :
     addr.write(PWM_TBCTL , 0x00010100);
     addr.write(PWM_TBPHS , 0x00000000);
     addr.write(PWM_CMPCTL, 0x00000000);
-    
+
+#if KVERSION == 2
+    // enable subsystem clock to avoid bus-errors
+
+    // Map to CM_PER registers
+    Registery pmem(0x44E00000);
+    // CM_PER_L4LS_CLKSTCTRL.CLKTRCTRL = NO_SLEEP
+    pmem.write(0x0, 0x0);
+    switch(_addr_)
+    {
+        case PWM_SUB0:
+            pmem.write(0xD4, 0x2);
+            break;
+        case PWM_SUB1:
+            pmem.write(0xCC, 0x2);
+            break;
+        case PWM_SUB2:
+            pmem.write(0xD8, 0x2);
+            break;
+    }
+#endif
+
     // Stop PWM Submodule and Reset Registers to default
     stop();
     setPolarityA(0);
@@ -24,6 +45,27 @@ PWM::PWM(uint _addr_) :
     setDutyA(0);
     setDutyB(0);
     setPeriod(500000);
+}
+
+
+
+PWM::~PWM()
+{
+#if KVERSION == 2
+    // put the pwm module to sleep - saves power
+    switch(addr.getAddr())
+    {
+        case PWM_SUB0:
+            pmem.write(0xD4, 0x0);
+            break;
+        case PWM_SUB1:
+            pmem.write(0xCC, 0x0);
+            break;
+        case PWM_SUB2:
+            pmem.write(0xD8, 0x0);
+            break;
+    }
+#endif
 }
 
 
