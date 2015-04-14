@@ -17,6 +17,18 @@ ThrustController::ThrustController()
 
     std::cout << "Initializing ThrusterController..." << std::endl;
 
+#if KVERSION == 2
+    // Note: this snippet isn't required when the kernel device tree
+    // originally declares all PWM subsystems as "okay" on boot
+
+    // make sure PWM.TBCLKEN are active
+    Registry pmem(0x44E10000); // map memory for ControlModule
+    uint x = pmem.read(0x664); // read PWMSS
+    // if all clocks are not enabled, enable them
+    if(x < 7)
+        pmem.write(0x664, 0x7);
+#endif
+
     //create and initialize all PWM thruster modules
     pwmForward_ = std::make_shared<PWM>(PWM_SUB0);
     pwmStrafe_  = std::make_shared<PWM>(PWM_SUB1);

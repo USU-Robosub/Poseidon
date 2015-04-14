@@ -16,7 +16,12 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
+#include <stdint.h>
 #include <string.h>
+
+#include "../../other/advmem/mindgem.h"
+#define MEM_DEVICE "/dev/mindgem"
 
 class Registry
 {
@@ -25,6 +30,7 @@ class Registry
           * \param addr An unsigned integer representing a specific address block of interest.
           */
         Registry(uint _addr_);
+        ~Registry();
 
         /** \brief Reads from a register within the address block.
           * \param off An unsigned integer defining the sub-address to read from within the block.
@@ -46,7 +52,8 @@ class Registry
         uint getAddr();
 
     private:
-        uint addr; // beginning address of register
+        query_arg_t q;
+        int fd;
         bool showRegWarning;
 
 };
