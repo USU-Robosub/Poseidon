@@ -12,6 +12,7 @@
 
 #include "PWM_Const.h"
 #include "../Registry.h"
+#include "../../Environment.h"
 
 class PWM
 {
@@ -20,6 +21,7 @@ class PWM
           * \param addr The address specifying the location of the subsystem.
           */
         PWM(uint _addr_);
+        ~PWM();
 
         /** \brief Activates the signal such that the output will not be suppressed.
           */
