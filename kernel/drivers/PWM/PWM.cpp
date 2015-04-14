@@ -21,7 +21,7 @@ PWM::PWM(uint _addr_) :
     // enable subsystem clock to avoid bus-errors
 
     // Map to CM_PER registers
-    Registery pmem(0x44E00000);
+    Registry pmem(0x44E00000);
     // CM_PER_L4LS_CLKSTCTRL.CLKTRCTRL = NO_SLEEP
     pmem.write(0x0, 0x0);
     switch(_addr_)
