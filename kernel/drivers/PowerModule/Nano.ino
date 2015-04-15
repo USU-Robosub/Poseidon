@@ -17,7 +17,7 @@ void setup()
   Wire.onRequest(requestEvent); // register event
   //Serial.begin(115200);         // start serial for output
   
-  attachInterrupt(0, killSwitch, HIGH);
+  attachInterrupt(0, killSwitch, RISING);
   // pins 1-8 set as output
   // used for relay controls to turn on and off the thrusters
   pinMode(3, OUTPUT);
