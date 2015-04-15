@@ -17,6 +17,7 @@ void setup()
   Wire.onRequest(requestEvent); // register event
   //Serial.begin(115200);         // start serial for output
   
+  attachInterrupt(0, killSwitch, HIGH);
   // pins 1-8 set as output
   // used for relay controls to turn on and off the thrusters
   pinMode(3, OUTPUT);
@@ -139,7 +140,8 @@ void requestEvent()
 }
 
 // set relay pins 3-10
-void setPins() {
+void setPins()
+{
   int off = 3;
   for(int i = 0; i < 8; i++) {
     if((_map_[0x02] >> i) & 1)
@@ -150,4 +152,11 @@ void setPins() {
       digitalWrite(i+off, HIGH);
     }
   } 
+}
+
+// force the thrusters off
+void killSwitch()
+{
+  _map_[0x02] = _map_[0x02] & 0x18;
+  setPins();
 }
