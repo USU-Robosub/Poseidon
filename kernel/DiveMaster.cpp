@@ -39,7 +39,7 @@ void Init_DiveMaster()
         .define_method("setDiveThrust",     &ThrustController::setDiveThrust)
         .define_method("setYawThrust",      &ThrustController::setYawThrust)
         // - BEGIN - prototyped functions for future development
-        .define_method("setRollThrust",     &dummy)
+        .define_method("setPitchThrust",     &ThrustController::setPitchThrust)
         /* provide a radius to follow and thrust velocity */
         .define_method("travelArc",         &dummy)
         /* provide an XYZ point which define forward, strafe, and dive thrust
