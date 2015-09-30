@@ -58,7 +58,12 @@ class ThrustController
         /** \brief Sets the immediate Z-axis-rotating (yaw) speed.
           * \param goal A floating value ranging from -1 to 1 representing a percentage of the active angular acceleration.
           */
-        void setYawThrust(float);
+        void setYawThrust(float, float);
+
+        /** \brief Sets the immediate X-axis-rotating (pitch) speed.
+          * \param goal A floating value ranging from -1 to 1 representing a percentage of the active angular acceleration.
+          */
+        void setPitchThrust(float, float);
 
         /** \brief Accelerates the forward-moving thrusters to a target throttle speed
           * \param goal A floating value ranging from -1 to 1 representing a percentage of the active throttle.
