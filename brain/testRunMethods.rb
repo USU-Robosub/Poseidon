@@ -24,13 +24,13 @@ class TestRunMethods
 		@thrustController.accelerateForward(Thrust::FULL_REVERSE, 15)
 		@thrustController.accelerateForward(Thrust::NEUTRAL,      5)
 
-		print "Pausing for a while...\n"
-		sleep(3)
+		# print "Pausing for a while...\n"
+		# sleep(3)
 
-		print "Exploring extremes of left and right thrusters...\n"
-		@thrustController.accelerateStrafe(Thrust::FULL_AHEAD,   10)
-		@thrustController.accelerateStrafe(Thrust::FULL_REVERSE, 15)
-		@thrustController.accelerateStrafe(Thrust::NEUTRAL,      5)
+		# print "Exploring extremes of left and right thrusters...\n"
+		# @thrustController.accelerateStrafe(Thrust::FULL_AHEAD,   10)
+		# @thrustController.accelerateStrafe(Thrust::FULL_REVERSE, 15)
+		# @thrustController.accelerateStrafe(Thrust::NEUTRAL,      5)
 
 		print "Pausing for a while...\n"
 		sleep(3)
@@ -56,7 +56,7 @@ class TestRunMethods
 
 		print "Firing all thrusters...\n"
 		@thrustController.accelerateForward(Thrust::FULL_AHEAD, 4)
-		@thrustController.accelerateStrafe(Thrust::FULL_AHEAD,   4)
+		# @thrustController.accelerateStrafe(Thrust::FULL_AHEAD,   4)
 		@thrustController.accelerateDive(Thrust::FULL_AHEAD,    4)
 
 		print "Pausing for a while...\n"
@@ -136,11 +136,11 @@ class TestRunMethods
 		print "Now testing Strafe Thrusters...\n"
 		@thrustController.setStrafeThrust(0.1)
 		sleep(5)
-		@thrustController.setStrafeThrust(0)
-		sleep(3)
-		@thrustController.setStrafeThrust(-0.1)
-		sleep(5)
-		@thrustController.setStrafeThrust(0)
+		# @thrustController.setStrafeThrust(0)
+		# sleep(3)
+		# @thrustController.setStrafeThrust(-0.1)
+		# sleep(5)
+		# @thrustController.setStrafeThrust(0)
 		print "Dry test done!"
 	end
 	def testForwardThrust
