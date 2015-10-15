@@ -1,0 +1,10 @@
+###Git Ignore Filetypes###
+
+#compiled source#
+#################
+*.o
+*.so
+
+#cmake-generated files#
+.cmake
+CMakeCache.txt
