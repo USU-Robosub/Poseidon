@@ -1,5 +1,8 @@
 ###Git Ignore Filetypes###
 
+# JetBrains
+.idea/
+
 #compiled source#
 #################
 *.o
