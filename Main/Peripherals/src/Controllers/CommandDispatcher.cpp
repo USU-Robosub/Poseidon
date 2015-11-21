@@ -2,7 +2,7 @@
 // Created by Nathan Copier on 11/10/2015.
 //
 
-#include "Controllers/CommandDispatcher.h"
+#include "CommandDispatcher.h"
 
 void dispatchCommands( std::istream& in, ThrustController& thrustController );
 
@@ -15,20 +15,20 @@ void dispatchCommands( std::istream& in, ThrustController& thrustController )
 {
     while (true) {
         std::string command;
-        int activeThrottle;
+        int powerLevel;
         in >> command;
-        in >> activeThrottle;
+        in >> powerLevel;
         if(command == "dive")
         {
-            thrustController.setDiveThrust(activeThrottle);
+            thrustController.setDiveThrust(powerLevel);
         }
         else if(command == "forward")
         {
-            thrustController.setForwardThrust(activeThrottle);
+            thrustController.setForwardThrust(powerLevel);
         }
         else if(command == "yaw")
         {
-            thrustController.setYawThrust(activeThrottle);
+            thrustController.setYawThrust(powerLevel);
         }
     }
 }

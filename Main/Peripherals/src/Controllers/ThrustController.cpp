@@ -1,35 +1,34 @@
-#include "Controllers/ThrustController.h"
+#include "ThrustController.h"
 
 // TODO: Global Memory is bad!! This should be moved.
 constexpr std::chrono::milliseconds ThrustController::UPDATE_DELAY;
 
 
-ThrustController::ThrustController()
+ThrustController::ThrustController(IThrusterFactory& thrusterFactory, std::shared_ptr<ILogger> logger) :
+        forwardThruster_(thrusterFactory.createForwardThruster()),
+        strafeThruster_(thrusterFactory.createStrafeThruster()),
+        diveThruster_(thrusterFactory.createDiveThruster()),
+        logger_(logger)
 {
 
-    std::cout << "Initializing ThrusterController..." << std::endl;
-
-    //create and initialize all PWM thruster modules
-    pwmForward_ = std::make_shared<PWM>(PWM_SUB0);
-    pwmStrafe_  = std::make_shared<PWM>(PWM_SUB1);
-    pwmDive_    = std::make_shared<PWM>(PWM_SUB2);
+    logger_->info("Initializing Thrusters...");
 
     //set all thrusters to neutral
-    pwmForward_->setPeriod(PWM_PERIOD);
-    pwmStrafe_ ->setPeriod(PWM_PERIOD);
-    pwmDive_   ->setPeriod(PWM_PERIOD);
+    forwardThruster_->setPeriod(PWM_PERIOD);
+    strafeThruster_ ->setPeriod(PWM_PERIOD);
+    diveThruster_   ->setPeriod(PWM_PERIOD);
 
     //enable all thrusters
-    pwmForward_->start();
-    pwmStrafe_ ->start();
-    pwmDive_   ->start();
+    forwardThruster_->start();
+    strafeThruster_ ->start();
+    diveThruster_   ->start();
 }
 
 
 
 ThrustController::~ThrustController()
 {
-    std::cout << "Tearing down ThrusterController..." << std::endl;
+    logger_->info("Stoppping Thrusters...");
 
     //stop all thrusters
     setForwardThrust(NEUTRAL);
@@ -37,9 +36,9 @@ ThrustController::~ThrustController()
     setYawThrust(NEUTRAL);
 
     //disable all PWM thruster modules
-    pwmForward_->stop();
-    pwmStrafe_ ->stop();
-    pwmDive_   ->stop();
+    forwardThruster_->stop();
+    strafeThruster_ ->stop();
+    diveThruster_   ->stop();
 }
 
 
@@ -151,26 +150,30 @@ void ThrustController::setAllThrust(float rate)
 
 void ThrustController::setLeftForwardThrust(float rate)
 {
-    if (rate < FULL_REVERSE || rate > FULL_AHEAD)
-        throw std::invalid_argument("Invalid value for LeftForward thrust rate!");
-
-    //std::cout << "LeftForward goal:  " << rate << std::endl;
+    if (rate < FULL_REVERSE || rate > FULL_AHEAD) {
+        auto message = "Invalid value for LeftForward thrust rate!";
+        logger_->error(message);
+        throw std::invalid_argument(message);
+    }
 
     int r = 0;
 
     if (leftForward_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
-        r += pwmForward_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, false));
-	std::this_thread::sleep_for(UPDATE_DELAY);
-        r += pwmForward_->setDutyA(rateToDuty(0, false));
-	std::this_thread::sleep_for(UPDATE_DELAY);
+        r += forwardThruster_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, false));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
+        r += forwardThruster_->setDutyA(rateToDuty(0, false));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    r += pwmForward_->setDutyA(rateToDuty(rate, false));
+    r += forwardThruster_->setDutyA(rateToDuty(rate, false));
     leftForward_ = rate;
 
-    if (r > 0)
-        throw std::runtime_error("Failure to set pwmForward_ A's duty!");
+    if (r > 0) {
+        auto message = "Failure to set pwmForward_ A's duty!";
+        logger_->error(message);
+        throw std::runtime_error(message);
+    }
 }
 
 
@@ -180,19 +183,17 @@ void ThrustController::setRightForwardThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for RightForward thrust rate!");
 
-    //std::cout << "RightForward goal: " << rate << std::endl;
-
     int r = 0;
 
     if (rightForward_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
-        r += pwmForward_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, false));
-	std::this_thread::sleep_for(UPDATE_DELAY);
-        r += pwmForward_->setDutyB(rateToDuty(0, false));
-	std::this_thread::sleep_for(UPDATE_DELAY);
+        r += forwardThruster_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, false));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
+        r += forwardThruster_->setDutyB(rateToDuty(0, false));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    r += pwmForward_->setDutyB(rateToDuty(rate, false));
+    r += forwardThruster_->setDutyB(rateToDuty(rate, false));
     rightForward_ = rate;
 
     if (r > 0)
@@ -212,13 +213,13 @@ void ThrustController::setLeftStrafeThrust(float rate)
 
     if (leftDrift_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
-        r += pwmStrafe_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, true));
+        r += strafeThruster_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, true));
         std::this_thread::sleep_for(UPDATE_DELAY);
-	r += pwmStrafe_->setDutyA(rateToDuty(0, true));
-	std::this_thread::sleep_for(UPDATE_DELAY);
+	    r += strafeThruster_->setDutyA(rateToDuty(0, true));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    r += pwmStrafe_->setDutyA(rateToDuty(rate, true));
+    r += strafeThruster_->setDutyA(rateToDuty(rate, true));
     leftDrift_ = rate;
 
     if (r > 0)
@@ -232,19 +233,17 @@ void ThrustController::setRightStrafeThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for RightDrift thrust rate!");
 
-    //std::cout << "RightDrift goal:  " << rate << std::endl;
-
     int r = 0;
 
     if (rightDrift_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
-        r += pwmStrafe_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, true));
-	std::this_thread::sleep_for(UPDATE_DELAY);
-        r += pwmStrafe_->setDutyB(rateToDuty(0, true));
-	std::this_thread::sleep_for(UPDATE_DELAY);
+        r += strafeThruster_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, true));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
+        r += strafeThruster_->setDutyB(rateToDuty(0, true));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    r += pwmStrafe_->setDutyB(rateToDuty(rate, true));
+    r += strafeThruster_->setDutyB(rateToDuty(rate, true));
     rightDrift_ = rate;
 
     if (r > 0)
@@ -258,19 +257,17 @@ void ThrustController::setLeftDiveThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for LeftDive thrust rate!");
 
-    //std::cout << "LeftDive goal:  " << rate << std::endl;
-
     int r = 0;
 
     if (leftDive_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
-        r += pwmDive_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, true));
-	std::this_thread::sleep_for(UPDATE_DELAY);
-        r += pwmDive_->setDutyA(rateToDuty(0, true));
-	std::this_thread::sleep_for(UPDATE_DELAY);
+        r += diveThruster_->setDutyA(rateToDuty(CANCEL_BRAKE_MIN, true));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
+        r += diveThruster_->setDutyA(rateToDuty(0, true));
+	    std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    r += pwmDive_->setDutyA(rateToDuty(rate, true));
+    r += diveThruster_->setDutyA(rateToDuty(rate, true));
     leftDive_ = rate;
 
     if (r > 0)
@@ -284,19 +281,17 @@ void ThrustController::setRightDiveThrust(float rate)
     if (rate < FULL_REVERSE || rate > FULL_AHEAD)
         throw std::invalid_argument("Invalid value for RightDive thrust rate!");
 
-    //std::cout << "RightDive goal:  " << rate << std::endl;
-
     int r = 0;
 
     if (rightDive_ > 0 && rate <= 0)
     { //switching to reverse, undo ESC braking
-        r += pwmDive_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, true));
+        r += diveThruster_->setDutyB(rateToDuty(CANCEL_BRAKE_MIN, true));
 	std::this_thread::sleep_for(UPDATE_DELAY);
-        r += pwmDive_->setDutyB(rateToDuty(0, true));
+        r += diveThruster_->setDutyB(rateToDuty(0, true));
 	std::this_thread::sleep_for(UPDATE_DELAY);
     }
 
-    r += pwmDive_->setDutyB(rateToDuty(rate, true));
+    r += diveThruster_->setDutyB(rateToDuty(rate, true));
     rightDive_ = rate;
 
     if (r > 0)

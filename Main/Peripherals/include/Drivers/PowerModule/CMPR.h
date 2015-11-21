@@ -10,11 +10,12 @@
 #ifndef CMPR_H_
 #define CMPR_H_
 
-#include "Drivers/I2C/I2C.h"
+#include "IPowerModule.h"
+#include "I2C/I2C.h"
 #include "CMPR_Const.h"
 #include "stdint.h"
 
-class PowerModule {
+class PowerModule : public IPowerModule {
 public:
 	/** \brief Initializes a new power module for basic power management.
       * \param bus The address of the I2C bus the power module listens on.
@@ -36,7 +37,7 @@ public:
       * \param esc An unsigned byte holding bit-based booling flags identifying the ESCs to enable and disable respectively.
       *            Example: esc = 0xE7; (0b11100111) - the first and last three ESCs will be enabled and the middle two disabled.
       */
-	void burstEnableESC(uint8_t esc);
+	virtual void burstToggleESC(uint8_t esc);
 
 	/** \brief Returns the analog reading of ADC 1
       */

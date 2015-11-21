@@ -16,9 +16,10 @@
 #include <cassert>
 #include <cmath>
 #include <thread>
-#include <iostream>
 
-#include "Drivers/PWM/PWM.h"
+#include "ILogger.h"
+#include "IThrusterFactory.h"
+#include "IThruster.h"
 
 /*
     Conventions:
@@ -41,7 +42,7 @@ class ThrustController
 
         /** \brief Initializes a new instance of a motor-function interface.
           */
-        ThrustController();
+        ThrustController(IThrusterFactory& thrusterFactory, std::shared_ptr<ILogger> logger);
         ~ThrustController();
 
         /** \brief Sets the immediate forward-moving throttle speed.
@@ -102,11 +103,11 @@ class ThrustController
         static constexpr float MIN_SEAB_POWER = 0.25f; //Seabotix min power to turn
         static constexpr float CANCEL_BRAKE_MIN = -0.3f; //cancel ESC braking
 
-        static int instanceCount_;
+        std::shared_ptr<ILogger> logger_;
 
-        std::shared_ptr<PWM> pwmForward_;
-        std::shared_ptr<PWM> pwmStrafe_;
-        std::shared_ptr<PWM> pwmDive_;
+        std::shared_ptr<IThruster> forwardThruster_;
+        std::shared_ptr<IThruster> strafeThruster_;
+        std::shared_ptr<IThruster> diveThruster_;
 
         float leftForward_, rightForward_;
         float leftDrift_, rightDrift_;
@@ -134,7 +135,7 @@ class ThrustController
         // input: -100 % to 100 %; output 1,000,000 ns to 2,000,000 ns
         uint rateToDuty(float, bool) const;
 
-        // returs an exponential value based on given:
+        // returns an exponential value based on given:
         // target, initial position, and constant
         float logisticFn(float, float, float) const;
 };

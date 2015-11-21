@@ -1,10 +1,11 @@
-#include "Controllers/PowerManagement.h"
+#include "PowerManagement.h"
 
-PowerManagement::PowerManagement():
-    module(I2C_SUB2)
+PowerManagement::PowerManagement(std::shared_ptr<IPowerModule> powerModule, std::shared_ptr<ILogger> logger) :
+        powerModule_(powerModule),
+        logger_(logger)
 {
 
-    std::cout << "Initializing PowerManagement..." << std::endl;
+    logger_->info("Initializing PowerManagement...");
 }
 
 
@@ -15,13 +16,13 @@ PowerManagement::~PowerManagement()
 
 void PowerManagement::turnOnESCs()
 {
-    module.burstEnableESC(0xE7);
+    powerModule_->burstToggleESC(0xE7);
 }
 
 
 
 void PowerManagement::turnOffESCs()
 {
-    module.burstEnableESC(0x00);
+    powerModule_->burstToggleESC(0x00);
 }
 

@@ -16,18 +16,17 @@
 #include <chrono>
 #include <thread>
 #include <fstream>
-#include <iostream>
 
-#include "Drivers/IMU/BMP085.h"
-#include "Drivers/IMU/HMC5883L.h"
-#include "Drivers/IMU/MPU6050.h"
+#include "ILogger.h"
+#include "IImuFactory.h"
+#include "IPressureSensor.h"
 
 class IMUSensor
 {
     public:
         /** \brief Initializes a new instance of a sensor interface.
           */
-        IMUSensor();
+        IMUSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger);
         ~IMUSensor();
 
         /** \brief Returns the temperature reading from the BMP085 sensor in ± 0.1°C.
@@ -51,39 +50,39 @@ class IMUSensor
 
         /** \brief Returns the X-axis reading from the HMC5883L sensor.
           */
-    	int32_t readCompassX();
+    	int16_t readCompassX();
 
         /** \brief Returns the Y-axis reading from the HMC5883L sensor.
           */
-    	int32_t readCompassY();
+    	int16_t readCompassY();
 
         /** \brief Returns the Z-axis reading from the HMC5883L sensor.
           */
-    	int32_t readCompassZ();
+    	int16_t readCompassZ();
 
         /** \brief Returns the X-axis reading from the MPU6050's accelerometer.
           */
-    	int32_t readAccelX();
+    	int16_t readAccelX();
 
         /** \brief Returns the Y-axis reading from the MPU6050's accelerometer.
           */
-    	int32_t readAccelY();
+    	int16_t readAccelY();
 
         /** \brief Returns the Z-axis reading from the MPU6050's accelerometer.
           */
-    	int32_t readAccelZ();
+    	int16_t readAccelZ();
 
         /** \brief Returns the X-axis reading from the MPU6050's gyroscope.
           */
-    	int32_t readGyroX();
+    	int16_t readGyroX();
 
         /** \brief Returns the Y-axis reading from the MPU6050's gyroscope.
           */
-    	int32_t readGyroY();
+    	int16_t readGyroY();
 
         /** \brief Returns the Z-axis reading from the MPU6050's gyroscope.
           */
-    	int32_t readGyroZ();
+    	int16_t readGyroZ();
 
         /** \brief Returns the temperature reading from the MPU6050 sensor in ± 0.01°C.
           */
@@ -99,10 +98,10 @@ class IMUSensor
 
     private:
 
-        static int instanceCount_;
-        std::shared_ptr<BMP085> sensorBMP085_;
-        std::shared_ptr<HMC5883L> sensorHMC5883L_;
-        std::shared_ptr<MPU6050> sensorMPU6050_;
+        std::shared_ptr<ILogger> logger_;
+        std::shared_ptr<IPressureSensor> pressureSensor_;
+        std::shared_ptr<ICompass> compass_;
+        std::shared_ptr<IAccelerometer> accelerometer_;
         std::mutex sensorMutex_;
 };
 

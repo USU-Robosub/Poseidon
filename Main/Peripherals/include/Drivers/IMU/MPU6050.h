@@ -11,12 +11,13 @@
 #ifndef MPU6050_H_
 #define MPU6050_H_
 
-#include "Drivers/I2C/I2C.h"
+#include "IAccelerometer.h"
+#include "I2C/I2C.h"
 #include "IMU_Const.h"
 #include "stdint.h"
 #include <stdexcept>
 
-class MPU6050
+class MPU6050 : public IAccelerometer
 {
     public:
         /// FS_SEL selects the full scale range of the gyroscope outputs according to the following table.
@@ -48,39 +49,39 @@ class MPU6050
         /** \brief Makes a reading from the accelerometer's X axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        int16_t accel_X();
+        virtual int16_t accel_X();
 
         /** \brief Makes a reading from the accelerometer's Y axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        int16_t accel_Y();
+        virtual int16_t accel_Y();
 
         /** \brief Makes a reading from the accelerometer's Z axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        int16_t accel_Z();
+        virtual int16_t accel_Z();
 
         // returns the XYZ magnitude from gyroscope
         /** \brief Makes a reading from the gyroscope's X axis.
           * \return Returns a signed short representation of the angle.
           */
-        int16_t gyro_X();
+        virtual int16_t gyro_X();
 
         /** \brief Makes a reading from the gyroscope's Y axis.
           * \return Returns a signed short representation of the angle.
           */
-        int16_t gyro_Y();
+        virtual int16_t gyro_Y();
 
         /** \brief Makes a reading from the gyroscope's Z axis.
           * \return Returns a signed short representation of the angle.
           */
-        int16_t gyro_Z();
+        virtual int16_t gyro_Z();
 
         // returns the temperature of the sensor's environment
         /** \brief Makes a temperature reading from the sensor.
           * \return Returns a measurement in °C with an accuracy of ± 0.01.
           */
-        float temp();
+        virtual float temp();
 
 
         // FS_SEL selects the full scale range of the gyroscope outputs
@@ -97,10 +98,10 @@ class MPU6050
 
         /** \brief Puts the device into a power-saving sleep mode.
           */
-        void sleep();
+        virtual void sleep();
         /** \brief Puts the device into an active reading mode.
           */
-        void awake();
+        virtual void awake();
 
     private:
         I2C bus;

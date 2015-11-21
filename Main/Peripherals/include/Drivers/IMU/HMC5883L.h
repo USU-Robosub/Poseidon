@@ -11,13 +11,14 @@
 #ifndef HMC5883L_H_
 #define HMC5883L_H_
 
+#include "ICompass.h"
 #include "IMU_Const.h"
-#include "Drivers/I2C/I2C.h"
+#include "I2C/I2C.h"
 #include "stdint.h"
 #include <stdexcept>
 
 
-class HMC5883L
+class HMC5883L : public ICompass
 {
     public:
         /** \brief Initializes a new compass sensor for direction based analysis.
@@ -120,17 +121,17 @@ class HMC5883L
         /** \brief Reads the X-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        uint16_t X();
+        virtual uint16_t X();
 
         /** \brief Reads the Y-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        uint16_t Y();
+        virtual uint16_t Y();
 
         /** \brief Reads the Z-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        uint16_t Z();
+        virtual uint16_t Z();
 
         // OO configuration access
         /** \brief Returns the last value set for the sample average.

@@ -11,16 +11,17 @@
 #ifndef POWER_MANAGEMENT
 #define POWER_MANAGEMENT
 
-#include <iostream>
+#include <memory>
 
-#include "Drivers/PowerModule/CMPR.h"
+#include "ILogger.h"
+#include "IPowerModule.h"
 
 class PowerManagement
 {
     public:
     	/** \brief Initializes a new instance of a power interface.
           */
-        PowerManagement();
+        PowerManagement(std::shared_ptr<IPowerModule> powerModule, std::shared_ptr<ILogger> logger);
         ~PowerManagement();
 
         /** \brief Turns on all connected thruster ESCs at once.
@@ -35,7 +36,9 @@ class PowerManagement
 
     private:
 
-        PowerModule module;
+        std::shared_ptr<ILogger> logger_;
+
+        std::shared_ptr<IPowerModule> powerModule_;
 };
 
 #endif

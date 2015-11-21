@@ -1,42 +1,39 @@
-#include "Controllers/IMUSensor.h"
+#include "IMUSensor.h"
 
-IMUSensor::IMUSensor()
+IMUSensor::IMUSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger) :
+        pressureSensor_(imuFactory.createPressureSensor()),
+        compass_(imuFactory.createCompass()),
+        accelerometer_(imuFactory.createAccelerometer()),
+        logger_(logger)
 {
 
-    std::cout << "Initializing IMUSensor..." << std::endl;
+    logger_->info("Initializing IMUSensor...");
 
     //create and initialize IMU BMP085 (pressure/temp) module
-    std::cout << "Setting up BMP085 chip..." << std::endl;
-    sensorBMP085_ = std::make_shared<BMP085>(I2C_SUB2);
-    sensorBMP085_->initialize(1);
+    logger_->info("Setting up BMP085 chip...");
+    pressureSensor_->initialize(1);
 
     //create and initialize IMU HMC5883L (compass) module
-    std::cout << "Setting up HMC5883L chip..." << std::endl;
-    sensorHMC5883L_ = std::make_shared<HMC5883L>(I2C_SUB2);
-    sensorHMC5883L_->setSampleAverage(HMC5883L::Sample::Sx4);
-    sensorHMC5883L_->setOutputRate(HMC5883L::Rate::Hz75);
-    //sensorHMC5883L_->setGain(HMC5883L::Gain::G8_1);
-    sensorHMC5883L_->setMode(HMC5883L::Mode::Single);
+    logger_->info("Setting up HMC5883L chip...");
 
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     //create and initialize IMU MPU6050 (gyro) module
-    std::cout << "Setting up MPU6050 chip..." << std::endl;
-    sensorMPU6050_ = std::make_shared<MPU6050>(I2C_SUB2);
+    logger_->info("Setting up MPU6050 chip...");
 }
 
 
 
 IMUSensor::~IMUSensor()
 {
-    std::cout << "Tearing down IMUSensor..." << std::endl;
+    logger_->info("Tearing down IMUSensor...");
 }
 
 
 float IMUSensor::readTemperature()
 {
     sensorMutex_.lock();
-    auto r = sensorBMP085_->readTemperature();
+    auto r = pressureSensor_->readTemperature();
     sensorMutex_.unlock();
 
     return r;
@@ -47,7 +44,7 @@ float IMUSensor::readTemperature()
 int32_t IMUSensor::readPressure()
 {
     sensorMutex_.lock();
-    auto r = sensorBMP085_->readPressure();
+    auto r = pressureSensor_->readPressure();
     sensorMutex_.unlock();
 
     return r;
@@ -58,7 +55,7 @@ int32_t IMUSensor::readPressure()
 int32_t IMUSensor::readSealevel(float altitudeMeters)
 {
     sensorMutex_.lock();
-    auto r = sensorBMP085_->readSealevelPressure(altitudeMeters);
+    auto r = pressureSensor_->readSealevelPressure(altitudeMeters);
     sensorMutex_.unlock();
 
     return r;
@@ -69,28 +66,17 @@ int32_t IMUSensor::readSealevel(float altitudeMeters)
 float IMUSensor::readAltitude(float sealevelPressure)
 {
     sensorMutex_.lock();
-    auto r = sensorBMP085_->readAltitude(sealevelPressure);
+    auto r = pressureSensor_->readAltitude(sealevelPressure);
     sensorMutex_.unlock();
 
     return r;
 }
 
 
-int32_t IMUSensor::readCompassX()
+int16_t IMUSensor::readCompassX()
 {
     sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorHMC5883L_->X());
-    sensorMutex_.unlock();
-
-    return r;
-}
-
-
-
-int32_t IMUSensor::readCompassY()
-{
-    sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorHMC5883L_->Y());
+	auto r = compass_->X();
     sensorMutex_.unlock();
 
     return r;
@@ -98,20 +84,10 @@ int32_t IMUSensor::readCompassY()
 
 
 
-int32_t IMUSensor::readCompassZ()
+int16_t IMUSensor::readCompassY()
 {
     sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorHMC5883L_->Z());
-    sensorMutex_.unlock();
-
-    return r;
-}
-
-
-int32_t IMUSensor::readAccelX()
-{
-    sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorMPU6050_->accel_X());
+	auto r = compass_->Y();
     sensorMutex_.unlock();
 
     return r;
@@ -119,10 +95,20 @@ int32_t IMUSensor::readAccelX()
 
 
 
-int32_t IMUSensor::readAccelY()
+int16_t IMUSensor::readCompassZ()
 {
     sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorMPU6050_->accel_Y());
+	auto r = compass_->Z();
+    sensorMutex_.unlock();
+
+    return r;
+}
+
+
+int16_t IMUSensor::readAccelX()
+{
+    sensorMutex_.lock();
+	auto r = accelerometer_->accel_X();
     sensorMutex_.unlock();
 
     return r;
@@ -130,19 +116,10 @@ int32_t IMUSensor::readAccelY()
 
 
 
-int32_t IMUSensor::readAccelZ()
+int16_t IMUSensor::readAccelY()
 {
     sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorMPU6050_->accel_Z());
-    sensorMutex_.unlock();
-
-    return r;
-}
-
-int32_t IMUSensor::readGyroX()
-{
-    sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorMPU6050_->gyro_X());
+	auto r = accelerometer_->accel_Y();
     sensorMutex_.unlock();
 
     return r;
@@ -150,10 +127,19 @@ int32_t IMUSensor::readGyroX()
 
 
 
-int32_t IMUSensor::readGyroY()
+int16_t IMUSensor::readAccelZ()
 {
     sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorMPU6050_->gyro_Y());
+	auto r = accelerometer_->accel_Z();
+    sensorMutex_.unlock();
+
+    return r;
+}
+
+int16_t IMUSensor::readGyroX()
+{
+    sensorMutex_.lock();
+	auto r = accelerometer_->gyro_X();
     sensorMutex_.unlock();
 
     return r;
@@ -161,10 +147,21 @@ int32_t IMUSensor::readGyroY()
 
 
 
-int32_t IMUSensor::readGyroZ()
+int16_t IMUSensor::readGyroY()
 {
     sensorMutex_.lock();
-	auto r = static_cast<int32_t>(sensorMPU6050_->gyro_Z());
+	auto r = accelerometer_->gyro_Y();
+    sensorMutex_.unlock();
+
+    return r;
+}
+
+
+
+int16_t IMUSensor::readGyroZ()
+{
+    sensorMutex_.lock();
+	auto r = accelerometer_->gyro_Z();
     sensorMutex_.unlock();
 
     return r;
@@ -175,7 +172,7 @@ int32_t IMUSensor::readGyroZ()
 float IMUSensor::getTemp()
 {
     sensorMutex_.lock();
-    auto r = sensorMPU6050_->temp();
+    auto r = accelerometer_->temp();
     sensorMutex_.unlock();
 
     return r;
@@ -186,7 +183,7 @@ float IMUSensor::getTemp()
 void IMUSensor::turnOn()
 {
     sensorMutex_.lock();
-    sensorMPU6050_->awake();
+    accelerometer_->awake();
     sensorMutex_.unlock();
 }
 
@@ -195,6 +192,6 @@ void IMUSensor::turnOn()
 void IMUSensor::turnOff()
 {
     sensorMutex_.lock();
-    sensorMPU6050_->sleep();
+    accelerometer_->sleep();
     sensorMutex_.unlock();
 }

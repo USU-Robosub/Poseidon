@@ -11,7 +11,8 @@
 #ifndef BMP085_H_
 #define BMP085_H_
 
-#include "Drivers/I2C/I2C.h"
+#include "IPressureSensor.h"
+#include "I2C/I2C.h"
 #include "IMU_Const.h"
 #include "stdint.h"
 #include <chrono>
@@ -19,7 +20,7 @@
 #include <cmath>
 
 
-class BMP085
+class BMP085 : public IPressureSensor
 {
     public:
         /** \brief Initializes a new pressure sensor for depth and altitude analysis.
@@ -32,23 +33,23 @@ class BMP085
           * \param mode The mode used to determine the accuracy of measurements.
           * \return Returns true if initialization was successful.
           */
-        bool initialize(uint8_t mode = IMU_ENVIRONMENT_ULTRAHIGHRES);
+        virtual bool initialize(uint8_t mode = IMU_ENVIRONMENT_ULTRAHIGHRES);
 
         /** \brief Makes a temperature reading from the sensor.
           * \return Returns a measurement in °C with an accuracy of ± 0.1.
           */
-        float readTemperature(void);
+        virtual float readTemperature(void);
 
         /** \brief Makes a pressure reading from the sensor.
           * \return Returns a measurement in Pascals (Pa)
           */
-        int32_t readPressure(void);
+        virtual int32_t readPressure(void);
 
         /** \brief Makes a pressure reading calculated at sealevel.
           * \param Optionally provide an altitude in meters describing the sensor's position.
           * \return Returns a measurement in Pascals (Pa)
           */
-        int32_t readSealevelPressure(float altitude_meters = 0);
+        virtual int32_t readSealevelPressure(float altitude_meters = 0);
 
         // read the approximate altitude in meters (m)
         // params: current provided sea level pressure
@@ -56,7 +57,7 @@ class BMP085
           * \param sealevelPressure The measured sealevel pressure of the environment.
           * \return Returns the altitude in meters.
           */
-        float readAltitude(float sealevelPressure = 101325);
+        virtual float readAltitude(float sealevelPressure = 101325);
 
         // read raw sensor data
         /** \brief Returns the raw sensor data for temperature.
