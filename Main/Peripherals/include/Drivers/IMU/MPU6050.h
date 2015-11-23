@@ -42,46 +42,46 @@ class MPU6050 : public IAccelerometer
           * \param bus The address of the I2C bus the accelerometer listens on.
           */
         MPU6050(uint _bus_);
-        virtual ~MPU6050();
+        ~MPU6050();
 
 
         // returns the XYZ magnitude from accelerometer
         /** \brief Makes a reading from the accelerometer's X axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        virtual int16_t accel_X();
+        int16_t accel_X();
 
         /** \brief Makes a reading from the accelerometer's Y axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        virtual int16_t accel_Y();
+        int16_t accel_Y();
 
         /** \brief Makes a reading from the accelerometer's Z axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        virtual int16_t accel_Z();
+        int16_t accel_Z();
 
         // returns the XYZ magnitude from gyroscope
         /** \brief Makes a reading from the gyroscope's X axis.
           * \return Returns a signed short representation of the angle.
           */
-        virtual int16_t gyro_X();
+        int16_t gyro_X();
 
         /** \brief Makes a reading from the gyroscope's Y axis.
           * \return Returns a signed short representation of the angle.
           */
-        virtual int16_t gyro_Y();
+        int16_t gyro_Y();
 
         /** \brief Makes a reading from the gyroscope's Z axis.
           * \return Returns a signed short representation of the angle.
           */
-        virtual int16_t gyro_Z();
+        int16_t gyro_Z();
 
         // returns the temperature of the sensor's environment
         /** \brief Makes a temperature reading from the sensor.
           * \return Returns a measurement in °C with an accuracy of ± 0.01.
           */
-        virtual float temp();
+        float temp();
 
 
         // FS_SEL selects the full scale range of the gyroscope outputs
@@ -98,10 +98,10 @@ class MPU6050 : public IAccelerometer
 
         /** \brief Puts the device into a power-saving sleep mode.
           */
-        virtual void sleep();
+        void sleep();
         /** \brief Puts the device into an active reading mode.
           */
-        virtual void awake();
+        void awake();
 
     private:
         I2C bus;

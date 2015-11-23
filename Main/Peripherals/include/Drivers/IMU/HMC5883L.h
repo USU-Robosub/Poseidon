@@ -25,7 +25,7 @@ class HMC5883L : public ICompass
           * \param bus The address of the I2C bus the compass listens on.
           */
         HMC5883L(uint _bus_);
-        virtual ~HMC5883L();
+        ~HMC5883L();
 
         /** \brief Used to select the number of samples averaged per measurement output.
           */
@@ -121,17 +121,17 @@ class HMC5883L : public ICompass
         /** \brief Reads the X-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        virtual uint16_t X();
+        uint16_t X();
 
         /** \brief Reads the Y-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        virtual uint16_t Y();
+        uint16_t Y();
 
         /** \brief Reads the Z-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        virtual uint16_t Z();
+        uint16_t Z();
 
         // OO configuration access
         /** \brief Returns the last value set for the sample average.

@@ -15,7 +15,7 @@
 #include <sys/ioctl.h>
 
 #include "I2C_Const.h"
-#include "Drivers/Registry.h"
+#include "Registry.h"
 
 class I2C
 {

@@ -11,7 +11,7 @@
 #define PWM_H_
 
 #include "PWM_Const.h"
-#include "Drivers/Registry.h"
+#include "Registry.h"
 #include "IThruster.h"
 
 class PWM : IThruster
@@ -25,47 +25,47 @@ class PWM : IThruster
 
         /** \brief Activates the signal such that the output will not be suppressed.
           */
-        virtual void start();
+        void start();
         
         /** \brief Deavtivates the signal such that the signal will be suppressed.
           */
-        virtual void stop();
+        void stop();
 
         /** \brief Sets the amount of time to complete one pulse-width cycle
           *        The period applies to both channels A and B.
           * \param ns The time in nanoseconds
           * \return 0 for success
           */
-        virtual int setPeriod(uint ns);
+        int setPeriod(uint ns);
 
         /** \brief Sets the amount of time a pulse is set on channel A before reseting.
           * \param ns The time in nanoseconds to hold the pulse.
           * \return 0 for sucess.
           */
-        virtual int setDutyA(uint ns);
+        int setDutyA(uint ns);
 
         /** \brief Sets the amount of time a pulse is set on channel B before reseting.
           * \param ns The time in nanoseconds to hold the pulse.
           * \return 0 for sucess.
           */
-        virtual int setDutyB(uint ns);
+        int setDutyB(uint ns);
 
         /** \brief Sets the polarity of the output on channel A.
           * \param dir When the polarity is set to 0, the pulse will be held low during the duty cycle.
           *            When the polarity is set to 1, the pulse will be held high.
           */
-        virtual void setPolarityA(uint dir);
+        void setPolarityA(uint dir);
 
         /** \brief Sets the polarity of the output on channel B.
           * \param dir When the polarity is set to 0, the pulse will be held low during the duty cycle.
           *            When the polarity is set to 1, the pulse will be held high.
           */
-        virtual void setPolarityB(uint dir);
+        void setPolarityB(uint dir);
 
         /** \brief Returns the last value set for the period.
           *        This is not always the same value read from the hardware's register.
           */
-        virtual uint getPeriod();
+        uint getPeriod();
 
         /** \brief Returns the last value set for the duty of channel A.
           *        This is not always the same value read from the hardware's register.

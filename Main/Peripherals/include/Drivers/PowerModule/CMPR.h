@@ -21,7 +21,7 @@ public:
       * \param bus The address of the I2C bus the power module listens on.
       */
 	PowerModule(uint _bus_);
-	virtual ~PowerModule();
+	~PowerModule();
 
 	/** \brief Enables one of the Electronic Speed Controllers.
       * \param esc An unsigned byte representing the index of the ESC.
@@ -37,7 +37,7 @@ public:
       * \param esc An unsigned byte holding bit-based booling flags identifying the ESCs to enable and disable respectively.
       *            Example: esc = 0xE7; (0b11100111) - the first and last three ESCs will be enabled and the middle two disabled.
       */
-	virtual void burstToggleESC(uint8_t esc);
+	void burstToggleESC(uint8_t esc);
 
 	/** \brief Returns the analog reading of ADC 1
       */

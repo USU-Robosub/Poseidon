@@ -27,29 +27,29 @@ class BMP085 : public IPressureSensor
           * \param bus The address of the I2C bus the sensor listens on.
           */
         BMP085(uint _bus_);
-        virtual ~BMP085();
+        ~BMP085();
 
         /** \brief Initializes the environment and establishes calibration constants used in future computations.
           * \param mode The mode used to determine the accuracy of measurements.
           * \return Returns true if initialization was successful.
           */
-        virtual bool initialize(uint8_t mode = IMU_ENVIRONMENT_ULTRAHIGHRES);
+        bool initialize(uint8_t mode = IMU_ENVIRONMENT_ULTRAHIGHRES);
 
         /** \brief Makes a temperature reading from the sensor.
           * \return Returns a measurement in °C with an accuracy of ± 0.1.
           */
-        virtual float readTemperature(void);
+        float readTemperature(void);
 
         /** \brief Makes a pressure reading from the sensor.
           * \return Returns a measurement in Pascals (Pa)
           */
-        virtual int32_t readPressure(void);
+        int32_t readPressure(void);
 
         /** \brief Makes a pressure reading calculated at sealevel.
           * \param Optionally provide an altitude in meters describing the sensor's position.
           * \return Returns a measurement in Pascals (Pa)
           */
-        virtual int32_t readSealevelPressure(float altitude_meters = 0);
+        int32_t readSealevelPressure(float altitude_meters = 0);
 
         // read the approximate altitude in meters (m)
         // params: current provided sea level pressure
@@ -57,7 +57,7 @@ class BMP085 : public IPressureSensor
           * \param sealevelPressure The measured sealevel pressure of the environment.
           * \return Returns the altitude in meters.
           */
-        virtual float readAltitude(float sealevelPressure = 101325);
+        float readAltitude(float sealevelPressure = 101325);
 
         // read raw sensor data
         /** \brief Returns the raw sensor data for temperature.
