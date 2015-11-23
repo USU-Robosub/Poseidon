@@ -5,6 +5,8 @@
 #ifndef PERIPHERALS_I_PRESSURE_SENSOR_H
 #define PERIPHERALS_I_PRESSURE_SENSOR_H
 
+#include <cstdint>
+
 class IPressureSensor {
 public:
     virtual bool initialize(uint8_t mode) = 0;

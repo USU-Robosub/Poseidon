@@ -5,6 +5,7 @@
 #ifndef PERIPHERALS_I_IMU_FACTORY_H
 #define PERIPHERALS_I_IMU_FACTORY_H
 
+#include <memory>
 #include "IPressureSensor.h"
 #include "ICompass.h"
 #include "IAccelerometer.h"

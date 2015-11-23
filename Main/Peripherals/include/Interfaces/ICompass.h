@@ -5,6 +5,8 @@
 #ifndef PERIPHERALS_I_COMPASS_H
 #define PERIPHERALS_I_COMPASS_H
 
+#include <cstdint>
+
 class ICompass {
 public:
     virtual uint16_t X() = 0;

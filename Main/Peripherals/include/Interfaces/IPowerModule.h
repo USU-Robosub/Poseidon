@@ -5,6 +5,8 @@
 #ifndef PERIPHERALS_I_POWER_MODULE_H
 #define PERIPHERALS_I_POWER_MODULE_H
 
+#include <cstdint>
+
 class IPowerModule {
 public:
     virtual void burstToggleESC(uint8_t esc) = 0;

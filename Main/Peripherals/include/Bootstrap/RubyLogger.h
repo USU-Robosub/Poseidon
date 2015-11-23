@@ -16,9 +16,9 @@ private:
 
 public:
     RubyLogger(std::shared_ptr<std::ostream> out);
-    virtual void info(const char message[]);
-    virtual void warning(const char message[]);
-    virtual void error(const char message[]);
+    void info(const char message[]);
+    void warning(const char message[]);
+    void error(const char message[]);
 
 };
 

@@ -5,6 +5,8 @@
 #ifndef PERIPHERALS_I_ACCELEROMETER_H
 #define PERIPHERALS_I_ACCELEROMETER_H
 
+#include <cstdint>
+
 class IAccelerometer {
 public:
     virtual int16_t accel_X() = 0;

@@ -4,14 +4,14 @@
 
 #include "PwmThrusterFactory.h"
 
-std::shared_ptr PwmThrusterFactory::createForwardThruster() {
+std::shared_ptr<IThruster> PwmThrusterFactory::createForwardThruster() {
     return std::make_shared<PWM>(PWM_SUB0);
 }
 
-std::shared_ptr PwmThrusterFactory::createStrafeThruster() {
+std::shared_ptr<IThruster> PwmThrusterFactory::createStrafeThruster() {
     return std::make_shared<PWM>(PWM_SUB1);
 }
 
-std::shared_ptr PwmThrusterFactory::createDiveThruster() {
+std::shared_ptr<IThruster> PwmThrusterFactory::createDiveThruster() {
     return std::make_shared<PWM>(PWM_SUB2);
 }

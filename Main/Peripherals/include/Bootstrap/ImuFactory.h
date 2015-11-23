@@ -14,9 +14,9 @@
 class ImuFactory : public IImuFactory {
 
 public:
-    virtual std::shared_ptr<IPressureSensor> createPressureSensor();
-    virtual std::shared_ptr<ICompass> createCompass();
-    virtual std::shared_ptr<IAccelerometer> createAccelerometer();
+    std::shared_ptr<IPressureSensor> createPressureSensor();
+    std::shared_ptr<ICompass> createCompass();
+    std::shared_ptr<IAccelerometer> createAccelerometer();
 
 };
 

@@ -12,9 +12,9 @@
 class PwmThrusterFactory : public IThrusterFactory {
 
 public:
-    virtual std::shared_ptr<IThruster> createForwardThruster();
-    virtual std::shared_ptr<IThruster> createStrafeThruster();
-    virtual std::shared_ptr<IThruster> createDiveThruster();
+    std::shared_ptr<IThruster> createForwardThruster();
+    std::shared_ptr<IThruster> createStrafeThruster();
+    std::shared_ptr<IThruster> createDiveThruster();
 
 };
 
