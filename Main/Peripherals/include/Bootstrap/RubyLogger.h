@@ -15,7 +15,7 @@ private:
     std::shared_ptr<std::ostream> out_;
 
 public:
-    RubyLogger(std::shared_ptr<std::ostream> out);
+    RubyLogger(std::ostream* out);
     void info(const char message[]);
     void warning(const char message[]);
     void error(const char message[]);

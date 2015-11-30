@@ -9,6 +9,7 @@
 #include "IPressureSensor.h"
 #include "ICompass.h"
 #include "IAccelerometer.h"
+#include <memory>
 
 class IImuFactory {
 public:

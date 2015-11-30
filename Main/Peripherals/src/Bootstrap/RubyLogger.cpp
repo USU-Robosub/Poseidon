@@ -4,7 +4,7 @@
 
 #include "RubyLogger.h"
 
-RubyLogger::RubyLogger(std::shared_ptr<std::ostream> out) : out_(out) { }
+RubyLogger::RubyLogger(std::ostream* out) : out_(out) { }
 
 void RubyLogger::info(const char *const message) {
     *out_ << "info " << message << std::endl;

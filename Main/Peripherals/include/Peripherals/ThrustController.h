@@ -11,15 +11,15 @@
 #ifndef DIVING_MASTER
 #define DIVING_MASTER
 
+#include "ILogger.h"
+#include "IThrusterFactory.h"
+#include "IThruster.h"
+
 #include <memory>
 #include <chrono>
 #include <cassert>
 #include <cmath>
 #include <thread>
-
-#include "ILogger.h"
-#include "IThrusterFactory.h"
-#include "IThruster.h"
 
 /*
     Conventions:
@@ -103,11 +103,11 @@ class ThrustController
         static constexpr float MIN_SEAB_POWER = 0.25f; //Seabotix min power to turn
         static constexpr float CANCEL_BRAKE_MIN = -0.3f; //cancel ESC braking
 
-        std::shared_ptr<ILogger> logger_;
-
         std::shared_ptr<IThruster> forwardThruster_;
         std::shared_ptr<IThruster> strafeThruster_;
         std::shared_ptr<IThruster> diveThruster_;
+
+        std::shared_ptr<ILogger> logger_;
 
         float leftForward_, rightForward_;
         float leftDrift_, rightDrift_;

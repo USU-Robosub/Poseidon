@@ -9,9 +9,9 @@
 
 class MockCompass : public ICompass {
 public:
-    uint16_t X(){}
-    uint16_t Y(){}
-    uint16_t Z(){}
+    uint16_t X(){ return 0; }
+    uint16_t Y(){ return 0; }
+    uint16_t Z(){ return 0; }
 };
 
 

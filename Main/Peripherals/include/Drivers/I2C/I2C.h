@@ -11,7 +11,7 @@
 #ifndef I2C_H_
 #define I2C_H_
 
-#include <sys/i2c-dev.h>
+#include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 
 #include "I2C_Const.h"

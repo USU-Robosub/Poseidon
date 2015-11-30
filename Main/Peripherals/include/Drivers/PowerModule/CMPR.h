@@ -10,10 +10,9 @@
 #ifndef CMPR_H_
 #define CMPR_H_
 
-#include "IPowerModule.h"
 #include "I2C/I2C.h"
 #include "CMPR_Const.h"
-#include "stdint.h"
+#include <IPowerModule.h>
 
 class PowerModule : public IPowerModule {
 public:

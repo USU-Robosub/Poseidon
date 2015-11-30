@@ -40,7 +40,7 @@ class Registry
         uint read(uint off);
 
         /** \brief Writes to a register within the address block.
-          * \param off An unsigned integer defining the sub-addres to write to within the block.
+          * \param off An unsigned integer defining the sub-address to write to within the block.
           *            This value can range from 0x0000 to 0x0FFF.
           * \param val An unsigned integer defining the value to be written to memory.
           *            This value can range from 0x00000000 to 0xFFFFFFFF

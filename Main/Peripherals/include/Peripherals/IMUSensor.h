@@ -11,15 +11,15 @@
 #ifndef IMU_SENSOR
 #define IMU_SENSOR
 
+#include "ILogger.h"
+#include "IImuFactory.h"
+#include "IPressureSensor.h"
+
 #include <memory>
 #include <mutex>
 #include <chrono>
 #include <thread>
 #include <fstream>
-
-#include "ILogger.h"
-#include "IImuFactory.h"
-#include "IPressureSensor.h"
 
 class IMUSensor
 {
@@ -98,11 +98,12 @@ class IMUSensor
 
     private:
 
-        std::shared_ptr<ILogger> logger_;
         std::shared_ptr<IPressureSensor> pressureSensor_;
         std::shared_ptr<ICompass> compass_;
         std::shared_ptr<IAccelerometer> accelerometer_;
         std::mutex sensorMutex_;
+
+		std::shared_ptr<ILogger> logger_;
 };
 
 #endif

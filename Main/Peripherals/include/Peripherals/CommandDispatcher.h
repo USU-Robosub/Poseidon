@@ -5,10 +5,10 @@
 #ifndef PERIPHERALS_COMMAND_DISPATCHER_H
 #define PERIPHERALS_COMMAND_DISPATCHER_H
 
+#include "ThrustController.h"
 #include <istream>
 #include <thread>
 #include <string>
-#include "ThrustController.h"
 
 
 class CommandDispatcher {

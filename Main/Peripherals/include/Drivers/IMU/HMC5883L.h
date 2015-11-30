@@ -11,10 +11,9 @@
 #ifndef HMC5883L_H_
 #define HMC5883L_H_
 
-#include "ICompass.h"
 #include "IMU_Const.h"
 #include "I2C/I2C.h"
-#include "stdint.h"
+#include <ICompass.h>
 #include <stdexcept>
 
 

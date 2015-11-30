@@ -9,7 +9,7 @@ void dispatchCommands( std::istream& in, ThrustController& thrustController );
 CommandDispatcher::CommandDispatcher( std::istream& in, ThrustController& thrustController ) {
     auto thread = std::thread( [&](){ dispatchCommands(in, thrustController); } );
     thread.join();
-};
+}
 
 void dispatchCommands( std::istream& in, ThrustController& thrustController )
 {

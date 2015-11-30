@@ -11,9 +11,9 @@
 #ifndef MPU6050_H_
 #define MPU6050_H_
 
-#include "IAccelerometer.h"
 #include "I2C/I2C.h"
 #include "IMU_Const.h"
+#include <IAccelerometer.h>
 #include <stdexcept>
 
 class MPU6050 : public IAccelerometer

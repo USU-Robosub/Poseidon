@@ -12,9 +12,9 @@
 
 #include "PWM_Const.h"
 #include "Registry.h"
-#include "IThruster.h"
+#include <IThruster.h>
 
-class PWM : IThruster
+class PWM : public IThruster
 {
     public:
         /** \brief Initializes a specific PWM subsystem.

@@ -5,6 +5,8 @@
 #ifndef PERIPHERALS_I_THRUSTER_H
 #define PERIPHERALS_I_THRUSTER_H
 
+#include <cstdlib>
+
 class IThruster {
 public:
     virtual int setPeriod(uint ns) = 0;

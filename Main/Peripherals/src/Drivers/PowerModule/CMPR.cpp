@@ -36,7 +36,7 @@ void PowerModule::disableESC(uint8_t esc) {
 
 
 
-void PowerModule::burstEnableESC(uint8_t esc) {
+void PowerModule::burstToggleESC(uint8_t esc) {
 	bus.writeByte(CMPR_ADDR, CMPR_THST, esc);
 }
 

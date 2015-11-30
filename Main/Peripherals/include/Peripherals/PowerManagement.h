@@ -11,10 +11,9 @@
 #ifndef POWER_MANAGEMENT
 #define POWER_MANAGEMENT
 
-#include <memory>
-
 #include "ILogger.h"
 #include "IPowerModule.h"
+#include <memory>
 
 class PowerManagement
 {
@@ -36,9 +35,9 @@ class PowerManagement
 
     private:
 
-        std::shared_ptr<ILogger> logger_;
-
         std::shared_ptr<IPowerModule> powerModule_;
+
+        std::shared_ptr<ILogger> logger_;
 };
 
 #endif

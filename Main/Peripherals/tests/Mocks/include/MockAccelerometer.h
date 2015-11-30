@@ -9,13 +9,13 @@
 
 class MockAccelerometer : public IAccelerometer {
 public:
-    int16_t accel_X(){}
-    int16_t accel_Y(){}
-    int16_t accel_Z(){}
-    int16_t gyro_X(){}
-    int16_t gyro_Y(){}
-    int16_t gyro_Z(){}
-    float temp(){}
+    int16_t accel_X(){ return 0; }
+    int16_t accel_Y(){ return 0; }
+    int16_t accel_Z(){ return 0; }
+    int16_t gyro_X(){ return 0; }
+    int16_t gyro_Y(){ return 0; }
+    int16_t gyro_Z(){ return 0; }
+    float temp(){ return 0; }
     void sleep(){}
     void awake(){}
 };

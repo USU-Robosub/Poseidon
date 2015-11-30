@@ -11,10 +11,9 @@
 #ifndef BMP085_H_
 #define BMP085_H_
 
-#include "IPressureSensor.h"
 #include "I2C/I2C.h"
 #include "IMU_Const.h"
-#include "stdint.h"
+#include <IPressureSensor.h>
 #include <chrono>
 #include <thread>
 #include <cmath>

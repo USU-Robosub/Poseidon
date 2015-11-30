@@ -5,7 +5,7 @@
  *  Fork: https://github.com/adafruit/Adafruit-BMP085-Library
  */
 
-#include "Drivers/IMU/BMP085.h"
+#include "IMU/BMP085.h"
 
 #define BMP085_DEBUG 0
 #define delay(time) std::this_thread::sleep_for(std::chrono::milliseconds(time));

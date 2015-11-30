@@ -5,8 +5,8 @@
 #ifndef PERIPHERALS_I_THRUSTER_FACTORY_H
 #define PERIPHERALS_I_THRUSTER_FACTORY_H
 
-#include <memory>
 #include "IThruster.h"
+#include <memory>
 
 class IThrusterFactory {
 public:

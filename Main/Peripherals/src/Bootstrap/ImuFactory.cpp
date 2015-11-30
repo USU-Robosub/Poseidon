@@ -9,7 +9,7 @@ std::shared_ptr<IPressureSensor> ImuFactory::createPressureSensor() {
 }
 
 
-virtual std::shared_ptr<ICompass> ImuFactory::createCompass() {
+std::shared_ptr<ICompass> ImuFactory::createCompass() {
     auto compass = std::make_shared<HMC5883L>(I2C_SUB2);
     compass->setSampleAverage(HMC5883L::Sample::Sx4);
     compass->setOutputRate(HMC5883L::Rate::Hz75);
@@ -18,6 +18,6 @@ virtual std::shared_ptr<ICompass> ImuFactory::createCompass() {
     return compass;
 }
 
-virtual std::shared_ptr<IAccelerometer> ImuFactory::createAccelerometer() {
+std::shared_ptr<IAccelerometer> ImuFactory::createAccelerometer() {
     return std::make_shared<MPU6050>(I2C_SUB2);
 }
