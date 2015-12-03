@@ -28,7 +28,7 @@ ThrustController::ThrustController(IThrusterFactory& thrusterFactory, std::share
 
 ThrustController::~ThrustController()
 {
-    logger_->info("Stoppping Thrusters...");
+    logger_->info("Stopping Thrusters...");
 
     //stop all thrusters
     setForwardThrust(NEUTRAL);

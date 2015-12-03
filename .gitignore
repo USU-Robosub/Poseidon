@@ -8,6 +8,9 @@
 *.o
 *.so
 
+Release/
+Debug/
+
 #cmake-generated files#
 .cmake
 CMakeCache.txt

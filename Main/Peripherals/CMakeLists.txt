@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(Peripherals)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -pedantic -lpthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -Wextra -pedantic -lpthread")
 
 # Shared Stuff
 
@@ -35,6 +35,7 @@ add_test(Test Specs)
 include_directories(include/Drivers)
 file(GLOB_RECURSE DRIVER_FILES "src/Drivers/*.cpp")
 add_library(Drivers SHARED ${DRIVER_FILES})
+set_target_properties(Drivers PROPERTIES COMPILE-FLAGS "-mindgem")
 
 include_directories(include/Bootstrap)
 file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")

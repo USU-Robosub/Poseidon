@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "mindgem.h"
+#include <../../../../MindGem/mindgem.h>
 #define MEM_DEVICE "/dev/mindgem"
 
 class Registry

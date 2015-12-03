@@ -8,8 +8,10 @@
 #include <IPowerModule.h>
 
 class MockPowerModule : public IPowerModule {
+private:
+    uint8_t esc_;
 public:
-    void burstToggleESC(uint8_t esc){}
+    void burstToggleESC(uint8_t esc){ esc_ = esc; }
 };
 
 

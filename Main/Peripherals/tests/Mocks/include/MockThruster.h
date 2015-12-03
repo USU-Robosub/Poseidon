@@ -9,11 +9,11 @@
 
 class MockThruster : public IThruster {
 public:
-    int setPeriod(uint ns){ return 0; }
-    void start(){}
-    void stop(){}
-    int setDutyA(uint ns){ return 0; }
-    int setDutyB(uint ns){ return 0; }
+    int setPeriod(uint ns);
+    void start();
+    void stop();
+    int setDutyA(uint ns);
+    int setDutyB(uint ns);
 };
 
 
