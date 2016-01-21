@@ -20,7 +20,7 @@ class PWM : public IThruster
         /** \brief Initializes a specific PWM subsystem.
           * \param addr The address specifying the location of the subsystem.
           */
-        PWM(uint _addr_);
+        PWM(uint _addr_, short block);
         ~PWM();
 
         /** \brief Activates the signal such that the output will not be suppressed.
@@ -30,6 +30,8 @@ class PWM : public IThruster
         /** \brief Deavtivates the signal such that the signal will be suppressed.
           */
         void stop();
+
+        void Thrust(int powerLevel);
 
         /** \brief Sets the amount of time to complete one pulse-width cycle
           *        The period applies to both channels A and B.
@@ -89,6 +91,7 @@ class PWM : public IThruster
 
     private:
         Registry addr;
+        short block_;
         uint period;
         uint dutyA;
         uint dutyB;

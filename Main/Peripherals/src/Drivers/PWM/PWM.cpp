@@ -7,7 +7,8 @@
 
 #include "PWM/PWM.h"
 
-PWM::PWM(uint _addr_) :
+PWM::PWM(uint _addr_, short block) :
+    block_(block),
     addr(_addr_), period(0), dutyA(0), dutyB(0),
     cdiv(1), polA(0), polB(0)
 {
@@ -31,6 +32,7 @@ PWM::~PWM()
 {
 }
 
+void PWM::Initialize() {};
 
 
 void PWM::start()
@@ -109,7 +111,9 @@ int PWM::setPeriod(uint ns)
     return 0;
 }
 
-
+void PWM::Thrust(int powerLevel) {
+    block_ == 0 ? setDutyA(powerLevel) : setDutyB(powerLevel);
+}
 
 int PWM::setDutyA(uint ns)
 {
@@ -125,9 +129,6 @@ int PWM::setDutyA(uint ns)
 
     return 0;
 }
-
-
-
 
 int PWM::setDutyB(uint ns)
 {

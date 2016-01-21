@@ -9,11 +9,7 @@
 
 class MockThruster : public IThruster {
 public:
-    int setPeriod(uint ns);
-    void start();
-    void stop();
-    int setDutyA(uint ns);
-    int setDutyB(uint ns);
+    void Thrust(int powerLevel);
 };
 
 
