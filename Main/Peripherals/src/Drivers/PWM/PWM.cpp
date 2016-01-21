@@ -111,8 +111,8 @@ int PWM::setPeriod(uint ns)
     return 0;
 }
 
-void PWM::Thrust(int powerLevel) {
-    block_ == 0 ? setDutyA(powerLevel) : setDutyB(powerLevel);
+void PWM::Thrust(float powerLevel) {
+    block_ == 0 ? setDutyA((uint)powerLevel) : setDutyB((uint)powerLevel);
 }
 
 int PWM::setDutyA(uint ns)

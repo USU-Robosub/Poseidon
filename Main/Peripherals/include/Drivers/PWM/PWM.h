@@ -31,7 +31,7 @@ class PWM : public IThruster
           */
         void stop();
 
-        void Thrust(int powerLevel);
+        void Thrust(float powerLevel);
 
         /** \brief Sets the amount of time to complete one pulse-width cycle
           *        The period applies to both channels A and B.

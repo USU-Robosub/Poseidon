@@ -9,7 +9,7 @@
 
 class MockThruster : public IThruster {
 public:
-    void Thrust(int powerLevel);
+    void Thrust(float powerLevel);
 };
 
 

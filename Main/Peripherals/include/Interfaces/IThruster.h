@@ -7,7 +7,7 @@
 
 class IThruster {
 public:
-    virtual void Thrust(int powerLevel) = 0;
+    virtual void Thrust(float powerLevel) = 0;
 };
 
 #endif //PERIPHERALS_I_THRUSTER_H

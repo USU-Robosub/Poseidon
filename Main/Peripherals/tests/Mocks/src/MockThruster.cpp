@@ -4,4 +4,4 @@
 
 #include "MockThruster.h"
 
-void MockThruster::Thrust(int) {}
+void MockThruster::Thrust(float) {}

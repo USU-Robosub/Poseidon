@@ -6,15 +6,16 @@
 #include "IThruster.h"
 
 #include <memory>
-#include <chrono>
-#include <cassert>
-#include <cmath>
-#include <thread>
+#include <utility>
+
+typedef std::pair<float, float> FloatPair;
 
 class ThrustController
 {
 public:
     ThrustController(IThrusterFactory& thrusterFactory, std::shared_ptr<ILogger> logger);
+    void goDirection(float forward, float strafe, float dive);
+    void faceDirection(float yaw);
     ~ThrustController();
 
 private:
@@ -26,6 +27,16 @@ private:
     std::shared_ptr<IThruster> rearDiveThruster_;
 
     std::shared_ptr<ILogger> logger_;
+
+    const float maxPower = 1.0f;
+    const float minPower = 0.0f;
+    const float reverseRatio = 0.84507f;
+    const float strafeRatio = 0.783088f;
+
+    FloatPair getReciprocalValues(float value);
+    float getScaleToMaxPower(float left, float right);
+    float getMaxMag(float left, float right);
+    void setThrust(FloatPair forwardPair, FloatPair strafePair, float dive);
 };
 
 #endif
