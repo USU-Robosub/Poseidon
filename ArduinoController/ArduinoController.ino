@@ -1,9 +1,12 @@
 #include <Servo.h>
-enum Servos {
-  FRONT_LEFT = 3,
-  FRONT_RIGHT = 5,
-  BACK_LEFT = 10,
-  BACK_RIGHT = 6
+enum ServoPin {
+  // TODO: Assign pins
+  LEFT_FORWARD = -1,
+  RIGHT_FORWARD = -1,
+  LEFT_STRAFE = -1,
+  RIGHT_STRAFE = -1,
+  FRONT_DIVE = -1,
+  BACK_DIVE = -1
 };
 
 uint16_t readShort() {
@@ -20,21 +23,23 @@ class ThrustController : public Controller {
  private:
    Servo servo_;
  public:
-  ThrustController(Servos servoValue) {
-    servo_.attach(servoValue);
+  ThrustController(ServoPin servoPin) {
+    servo_.attach(servoPin);
   }
   void execute() {
     servo_.writeMicroseconds(readShort());
   }
 };
 
-Controller* controllers[4];
+Controller* controllers[6];
 
 void setup() {
-  controllers[0] = new ThrustController(FRONT_LEFT);
-  controllers[1] = new ThrustController(FRONT_RIGHT);
-  controllers[2] = new ThrustController(BACK_LEFT);
-  controllers[3] = new ThrustController(BACK_RIGHT);
+  controllers[0] = new ThrustController(LEFT_FORWARD);
+  controllers[1] = new ThrustController(RIGHT_FORWARD);
+  controllers[2] = new ThrustController(LEFT_STRAFE);
+  controllers[3] = new ThrustController(RIGHT_STRAFE);
+  controllers[4] = new ThrustController(FRONT_DIVE);
+  controllers[5] = new ThrustController(BACK_DIVE);
   Serial.begin(115200);
 }
 
