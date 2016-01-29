@@ -5,13 +5,15 @@
 #ifndef PERIPHERALS_SERIAL_H
 #define PERIPHERALS_SERIAL_H
 
-#include <iostream>
+#include <fstream>
+#include <memory>
+#include <cstdlib>
 
 
 class Serial {
 private:
-    std::ifstream& input_;
-    std::ofstream& out_;
+    std::shared_ptr<std::ifstream> input_;
+    std::shared_ptr<std::ofstream> output_;
 public:
     Serial();
     void writeByte(unsigned short byteValue);

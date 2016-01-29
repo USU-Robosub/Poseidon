@@ -6,13 +6,9 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <ThrustController.h>
-#include <IMUSensor.h>
-//#include <PowerManagement.h>
 #include "RubyLogger.h"
 #include <Serial.h>
 #include "PwmThrusterFactory.h"
-//#include "ImuFactory.h"
-//#include "PowerModule/CMPR.h"
 
 void setupPipes(int readPipe[2], int writePipe[2]);
 void runControllers();
