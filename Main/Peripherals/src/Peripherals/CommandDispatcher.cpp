@@ -4,7 +4,8 @@
 
 #include "CommandDispatcher.h"
 
-CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController) : thrustController_(thrustController) {
+CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController)
+        : thrustController_(thrustController) {
     while(true) {
         std::string cmd;
         std::getline(in, cmd);
@@ -15,16 +16,21 @@ CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustC
 void CommandDispatcher::dispatchCommand(std::stringstream cmdString) {
     std::string cmd;
     cmdString >> cmd;
-    if(cmd == "goDirection") {
-        float forward, strife, dive;
-        cmdString >> forward;
-        cmdString >> strafe;
-        cmdString >> dive;
-        thrustController_.goDirection(forward, strafe, dive);
-    }
-    else if(cmd == "faceDirection") {
-        float yaw;
-        cmdString << yaw;
-        thrustController_.yaw(yaw);
-    }
+    if(cmd == "goDirection") goDirection(cmdString);
+    else if(cmd == "faceDirection") faceDirection(cmdString);
+    else if(cmd == "toggleEsc") return; // TODO Toggle ESCs
+}
+
+void CommandDispatcher::goDirection(std::stringstream cmdString) {
+    float forward, strife, dive;
+    cmdString >> forward;
+    cmdString >> strafe;
+    cmdString >> dive;
+    thrustController_.goDirection(forward, strafe, dive);
+}
+
+void CommandDispatcher::faceDirection(std::stringstream cmdString) {
+    float yaw;
+    cmdString << yaw;
+    thrustController_.yaw(yaw);
 }
