@@ -10,8 +10,8 @@ private:
 	bool escsOn;
 public:
 	PowerManager();
-	void turnEscsOn();
-	void turnEscsOff();
+	void turnOnEscs();
+	void turnOffEscs();
 };
 
 #endif

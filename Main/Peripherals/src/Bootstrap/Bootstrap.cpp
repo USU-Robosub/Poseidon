@@ -6,9 +6,11 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <ThrustController.h>
+#include <CommandDispatcher.h>
+#include "SerialThrusterFactory.h"
 #include "RubyLogger.h"
 #include <Serial.h>
-#include "PwmThrusterFactory.h"
+#include <PowerManager.h>
 
 void setupPipes(int readPipe[2], int writePipe[2]);
 void runControllers();
@@ -30,7 +32,8 @@ int main() {
     else {
         setupPipes(loggerPipe, thrusterPipe);
         // TODO: Add the name of the actual ruby app
-        execl("ruby", "{ruby_app}");
+        char arguments[] = {"{ruby_app}"};
+        execl("ruby", arguments, (char*)NULL);
     }
 
     return 0;
@@ -56,8 +59,12 @@ void runControllers() {
     auto rubyLogger = std::make_shared<RubyLogger>(&std::cout);
     auto serial = Serial();
 
-    auto thrusterFactory = PwmThrusterFactory();
+    auto thrusterFactory = SerialThrusterFactory(serial);
     ThrustController tc(thrusterFactory, rubyLogger);
+
+    auto pm = PowerManager();
+
+    CommandDispatcher cd(std::cin, tc, pm);
 
     wait(NULL);
 

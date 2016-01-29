@@ -1,23 +1,26 @@
 //
-// Created by Nathan Copier on 11/10/2015.
+// Created by Nathan Copier on 1/28/2016.
 //
 
 #ifndef PERIPHERALS_COMMAND_DISPATCHER_H
 #define PERIPHERALS_COMMAND_DISPATCHER_H
 
 #include "ThrustController.h"
-#include <istream>
-#include <thread>
-#include <string>
+#include "PowerManager.h"
 
+#include <istream>
+#include <string>
+#include <sstream>
 
 class CommandDispatcher {
-
+private:
+    ThrustController& thrustController_;
+    PowerManager& powerManager_;
+    void dispatchCommand(std::stringstream& cmd);
+    void goDirection(std::stringstream& cmdString);
+    void faceDirection(std::stringstream& cmdString);
 public:
-
-    CommandDispatcher( std::istream& in, ThrustController& thrustController );
-
+    CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager);
 };
-
 
 #endif //PERIPHERALS_COMMAND_DISPATCHER_H

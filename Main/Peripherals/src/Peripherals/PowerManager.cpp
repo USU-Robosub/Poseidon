@@ -5,7 +5,7 @@ PowerManager::PowerManager()
 	escsOn = false;
 }
 
-void PowerManager::turnEscsOn()
+void PowerManager::turnOnEscs()
 {
 	std::ofstream serialOut("/dev/ttyACM0");
 	if (!escsOn)
@@ -16,7 +16,7 @@ void PowerManager::turnEscsOn()
 	serialOut.close();
 }
 
-void PowerManager::turnEscsOff()
+void PowerManager::turnOffEscs()
 {
 	
 	std::ofstream serialOut("/dev/ttyACM0");
