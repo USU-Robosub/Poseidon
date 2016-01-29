@@ -1,12 +1,12 @@
 #include <Servo.h>
 enum ServoPin {
   // TODO: Assign pins
-  LEFT_FORWARD = -1,
-  RIGHT_FORWARD = -1,
-  LEFT_STRAFE = -1,
-  RIGHT_STRAFE = -1,
-  FRONT_DIVE = -1,
-  BACK_DIVE = -1
+  LEFT_FORWARD = 11,
+  RIGHT_FORWARD = 10,
+  LEFT_STRAFE = 9,
+  RIGHT_STRAFE = 8,
+  FRONT_DIVE = 7,
+  BACK_DIVE = 6
 };
 
 uint16_t readShort() {
