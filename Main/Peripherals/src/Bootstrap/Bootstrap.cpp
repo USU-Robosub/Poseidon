@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <ThrustController.h>
+#include "SerialThrusterFactory.h"
 #include "RubyLogger.h"
 #include <Serial.h>
 
@@ -55,8 +56,8 @@ void runControllers() {
     auto rubyLogger = std::make_shared<RubyLogger>(&std::cout);
     auto serial = Serial();
 
-    //auto thrusterFactory = PwmThrusterFactory();
-    //ThrustController tc(thrusterFactory, rubyLogger);
+    auto thrusterFactory = SerialThrusterFactory(serial);
+    ThrustController tc(thrusterFactory, rubyLogger);
 
     wait(NULL);
 
