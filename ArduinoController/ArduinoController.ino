@@ -1,12 +1,12 @@
 #include <Servo.h>
 enum ServoPin {
   // TODO: Assign pins
-  LEFT_FORWARD = -1,
-  RIGHT_FORWARD = -1,
-  LEFT_STRAFE = -1,
-  RIGHT_STRAFE = -1,
-  FRONT_DIVE = -1,
-  BACK_DIVE = -1
+  LEFT_FORWARD = 11,
+  RIGHT_FORWARD = 10,
+  LEFT_STRAFE = 9,
+  RIGHT_STRAFE = 8,
+  FRONT_DIVE = 7,
+  BACK_DIVE = 6
 };
 
 uint16_t readShort() {
@@ -31,6 +31,18 @@ class ThrustController : public Controller {
   }
 };
 
+class EscController : public Controller {
+public:
+  void execute() {
+    while(!Serial.available());
+    uint8_t toggle = Serial.read();
+    int gpioPins[] = {39, 41, 43, 49, 51, 53};
+    for(int i = 0; i < 6; i++) {
+      digitalWrite(gpioPins[i], toggle);
+    }
+  }
+};
+
 Controller* controllers[6];
 
 void setup() {
@@ -40,6 +52,7 @@ void setup() {
   controllers[3] = new ThrustController(RIGHT_STRAFE);
   controllers[4] = new ThrustController(FRONT_DIVE);
   controllers[5] = new ThrustController(BACK_DIVE);
+  controllers[6] = new EscController();
   Serial.begin(115200);
 }
 
