@@ -1,11 +1,17 @@
+//
+// Headlights.cpp
+// Source files for the class Headlights
+//
+// Created by Kevin Burgon on 01/28/2016
+//
 #include "Headlights.h"
 
 Headlights::Headlights()
 {
-	std::system("stty -F /dev/ttyACM0 cs8 115200 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
+	areOn = false;
 }
 
-void Headlights::switchLights(bool areOn)
+void Headlights::switchLights()
 {
 	std::ofstream serialOut("/dev/ttyACM0");
 	std::ifstream serialIn("/dev/ttyACM0");
@@ -13,13 +19,16 @@ void Headlights::switchLights(bool areOn)
 	{
 		serialOut << 0x36 << std::flush;
 		serialOut << 0x1 << std::flush;
+		areOn == false;
 	}
 	else
 	{
 		serialOut << 0x36 << 0x1 << std::flush;
+		areOn == true;
 	}
-	serialOut.close();
 	std::string response;
 	getline(serialIn, response);
 	std::cout << response << std::endl;
+	serialIn.close();
+	serialOut.close();
 }
