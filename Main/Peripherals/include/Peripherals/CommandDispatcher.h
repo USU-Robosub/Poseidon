@@ -14,6 +14,7 @@
 
 class CommandDispatcher {
 private:
+    std::istream& in_;
     ThrustController& thrustController_;
     PowerManager& powerManager_;
     void dispatchCommand(std::stringstream& cmd);
@@ -21,6 +22,7 @@ private:
     void faceDirection(std::stringstream& cmdString);
 public:
     CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager);
+    void runLoop();
 };
 
 #endif //PERIPHERALS_COMMAND_DISPATCHER_H

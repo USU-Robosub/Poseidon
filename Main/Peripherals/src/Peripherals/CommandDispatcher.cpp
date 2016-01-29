@@ -5,10 +5,12 @@
 #include "CommandDispatcher.h"
 
 CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager)
-        : thrustController_(thrustController), powerManager_(powerManager) {
+        : in_(in), thrustController_(thrustController), powerManager_(powerManager) {}
+
+void CommandDispatcher::runLoop() {
     while(true) {
         std::string cmd;
-        std::getline(in, cmd);
+        std::getline(in_, cmd);
         std::stringstream ss(cmd);
         dispatchCommand(ss);
     }
