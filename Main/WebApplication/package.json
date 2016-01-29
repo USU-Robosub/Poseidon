@@ -1,0 +1,23 @@
+{
+  "name": "usub-web-application",
+  "version": "0.0.1",
+  "description": "Web application for controlling the sub.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/USU-Robosub/Poseidon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/USU-Robosub/Poseidon/issues"
+  },
+  "homepage": "https://github.com/USU-Robosub/Poseidon#readme",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.4"
+  }
+}
