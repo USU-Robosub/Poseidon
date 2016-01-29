@@ -61,11 +61,11 @@ void runControllers() {
     auto thrusterFactory = PwmThrusterFactory();
     ThrustController tc(thrusterFactory, rubyLogger);
 
-    auto imuFactory = ImuFactory();
-    IMUSensor imu(imuFactory, rubyLogger);
+    // auto imuFactory = ImuFactory();
+    // IMUSensor imu(imuFactory, rubyLogger);
 
-    auto powerModule = std::make_shared<PowerModule>(I2C_SUB2);
-    PowerManagement pm(powerModule, rubyLogger);
+    // auto powerModule = std::make_shared<PowerModule>(I2C_SUB2);
+    // PowerManagement pm(powerModule, rubyLogger);
 
     wait(NULL);
 
