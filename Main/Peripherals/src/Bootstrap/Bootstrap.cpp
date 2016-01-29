@@ -31,7 +31,8 @@ int main() {
     else {
         setupPipes(loggerPipe, thrusterPipe);
         // TODO: Add the name of the actual ruby app
-        execl("ruby", "{ruby_app}");
+        char arguments[] = {"{ruby_app}"};
+        execl("ruby", arguments, (char*)NULL);
     }
 
     return 0;

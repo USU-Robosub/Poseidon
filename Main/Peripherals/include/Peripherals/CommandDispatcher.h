@@ -13,9 +13,9 @@
 class CommandDispatcher {
 private:
     ThrustController& thrustController_;
-    void dispatchCommand(std::stringstream cmd);
-    void goDirection(std::stringstream cmdString);
-    void faceDirection(std::stringstream cmdString);
+    void dispatchCommand(std::stringstream& cmd);
+    void goDirection(std::stringstream& cmdString);
+    void faceDirection(std::stringstream& cmdString);
 public:
     CommandDispatcher(std::istream& in, ThrustController& thrustController);
 };
