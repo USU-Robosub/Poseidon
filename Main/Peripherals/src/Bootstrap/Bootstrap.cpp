@@ -7,11 +7,12 @@
 #include <sys/wait.h>
 #include <ThrustController.h>
 #include <IMUSensor.h>
-#include <PowerManagement.h>
+//#include <PowerManagement.h>
 #include "RubyLogger.h"
+#include <Serial.h>
 #include "PwmThrusterFactory.h"
-#include "ImuFactory.h"
-#include "PowerModule/CMPR.h"
+//#include "ImuFactory.h"
+//#include "PowerModule/CMPR.h"
 
 void setupPipes(int readPipe[2], int writePipe[2]);
 void runControllers();
@@ -57,6 +58,7 @@ void signalHandler(int sigNum) {
 void runControllers() {
 
     auto rubyLogger = std::make_shared<RubyLogger>(&std::cout);
+    auto serial = Serial();
 
     auto thrusterFactory = PwmThrusterFactory();
     ThrustController tc(thrusterFactory, rubyLogger);
