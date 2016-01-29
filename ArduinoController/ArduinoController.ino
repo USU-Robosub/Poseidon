@@ -31,6 +31,18 @@ class ThrustController : public Controller {
   }
 };
 
+class EscController : public Controller {
+public:
+  void execute() {
+    while(!Serial.available());
+    uint8_t toggle = Serial.read();
+    int gpioPins[] = {39, 41, 43, 49, 51, 53};
+    for(int i = 0; i < 6; i++) {
+      digitalWrite(gpioPins[i], toggle);
+    }
+  }
+};
+
 Controller* controllers[6];
 
 void setup() {
@@ -40,6 +52,7 @@ void setup() {
   controllers[3] = new ThrustController(RIGHT_STRAFE);
   controllers[4] = new ThrustController(FRONT_DIVE);
   controllers[5] = new ThrustController(BACK_DIVE);
+  controllers[6] = new EscController();
   Serial.begin(115200);
 }
 
