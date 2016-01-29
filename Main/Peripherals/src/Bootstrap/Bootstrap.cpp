@@ -8,7 +8,6 @@
 #include <ThrustController.h>
 #include "RubyLogger.h"
 #include <Serial.h>
-#include "PwmThrusterFactory.h"
 
 void setupPipes(int readPipe[2], int writePipe[2]);
 void runControllers();
@@ -56,8 +55,8 @@ void runControllers() {
     auto rubyLogger = std::make_shared<RubyLogger>(&std::cout);
     auto serial = Serial();
 
-    auto thrusterFactory = PwmThrusterFactory();
-    ThrustController tc(thrusterFactory, rubyLogger);
+    //auto thrusterFactory = PwmThrusterFactory();
+    //ThrustController tc(thrusterFactory, rubyLogger);
 
     wait(NULL);
 
