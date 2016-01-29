@@ -4,8 +4,8 @@
 
 #include "CommandDispatcher.h"
 
-CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController)
-        : thrustController_(thrustController) {
+CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager)
+        : thrustController_(thrustController), powerManager_(powerManager) {
     while(true) {
         std::string cmd;
         std::getline(in, cmd);
@@ -19,7 +19,8 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     cmdString >> cmd;
     if(cmd == "goDirection") goDirection(cmdString);
     else if(cmd == "faceDirection") faceDirection(cmdString);
-    else if(cmd == "toggleEsc") return; // TODO Toggle ESCs
+    else if(cmd == "turnOnEscs") powerManager_.turnOnEscs();
+    else if(cmd == "turnOffEscs") powerManager_.turnOffEscs();
 }
 
 void CommandDispatcher::goDirection(std::stringstream& cmdString) {

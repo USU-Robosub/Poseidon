@@ -10,6 +10,7 @@
 #include "SerialThrusterFactory.h"
 #include "RubyLogger.h"
 #include <Serial.h>
+#include <PowerManager.h>
 
 void setupPipes(int readPipe[2], int writePipe[2]);
 void runControllers();
@@ -61,7 +62,9 @@ void runControllers() {
     auto thrusterFactory = SerialThrusterFactory(serial);
     ThrustController tc(thrusterFactory, rubyLogger);
 
-    CommandDispatcher cd(std::cin, tc);
+    auto pm = PowerManager();
+
+    CommandDispatcher cd(std::cin, tc, pm);
 
     wait(NULL);
 
