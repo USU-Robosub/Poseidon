@@ -36,23 +36,32 @@ class ThrustController : public Controller {
 };
 
 class EscController : public Controller {
+private:
+  const uint8_t GPIO_PINS[6] = {39, 41, 43, 49, 51, 53};
 public:
+  EscController() {
+    for(int i = 0; i < 6; i++) {
+      pinMode(GPIO_PINS[i], OUTPUT);
+      digitalWrite(GPIO_PINS[i], LOW);
+    }
+  }
   void execute() {
     while(!Serial.available());
     uint8_t toggle = Serial.read();
-    const uint8_t gpioPins[] = {39, 41, 43, 49, 51, 53};
     for(int i = 0; i < 6; i++) {
-      digitalWrite(gpioPins[i], toggle);
+      digitalWrite(GPIO_PINS[i], toggle);
     }
   }
 };
 
 class LedController : public Controller {
+private:
   const uint8_t GREEN = 22;
   const uint8_t WHITE = 52;
 public:
   LedController() {
     pinMode(WHITE, OUTPUT);
+    digitalWrite(WHITE, LOW);
   }
   void execute() {
     for(int i = 0; i < 2; i++) {
