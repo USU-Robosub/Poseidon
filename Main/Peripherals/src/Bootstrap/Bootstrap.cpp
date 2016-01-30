@@ -7,17 +7,15 @@
 #include <ThrustController.h>
 #include <CommandDispatcher.h>
 #include "SerialThrusterFactory.h"
-#include "RubyLogger.h"
-#include <Serial.h>
-#include <PowerManager.h>
+#include "ScriptLogger.h"
 
 int main() {
 
-    auto rubyLogger = std::make_shared<RubyLogger>(&std::cout);
+    auto scriptLogger = std::make_shared<ScriptLogger>(&std::cout);
     auto serial = Serial();
 
     auto thrusterFactory = SerialThrusterFactory(serial);
-    ThrustController tc(thrusterFactory, rubyLogger);
+    ThrustController tc(thrusterFactory, scriptLogger);
 
     auto pm = PowerManager();
 
