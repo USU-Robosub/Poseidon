@@ -35,7 +35,6 @@ add_test(Test Specs)
 include_directories(include/Drivers)
 file(GLOB_RECURSE DRIVER_FILES "src/Drivers/*.cpp")
 add_library(Drivers SHARED ${DRIVER_FILES})
-set_target_properties(Drivers PROPERTIES COMPILE-FLAGS "-mindgem")
 
 include_directories(include/Bootstrap)
 file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")
