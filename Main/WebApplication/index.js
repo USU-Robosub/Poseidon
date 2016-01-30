@@ -64,10 +64,12 @@ app.get('/getDiveAngle', function(req, res) {
 
 // From IPowerController {
 app.get('/turnOnEscs', function(req, res) {
+	peripherals.stdin.write("turnOnEscs\n");
 	res.send('turnOnEscs');
 });
 
 app.get('/turnOffEscs', function(req, res) {
+	peripherals.stdin.write("turnOffEscs\n");
 	res.send('turnOffEscs');
 });
 

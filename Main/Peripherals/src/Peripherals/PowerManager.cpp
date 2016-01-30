@@ -10,7 +10,7 @@ void PowerManager::turnOnEscs()
 	std::ofstream serialOut("/dev/ttyACM0");
 	if (!escsOn)
 	{
-		serialOut << '1' << '1' <<  std::flush;
+		serialOut << char(6) << char(1) <<  std::flush;
 		escsOn = true;
 	}
 	serialOut.close();
@@ -22,7 +22,7 @@ void PowerManager::turnOffEscs()
 	std::ofstream serialOut("/dev/ttyACM0");
 	if (escsOn)
 	{
-		serialOut << '1' << '0' << std::flush;
+		serialOut << char(6) << char(0) << std::flush;
 		escsOn = false;
 	}
 	serialOut.close();
