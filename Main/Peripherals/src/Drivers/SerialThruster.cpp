@@ -4,7 +4,7 @@
 
 #include "SerialThruster.h"
 
-SerialThruster::SerialThruster(Serial serial, ThrusterIndex thrusterIndex)
+SerialThruster::SerialThruster(Serial& serial, ThrusterIndex thrusterIndex)
         : serial_(serial), thrusterIndex_(thrusterIndex) { }
 
 void SerialThruster::Thrust(float powerLevel) {

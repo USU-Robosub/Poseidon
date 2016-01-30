@@ -5,7 +5,7 @@ var app = express();
 
 peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
 peripherals.stdout.on('data', function(data) {
-	console.log("From Peripherals: " + data);
+	console.log(data);
 });
 
 var diveMaster = require('../brain/DiveMaster.js');

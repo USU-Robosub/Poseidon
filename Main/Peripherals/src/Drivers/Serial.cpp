@@ -11,11 +11,11 @@ Serial::Serial() {
 }
 
 void Serial::writeByte(unsigned short byteValue) {
-    *output_ << char((byteValue << 8) >> 8) << std::flush;
+    *output_ << char(byteValue & 0xFF) << std::flush;
 }
 
 void Serial::writeShort(unsigned short shortValue) {
-    *output_ << char(shortValue >> 8) << char((shortValue << 8) >> 8) << std::flush;
+    *output_ << char(shortValue >> 8) << char(shortValue & 0xFF) << std::flush;
 }
 
 Serial::~Serial() {
