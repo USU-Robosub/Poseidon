@@ -14,7 +14,7 @@ class SerialThrusterFactory : public IThrusterFactory {
 private:
     Serial& serial_;
 public:
-    SerialThrusterFactory(Serial serial);
+    SerialThrusterFactory(Serial& serial);
     std::shared_ptr<IThruster> createLeftForwardThruster();
     std::shared_ptr<IThruster> createRightForwardThruster();
     std::shared_ptr<IThruster> createLeftStrafeThruster();

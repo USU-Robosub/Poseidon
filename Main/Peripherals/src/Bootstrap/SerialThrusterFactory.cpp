@@ -4,7 +4,7 @@
 
 #include "SerialThrusterFactory.h"
 
-SerialThrusterFactory::SerialThrusterFactory(Serial serial) : serial_(serial) {}
+SerialThrusterFactory::SerialThrusterFactory(Serial& serial) : serial_(serial) {}
 std::shared_ptr<IThruster> SerialThrusterFactory::createLeftForwardThruster() {
     return std::make_shared<SerialThruster>(serial_, LEFT_FORWARD);
 }
