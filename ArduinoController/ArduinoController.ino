@@ -1,4 +1,5 @@
 #include <Servo.h>
+
 enum ServoPin {
   // TODO: Assign pins
   LEFT_FORWARD = 11,
@@ -21,13 +22,16 @@ class Controller {
 
 class ThrustController : public Controller {
  private:
+   const uint16_t IDLE = 1500;
    Servo servo_;
  public:
   ThrustController(ServoPin servoPin) {
     servo_.attach(servoPin);
+    servo_.writeMicroseconds(IDLE);
   }
   void execute() {
-    servo_.writeMicroseconds(readShort());
+    uint16_t val = readShort();
+    servo_.writeMicroseconds(val);
   }
 };
 
@@ -36,14 +40,31 @@ public:
   void execute() {
     while(!Serial.available());
     uint8_t toggle = Serial.read();
-    int gpioPins[] = {39, 41, 43, 49, 51, 53};
+    const uint8_t gpioPins[] = {39, 41, 43, 49, 51, 53};
     for(int i = 0; i < 6; i++) {
       digitalWrite(gpioPins[i], toggle);
     }
   }
 };
 
-Controller* controllers[6];
+class LedController : public Controller {
+  const uint8_t GREEN = 22;
+  const uint8_t WHITE = 52;
+public:
+  LedController() {
+    pinMode(WHITE, OUTPUT);
+  }
+  void execute() {
+    for(int i = 0; i < 2; i++) {
+      digitalWrite(WHITE, HIGH);
+      delay(250);
+      digitalWrite(WHITE, LOW);
+      delay(250);
+    }
+  }
+};
+
+Controller* controllers[8];
 
 void setup() {
   controllers[0] = new ThrustController(LEFT_FORWARD);
@@ -53,6 +74,7 @@ void setup() {
   controllers[4] = new ThrustController(FRONT_DIVE);
   controllers[5] = new ThrustController(BACK_DIVE);
   controllers[6] = new EscController();
+  controllers[7] = new LedController();
   Serial.begin(115200);
 }
 

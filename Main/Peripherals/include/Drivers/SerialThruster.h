@@ -22,7 +22,7 @@ private:
     Serial& serial_;
     ThrusterIndex thrusterIndex_;
 public:
-    SerialThruster(Serial serial, ThrusterIndex thrusterIndex);
+    SerialThruster(Serial& serial, ThrusterIndex thrusterIndex);
     void Thrust(float powerLevel);
 
 };

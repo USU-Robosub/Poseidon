@@ -1,6 +1,12 @@
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var spawner = require('child_process');
 var app = express();
+
+peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
+peripherals.stdout.on('data', function(data) {
+	console.log(data);
+});
 
 var diveMaster = require('../brain/DiveMaster.js');
 
@@ -18,11 +24,15 @@ app.post('/thrust', function(req, res) {
 
 // From IThrustController
 app.post('/goDirection', function(req, res) {
-	res.send('goDirection ' + req.body.forward + ' ' + req.body.strafe + ' ' + req.body.dive);
+	cmdString = 'goDirection ' + req.body.forward + ' ' + req.body.strafe + ' ' + req.body.dive;
+	peripherals.stdin.write(cmdString + "\n");
+	res.send(cmdString);
 });
 
 app.post('/faceDirection', function(req, res) {
-	res.send('faceDirection ' + req.body.yaw)
+	cmdString = 'faceDirection ' + req.body.yaw;
+	peripherals.stdin.write(cmdString + "\n");
+	res.send(cmdString);
 });
 
 
@@ -83,6 +93,6 @@ app.post('/setYawThrust', function(req, res) {
 });
 
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+app.listen(80, function () {
+  console.log('Example app listening on port 80!');
 });

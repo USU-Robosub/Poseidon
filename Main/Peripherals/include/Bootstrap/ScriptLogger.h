@@ -9,13 +9,13 @@
 #include <memory>
 #include <ILogger.h>
 
-class RubyLogger : public ILogger {
+class ScriptLogger : public ILogger {
 
 private:
     std::shared_ptr<std::ostream> out_;
 
 public:
-    RubyLogger(std::ostream* out);
+    ScriptLogger(std::ostream* out);
     void info(const char message[]);
     void warning(const char message[]);
     void error(const char message[]);
