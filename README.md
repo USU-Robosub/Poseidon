@@ -25,7 +25,7 @@ To test via the built-in web server, run the following:
 
 ### Commands
 For all available commands, please see "Poseidon/Main/Peripherals/src/Peripherals/CommandDispatcher.cpp"
-> * __goDirection x y z__  - *invokes a vectored thrust with floating values (0.0F to 1.0F) proportional to 0% to 100%*
-> * __faceDirection w__  - *invokes a yaw motion about the vertical axis with floating values of 0.0F to 1.0F*
-> * __turnOnEscs__  - *enable the Escs for motor control - kind of like starting a car engine*
-> * __turnOffEscs__  - *disable the Escs*
+> * `__goDirection x y z__`  - *invokes a vectored thrust with floating values (0.0F to 1.0F) proportional to 0% to 100%*
+> * `__faceDirection w__`  - *invokes a yaw motion about the vertical axis with floating values of 0.0F to 1.0F*
+> * `__turnOnEscs__`  - *enable the Escs for motor control - kind of like starting a car engine*
+> * `__turnOffEscs__`  - *disable the Escs*
