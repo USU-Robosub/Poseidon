@@ -1,12 +1,6 @@
 
-# Compile MindGem
-cd ../Main/MindGem
-make clean
-make module
-
-# Compile Peripherals
-cd ../Peripherals
-rm -rf Peripherals/Release
+cd ../Main/Peripherals
+rm -rf Release
 mkdir Release
 cd Release/
 cmake ..
