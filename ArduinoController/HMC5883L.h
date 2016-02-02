@@ -12,8 +12,7 @@
 #define HMC5883L_H_
 
 #include "Constants.h"
-#include "stdint.h"
-
+#include "I2C_Utils.h"
 
 class HMC5883L
 {
@@ -173,16 +172,6 @@ class HMC5883L
           *        false, it shall remain flase for approximately 250 μs.
           */
         bool isReady();
-
-    private:
-        Sample samples;
-        Rate outRate;
-        Gain gain;
-        Mode mode;
-
-        uint8_t readByte(uint8_t addr);
-        uint16_t read16(uint8_t addr);
-        void writeByte(uint8_t addr, uint8_t data);
 };
 
 #endif

@@ -12,8 +12,7 @@
 #define BMP085_H_
 
 #include "Constants.h"
-#include "stdint.h"
-
+#include "I2C_Utils.h"
 
 class BMP085
 {
@@ -54,28 +53,7 @@ class BMP085
           */
         float readAltitude(float sealevelPressure = 101325);
 
-        // read raw sensor data
-        /** \brief Returns the raw sensor data for temperature.
-          */
-        uint16_t readRawTemperature(void);
-
-        /** \brief Returns the raw sensor data for pressure.
-          */
-        uint32_t readRawPressure(void);
-
     private:
-        // read a byte from the sensor
-        // params: register address
-        uint8_t read8(uint8_t addr);
-
-        // read a short from the sensor
-        // params: register address
-        uint16_t read16(uint8_t addr);
-
-        // write a byte to the sensor
-        // params: register address, data to be written
-        void write8(uint8_t addr, uint8_t data);
-
         // apply compensation
         int32_t computeB5(int32_t UT);
 
@@ -83,7 +61,9 @@ class BMP085
         uint16_t endian16(uint16_t x);
         uint8_t endian8(uint8_t x);
 
-        void print_debug();
+        // read raw sensor data
+        uint16_t readRawTemperature(void);
+        uint32_t readRawPressure(void);
 
         int16_t ac1, ac2, ac3, b1, b2, mb, mc, md;
         uint16_t ac4, ac5, ac6;

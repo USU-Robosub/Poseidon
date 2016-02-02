@@ -1,7 +1,7 @@
 #ifndef IMU_CONSTANTS_H_
 #define IMU_CONSTANTS_H_
 
-#include <Wire.h>
+#include "I2C_Utils.h"
 
 //      NAME                        REGISTER            DEFAULT     NOTE
 // --- HMC5883L --- http://www51.honeywell.com/aero/common/documents/myaerospacecatalog-documents/Defense_Brochures-documents/HMC5883L_3-Axis_Digital_Compass_IC.pdf
@@ -128,6 +128,7 @@
 #define IMU_ENVIRONMENT_CAL_MB      0xBA // r
 #define IMU_ENVIRONMENT_CAL_MC      0xBC // r
 #define IMU_ENVIRONMENT_CAL_MD      0xBE // r
+#define IMU_ENVIRONMENT_DEVTEST     0xD0 // r
 #define IMU_ENVIRONMENT_ULTRALOWPOWER 0
 #define IMU_ENVIRONMENT_STANDARD      1
 #define IMU_ENVIRONMENT_HIGHRES       2

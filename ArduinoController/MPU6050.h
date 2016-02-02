@@ -12,14 +12,14 @@
 #define MPU6050_H_
 
 #include "Constants.h"
-#include "stdint.h"
+#include "I2C_Utils.h"
 
 class MPU6050
 {
     public:
         /// FS_SEL selects the full scale range of the gyroscope outputs according to the following table.
         enum FS_SEL
-        { // ± °/s
+        {   // ± °/s
             FSG_250 = 0, ///< ± 250 °/s
             FSG_500,     ///< ± 500 °/s
             FSG_1K,      ///< ± 1000 °/s
@@ -28,7 +28,7 @@ class MPU6050
 
         /// AFS_SEL selects the full scale range of the accelerometer outputs according to the following table.
         enum AFS_SEL
-        { // ± g
+        {   // ± g
             FSA_2 = 0,   ///< ± 2g
             FSA_4,       ///< ± 4g
             FSA_8,       ///< ± 8g
@@ -78,7 +78,7 @@ class MPU6050
         /** \brief Makes a temperature reading from the sensor.
           * \return Returns a measurement in °C with an accuracy of ± 0.01.
           */
-        float temp();
+        float temperature();
 
 
         // FS_SEL selects the full scale range of the gyroscope outputs
@@ -99,11 +99,6 @@ class MPU6050
         /** \brief Puts the device into an active reading mode.
           */
         void awake();
-
-    public:
-        uint8_t readByte(uint8_t addr);
-        uint16_t read16(uint8_t addr);
-        void writeByte(uint8_t addr, uint8_t data);
 };
 
 #endif

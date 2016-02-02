@@ -14,6 +14,11 @@ enum ServoPin {
   BACK_DIVE = 6
 };
 
+typedef union _data {
+  float f;
+  char  s[4];
+} floatData;
+
 uint16_t readShort() {
   while(Serial.available() < 2) {}
   return Serial.read() << 8 | Serial.read();
@@ -77,9 +82,89 @@ public:
   }
 };
 
-Controller* controllers[8];
+class EnvironmentController : public Controller {
+private:
+  BMP085 environment;
+public:
+  EnvironmentController() {
+    environment.initialize(IMU_ENVIRONMENT_HIGHRES); 
+  }
+  void execute() {
+    floatData t;
+    floatData p;
+    t.f = environment.readTemperature();
+    p.f = environment.readAltitude();
+    Serial.write(t.s, 4);
+    Serial.write(p.s, 4);
+  }
+};
+
+class CompassController : public Controller {
+private:
+  HMC5883L compass;
+public:
+  CompassController() {
+    compass.setSampleAverage(HMC5883L::Sample::Sx4);
+    compass.setOutputRate(HMC5883L::Rate::Hz75);
+  }
+  void execute() {
+    uint16_t val;
+    compass.setMode(HMC5883L::Mode::Single);
+    delay(10);
+    
+    val = compass.X();
+    Serial.write(val>>8);
+    Serial.write(val);
+    val = compass.Y();
+    Serial.write(val>>8);
+    Serial.write(val);
+    val = compass.Z();
+    Serial.write(val>>8);
+    Serial.write(val);
+  }
+};
+
+class MotionController : public Controller {
+private:
+  MPU6050 motion;
+public:
+  MotionController() {
+    motion.awake();
+  }
+  void execute() {
+    floatData temp;
+    uint16_t val;
+    val = motion.accel_X();
+    Serial.write(val>>8);
+    Serial.write(val);
+    val = motion.accel_Y();
+    Serial.write(val>>8);
+    Serial.write(val);
+    val = motion.accel_Z();
+    Serial.write(val>>8);
+    Serial.write(val);
+    val = motion.gyro_X();
+    Serial.write(val>>8);
+    Serial.write(val);
+    val = motion.gyro_Y();
+    Serial.write(val>>8);
+    Serial.write(val);
+    val = motion.gyro_Z();
+    Serial.write(val>>8);
+    Serial.write(val);
+    temp.f = motion.temperature();
+    Serial.write(temp.s, 4);
+  }
+};
+
+class 
+
+Controller* controllers[11];
 
 void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  
   controllers[0] = new ThrustController(LEFT_FORWARD);
   controllers[1] = new ThrustController(RIGHT_FORWARD);
   controllers[2] = new ThrustController(LEFT_STRAFE);
@@ -88,8 +173,9 @@ void setup() {
   controllers[5] = new ThrustController(BACK_DIVE);
   controllers[6] = new EscController();
   controllers[7] = new LedController();
-  Serial.begin(115200);
-  Wire.begin();
+  controllers[8] = new EnvironmentController();
+  controllers[9] = new CompassController();
+  controllers[10]= new MotionController();
 }
 
 void loop() {
