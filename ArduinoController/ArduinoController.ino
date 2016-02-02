@@ -1,5 +1,9 @@
 #include <Servo.h>
 
+#include "BMP085.h"
+#include "HMC5883L.h"
+#include "MPU6050.h"
+
 enum ServoPin {
   // TODO: Assign pins
   LEFT_FORWARD = 11,
@@ -85,6 +89,7 @@ void setup() {
   controllers[6] = new EscController();
   controllers[7] = new LedController();
   Serial.begin(115200);
+  Wire.begin();
 }
 
 void loop() {
