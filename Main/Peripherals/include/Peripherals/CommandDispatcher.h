@@ -6,6 +6,7 @@
 #define PERIPHERALS_COMMAND_DISPATCHER_H
 
 #include "ThrustController.h"
+#include "IHeadlights.h"
 #include <istream>
 #include <thread>
 #include <string>
@@ -17,6 +18,10 @@ public:
 
     CommandDispatcher( std::istream& in, ThrustController& thrustController );
 
+private:
+
+    std::shared_ptr<IHeadlights> lights_;
+    
 };
 
 

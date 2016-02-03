@@ -30,5 +30,9 @@ void dispatchCommands( std::istream& in, ThrustController& thrustController )
         {
             thrustController.setYawThrust(powerLevel);
         }
+        else if (command == "switchLights")
+        {
+            lights_->toggleLights();
+        }
     }
 }
