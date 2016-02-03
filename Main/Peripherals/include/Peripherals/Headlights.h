@@ -1,10 +1,7 @@
-//
-// Headlights.h
-// Class declaration for Headlights, to be used for toggling the headlights
-// on Poseidon
-//
-// Created by Kevin Burgon on 01/28/2016
-//
+// Headlights.h - Controls for toggling the headlights of Poseidon
+// 
+// Created by Kevin Burgon on 02/01/2016
+
 #ifndef HEADLIGHTS
 #define HEADLIGHTS
 

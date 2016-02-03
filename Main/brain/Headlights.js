@@ -1,14 +1,11 @@
+// Headlights.js - Javascript interface for controlling the headlights of Poseidon
 //
-// Headlights.js
-// Javascript interface for toggling power to the headlights of Poseidon.
-//
-// Created by Kevin Burgon on 01/28/2016
-//
+// Created by Kevin Burgon on 02/01/2016
 
-function Headlights() {
+function Headlights(cmdOut) {
 
 	this.toggleLights = function() {
-		console.log("toggleLights");
+		child.stdin.write("switchLights");
 	}
 }
 

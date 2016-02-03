@@ -1,9 +1,7 @@
-//
-// Headlights.cpp
-// Source files for the class Headlights
-//
-// Created by Kevin Burgon on 01/28/2016
-//
+// Headlights.cpp - functions for toggling the headlights on Poseidon
+// 
+// Created by Kevin Burgon on 02/01/2016
+
 #include "Headlights.h"
 
 Headlights::Headlights()
@@ -13,22 +11,24 @@ Headlights::Headlights()
 
 void Headlights::switchLights()
 {
-	std::ofstream serialOut("/dev/ttyACM0");
 	std::ifstream serialIn("/dev/ttyACM0");
+	std::ofstream serialOut("/dev/ttyACM0");
 	if (areOn)
 	{
 		serialOut << 0x36 << std::flush;
 		serialOut << 0x1 << std::flush;
-		areOn == false;
+		areOn = false;
 	}
 	else
 	{
 		serialOut << 0x36 << 0x1 << std::flush;
-		areOn == true;
+		areOn = true;
 	}
 	std::string response;
 	getline(serialIn, response);
+	serialIn.clear();
 	std::cout << response << std::endl;
-	serialIn.close();
 	serialOut.close();
+	serialIn.close();
 }
+
