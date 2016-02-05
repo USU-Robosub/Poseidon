@@ -6,7 +6,7 @@
 #define PERIPHERALS_COMMAND_DISPATCHER_H
 
 #include "ThrustController.h"
-#include "IHeadlights.h"
+#include <IHeadlights.h>
 #include "PowerManager.h"
 #include <istream>
 #include <string>

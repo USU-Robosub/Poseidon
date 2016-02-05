@@ -2,16 +2,11 @@
 //
 // Created by Kevin Burgon on 02/03/2016
 
-#ifndef HEADLIGHTS
-#define HEADLIGHTS
+#ifndef IHEADLIGHTS_H
+#define IHEADLIGHTS_H
 
-#include <iostream>
-#include "Serial.h"
-
-class IHeadlights
-{
+class IHeadlights {
 public:
-	// IHeadlights() = 0;
 	virtual void switchLights() = 0;
 };
 

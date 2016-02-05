@@ -14,13 +14,13 @@ void Headlights::switchLights()
 	if (areOn)
 	{
 
-		writeSerial.writeByte(0x36);
-		writeSerial.writeByte(0x1);
+		writeSerial.writeByte(0x9);
+		writeSerial.writeByte(0x0);
 		areOn = false;
 	}
 	else
 	{
-		writeSerial.writeByte(0x36);
+		writeSerial.writeByte(0x9);
 		writeSerial.writeByte(0x1);
 		areOn = true;
 	}
