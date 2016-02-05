@@ -6,7 +6,7 @@
 #define PERIPHERALS_COMMAND_DISPATCHER_H
 
 #include "ThrustController.h"
-#include <IHeadlights.h>
+#include "IHeadlights.h"
 #include "PowerManager.h"
 #include <istream>
 #include <string>
@@ -20,10 +20,10 @@ private:
     void dispatchCommand(std::stringstream& cmd);
     void goDirection(std::stringstream& cmdString);
     void faceDirection(std::stringstream& cmdString);
-    std::shared_ptr<IHeadlights> lights_;
+    IHeadlights& lights_;
 public:
 
-    CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager);
+    CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights);
     void runLoop();
 };
 

@@ -8,6 +8,7 @@
 #include <CommandDispatcher.h>
 #include "SerialThrusterFactory.h"
 #include "ScriptLogger.h"
+#include <Headlights.h>
 
 int main() {
 
@@ -19,11 +20,11 @@ int main() {
 
     auto pm = PowerManager();
 
-    CommandDispatcher cd(std::cin, tc, pm);
+    auto lights = Headlights(serial);
+
+    CommandDispatcher cd(std::cin, tc, pm, lights);
     cd.runLoop();
 
     return 0;
 
 }
-
-
