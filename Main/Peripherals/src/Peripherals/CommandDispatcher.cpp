@@ -1,38 +1,41 @@
 //
-// Created by Nathan Copier on 11/10/2015.
+// Created by Nathan Copier on 1/28/2016.
 //
 
 #include "CommandDispatcher.h"
 
-void dispatchCommands( std::istream& in, ThrustController& thrustController );
+CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager)
+        : in_(in), thrustController_(thrustController), powerManager_(powerManager) {}
 
-CommandDispatcher::CommandDispatcher( std::istream& in, ThrustController& thrustController ) {
-    auto thread = std::thread( [&](){ dispatchCommands(in, thrustController); } );
-    thread.join();
+void CommandDispatcher::runLoop() {
+    while(true) {
+        std::string cmd;
+        std::getline(in_, cmd);
+        std::stringstream ss(cmd);
+        dispatchCommand(ss);
+    }
 }
 
-void dispatchCommands( std::istream& in, ThrustController& thrustController )
-{
-    while (true) {
-        std::string command;
-        int powerLevel;
-        in >> command;
-        in >> powerLevel;
-        if(command == "dive")
-        {
-            thrustController.setDiveThrust(powerLevel);
-        }
-        else if(command == "forward")
-        {
-            thrustController.setForwardThrust(powerLevel);
-        }
-        else if(command == "yaw")
-        {
-            thrustController.setYawThrust(powerLevel);
-        }
-        else if (command == "switchLights")
-        {
-            lights_->toggleLights();
-        }
-    }
+void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
+    std::string cmd;
+    cmdString >> cmd;
+    if(cmd == "goDirection") goDirection(cmdString);
+    else if(cmd == "faceDirection") faceDirection(cmdString);
+    else if(cmd == "turnOnEscs") powerManager_.turnOnEscs();
+    else if(cmd == "turnOffEscs") powerManager_.turnOffEscs();
+    else if(cmd == "switchLights") lights_->toggleLights();
+}
+
+void CommandDispatcher::goDirection(std::stringstream& cmdString) {
+    float forward, strafe, dive;
+    cmdString >> forward;
+    cmdString >> strafe;
+    cmdString >> dive;
+    thrustController_.goDirection(forward, strafe, dive);
+}
+
+void CommandDispatcher::faceDirection(std::stringstream& cmdString) {
+    float yaw;
+    cmdString >> yaw;
+    thrustController_.faceDirection(yaw);
 }
