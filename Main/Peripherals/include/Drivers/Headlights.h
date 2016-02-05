@@ -7,9 +7,9 @@
 
 #include <iostream>
 #include "Serial.h"
-#include "IHeadlights.h"
+// #include <IHeadlights.h>
 
-class Headlights : public IHeadlights
+class Headlights: public IHeadlights
 {
 private:
 	bool areOn;

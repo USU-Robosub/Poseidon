@@ -11,8 +11,8 @@
 class IHeadlights
 {
 public:
-	Headlights() = 0;
-	void switchLights() = 0;
+	// IHeadlights() = 0;
+	virtual void switchLights() = 0;
 };
 
 #endif

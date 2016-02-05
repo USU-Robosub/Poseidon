@@ -11,27 +11,17 @@ Headlights::Headlights()
 
 void Headlights::switchLights()
 {
-	// std::ifstream serialIn("/dev/ttyACM0");
-	// std::ofstream serialOut("/dev/ttyACM0");
 	if (areOn)
 	{
-		// serialOut << 0x36 << std::flush;
-		// serialOut << 0x1 << std::flush;
+
 		writeSerial.writeByte(0x36);
 		writeSerial.writeByte(0x1);
 		areOn = false;
 	}
 	else
 	{
-		// serialOut << 0x36 << 0x1 << std::flush;
 		writeSerial.writeByte(0x36);
 		writeSerial.writeByte(0x1);
 		areOn = true;
 	}
-	std::string response;
-	getline(serialIn, response);
-	serialIn.clear();
-	std::cout << response << std::endl;
-	// serialOut.close();
-	// serialIn.close();
 }
