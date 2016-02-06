@@ -100,8 +100,8 @@ public:
   }
 };
 
-const uint32_t CONTROL_CNT = 10u;
-class Controller* controllers[CONTROL_CNT];
+const uint32_t CONTROLLER_CNT = 10u;
+class Controller* controllers[CONTROLLER_CNT];
 
 void setup() {
   Serial.begin(115200);
