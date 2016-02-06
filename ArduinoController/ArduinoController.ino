@@ -121,7 +121,7 @@ void setup() {
 void loop() {
   if(Serial.available()) {
     uint8_t controllerNumber = Serial.read();
-    if(controllerNumber < CONTROL_CNT)
+    if(controllerNumber < CONTROLLER_CNT)
       // only execute if a command exists
       controllers[controllerNumber]->execute();
   }
