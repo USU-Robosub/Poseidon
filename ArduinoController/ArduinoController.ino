@@ -1,9 +1,5 @@
 #include <Servo.h>
 
-#include "BMP085.h"
-#include "HMC5883L.h"
-#include "MPU6050.h"
-
 enum ServoPin {
   // TODO: Assign pins
   LEFT_FORWARD = 11,
@@ -73,97 +69,42 @@ public:
     digitalWrite(WHITE, LOW);
   }
   void execute() {
-    for(int i = 0; i < 2; i++) {
-      digitalWrite(WHITE, HIGH);
-      delay(250);
-      digitalWrite(WHITE, LOW);
-      delay(250);
+    while(!Serial.available());
+    digitalWrite(WHITE, Serial.read());
+  }
+};
+
+class LightController : public Controller {
+private:
+  const uint8_t LIGHTS = 45;
+public:
+  LightController() {
+    pinMode(LIGHTS, OUTPUT);
+    digitalWrite(LIGHTS, LOW);
+  }
+  void execute() {
+    while(!Serial.available());
+    digitalWrite(LIGHTS, !Serial.read());
+  }
+};
+
+class PingController : public Controller {
+public:
+  void execute() {
+    if(Serial.available())
+    {
+      Serial.print(Serial.read());
+      Serial.print(" ");
     }
+    Serial.println("I'm Here!");
   }
 };
 
-class EnvironmentController : public Controller {
-private:
-  BMP085 environment;
-public:
-  EnvironmentController() {
-    environment.initialize(IMU_ENVIRONMENT_HIGHRES); 
-  }
-  void execute() {
-    floatData t;
-    floatData p;
-    t.f = environment.readTemperature();
-    p.f = environment.readAltitude();
-    Serial.write(t.s, 4);
-    Serial.write(p.s, 4);
-  }
-};
-
-class CompassController : public Controller {
-private:
-  HMC5883L compass;
-public:
-  CompassController() {
-    compass.setSampleAverage(HMC5883L::Sample::Sx4);
-    compass.setOutputRate(HMC5883L::Rate::Hz75);
-  }
-  void execute() {
-    uint16_t val;
-    compass.setMode(HMC5883L::Mode::Single);
-    delay(10);
-    
-    val = compass.X();
-    Serial.write(val>>8);
-    Serial.write(val);
-    val = compass.Y();
-    Serial.write(val>>8);
-    Serial.write(val);
-    val = compass.Z();
-    Serial.write(val>>8);
-    Serial.write(val);
-  }
-};
-
-class MotionController : public Controller {
-private:
-  MPU6050 motion;
-public:
-  MotionController() {
-    motion.awake();
-  }
-  void execute() {
-    floatData temp;
-    uint16_t val;
-    val = motion.accel_X();
-    Serial.write(val>>8);
-    Serial.write(val);
-    val = motion.accel_Y();
-    Serial.write(val>>8);
-    Serial.write(val);
-    val = motion.accel_Z();
-    Serial.write(val>>8);
-    Serial.write(val);
-    val = motion.gyro_X();
-    Serial.write(val>>8);
-    Serial.write(val);
-    val = motion.gyro_Y();
-    Serial.write(val>>8);
-    Serial.write(val);
-    val = motion.gyro_Z();
-    Serial.write(val>>8);
-    Serial.write(val);
-    temp.f = motion.temperature();
-    Serial.write(temp.s, 4);
-  }
-};
-
-class 
-
-Controller* controllers[11];
+const uint32_t CONTROL_CNT = 10u;
+class Controller* controllers[CONTROL_CNT];
 
 void setup() {
   Serial.begin(115200);
-  Wire.begin();
   
   controllers[0] = new ThrustController(LEFT_FORWARD);
   controllers[1] = new ThrustController(RIGHT_FORWARD);
@@ -173,14 +114,15 @@ void setup() {
   controllers[5] = new ThrustController(BACK_DIVE);
   controllers[6] = new EscController();
   controllers[7] = new LedController();
-  controllers[8] = new EnvironmentController();
-  controllers[9] = new CompassController();
-  controllers[10]= new MotionController();
+  controllers[8] = new PingController();
+  controllers[9] = new LightController();
 }
 
 void loop() {
   if(Serial.available()) {
     uint8_t controllerNumber = Serial.read();
-    controllers[controllerNumber]->execute();
+    if(controllerNumber < CONTROL_CNT)
+      // only execute if a command exists
+      controllers[controllerNumber]->execute();
   }
 }
