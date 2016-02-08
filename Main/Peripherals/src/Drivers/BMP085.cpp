@@ -2,6 +2,7 @@
  * BMP085.cpp
  *
  *  Created on: Jan 29, 2015
+ * Last Edited: Feb  7, 2016
  *  Fork: https://github.com/adafruit/Adafruit-BMP085-Library
  */
 
