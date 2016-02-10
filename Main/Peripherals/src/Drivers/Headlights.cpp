@@ -4,7 +4,7 @@
 
 #include "Headlights.h"
 
-Headlights::Headlights()
+Headlights::Headlights(Serial& serial) : serial_(serial)
 {
 	areOn = false;
 }
@@ -14,14 +14,14 @@ void Headlights::switchLights()
 	if (areOn)
 	{
 
-		writeSerial.writeByte(0x9);
-		writeSerial.writeByte(0x0);
+		serial_.writeByte(0x9);
+		serial_.writeByte(0x0);
 		areOn = false;
 	}
 	else
 	{
-		writeSerial.writeByte(0x9);
-		writeSerial.writeByte(0x1);
+		serial_.writeByte(0x9);
+		serial_.writeByte(0x1);
 		areOn = true;
 	}
 }

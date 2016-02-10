@@ -8,18 +8,12 @@
 #include <IHeadlights.h>
 #include "Serial.h"
 
-// class IHeadlights {
-// public:
-// 	// IHeadlights() = 0;
-// 	virtual void switchLights() = 0;
-// };
-
 class Headlights : public IHeadlights {
 private:
 	bool areOn;
-	Serial writeSerial;
+	Serial& serial_;
 public:
-	Headlights();
+	Headlights(Serial& serial);
 	void switchLights();
 };
 
