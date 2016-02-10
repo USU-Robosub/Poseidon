@@ -1,45 +1,11 @@
 #include "ThrustController.h"
 #include "EscController.h"
 #include "LedController.h"
-
-typedef union _data {
-  float f;
-  char  s[4];
-} floatData;
-
-class Controller {
- public:
-  virtual void execute() = 0;
-};
-
-class LightController : public Controller {
-private:
-  const uint8_t LIGHTS = 45;
-public:
-  LightController() {
-    pinMode(LIGHTS, OUTPUT);
-    digitalWrite(LIGHTS, LOW);
-  }
-  void execute() {
-    while(!Serial.available());
-    digitalWrite(LIGHTS, !Serial.read());
-  }
-};
-
-class PingController : public Controller {
-public:
-  void execute() {
-    if(Serial.available())
-    {
-      Serial.print(Serial.read());
-      Serial.print(" ");
-    }
-    Serial.println("I'm Here!");
-  }
-};
+#include "LightController.h"
+#include "PingController.h"
 
 const uint32_t CONTROLLER_CNT = 10u;
-class Controller* controllers[CONTROLLER_CNT];
+class IController* controllers[CONTROLLER_CNT];
 
 void setup() {
   Serial.begin(115200);
