@@ -6,8 +6,8 @@
 
 Headlights::Headlights(Serial& serial) : serial_(serial)
 {
-	areOn = false;
-}
+	areOn = true; // Initialized as true because Poseidon's headlights are
+}				//		are turned on by the arduino in its initialization
 
 void Headlights::switchLights()
 {
