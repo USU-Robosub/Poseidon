@@ -40,6 +40,26 @@
 					}
 				};
 			</get-tag>
+			<single-get-tag>
+				<div>
+					<button onclick={ get }>{ url }</button>
+					<p>Result: { result }</p>
+				</div>
+
+				var self = this;
+				self.url = self.opts.url;
+
+				self.get = function() {
+					axios.get(self.opts.url).then(function (response) {
+						self.result = response.data;
+						self.update();
+						setTimeout(function() {
+							self.result = '';
+							self.update();
+						}, 500);
+					});
+				};
+			</single-get-tag>
 			<post-tag>
 				<div>
 					<button onclick={ post }>{ url }</button>
@@ -77,6 +97,7 @@
 				<get-tag url='/getDiveAngle'></get-tag>
 				<get-tag url='/turnOnEscs'></get-tag>
 				<get-tag url='/turnOffEscs'></get-tag>
+				<single-get-tag url='/headlight'></single-get-tag>
 			</div>
 			<div style="width: 50%; float: right;">
 				<post-tag url='/thrust' arguments='["powerLevel"]'></post-tag>
