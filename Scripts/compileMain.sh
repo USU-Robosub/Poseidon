@@ -1,7 +1,9 @@
 cd ../Main/Peripherals
-rm -rf Release
+if [ -d Release ]; then
+    rm -rf Release
+fi
 mkdir Release
-cd Release/
+cd Release
 cmake ..
 make Bootstrap
 
