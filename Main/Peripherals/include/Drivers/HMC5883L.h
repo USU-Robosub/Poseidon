@@ -106,17 +106,17 @@ class HMC5883L
         /** \brief Reads the X-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        uint16_t X();
+        int16_t X();
 
         /** \brief Reads the Y-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        uint16_t Y();
+        int16_t Y();
 
         /** \brief Reads the Z-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        uint16_t Z();
+        int16_t Z();
 
 
 
