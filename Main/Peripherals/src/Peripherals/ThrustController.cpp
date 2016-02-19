@@ -9,28 +9,17 @@ ThrustController::ThrustController(IThrusterFactory& thrusterFactory, std::share
         rearDiveThruster_(thrusterFactory.createRearDiveThruster()),
         logger_(logger)
 {
-    logger_->info("Initializing Thrusters...");
 }
 
 void ThrustController::goDirection(float forward, float strafe, float dive) {
     logger_->info("Thrusting...");
-    float powerScale;
     auto strafeCorrection = getReciprocalValues(strafe * strafeRatio);
     auto leftForward = strafeCorrection.first + forward;
     auto rightForward = strafeCorrection.second + forward;
-    powerScale = getScaleToMaxPower(leftForward, rightForward);
+    float powerScale = getScaleToMaxPower(leftForward, rightForward);
     auto forwardPair = std::make_pair(leftForward*powerScale, rightForward*powerScale);
     auto strafePair = getReciprocalValues(strafe*powerScale);
     setThrust(forwardPair, strafePair, dive*powerScale);
-}
-
-void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, float dive) {
-    leftForwardThruster_->Thrust(forwardPair.first);
-    rightForwardThruster_->Thrust(forwardPair.second);
-    leftStrafeThruster_->Thrust(strafePair.first);
-    rightStrafeThruster_->Thrust(strafePair.second);
-    forwardDiveThruster_->Thrust(dive);
-    rearDiveThruster_->Thrust(dive);
 }
 
 float ThrustController::getScaleToMaxPower(float left, float right) {
@@ -47,8 +36,7 @@ float ThrustController::getMaxMag(float left, float right) {
 void ThrustController::faceDirection(float yaw) {
     logger_->info("Yawing...");
     auto yawPair = getReciprocalValues(yaw);
-    leftForwardThruster_->Thrust(yawPair.first);
-    rightForwardThruster_->Thrust(yawPair.second);
+    setThrust(yawPair, std::make_pair(0.0f, 0.0f), 0.0f);
 }
 
 std::pair<float,float> ThrustController::getReciprocalValues(float value) {
@@ -62,6 +50,15 @@ std::pair<float,float> ThrustController::getReciprocalValues(float value) {
         right = -1 * value;
     }
     return std::make_pair(left, right);
+}
+
+void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, float dive) {
+    leftForwardThruster_->Thrust(forwardPair.first);
+    rightForwardThruster_->Thrust(forwardPair.second);
+    leftStrafeThruster_->Thrust(strafePair.first);
+    rightStrafeThruster_->Thrust(strafePair.second);
+    forwardDiveThruster_->Thrust(dive);
+    rearDiveThruster_->Thrust(dive);
 }
 
 ThrustController::~ThrustController()

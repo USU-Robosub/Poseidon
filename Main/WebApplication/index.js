@@ -8,7 +8,7 @@ peripherals.stdout.on('data', function(data) {
 	console.log(data);
 });
 
-var diveMaster = require('../brain/DiveMaster.js');
+var diveMaster = require('../Brain/DiveMaster.js');
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
