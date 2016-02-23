@@ -13,6 +13,7 @@
 #include <sstream>
 
 class CommandDispatcher {
+
 private:
     std::istream& in_;
     ThrustController& thrustController_;
@@ -21,10 +22,12 @@ private:
     void goDirection(std::stringstream& cmdString);
     void faceDirection(std::stringstream& cmdString);
     IHeadlights& lights_;
-public:
+    bool shouldExit_;
 
+public:
     CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights);
     void runLoop();
+
 };
 
 #endif //PERIPHERALS_COMMAND_DISPATCHER_H

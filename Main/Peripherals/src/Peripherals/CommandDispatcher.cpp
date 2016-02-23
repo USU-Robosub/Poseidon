@@ -5,10 +5,10 @@
 #include "CommandDispatcher.h"
 
 CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights)
-        : in_(in), thrustController_(thrustController), powerManager_(powerManager), lights_(lights) {}
+        : in_(in), thrustController_(thrustController), powerManager_(powerManager), lights_(lights), shouldExit_(false) {}
 
 void CommandDispatcher::runLoop() {
-    while(true) {
+    while(!shouldExit_) {
         std::string cmd;
         std::getline(in_, cmd);
         std::stringstream ss(cmd);
@@ -24,6 +24,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "turnOnEscs") powerManager_.turnOnEscs();
     else if(cmd == "turnOffEscs") powerManager_.turnOffEscs();
     else if(cmd == "switchLights") lights_.switchLights();
+    else if(cmd == "exit") shouldExit_ = true;
 }
 
 void CommandDispatcher::goDirection(std::stringstream& cmdString) {
