@@ -17,19 +17,19 @@ HMC5883L::~HMC5883L() {}
 
 
 
-uint16_t HMC5883L::X() {
+short HMC5883L::X() {
     return I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_X_H);
 }
 
 
 
-uint16_t HMC5883L::Y() {
+short HMC5883L::Y() {
     return I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_Y_H);
 }
 
 
 
-uint16_t HMC5883L::Z() {
+short HMC5883L::Z() {
     return I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_Z_H);
 }
 
