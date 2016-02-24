@@ -3,17 +3,20 @@
  */
 
 module.exports = (function() {
+
     function CppLogger(streamIn, outputLogger) {
-        streamIn.on("data", function(log){
-            _translateLog(outputLogger, log);
+        streamIn.on("readable", function(){
+            outputLogger.log(streamIn.read());
+            var logString = streamIn.read().toString().replace('\n', '');
+            _translateLog(outputLogger, logString);
         });
     }
 
-    var _translateLog = function(outputLogger, log) {
-        var sliceIndex = log.indexOf(' ');
+    var _translateLog = function(outputLogger, logString) {
+        var sliceIndex = logString.indexOf(' ');
         outputLogger.log({
-            LogType: log.slice(0, sliceIndex),
-            Message: log.slice(sliceIndex+1)
+            LogType: logString.slice(0, sliceIndex),
+            Message: logString.slice(sliceIndex+1)
         });
     };
 

@@ -1,14 +1,16 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
+var CppInterface = require('../Brain/CppInterface');
+var ConsoleLogger = require('./ConsoleLogger');
 var app = express();
 
 peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
-peripherals.stdout.on('data', function(data) {
-	console.log(data);
-});
 
-var diveMaster = require('../brain/DiveMaster.js');
+var thrustController = new CppInterface.ThrustController(peripherals.stdin);
+var headLights = new CppInterface.HeadLights(peripherals.stdin);
+var powerManager = new CppInterface.PowerManager(peripherals.stdin);
+var logger = new CppInterface.CppLogger(peripherals.stdout, new ConsoleLogger());
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -24,9 +26,9 @@ app.post('/thrust', function(req, res) {
 
 // From IThrustController
 app.post('/goDirection', function(req, res) {
-	cmdString = 'goDirection ' + req.body.forward + ' ' + req.body.strafe + ' ' + req.body.dive;
-	peripherals.stdin.write(cmdString + "\n");
-	res.send(cmdString);
+	var params = req.body;
+	thrustController.goDirection(params.forward, params.strafe, params.dive);
+	res.send('');
 });
 
 app.post('/faceDirection', function(req, res) {
@@ -64,12 +66,12 @@ app.get('/getDiveAngle', function(req, res) {
 
 // From IPowerController {
 app.get('/turnOnEscs', function(req, res) {
-	peripherals.stdin.write("turnOnEscs\n");
+	powerManager.turnOnEscs();
 	res.send('turnOnEscs');
 });
 
 app.get('/turnOffEscs', function(req, res) {
-	peripherals.stdin.write("turnOffEscs\n");
+	powerManager.turnOffEscs();
 	res.send('turnOffEscs');
 });
 

@@ -1,7 +1,7 @@
 /**
  * Created by Nathan Copier on 2/17/2016.
  */
-const EventEmitter = require('events');
+const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 
 module.exports = (function(){
