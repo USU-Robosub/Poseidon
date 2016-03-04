@@ -9,8 +9,7 @@
 #include "HMC5883L.h"
 
 
-HMC5883L::HMC5883L() : currentGain(Gain::G1_3) {
-}
+HMC5883L::HMC5883L() : currentGain(Gain::G1_3) {}
 
 
 
@@ -19,7 +18,6 @@ HMC5883L::~HMC5883L() {}
 
 
 float HMC5883L::X() {
-
     return scaleWithGain(I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_X_H));
 }
 
@@ -64,7 +62,6 @@ void HMC5883L::setSampleAverage(Sample ma) {
 
 
 void HMC5883L::setOutputRate(Rate dor) {
-
     uint cra = I2C::readByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A) & 0xE3;
     cra |= static_cast<int>(dor) << 2;
     I2C::writeByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A, cra);

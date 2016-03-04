@@ -114,6 +114,7 @@ class MPU6050
         /** \brief Puts the device into a power-saving sleep mode.
           */
         void sleep();
+        
         /** \brief Puts the device into an active reading mode.
           */
         void awake();

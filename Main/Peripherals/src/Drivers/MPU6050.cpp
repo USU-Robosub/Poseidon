@@ -9,9 +9,7 @@
 #include "MPU6050.h"
 
 
-MPU6050::MPU6050() : g_full(FS_SEL::FSG_250), a_full(AFS_SEL::FSA_2) {
-
-}
+MPU6050::MPU6050() : g_full(FS_SEL::FSG_250), a_full(AFS_SEL::FSA_2) {}
 
 
 
