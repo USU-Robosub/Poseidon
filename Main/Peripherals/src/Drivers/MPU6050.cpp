@@ -76,12 +76,14 @@ float MPU6050::scaleAccel(short value) {
 
 
 void MPU6050::setGyroFullScale(FS_SEL select) {
+    g_full = select;
     I2C::writeByte(IMU_MOTION_ADDR_A, IMU_MOTION_GYRO_CONFIG, static_cast<int>(select) << 3);
 }
 
 
 
 void MPU6050::setAcclFullScale(AFS_SEL select) {
+    a_full = select;
     I2C::writeByte(IMU_MOTION_ADDR_A, IMU_MOTION_ACCEL_CONFIG, static_cast<int>(select) << 3);
 }
 
