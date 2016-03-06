@@ -59,33 +59,33 @@ class MPU6050
         /** \brief Makes a reading from the accelerometer's X axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        int16_t accel_X();
+        float accel_X();
 
         /** \brief Makes a reading from the accelerometer's Y axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        int16_t accel_Y();
+        float accel_Y();
 
         /** \brief Makes a reading from the accelerometer's Z axis.
           * \return Returns a signed short representation of the acceleration.
           */
-        int16_t accel_Z();
+        float accel_Z();
 
         // returns the XYZ magnitude from gyroscope
         /** \brief Makes a reading from the gyroscope's X axis.
           * \return Returns a signed short representation of the angle.
           */
-        int16_t gyro_X();
+        float gyro_X();
 
         /** \brief Makes a reading from the gyroscope's Y axis.
           * \return Returns a signed short representation of the angle.
           */
-        int16_t gyro_Y();
+        float gyro_Y();
 
         /** \brief Makes a reading from the gyroscope's Z axis.
           * \return Returns a signed short representation of the angle.
           */
-        int16_t gyro_Z();
+        float gyro_Z();
 
         // returns the temperature of the sensor's environment
         /** \brief Makes a temperature reading from the sensor.
@@ -114,9 +114,27 @@ class MPU6050
         /** \brief Puts the device into a power-saving sleep mode.
           */
         void sleep();
+        
         /** \brief Puts the device into an active reading mode.
           */
         void awake();
+
+    private:
+        FS_SEL g_full;
+        AFS_SEL a_full;
+
+        const float GYRO_SCALER[4]= { 131.0, 65.5, 32.8, 16.4 }; // LSb / °/s
+        const int ACCEL_SCALER[4] = { 16384, 8192, 4096, 2048 }; // LSb / g
+
+        /** \brief Scales the raw data (LSb) with the current scalar (LSb / °/s)
+         *  \param value Raw data that needs to be scaled
+         */
+        float scaleGyro(short value);
+
+        /** \brief Scales the raw data (LSb) with the current scalar (LSb / g)
+         *  \param value Raw data that needs to be scaled
+         */
+        float scaleAccel(short value);
 };
 
 #endif /* MPU6050_H_ */

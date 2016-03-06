@@ -96,8 +96,6 @@ class HMC5883L
             Idle,
         };
         
-        
-        
         /*********************************************************************/
         /*                          Sensor Values                            */
         /*********************************************************************/
@@ -106,17 +104,17 @@ class HMC5883L
         /** \brief Reads the X-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        short X();
+        float X();
 
         /** \brief Reads the Y-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        short Y();
+        float Y();
 
         /** \brief Reads the Z-direction of the greatest polar field.
           * \return Returns a signed short value ranging from -2048 to 2047.
           */
-        short Z();
+        float Z();
 
 
 
@@ -195,6 +193,16 @@ class HMC5883L
           *        false, it shall remain flase for approximately 250 μs.
           */
         bool isReady();
+
+    private:
+        // LSb / Gauss
+        Gain currentGain;
+        const int GAIN_SCALER[8] = {1370, 1090, 820, 660, 440, 390, 330, 230};
+
+        /** \brief Scales the raw data (LSb) with the current Guass scalar (LSb / Guass)
+         *  \param value Raw data that needs to be scaled
+         */
+        float scaleWithGain(short value);
 };
 
 #endif /* HMC5883L_H_ */

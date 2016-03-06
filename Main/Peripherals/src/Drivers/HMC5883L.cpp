@@ -9,7 +9,7 @@
 #include "HMC5883L.h"
 
 
-HMC5883L::HMC5883L() {}
+HMC5883L::HMC5883L() : currentGain(Gain::G1_3) {}
 
 
 
@@ -17,20 +17,26 @@ HMC5883L::~HMC5883L() {}
 
 
 
-short HMC5883L::X() {
-    return I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_X_H);
+float HMC5883L::X() {
+    return scaleWithGain(I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_X_H));
 }
 
 
 
-short HMC5883L::Y() {
-    return I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_Y_H);
+float HMC5883L::Y() {
+    return scaleWithGain(I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_Y_H));
 }
 
 
 
-short HMC5883L::Z() {
-    return I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_Z_H);
+float HMC5883L::Z() {
+    return scaleWithGain(I2C::readShort(IMU_COMPASS_ADDR, IMU_COMPASS_Z_H));
+}
+
+
+
+float HMC5883L::scaleWithGain(short value) {
+    return value * (1.0 / GAIN_SCALER[static_cast<int>(currentGain)]);
 }
 
 
@@ -56,7 +62,6 @@ void HMC5883L::setSampleAverage(Sample ma) {
 
 
 void HMC5883L::setOutputRate(Rate dor) {
-
     uint cra = I2C::readByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A) & 0xE3;
     cra |= static_cast<int>(dor) << 2;
     I2C::writeByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_A, cra);
@@ -65,6 +70,7 @@ void HMC5883L::setOutputRate(Rate dor) {
 
 
 void HMC5883L::setGain(Gain gn) {
+    currentGain = gn;
     uint crb = I2C::readByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_B) & 0x1F;
     crb |= static_cast<int>(gn) << 5;
     I2C::writeByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_B, crb);
@@ -92,7 +98,9 @@ int HMC5883L::getOutputRate() {
 
 
 int HMC5883L::getGain() {
-    return ((I2C::readByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_B) & 0xE0) >> 5);
+    int val = ((I2C::readByte(IMU_COMPASS_ADDR, IMU_COMPASS_CONFIG_B) & 0xE0) >> 5);
+    currentGain = static_cast<Gain>(val);
+    return val;
 }
 
 
