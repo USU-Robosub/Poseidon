@@ -2,22 +2,31 @@
 
 class KillSwitchController : public IController {
 private:
-  const uint8_t KILLPIN = 50;
   volatile bool active;
-  auto f;
+  IController ** list;
+  int count;
+  
 public:
-  KillSwitchController(void (*iExec)()) {
-    f = iExec;
-    //attachInterrupt(digitalPinToInterrupt(KILLPIN), ISR0, CHANGE);
+  KillSwitchController(IController ** _list_, int _count_) {
+    list = _list_;
+    count = _count_;
   }
+    
   void execute() {
     Serial.println(active?'1':'0');
   }
-  void ISR0() {
+    
+  void kill() {
+    for(int i = 0; i<count; i++) {
+      list[i]->kill();
+    }
+  }
+    
+  void isr0(int interrupt) {
     noInterrupts();
-    active = digitalRead(KILLPIN) == 1;
+    active = digitalRead(interrupt) == 1;
     if(active)
-      (*f)();
+      kill();
     interrupts();
   }
 };

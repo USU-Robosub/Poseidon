@@ -17,4 +17,8 @@ public:
       delay(250);
     }
   }
+  void kill() {
+    digitalWrite(GREEN, LOW);
+    digitalWrite(WHITE, LOW);
+  }
 };

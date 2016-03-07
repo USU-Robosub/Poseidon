@@ -17,4 +17,9 @@ public:
       digitalWrite(GPIO_PINS[i], !toggle);
     }
   }
+  void kill() {
+    for(int i = 0; i < 6; i++) {
+      digitalWrite(GPIO_PINS[i], LOW);
+    }
+  }
 };

@@ -5,6 +5,7 @@
 #include "PingController.h"
 #include "KillSwitchController.h"
 
+const uint8_t KILLPIN = 50;
 const uint32_t CONTROLLER_CNT = 11u;
 class IController* controllers[CONTROLLER_CNT];
 
@@ -21,7 +22,8 @@ void setup() {
   controllers[7] = new LedController();
   controllers[8] = new PingController();
   controllers[9] = new LightController();
-  controllers[10]= new KillSwitchController(killThrust);
+  controllers[10]= new KillSwitchController(controllers, CONTROLLER_CNT-1);
+  attachInterrupt(digitalPinToInterrupt(KILLPIN), isr0Dispatch, CHANGE);
 }
 
 void loop() {
@@ -33,9 +35,7 @@ void loop() {
   }
 }
 
-void killThrust() {
-  for(int i = 0; i < 6; i++) {
-    ((ThrustController *)controllers[i])->kill();
-  }
+void isr0Dispatch() {
+  ((KillSwitchController*)controllers[10])->isr0(KILLPIN);
 }
 
