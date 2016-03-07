@@ -6,6 +6,7 @@
 #include "KillSwitchController.h"
 
 const uint8_t KILLPIN = 50;
+const uint8_t KILL_ADDR = 10;
 const uint32_t CONTROLLER_CNT = 11u;
 class IController* controllers[CONTROLLER_CNT];
 
@@ -22,7 +23,8 @@ void setup() {
   controllers[7] = new LedController();
   controllers[8] = new PingController();
   controllers[9] = new LightController();
-  controllers[10]= new KillSwitchController(controllers, CONTROLLER_CNT-1);
+  
+  controllers[KILL_ADDR]= new KillSwitchController(controllers, CONTROLLER_CNT-1);
   attachInterrupt(digitalPinToInterrupt(KILLPIN), isr0Dispatch, CHANGE);
 }
 
@@ -36,6 +38,6 @@ void loop() {
 }
 
 void isr0Dispatch() {
-  ((KillSwitchController*)controllers[10])->isr0(KILLPIN);
+  ((KillSwitchController*)controllers[KILL_ADDR])->isr0(KILLPIN);
 }
 

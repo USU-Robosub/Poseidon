@@ -19,7 +19,7 @@ public:
   }
   void kill() {
     for(int i = 0; i < 6; i++) {
-      digitalWrite(GPIO_PINS[i], LOW);
+      digitalWrite(GPIO_PINS[i], HIGH);
     }
   }
 };
