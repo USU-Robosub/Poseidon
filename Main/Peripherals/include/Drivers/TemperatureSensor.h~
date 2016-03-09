@@ -1,12 +1,17 @@
+#ifndef DRIVER_TEMPERATURE_SENSOR
+#define DRIVER_TEMPERATURE_SENSOR
+
 #include "MPU6050.h"
-#include "ITemperatureSensor"
+#include "ITemperatureSensor.h"
 
 #include <memory>
 
 class TemperatureSensor : public ITemperatureSensor {
 public:
     TemperatureSensor(std::shared_ptr<MPU6050> temperatureSensor);
-    float getTempreature();
+    float getTemperature();
 private:
     std::shared_ptr<MPU6050> temperatureSensor_;
 };
+
+#endif

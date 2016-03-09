@@ -6,7 +6,7 @@ ImuSensor::ImuSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger) :
         pressureSensor_(imuFactory.createPressureSensor()),
         logger_(logger)
 {
-    logger_->info("Initializing sensor...")
+    logger_->info("Initializing sensor...");
 }
 
 FloatTuple ImuSensor::getAcceleration()
@@ -24,12 +24,12 @@ int ImuSensor::getPressure()
     return pressureSensor_->getPressure();
 }
 
-/*float ImuSensor::getTemperature()
+float ImuSensor::getTemperature()
 {
     return temperatureSensor_->getTemperature();
-}*/
+}
 
 ImuSensor::~ImuSensor()
 {
-    logger_->info("Closing sensor...")
+    logger_->info("Closing sensor...");
 }

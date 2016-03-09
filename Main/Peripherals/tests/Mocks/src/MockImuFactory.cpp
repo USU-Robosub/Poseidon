@@ -15,3 +15,13 @@ std::shared_ptr<ICompass> MockImuFactory::createCompass() {
 std::shared_ptr<IAccelerometer> MockImuFactory::createAccelerometer() {
     return std::make_shared<MockAccelerometer>();
 }
+
+std::shared_ptr<IGyroscope> MockImuFactory::createGyroscope()
+{
+    return std::make_shared<MockGyroscope>();
+}
+
+std::shared_ptr<ITemperatureSensor> MockImuFactory::createTemperatureSensor()
+{
+    return std::make_shared<MockTemperatureSensor>();
+}

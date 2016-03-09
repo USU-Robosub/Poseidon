@@ -11,7 +11,7 @@ class IPressureSensor {
 public:
     virtual bool initialize(uint8_t mode) = 0;
     virtual float readTemperature(void) = 0;
-    virtual int32_t readPressure(void) = 0;
+    virtual int32_t getPressure(void) = 0;
     virtual int32_t readSealevelPressure(float altitude_meters) = 0;
     virtual float readAltitude(float sealevelPressure) = 0;
 };
