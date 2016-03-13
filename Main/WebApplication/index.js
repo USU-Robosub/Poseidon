@@ -97,6 +97,13 @@ app.post('/setYawThrust', function(req, res) {
 });
 
 
+// Headlight Control
+app.get('/headlight', function(req, res) {
+	peripherals.stdin.write('switchLights' + "\n");
+	res.send('toggled Headlights');
+});
+
+
 app.listen(80, function () {
   console.log('Example app listening on port 80!');
 });
