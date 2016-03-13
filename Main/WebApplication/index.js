@@ -32,8 +32,7 @@ app.post('/goDirection', function(req, res) {
 });
 
 app.post('/faceDirection', function(req, res) {
-	cmdString = 'faceDirection ' + req.body.yaw;
-	peripherals.stdin.write(cmdString + "\n");
+	thrustController.faceDirection(req.body.yaw, req.body.pitch || 0)
 	res.send(cmdString);
 });
 
@@ -99,7 +98,7 @@ app.post('/setYawThrust', function(req, res) {
 
 // Headlight Control
 app.get('/headlight', function(req, res) {
-	peripherals.stdin.write('switchLights' + "\n");
+    headLights.toggleLights();
 	res.send('toggled Headlights');
 });
 
