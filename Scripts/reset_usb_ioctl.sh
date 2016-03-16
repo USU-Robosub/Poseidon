@@ -10,4 +10,4 @@ echo -n "1-1:1.0" > /sys/bus/usb/drivers/cdc_acm/bind
 
 # rename device descriptor to original name
 file=$(find /dev -name "ttyACM*" -print)
-rm $file $dev
+mv $file $dev
