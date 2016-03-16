@@ -24,8 +24,12 @@ void setup() {
   controllers[8] = new PingController();
   controllers[9] = new LightController();
   
-  controllers[KILL_ADDR]= new KillSwitchController(controllers, CONTROLLER_CNT-1);
-  attachInterrupt(digitalPinToInterrupt(KILLPIN), isr0Dispatch, CHANGE);
+  controllers[KILL_ADDR]= new KillSwitchController(controllers, KILL_ADDR);
+  attachInterrupt(
+    digitalPinToInterrupt(KILLPIN), 
+    [](){((KillSwitchController*)controllers[KILL_ADDR])->isr(KILLPIN);},
+    CHANGE
+  );
 }
 
 void loop() {
@@ -36,8 +40,3 @@ void loop() {
       controllers[controllerNumber]->execute();
   }
 }
-
-void isr0Dispatch() {
-  ((KillSwitchController*)controllers[KILL_ADDR])->isr0(KILLPIN);
-}
-

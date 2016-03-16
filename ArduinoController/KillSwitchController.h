@@ -22,7 +22,7 @@ public:
     }
   }
     
-  void isr0(int interrupt) {
+  void isr(int interrupt) {
     noInterrupts();
     active = digitalRead(interrupt) == 1;
     if(active)
