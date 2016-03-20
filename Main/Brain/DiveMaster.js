@@ -1,3 +1,7 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+//                       DiveMaster                      //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
 function DiveMaster() {
 	this.NEUTRAL = 0;
 	this.FULL_AHEAD = 0.99;
@@ -18,3 +22,31 @@ function DiveMaster() {
 }
 
 module.exports = DiveMaster;
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+//                        Sockets                        //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+var net = require('net');
+var client = new net.Socket();
+
+client.connect(5080, '0.0.0.0', function() {
+	console.log('Connected');
+	// TODO: Server Commands
+	client.write('Hello, server! Love, Client.');
+});
+
+client.on('data', function(data) {
+	// TODO: Server Messages
+	console.log('Received: ' + data);
+});
+
+client.on('close', function() {
+	console.log('Connection closed');
+	// client.destroy();
+});
+
+console.log("Ready!");

@@ -11,6 +11,9 @@ include_directories(include/Peripherals)
 file(GLOB_RECURSE PERIPHERAL_FILES "src/Peripherals/*.cpp")
 add_library(Peripherals SHARED ${PERIPHERAL_FILES})
 
+include_directories(include/Common)
+file(GLOB_RECURSE COMMON_FILES "src/Common/*.cpp")
+
 # Tests
 
 add_subdirectory("tests/gtest-1.7.0")
@@ -32,13 +35,23 @@ add_test(Test Specs)
 
 # Production
 
+# create driver shared object library
 include_directories(include/Drivers)
 file(GLOB_RECURSE DRIVER_FILES "src/Drivers/*.cpp")
 add_library(Drivers SHARED ${DRIVER_FILES})
 
+# create Bootstrap executable
+# (this may be replaced by the Socket executable to avoid redundancy)
 include_directories(include/Bootstrap)
 file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")
-add_executable(Bootstrap ${BOOTSTRAP_FILES})
+add_executable(Bootstrap ${BOOTSTRAP_FILES} ${COMMON_FILES})
 
+# create Socket executable
+include_directories(include/Socket)
+file(GLOB_RECURSE SOCKET_FILES "src/Socket/*.cpp")
+add_executable(Socket ${SOCKET_FILES} ${COMMON_FILES})
+
+# finish by linking libraries
 target_link_libraries(Bootstrap Drivers Peripherals)
+target_link_libraries(Socket Drivers Peripherals)
 target_link_libraries(Drivers Peripherals)
