@@ -12,15 +12,16 @@ void CommandDispatcher::runLoop(std::istream& in) {
         std::string cmd;
         std::getline(in, cmd);
         std::stringstream ss(cmd);
-        run(ss);
+        if(!run(ss))
+            shouldExit_ = true;
     }
 }
 
-void CommandDispatcher::run(std::stringstream& ss) {
-    dispatchCommand(ss);
+int CommandDispatcher::run(std::stringstream& ss) {
+    return dispatchCommand(ss);
 }
 
-void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
+int CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     std::string cmd;
     cmdString >> cmd;
     if(cmd == "goDirection") goDirection(cmdString);
@@ -28,7 +29,8 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "turnOnEscs") powerManager_.turnOnEscs();
     else if(cmd == "turnOffEscs") powerManager_.turnOffEscs();
     else if(cmd == "switchLights") lights_.switchLights();
-    else if(cmd == "exit") shouldExit_ = true;
+    else if(cmd == "exit") return 0;
+    return 1;
 }
 
 void CommandDispatcher::goDirection(std::stringstream& cmdString) {

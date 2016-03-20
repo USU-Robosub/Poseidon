@@ -36,7 +36,9 @@ var client = new net.Socket();
 client.connect(5080, '0.0.0.0', function() {
 	console.log('Connected');
 	// TODO: Server Commands
-	client.write('Hello, server! Love, Client.');
+	turnOnEscs();
+	setTimeout(function(){turnOffEscs();}, 3000);
+	setTimeout(function(){cmd_exit();}, 3100);
 });
 
 client.on('data', function(data) {
@@ -45,10 +47,32 @@ client.on('data', function(data) {
 });
 
 client.on('close', function() {
-	console.log('Connection closed');
+	console.log('Socket Connection closed');
 	// client.destroy();
 });
 
 client.on('error', function(e){});
 
 console.log("Ready!");
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+//                    Test Commands                      //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+function turnOnEscs() {
+	console.log("turning on ESCs");
+	client.write("turnOnEscs\n");
+}
+
+function turnOffEscs() {
+	console.log("turning off ESCs");
+	client.write("turnOffEscs\n");
+}
+
+function cmd_exit() {
+	console.log("exiting...");
+	client.write("exit\n");
+}

@@ -17,7 +17,7 @@ class CommandDispatcher {
 private:
     ThrustController& thrustController_;
     PowerManager& powerManager_;
-    void dispatchCommand(std::stringstream& cmd);
+    int dispatchCommand(std::stringstream& cmd);
     void goDirection(std::stringstream& cmdString);
     void faceDirection(std::stringstream& cmdString);
     IHeadlights& lights_;
@@ -26,7 +26,7 @@ private:
 public:
     CommandDispatcher(ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights);
     void runLoop(std::istream& in);
-    void run(std::stringstream& ss);
+    int run(std::stringstream& ss);
 
 };
 

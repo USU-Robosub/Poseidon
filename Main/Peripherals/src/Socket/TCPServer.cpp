@@ -21,9 +21,16 @@
 #include <iostream>           // For cerr and cout
 #include <cstdlib>            // For atoi()
 
+#include <ThrustController.h>
+#include <CommandDispatcher.h>
+#include "SerialThrusterFactory.h"
+#include "ScriptLogger.h"
+#include <Headlights.h>
+
 using namespace std;
-const unsigned int RCVBUFSIZE = 32;    // Size of receive buffer
-void HandleTCPClient(TCPSocket *sock); // TCP client handling function
+const unsigned int RCVBUFSIZE = 64;    // Size of receive buffer
+int HandleTCPClient(TCPSocket *sock, CommandDispatcher &cd); // TCP client handling function
+CommandDispatcher* InitBootstrap();
 
 
 
@@ -33,20 +40,32 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  cout << argv[1] << endl;
+  cout << "Listening on port " << argv[1] << endl;
   unsigned short echoServPort = atoi(argv[1]);  // First arg: local port
 
   try {
     TCPServerSocket servSock(echoServPort);     // Server Socket object
-  
+    
+    
+    auto scriptLogger = std::make_shared<ScriptLogger>(&std::cout);
+    auto serial = Serial();
+    auto thrusterFactory = SerialThrusterFactory(serial);
+    ThrustController tc(thrusterFactory, scriptLogger);
+    auto pm = PowerManager();
+    auto lights = Headlights(serial);
+    CommandDispatcher cd(tc, pm, lights);
+    //CommandDispatcher *cd = InitBootstrap();
+    
     for (;;) {   // Run forever
-      HandleTCPClient(servSock.accept());       // Wait for a client to connect
+      if(HandleTCPClient(servSock.accept(), cd)) // Wait for a client to connect
+      {
+        break;
+      }
     }
   } catch (SocketException &e) {
     cerr << e.what() << endl;
     exit(1);
   }
-  // NOT REACHED
 
   return 0;
 }
@@ -54,29 +73,45 @@ int main(int argc, char *argv[]) {
 
 
 // TCP client handling function
-void HandleTCPClient(TCPSocket *sock) {
+int HandleTCPClient(TCPSocket *sock, CommandDispatcher &dispatcher) {
   cout << "Handling client ";
-  try {
-    cout << sock->getForeignAddress() << ":";
-  } catch (SocketException e) {
-    cerr << "Unable to get foreign address" << endl;
+  try { cout << sock->getForeignAddress() << ":"; }
+  catch (SocketException e) { cerr << "Unable to get foreign address" << endl; }
+  try { cout << sock->getForeignPort(); }
+  catch (SocketException e) { cerr << "Unable to get foreign port" << endl; }
+  cout << endl;
+  
+  char buffer[RCVBUFSIZE];
+  stringstream ss;
+  int recvMsgSize, shouldExit = 0; // zero means end of transmission
+  while ((recvMsgSize = sock->recv(buffer, RCVBUFSIZE)) > 0) {
+    // set nullterminator
+    int max_idx = (recvMsgSize==RCVBUFSIZE?RCVBUFSIZE-1:recvMsgSize);
+    buffer[max_idx] = '\0';
+    fprintf(stderr, "%s", buffer);
+    
+    ss.write(buffer, recvMsgSize-1);
+    if(!dispatcher.run(ss))
+    {
+      fprintf(stderr,"Exiting...\n");
+      shouldExit = 1;
+      break;
+    }
+    ss.clear();
   }
-  try {
-    cout << sock->getForeignPort();
-  } catch (SocketException e) {
-    cerr << "Unable to get foreign port" << endl;
-  }
-  cout << " Testing: ";
-
-  // Send received string and receive again until the end of transmission
-  char echoBuffer[RCVBUFSIZE];
-  int recvMsgSize;
-  while ((recvMsgSize = sock->recv(echoBuffer, RCVBUFSIZE)) > 0) { // Zero means
-                                                         // end of transmission
-    cout << "\n" << echoBuffer << " ";
-    // Echo message back to client
-    sock->send(echoBuffer, recvMsgSize);
-  }
-  cout << recvMsgSize << endl;
+  
   delete sock;
+  return shouldExit;
+}
+
+
+
+CommandDispatcher* InitBootstrap() {
+  auto scriptLogger = std::make_shared<ScriptLogger>(&std::cout);
+  auto serial = Serial();
+  auto thrusterFactory = SerialThrusterFactory(serial);
+  ThrustController tc(thrusterFactory, scriptLogger);
+  auto pm = PowerManager();
+  auto lights = Headlights(serial);
+  return new CommandDispatcher(tc, pm, lights);
 }
