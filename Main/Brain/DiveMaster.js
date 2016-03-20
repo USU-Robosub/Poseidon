@@ -49,4 +49,6 @@ client.on('close', function() {
 	// client.destroy();
 });
 
+client.on('error', function(e){});
+
 console.log("Ready!");

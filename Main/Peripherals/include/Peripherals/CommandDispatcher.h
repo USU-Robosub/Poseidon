@@ -15,7 +15,6 @@
 class CommandDispatcher {
 
 private:
-    std::istream& in_;
     ThrustController& thrustController_;
     PowerManager& powerManager_;
     void dispatchCommand(std::stringstream& cmd);
@@ -25,8 +24,9 @@ private:
     bool shouldExit_;
 
 public:
-    CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights);
-    void runLoop();
+    CommandDispatcher(ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights);
+    void runLoop(std::istream& in);
+    void run(std::stringstream& ss);
 
 };
 

@@ -22,8 +22,8 @@ int main() {
 
     auto lights = Headlights(serial);
 
-    CommandDispatcher cd(std::cin, tc, pm, lights);
-    cd.runLoop();
+    CommandDispatcher cd(tc, pm, lights);
+    cd.runLoop(std::cin);
 
     return 0;
 

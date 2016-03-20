@@ -4,16 +4,20 @@
 
 #include "CommandDispatcher.h"
 
-CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights)
-        : in_(in), thrustController_(thrustController), powerManager_(powerManager), lights_(lights), shouldExit_(false) {}
+CommandDispatcher::CommandDispatcher(ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights)
+        : thrustController_(thrustController), powerManager_(powerManager), lights_(lights), shouldExit_(false) {}
 
-void CommandDispatcher::runLoop() {
+void CommandDispatcher::runLoop(std::istream& in) {
     while(!shouldExit_) {
         std::string cmd;
-        std::getline(in_, cmd);
+        std::getline(in, cmd);
         std::stringstream ss(cmd);
-        dispatchCommand(ss);
+        run(ss);
     }
+}
+
+void CommandDispatcher::run(std::stringstream& ss) {
+    dispatchCommand(ss);
 }
 
 void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {

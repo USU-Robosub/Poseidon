@@ -6,6 +6,7 @@ mkdir Release
 cd Release
 cmake ..
 make Bootstrap
+make Socket
 
 cd ../../WebApplication
 npm install
