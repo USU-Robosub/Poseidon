@@ -6,12 +6,14 @@
 #define PERIPHERALS_MOCK_COMPASS_H
 
 #include <ICompass.h>
+#include <tuple>
 
 class MockCompass : public ICompass {
 public:
-    float X(){ return 0; }
-    float Y(){ return 0; }
-    float Z(){ return 0; }
+    std::tuple<float, float, float> getHeading()
+    {
+        return std::make_tuple(0, 0, 0);
+    }
 };
 
 

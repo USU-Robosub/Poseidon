@@ -9,12 +9,15 @@
 #include "MockAccelerometer.h"
 #include "MockCompass.h"
 #include "MockPressureSensor.h"
+#include "MockGyroscope.h"
 
 class MockImuFactory : public IImuFactory {
 public:
     std::shared_ptr<IPressureSensor> createPressureSensor();
     std::shared_ptr<ICompass> createCompass();
     std::shared_ptr<IAccelerometer> createAccelerometer();
+    std::shared_ptr<IGyroscope> createGyroscope();
+    std::shared_ptr<ITemperatureSensor> createTemperatureSensor();
 };
 
 
