@@ -45,16 +45,14 @@ int main(int argc, char *argv[]) {
 
   try {
     TCPServerSocket servSock(echoServPort);     // Server Socket object
-    
-    
+
     auto scriptLogger = std::make_shared<ScriptLogger>(&std::cout);
     auto serial = Serial();
     auto thrusterFactory = SerialThrusterFactory(serial);
-    ThrustController tc(thrusterFactory, scriptLogger);
+    ThrustController tc = new ThrustController(thrusterFactory, scriptLogger);
     auto pm = PowerManager();
     auto lights = Headlights(serial);
     CommandDispatcher cd(tc, pm, lights);
-    //CommandDispatcher *cd = InitBootstrap();
     
     for (;;) {   // Run forever
       if(HandleTCPClient(servSock.accept(), cd)) // Wait for a client to connect
@@ -102,16 +100,4 @@ int HandleTCPClient(TCPSocket *sock, CommandDispatcher &dispatcher) {
   
   delete sock;
   return shouldExit;
-}
-
-
-
-CommandDispatcher* InitBootstrap() {
-  auto scriptLogger = std::make_shared<ScriptLogger>(&std::cout);
-  auto serial = Serial();
-  auto thrusterFactory = SerialThrusterFactory(serial);
-  ThrustController tc(thrusterFactory, scriptLogger);
-  auto pm = PowerManager();
-  auto lights = Headlights(serial);
-  return new CommandDispatcher(tc, pm, lights);
 }
