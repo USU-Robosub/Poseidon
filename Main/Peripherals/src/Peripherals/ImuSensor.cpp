@@ -2,32 +2,66 @@
 
 ImuSensor::ImuSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger) :
         accelerometer_(imuFactory.createAccelerometer()),
+        gyroscope_(imuFactory.createGyroscope()),
         compass_(imuFactory.createCompass()),
-        pressureSensor_(imuFactory.createPressureSensor()),
+        extPressureSensor_(imuFactory.createExternalPressureSensor()),
+        intPressureSensor_(imuFactory.createInternalPressureSensor()),
+        extTemperatureSensor_(imuFactory.createExternalTemperatureSensor()),
+        intTemperatureSensor1_(imuFactory.createInternalTemperatureSensor1()),
+        intTemperatureSensor2_(imuFactory.createInternalTemperatureSensor2()),
         logger_(logger)
 {
     logger_->info("Initializing sensor...");
 }
+
+
 
 FloatTuple ImuSensor::getAcceleration()
 {
     return accelerometer_->getAcceleration();
 }
 
+
+
+FloatTuple getAngularAcceleration() {} // gyroscope
+
+
+
 FloatTuple ImuSensor::getHeading()
 {
     return compass_->getHeading();
 }
 
-int ImuSensor::getPressure()
+
+
+int ImuSensor::getExtPressure()
 {
-    return pressureSensor_->getPressure();
+    return extPressureSensor_->getPressure();
 }
 
-float ImuSensor::getTemperature()
+
+
+int ImuSensor::getIntPressure()
 {
-    return temperatureSensor_->getTemperature();
+    return intPressureSensor_->getPressure();
 }
+
+
+
+float ImuSensor::getExtTemperature()
+{
+    return extTemperatureSensor_->getTemperature();
+}
+
+
+
+float ImuSensor::getIntTemperature()
+{
+    return (intTemperatureSensor1_->getTemperature() + 
+            intTemperatureSensor2_->getTemperature()) / 2.0;
+}
+
+
 
 ImuSensor::~ImuSensor()
 {

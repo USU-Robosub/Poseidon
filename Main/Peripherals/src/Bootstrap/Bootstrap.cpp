@@ -14,12 +14,12 @@ int main() {
 
     auto scriptLogger = std::make_shared<ScriptLogger>(&std::cout);
     auto serial = Serial();
-
     auto thrusterFactory = SerialThrusterFactory(serial);
     ThrustController tc(thrusterFactory, scriptLogger);
 
-    auto pm = PowerManager();
+    
 
+    auto pm = PowerManager();
     auto lights = Headlights(serial);
 
     CommandDispatcher cd(std::cin, tc, pm, lights);
