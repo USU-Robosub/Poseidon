@@ -9,7 +9,7 @@
 
 class IPressureSensor {
 public:
-    virtual int32_t getPressure(void) = 0;
+    virtual int getPressure(void) = 0;
 };
 
 #endif //PERIPHERALS_I_PRESSURE_SENSOR_H

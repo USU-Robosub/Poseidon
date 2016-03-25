@@ -4,7 +4,7 @@ ExPressureSensor::ExPressureSensor()
 {
 }
 
-float ExPressureSensor::getPressure()
+int ExPressureSensor::getPressure()
 {
-    return 0.0;
+    return 0;
 }

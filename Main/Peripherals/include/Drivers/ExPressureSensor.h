@@ -8,7 +8,7 @@
 class ExPressureSensor : public IPressureSensor {
 public:
     ExPressureSensor();
-    float getPressure();
+    int getPressure();
 private:
 };
 

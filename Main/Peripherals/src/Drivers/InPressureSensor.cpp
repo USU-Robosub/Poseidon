@@ -3,7 +3,7 @@
 InPressureSensor::InPressureSensor(std::shared_ptr<BMP085> pressure) :
 	pressure_(pressure) {}
 
-float ExPressureSensor::getPressure()
+int ExPressureSensor::getPressure()
 {
     return pressure_->readPressure();
 }
