@@ -5,9 +5,9 @@
 #include "ITemperatureSensor.h"
 #include <memory>
 
-class TemperatureSensor : public ITemperatureSensor {
+class ExTemperatureSensor : public ITemperatureSensor {
 public:
-    TemperatureSensor();
+    ExTemperatureSensor();
     float getTemperature();
 private:
 };

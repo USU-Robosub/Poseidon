@@ -1,10 +1,10 @@
 #include "ExTemperatureSensor.h"
 
-TemperatureSensor::TemperatureSensor()
+ExTemperatureSensor::ExTemperatureSensor()
 {
 }
 
-float TemperatureSensor::getTemperature()
+float ExTemperatureSensor::getTemperature()
 {
     return 0.0;
 }

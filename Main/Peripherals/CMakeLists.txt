@@ -35,14 +35,15 @@ include_directories(../../Drivers/Include/Interfaces)
 include_directories(../../Drivers/Include/Registers)
 include_directories(../../Drivers/Include/Sensors)
 include_directories(../../Drivers/Include/System)
+link_directories(../../Drivers/Build)
 
 include_directories(include/Drivers)
 file(GLOB_RECURSE DRIVER_FILES "src/Drivers/*.cpp")
-add_library(Drivers SHARED ${DRIVER_FILES})
+add_library(Wrappers SHARED ${DRIVER_FILES})
 
 include_directories(include/Bootstrap)
 file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")
 add_executable(Bootstrap ${BOOTSTRAP_FILES})
 
-target_link_libraries(Bootstrap Drivers Peripherals)
-target_link_libraries(Drivers Peripherals)
+target_link_libraries(Bootstrap Wrappers Peripherals Drivers)
+target_link_libraries(Wrappers Peripherals)
