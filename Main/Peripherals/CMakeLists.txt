@@ -31,12 +31,10 @@ target_link_libraries(Mocks Peripherals)
 add_test(Test Specs)
 
 # Production
-
-# include_directories(../../Drivers/Include/Registers)
-# include_directories(../../Drivers/Include/Sensors)
-# include_directories(../../Drivers/Include/System)
-# file(GLOB_RECURSE IMU_FILES "../../Drivers/Src/Registers/*.cpp")
-# add_library(ImuDrivers SHARED ${IMU_FILES})
+include_directories(../../Drivers/Include/Interfaces)
+include_directories(../../Drivers/Include/Registers)
+include_directories(../../Drivers/Include/Sensors)
+include_directories(../../Drivers/Include/System)
 
 include_directories(include/Drivers)
 file(GLOB_RECURSE DRIVER_FILES "src/Drivers/*.cpp")

@@ -1,9 +1,9 @@
 #include "InTemperatureSensor1.h"
 
-TemperatureSensor::TemperatureSensor(std::shared_ptr<MPU6050> temperatureSensor) :
+InTemperatureSensor1::InTemperatureSensor1(std::shared_ptr<MPU6050> temperatureSensor) :
         temperatureSensor_(temperatureSensor) {}
 
-float TemperatureSensor::getTemperature()
+float InTemperatureSensor1::getTemperature()
 {
     return temperatureSensor_->temperature();
 }

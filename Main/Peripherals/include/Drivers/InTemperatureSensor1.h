@@ -5,9 +5,9 @@
 #include "ITemperatureSensor.h"
 #include <memory>
 
-class TemperatureSensor : public ITemperatureSensor {
+class InTemperatureSensor1 : public ITemperatureSensor {
 public:
-    TemperatureSensor(std::shared_ptr<MPU6050> temperatureSensor);
+    InTemperatureSensor1(std::shared_ptr<MPU6050> temperatureSensor);
     float getTemperature();
 private:
     std::shared_ptr<MPU6050> temperatureSensor_;
