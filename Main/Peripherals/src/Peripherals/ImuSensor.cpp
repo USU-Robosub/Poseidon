@@ -23,7 +23,10 @@ FloatTuple ImuSensor::getAcceleration()
 
 
 
-FloatTuple getAngularAcceleration() {} // gyroscope
+FloatTuple getAngularAcceleration() 
+{
+    return gyroscope_->getAngularAcceleration();
+}
 
 
 
