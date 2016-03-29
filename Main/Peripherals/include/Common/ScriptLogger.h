@@ -12,7 +12,8 @@
 class ScriptLogger : public ILogger {
 
 private:
-    std::shared_ptr<std::ostream> out_;
+	// fixes "error in "./x" free() invalid pointer 0xXXXX"
+    std::ostream * out_;
 
 public:
     ScriptLogger(std::ostream* out);

@@ -4,7 +4,9 @@
 
 #include "ScriptLogger.h"
 
-ScriptLogger::ScriptLogger(std::ostream* out) : out_(out) { }
+ScriptLogger::ScriptLogger(std::ostream* out) : out_(NULL) {
+	out_ = out; // fixes "error in "./x" free() invalid pointer 0xXXXX"
+}
 
 void ScriptLogger::info(const char *const message) {
     *out_ << "info " << message << std::endl;
