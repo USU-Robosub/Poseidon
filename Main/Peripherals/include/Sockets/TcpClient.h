@@ -7,10 +7,9 @@
 
 #include <iostream>
 #include <string>
-#include "ISocket.h"
 #include "SocketServer.h"
 
-class TcpClient : public ISocket
+class TcpClient : public iostream
 {
 	static const unsigned int RCV_BUF_SIZE = 64;
 

@@ -20,6 +20,7 @@
 #ifndef __PRACTICALSOCKET_INCLUDED__
 #define __PRACTICALSOCKET_INCLUDED__
 
+#include <iostream>
 #include <string>            // For string
 #include <cstring>           // For strerror, atoi, and memset
 #include <exception>         // For exception class
