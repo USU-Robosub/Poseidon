@@ -42,9 +42,13 @@ include_directories(include/Drivers)
 file(GLOB_RECURSE DRIVER_FILES "src/Drivers/*.cpp")
 add_library(Drivers SHARED ${DRIVER_FILES})
 
+include_directories(include/Sockets)
+file(GLOB_RECURSE SOCKET_FILES "src/Sockets/*.cpp")
+add_library(Sockets SHARED ${SOCKET_FILES})
+
 include_directories(include/Bootstrap)
 file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")
 add_executable(Bootstrap ${BOOTSTRAP_FILES})
 
-target_link_libraries(Bootstrap Drivers Peripherals)
+target_link_libraries(Bootstrap Drivers Sockets Peripherals)
 target_link_libraries(Drivers Peripherals)
