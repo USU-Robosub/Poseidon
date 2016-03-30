@@ -4,8 +4,7 @@
 
 #include "TcpClient.h"
 
-TcpClient::TcpClient(int port, std::string address) :
-{
+TcpClient::TcpClient(int port, std::string address) {
 	connect_(port, address);
 }
 
@@ -30,8 +29,8 @@ int TcpClient::connect_(int port, std::string address) {
 }
 
 
-	
-void TcpClient::operator >> (std::string &val) {
+
+std::istream* TcpClient::operator >> (std::string &val) {
 	try {
 		int received = 0;
 		char buffer[RCV_BUF_SIZE];
@@ -46,6 +45,7 @@ void TcpClient::operator >> (std::string &val) {
 		std::cerr << e.what() << std::endl;
 		val = "\0";
 	}
+	return this;
 }
 
 

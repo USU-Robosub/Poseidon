@@ -20,7 +20,7 @@ public:
 	
 	virtual ~TcpClient();
 	
-	void operator >> (std::string& val);
+	std::istream* operator >> (std::string& val);
 
 	void operator << (std::string val);
 
