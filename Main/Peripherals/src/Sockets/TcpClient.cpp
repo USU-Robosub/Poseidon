@@ -5,8 +5,8 @@
 #include "TcpClient.h"
 
 TcpClient::TcpClient(int port, std::string address) :
-	port_(port), address_(address), socket(NULL)
 {
+	connect_(port, address);
 }
 
 
@@ -19,9 +19,9 @@ TcpClient::~TcpClient() {
 
 
 
-int TcpClient::connect() {
+int TcpClient::connect_(int port, std::string address) {
 	try {
-		socket = new TCPSocket(address_, port_);
+		socket = new TCPSocket(address, port);
 	} catch (SocketException &e) {
 		std::cerr << e.what() << std::endl;
 		return -1;
@@ -32,24 +32,20 @@ int TcpClient::connect() {
 
 	
 void TcpClient::operator >> (std::string &val) {
-	if(socket != NULL) {
-		try {
-			int received = 0;
-			char buffer[RCV_BUF_SIZE];
-			if((received = socket->recv(buffer, RCV_BUF_SIZE)) <= 0) {
-				std::cerr << "Unable to read";
-				val = "\0";
-			}
-			int max = received == RCV_BUF_SIZE ? RCV_BUF_SIZE-1 : received;
-			buffer[max] = '\0';
-			val = buffer;
-		} catch (SocketException &e) {
-			std::cerr << e.what() << std::endl;
+	try {
+		int received = 0;
+		char buffer[RCV_BUF_SIZE];
+		if((received = socket->recv(buffer, RCV_BUF_SIZE)) <= 0) {
+			std::cerr << "Unable to read";
 			val = "\0";
 		}
-	}
-	else
+		int max = received == RCV_BUF_SIZE ? RCV_BUF_SIZE-1 : received;
+		buffer[max] = '\0';
+		val = buffer;
+	} catch (SocketException &e) {
+		std::cerr << e.what() << std::endl;
 		val = "\0";
+	}
 }
 
 

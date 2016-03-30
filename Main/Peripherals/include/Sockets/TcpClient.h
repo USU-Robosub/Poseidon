@@ -13,20 +13,18 @@ class TcpClient : public iostream
 {
 	static const unsigned int RCV_BUF_SIZE = 64;
 
+	int connect_(int port, std::string address);
+
 public:
 	TcpClient(int port, std::string address = "0.0.0.0");
 	
 	virtual ~TcpClient();
-
-	int connect();
 	
-	void operator >> (std::string & val);
+	void operator >> (std::string& val);
 
 	void operator << (std::string val);
 
 private:
-	int port_;
-	std::string address_;
 	TCPSocket *socket;
 };
 
