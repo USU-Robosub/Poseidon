@@ -10,6 +10,8 @@
 #include "ScriptLogger.h"
 #include "EscPower.h"
 #include <Headlights.h>
+#include <MPU6050.h>
+#include <HMC5883.h>
 
 int main() {
 
@@ -17,10 +19,12 @@ int main() {
     auto serial = Serial();
     auto thrusterFactory = SerialThrusterFactory(serial);
     ThrustController tc(thrusterFactory, scriptLogger);
+    auto accelerometerGyro = std::make_shared<MPU6050>();
+    auto compass = std::make_shared<HMC5883>();
 
-    
+    auto imuP = ImuPower(accelerometerGyro, compass);
     auto ep = EscPower(serial);
-    auto pm = PowerManager(ep);
+    auto pm = PowerManager(ep, imuP);
     auto lights = Headlights(serial);
 
     CommandDispatcher cd(std::cin, tc, pm, lights);

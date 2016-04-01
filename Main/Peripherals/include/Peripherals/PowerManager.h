@@ -1,17 +1,22 @@
 #ifndef POWERMANAGER
 #define POWERMANAGER
 
-#include <EscPower.h>
+#include <IEscPower.h>
+#include <IImuPower.h>
 
 class PowerManager
 {
 private:
 	bool escsOn;
-    EscPower& escPower_;
+    IEscPower& escPower_;
+    IImuPower& imuPower_
+
 public:
-	PowerManager(EscPower& escPower);
+	PowerManager(IEscPower& escPower, IImuPower& imuPower);
 	void turnOnEscs();
 	void turnOffEscs();
+	void turnOnImuSensor();
+	void turnOffImuSensor();
 };
 
 #endif
