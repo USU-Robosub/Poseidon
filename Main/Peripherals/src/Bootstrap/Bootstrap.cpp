@@ -11,7 +11,8 @@
 #include "EscPower.h"
 #include <Headlights.h>
 #include <MPU6050.h>
-#include <HMC5883.h>
+#include <HMC5883L.h>
+#include <ImuPower.h>
 
 int main() {
 
@@ -20,7 +21,7 @@ int main() {
     auto thrusterFactory = SerialThrusterFactory(serial);
     ThrustController tc(thrusterFactory, scriptLogger);
     auto accelerometerGyro = std::make_shared<MPU6050>();
-    auto compass = std::make_shared<HMC5883>();
+    auto compass = std::make_shared<HMC5883L>();
 
     auto imuP = ImuPower(accelerometerGyro, compass);
     auto ep = EscPower(serial);

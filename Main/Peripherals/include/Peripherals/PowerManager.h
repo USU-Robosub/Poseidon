@@ -9,7 +9,7 @@ class PowerManager
 private:
 	bool escsOn;
     IEscPower& escPower_;
-    IImuPower& imuPower_
+    IImuPower& imuPower_;
 
 public:
 	PowerManager(IEscPower& escPower, IImuPower& imuPower);
