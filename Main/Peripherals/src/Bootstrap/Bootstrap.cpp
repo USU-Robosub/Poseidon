@@ -8,6 +8,7 @@
 #include <CommandDispatcher.h>
 #include "SerialThrusterFactory.h"
 #include "ScriptLogger.h"
+#include <EscPower.h>
 #include <Headlights.h>
 
 int main() {
@@ -18,8 +19,8 @@ int main() {
     ThrustController tc(thrusterFactory, scriptLogger);
 
     
-
-    auto pm = PowerManager();
+    auto ep = EscPower(serial);
+    auto pm = PowerManager(ep);
     auto lights = Headlights(serial);
 
     CommandDispatcher cd(std::cin, tc, pm, lights);

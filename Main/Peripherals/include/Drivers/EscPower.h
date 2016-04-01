@@ -1,16 +1,17 @@
-#ifndef POWERMANAGER
-#define POWERMANAGER
+#ifndef ESCPOWER
+#define ESCPOWER
 
 #include <iostream>
 #include <fstream>
+#include "Serial.h"
 
-class PowerManager
+class EscPower
 {
 private:
 	bool escsOn;
-    EscPower& escPower_;
+    Serial& serial_;
 public:
-	PowerManager(EscPower& escPower);
+	EscPower(Serial& serial);
 	void turnOnEscs();
 	void turnOffEscs();
 };
