@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <EscPower>
 
 class PowerManager
 {
