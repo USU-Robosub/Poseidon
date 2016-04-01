@@ -1,6 +1,7 @@
 #ifndef ESCPOWER
 #define ESCPOWER
 
+#include <IEscPower.h>
 #include "Serial.h"
 
 class EscPower : public IEscPower
