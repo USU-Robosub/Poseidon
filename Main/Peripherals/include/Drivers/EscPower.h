@@ -1,8 +1,6 @@
 #ifndef ESCPOWER
 #define ESCPOWER
 
-#include <iostream>
-#include <fstream>
 #include "Serial.h"
 
 class EscPower

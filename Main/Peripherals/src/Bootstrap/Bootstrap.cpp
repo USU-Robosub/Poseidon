@@ -8,7 +8,7 @@
 #include <CommandDispatcher.h>
 #include "SerialThrusterFactory.h"
 #include "ScriptLogger.h"
-#include <EscPower.h>
+#include "EscPower.h"
 #include <Headlights.h>
 
 int main() {
