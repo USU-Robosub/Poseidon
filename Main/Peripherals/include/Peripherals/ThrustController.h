@@ -16,6 +16,8 @@ public:
     ThrustController(IThrusterFactory& thrusterFactory, std::shared_ptr<ILogger> logger);
     void goDirection(float forward, float strafe, float dive);
     void faceDirection(float yaw);
+    void setForwardTrim(float left, float right);
+    void setDiveTrim(float front, float back);
     ~ThrustController();
 
 private:
@@ -31,7 +33,10 @@ private:
     const float maxPower = 1.0f;
     const float minPower = 0.0f;
     const float reverseRatio = 0.84507f;
-    const float strafeRatio = 0.783088f;
+    const float strafeRatio = 0.7f;
+
+    FloatPair forwardTrim;
+    FloatPair diveTrim;
 
     FloatPair getReciprocalValues(float value);
     float getScaleToMaxPower(float left, float right);
