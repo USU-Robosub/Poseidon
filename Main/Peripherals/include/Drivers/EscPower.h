@@ -3,7 +3,7 @@
 
 #include "Serial.h"
 
-class EscPower
+class EscPower : public IEscPower
 {
 private:
 	bool escsOn;

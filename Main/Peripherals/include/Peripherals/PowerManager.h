@@ -1,7 +1,7 @@
 #ifndef POWERMANAGER
 #define POWERMANAGER
 
-#include "EscPower"
+#include <EscPower>
 
 class PowerManager
 {
