@@ -43,13 +43,13 @@ void CommandDispatcher::faceDirection(std::stringstream& cmdString) {
     thrustController_.faceDirection(yaw);
 }
 
-void setForwardTrim(std::stringstream& cmdString) {
+void CommandDispatcher::setForwardTrim(std::stringstream& cmdString) {
     float a, b;
     cmdString >> a >> b;
     thrustController_.setForwardTrim(a, b);
 }
 
-void setDiveTrim(std::stringstream& cmdString) {
+void CommandDispatcher::setDiveTrim(std::stringstream& cmdString) {
     float a, b;
     cmdString >> a >> b;
     thrustController_.setDiveTrim(a, b);
