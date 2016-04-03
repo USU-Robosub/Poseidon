@@ -24,6 +24,8 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "turnOnEscs") powerManager_.turnOnEscs();
     else if(cmd == "turnOffEscs") powerManager_.turnOffEscs();
     else if(cmd == "switchLights") lights_.switchLights();
+    else if(cmd == "setForwardTrim") setForwardTrim(cmdString);
+    else if(cmd == "setDiveTrim") setDiveTrim(cmdString);
     else if(cmd == "exit") shouldExit_ = true;
 }
 
@@ -39,4 +41,16 @@ void CommandDispatcher::faceDirection(std::stringstream& cmdString) {
     float yaw;
     cmdString >> yaw;
     thrustController_.faceDirection(yaw);
+}
+
+void CommandDispatcher::setForwardTrim(std::stringstream& cmdString) {
+    float a, b;
+    cmdString >> a >> b;
+    thrustController_.setForwardTrim(a, b);
+}
+
+void CommandDispatcher::setDiveTrim(std::stringstream& cmdString) {
+    float a, b;
+    cmdString >> a >> b;
+    thrustController_.setDiveTrim(a, b);
 }
