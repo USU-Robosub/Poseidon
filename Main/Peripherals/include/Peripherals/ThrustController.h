@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <utility>
+#include <cmath>
 
 typedef std::pair<float, float> FloatPair;
 
@@ -18,6 +19,7 @@ public:
     void faceDirection(float yaw);
     void setForwardTrim(float left, float right);
     void setDiveTrim(float front, float back);
+    void setDiveOffset(float front, float back);
     ~ThrustController();
 
 private:
@@ -37,8 +39,11 @@ private:
 
     FloatPair forwardTrim;
     FloatPair diveTrim;
+    FloatPair diveOffset;
 
     FloatPair getReciprocalValues(float value);
+    float getSafeOffset(float a, float b);
+    void zeroPowerHelper(float &a, float &b);
     float getScaleToMaxPower(float left, float right);
     float getMaxMag(float left, float right);
     void setThrust(FloatPair forwardPair, FloatPair strafePair, float dive);

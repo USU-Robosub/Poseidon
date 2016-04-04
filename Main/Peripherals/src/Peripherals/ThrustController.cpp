@@ -57,6 +57,31 @@ void ThrustController::setDiveTrim(float front, float back) {
     diveTrim.second = back;
 }
 
+void ThrustController::setDiveOffset(float front, float back) {
+    std::stringstream ss;
+    ss << "Setting dive Offset: F " << front << " B " << back;
+    logger_->info(ss.str().c_str());
+
+    diveOffset.first = front;
+    diveOffset.second = back;
+}
+
+float ThrustController::getSafeOffset(float a, float b) {
+    float safe = a + b;
+    if(safe > 1)
+        safe = 1;
+    else if(safe < -1)
+        safe = -1;
+    return safe;
+}
+
+void ThrustController::zeroPowerHelper(float &a, float &b) {
+    if(a == 0 || b == 0) {
+        a = 0;
+        b = 0;
+    }
+}
+
 std::pair<float,float> ThrustController::getReciprocalValues(float value) {
     float left, right;
     if(value < 0.0f) {
@@ -77,8 +102,11 @@ void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, fl
     leftStrafeThruster_->Thrust(strafePair.first);
     rightStrafeThruster_->Thrust(strafePair.second);
 
-    forwardDiveThruster_->Thrust(dive * diveTrim.first);
-    rearDiveThruster_->Thrust(dive * diveTrim.second);
+    float front = getSafeOffset(dive, diveOffset.first);
+    float back = getSafeOffset(dive, diveOffset.second);
+    zeroPowerHelper(front, back);
+    forwardDiveThruster_->Thrust(front * diveTrim.first);
+    rearDiveThruster_->Thrust(back * diveTrim.second);
 }
 
 ThrustController::~ThrustController()

@@ -26,6 +26,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "switchLights") lights_.switchLights();
     else if(cmd == "setForwardTrim") setForwardTrim(cmdString);
     else if(cmd == "setDiveTrim") setDiveTrim(cmdString);
+    else if(cmd == "setDiveOffset") setDiveOffset(cmdString);
     else if(cmd == "exit") shouldExit_ = true;
 }
 
@@ -53,4 +54,10 @@ void CommandDispatcher::setDiveTrim(std::stringstream& cmdString) {
     float a, b;
     cmdString >> a >> b;
     thrustController_.setDiveTrim(a, b);
+}
+
+void CommandDispatcher::setDiveOffset(std::stringstream& cmdString) {
+    float a, b;
+    cmdString >> a >> b;
+    thrustController_.setDiveOffset(a, b);
 }
