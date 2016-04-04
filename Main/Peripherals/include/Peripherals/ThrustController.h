@@ -20,6 +20,7 @@ public:
     void setForwardTrim(float left, float right);
     void setDiveTrim(float front, float back);
     void setDiveOffset(float front, float back);
+    void killAllThruster();
     ~ThrustController();
 
 private:
@@ -43,10 +44,9 @@ private:
 
     FloatPair getReciprocalValues(float value);
     float getSafeOffset(float a, float b);
-    FloatPair zeroPowerHelper(float a, float b);
     float getScaleToMaxPower(float left, float right);
     float getMaxMag(float left, float right);
-    void setThrust(FloatPair forwardPair, FloatPair strafePair, float dive);
+    void setThrust(FloatPair forwardPair, FloatPair strafePair, FloatPair divePair);
 };
 
 #endif

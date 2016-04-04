@@ -19,7 +19,12 @@ void ThrustController::goDirection(float forward, float strafe, float dive) {
     float powerScale = getScaleToMaxPower(leftForward, rightForward);
     auto forwardPair = std::make_pair(leftForward*powerScale, rightForward*powerScale);
     auto strafePair = getReciprocalValues(strafe*powerScale);
-    setThrust(forwardPair, strafePair, dive*powerScale);
+
+    float scaledDive = dive * powerScale;
+    FloatPair divePair;
+    divePair.first = getSafeOffset(scaledDive, diveOffset.first);
+    divePair.second = getSafeOffset(scaledDive, diveOffset.second);
+    setThrust(forwardPair, strafePair, divePair);
 }
 
 float ThrustController::getScaleToMaxPower(float left, float right) {
@@ -36,7 +41,12 @@ float ThrustController::getMaxMag(float left, float right) {
 void ThrustController::faceDirection(float yaw, float dive) {
     logger_->info("Yawing...");
     auto yawPair = getReciprocalValues(yaw);
-    setThrust(yawPair, std::make_pair(0.0f, 0.0f), dive);
+
+    float scaledDive = dive * powerScale;
+    FloatPair divePair;
+    divePair.first = getSafeOffset(scaledDive, diveOffset.first);
+    divePair.second = getSafeOffset(scaledDive, diveOffset.second);
+    setThrust(yawPair, std::make_pair(0.0f, 0.0f), divePair);
 }
 
 void ThrustController::setForwardTrim(float left, float right) {
@@ -75,17 +85,8 @@ float ThrustController::getSafeOffset(float a, float b) {
     return safe;
 }
 
-FloatPair ThrustController::zeroPowerHelper(float a, float b) {
-    FloatPair pair;
-    if(a == 0 || b == 0) {
-        pair.first = 0;
-        pair.second = 0;
-    }
-    else {
-        pair.first = a;
-        pair.second = b;
-    }
-    return pair;
+void ThrustController::killAllThruster() {
+    setThrust(std::make_pair(0.0f, 0.0f), std::make_pair(0.0f, 0.0f), std::make_pair(0.0f, 0.0f));
 }
 
 std::pair<float,float> ThrustController::getReciprocalValues(float value) {
@@ -101,16 +102,13 @@ std::pair<float,float> ThrustController::getReciprocalValues(float value) {
     return std::make_pair(left, right);
 }
 
-void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, float dive) {
+void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, FloatPair divePair) {
     leftForwardThruster_->Thrust(forwardPair.first * forwardTrim.first);
     rightForwardThruster_->Thrust(forwardPair.second * forwardTrim.second);
 
     leftStrafeThruster_->Thrust(strafePair.first);
     rightStrafeThruster_->Thrust(strafePair.second);
 
-    float front = getSafeOffset(dive, diveOffset.first);
-    float back = getSafeOffset(dive, diveOffset.second);
-    FloatPair divePair = zeroPowerHelper(front, back);
     forwardDiveThruster_->Thrust(divePair.first * diveTrim.first);
     rearDiveThruster_->Thrust(divePair.second * diveTrim.second);
 }
