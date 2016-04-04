@@ -33,10 +33,10 @@ float ThrustController::getMaxMag(float left, float right) {
     return right > left ? right : left;
 }
 
-void ThrustController::faceDirection(float yaw) {
+void ThrustController::faceDirection(float yaw, float dive) {
     logger_->info("Yawing...");
     auto yawPair = getReciprocalValues(yaw);
-    setThrust(yawPair, std::make_pair(0.0f, 0.0f), 0.0f);
+    setThrust(yawPair, std::make_pair(0.0f, 0.0f), dive);
 }
 
 void ThrustController::setForwardTrim(float left, float right) {
