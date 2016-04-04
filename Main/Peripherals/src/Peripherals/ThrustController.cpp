@@ -81,6 +81,10 @@ FloatPair ThrustController::zeroPowerHelper(float a, float b) {
         pair.first = 0;
         pair.second = 0;
     }
+    else {
+        pair.first = a;
+        pair.second = b;
+    }
     return pair;
 }
 
