@@ -75,11 +75,13 @@ float ThrustController::getSafeOffset(float a, float b) {
     return safe;
 }
 
-void ThrustController::zeroPowerHelper(float &a, float &b) {
+FloatPair ThrustController::zeroPowerHelper(float a, float b) {
+    FloatPair pair;
     if(a == 0 || b == 0) {
-        a = 0;
-        b = 0;
+        pair.first = 0;
+        pair.second = 0;
     }
+    return pair;
 }
 
 std::pair<float,float> ThrustController::getReciprocalValues(float value) {
@@ -104,9 +106,9 @@ void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, fl
 
     float front = getSafeOffset(dive, diveOffset.first);
     float back = getSafeOffset(dive, diveOffset.second);
-    zeroPowerHelper(front, back);
-    forwardDiveThruster_->Thrust(front * diveTrim.first);
-    rearDiveThruster_->Thrust(back * diveTrim.second);
+    FloatPair divePair = zeroPowerHelper(front, back);
+    forwardDiveThruster_->Thrust(divePair.first * diveTrim.first);
+    rearDiveThruster_->Thrust(divePair.second * diveTrim.second);
 }
 
 ThrustController::~ThrustController()

@@ -43,7 +43,7 @@ private:
 
     FloatPair getReciprocalValues(float value);
     float getSafeOffset(float a, float b);
-    void zeroPowerHelper(float &a, float &b);
+    FloatPair zeroPowerHelper(float a, float b);
     float getScaleToMaxPower(float left, float right);
     float getMaxMag(float left, float right);
     void setThrust(FloatPair forwardPair, FloatPair strafePair, float dive);
