@@ -2,14 +2,20 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
+var Sockets = require('../Brain/Sockets');
+var Ports = require('../Brain/Sockets/Ports.json');
 var app = express();
 
-peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
+var dispatcherSocket = Sockets.createSocket(Ports.ThrusterPort);
+var thrustController = new CppInterface.ThrustController(dispatcherSocket);
+var headLights = new CppInterface.HeadLights(dispatcherSocket);
+var powerManager = new CppInterface.PowerManager(dispatcherSocket);
 
-var thrustController = new CppInterface.ThrustController(peripherals.stdin);
-var headLights = new CppInterface.HeadLights(peripherals.stdin);
-var powerManager = new CppInterface.PowerManager(peripherals.stdin);
-new CppInterface.CppLogSource(peripherals.stdout, console);
+var loggerSocket = Sockets.createSocket(Ports.LoggerPort);
+new CppInterface.CppLogSource(loggerSocket, console);
+
+peripherals = spawner.spawn('../Peripherals/Release/Bootstrap', ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort]);
+
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -32,7 +38,7 @@ app.post('/goDirection', function(req, res) {
 
 app.post('/faceDirection', function(req, res) {
 	thrustController.faceDirection(req.body.yaw)
-	res.send(cmdString);
+	res.send('');
 });
 
 

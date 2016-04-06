@@ -4,18 +4,18 @@
 
 module.exports = (function() {
 
-    function CppLogSource(streamIn, outputLogger) {
-        streamIn.on("data", function(data){
-            var logString = input.toString().replace('\n', '');
-            _translateLog(outputLogger, logString);
+    function CppLogSource(streamIn, loggerOut) {
+        streamIn.on("data", function(log){
+            var logString = log.toString().replace('\n', '');
+            _translateLog(loggerOut, logString);
         });
     }
 
-    function _translateLog(outputLogger, logString) {
+    function _translateLog(loggerOut, logString) {
         var sliceIndex = logString.indexOf(' ');
         var logType = logString.slice(0, sliceIndex);
         var message = logString.slice(sliceIndex+1);
-        outputLogger[logType](message);
+        loggerOut[logType](message);
     }
 
     return CppLogSource;

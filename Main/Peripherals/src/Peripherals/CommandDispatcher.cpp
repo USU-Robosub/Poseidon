@@ -29,9 +29,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
 
 void CommandDispatcher::goDirection(std::stringstream& cmdString) {
     float forward, strafe, dive;
-    cmdString >> forward;
-    cmdString >> strafe;
-    cmdString >> dive;
+    cmdString >> forward >> strafe >> dive;
     thrustController_.goDirection(forward, strafe, dive);
 }
 
