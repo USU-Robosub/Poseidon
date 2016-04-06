@@ -5,27 +5,25 @@
 #ifndef _TCP_CLIENT_
 #define _TCP_CLIENT_
 
-#include <iostream>
+#include <streambuf>
+#include <stdio.h>
 #include <string>
 #include "SocketServer.h"
 
-class TcpClient : public iostream
+class TcpClient : private std::streambuf, public iostream
 {
-	static const unsigned int RCV_BUF_SIZE = 64;
+	static const unsigned int BUF_SIZE = 64;
+	char* outputBuffer_;
+	char* inputBuffer_;
+    TCPSocket *socket;
 
 	int connect_(int port, std::string address);
 
 public:
-	TcpClient(int port, std::string address = "0.0.0.0");
-	
+	TcpClient(int port, std::string address = "127.0.0.1");
+    int sync();
+    int underflow();
 	virtual ~TcpClient();
-	
-	std::istream* operator >> (std::string& val);
-
-	void operator << (std::string val);
-
-private:
-	TCPSocket *socket;
 };
 
 #endif
