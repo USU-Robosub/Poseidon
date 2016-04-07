@@ -10,7 +10,7 @@
 		<script type="riot/tag">
 			<get-tag>
 				<div>
-					<button onclick={ get }>{ url }</button>
+					<button onclick={ toggle }>{ url }</button>
 					<p>Result: { result }</p>
 				</div>
 
@@ -114,25 +114,22 @@
 	<body>
 		<div>
 			<div style="width: 50%; float: left;">
-				<!-- <get-tag url='/initialize'></get-tag> -->
-				<!-- <get-tag url='/getForwardAccel'></get-tag> -->
-				<!-- <get-tag url='/getStrafeAccel'></get-tag> -->
-				<!-- <get-tag url='/getDiveAccel'></get-tag> -->
-				<!-- <get-tag url='/getForwardAngle'></get-tag> -->
-				<!-- <get-tag url='/getStrafeAngle'></get-tag> -->
-				<!-- <get-tag url='/getDiveAngle'></get-tag> -->
-				<get-tag url='/turnOnEscs'></get-tag>
-				<get-tag url='/turnOffEscs'></get-tag>
+				<single-get-tag url='/turnOnImuSensor'></single-get-tag>
+				<single-get-tag url='/turnOffImuSensor'></single-get-tag>
+				<single-get-tag url='/getAcceleration'></single-get-tag>
+				<single-get-tag url='/getAngularAcceleration'></single-get-tag>
+				<single-get-tag url='/getHeading'></single-get-tag>
+				<single-get-tag url='/getInternalTemperature'></single-get-tag>
+				<single-get-tag url='/getInternalPressure'></single-get-tag>
+				<single-get-tag url='/exit'></single-get-tag>
+				<single-get-tag url='/turnOnEscs'></single-get-tag>
+				<single-get-tag url='/turnOffEscs'></single-get-tag>
 				<single-get-tag url='/headlight'></single-get-tag>
 			</div>
 			<div style="width: 50%; float: right;">
-				<!-- <post-tag url='/thrust' arguments='["powerLevel"]'></post-tag> -->
 				<post-tag url='/goDirection' arguments='["forward", "strafe", "dive"]' min="-1" max="1" step="0.01"></post-tag>
 				<post-tag url='/faceDirection' arguments='["yaw"]' min="-1" max="1" step="0.01"></post-tag>
-				<!-- <post-tag url='/setForwardThrust' arguments='["velocity"]'></post-tag> -->
-				<!-- <post-tag url='/setDiveThrust' arguments='["velocity"]'></post-tag> -->
-				<!-- <post-tag url='/setStrafeThrust' arguments='["velocity"]'></post-tag> -->
-				<!-- <post-tag url='/setYawThrust' arguments='["velocity"]'></post-tag> -->
+				<get-tag url='/stdoutData'></get-tag>
 			</div>
 		</div>
 		<script type="text/javascript">

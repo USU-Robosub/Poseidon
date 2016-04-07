@@ -3,12 +3,13 @@ var bodyParser = require('body-parser');
 var spawner = require('child_process');
 var app = express();
 
+var stdoutData = ''
+
 peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
 peripherals.stdout.on('data', function(data) {
-	console.log(data);
+	stdoutData += data + '\n';
 });
 
-var diveMaster = require('../Brain/DiveMaster.js');
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -20,6 +21,11 @@ app.get('/initialize', function(req, res) {
 
 app.post('/thrust', function(req, res) {
 	res.send('thrust ' + req.body.powerLevel);
+});
+
+
+app.get('/stdoutData', function(req, res) {
+	res.send(stdoutData);
 });
 
 // From IThrustController
@@ -37,28 +43,47 @@ app.post('/faceDirection', function(req, res) {
 
 
 // From Imu
-app.get('/getForwardAccel', function(req, res) {
-	res.send('getForwardAccel');
+app.get('/turnOnImuSensor', function(req, res) {
+	peripherals.stdin.write("turnOnImuSensor\n");
+	res.send('turnOnImuSensor');
 });
 
-app.get('/getStrafeAccel', function(req, res) {
-	res.send('getStrafeAccel');
+app.get('/turnOffImuSensor', function(req, res) {
+	peripherals.stdin.write("turnOffImuSensor\n");
+	res.send('turnOffImuSensor');
 });
 
-app.get('/getDiveAccel', function(req, res) {
-	res.send('getDiveAccel');
+app.get('/getAcceleration', function(req, res) {
+	peripherals.stdin.write("getAcceleration\n");
+	var result = peripherals.stdout.read();
+	res.send('getAcceleration' + result);
 });
 
-app.get('/getForwardAngle', function(req, res) {
-	res.send('getForwardAngle');
+app.get('/getAngularAcceleration', function(req, res) {
+	peripherals.stdin.write("getAngularAcceleration\n");
+	var result = peripherals.stdout.read();
+	res.send('getAngularAcceleration' + result);
 });
 
-app.get('/getStrafeAngle', function(req, res) {
-	res.send('getStrafeAngle');
+app.get('/getHeading', function(req, res) {
+	peripherals.stdin.write("getHeading\n");
+	var result = peripherals.stdout.read();
+	res.send('getHeading' + result);
 });
 
-app.get('/getDiveAngle', function(req, res) {
-	res.send('getDiveAngle');
+app.get('/getInternalTemperature', function(req, res) {
+	peripherals.stdin.write("getInternalTemperature\n");
+	res.send('getInternalTemperature');
+});
+
+app.get('/getInternalPressure', function(req, res) {
+	peripherals.stdin.write("getInternalPressure\n");
+	res.send('getInternalPressure');
+});
+
+app.get('/exit', function(req, res) {
+	peripherals.stdin.write("exit\n");
+	res.send('exit');
 });
 
 
