@@ -26,11 +26,11 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "switchLights") lights_.switchLights();
     else if(cmd == "turnOnImu") powerManager_.turnOnImuSensor();
     else if(cmd == "turnOffImu") powerManager_.turnOffImuSensor();
-    else if(cmd == "getAcceleration") printAcceleration();
-    else if(cmd == "getAngularAcceleration") printAngularAcceleration();
-    else if(cmd == "getHeading") printHeading();
-    else if(cmd == "getInternalTemperature") std::cout << sensors_.getIntTemperature() << std::endl;
-    else if(cmd == "getInternalPressure") std::cout << sensors_.getIntPressure() << std::endl;
+    else if(cmd == "getAcceleration") sensors_.getAcceleration();
+    else if(cmd == "getAngularAcceleration") sensors_.getAngularAcceleration();
+    else if(cmd == "getHeading") sensors_.getHeading();
+    else if(cmd == "getInternalTemperature") sensors_.getIntTemperature();
+    else if(cmd == "getInternalPressure") sensors_.getIntPressure();
     else if(cmd == "exit") shouldExit_ = true;
 }
 
