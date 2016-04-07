@@ -7,8 +7,9 @@ var stdoutData = ''
 
 peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
 peripherals.stdout.on('data', function(data) {
-	stdoutData += data + '\n';
+	stdoutData = data + '\n' + stdoutData;
 });
+
 
 
 app.use('/', express.static('static'));
