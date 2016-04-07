@@ -4,8 +4,8 @@
 
 #include "CommandDispatcher.h"
 
-CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights)
-        : in_(in), thrustController_(thrustController), powerManager_(powerManager), lights_(lights), shouldExit_(false), sensors_(sensors) {}
+CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights, ImuSensor& sensors)
+        : in_(in), thrustController_(thrustController), powerManager_(powerManager), lights_(lights), sensors_(sensors), shouldExit_(false) {}
 
 void CommandDispatcher::runLoop() {
     while(!shouldExit_) {
@@ -50,21 +50,15 @@ void CommandDispatcher::faceDirection(std::stringstream& cmdString) {
 
 void CommandDispatcher::printAcceleration() {
     auto acceleration = sensors_.getAcceleration();
-    std::cout << std::get<0> << ' '
-        << std::get<1> << ' '
-        << std::Get<2> << std::endl;
+    std::cout << std::get<0>(acceleration) << ' ' << std::get<1>(acceleration) << ' ' << std::get<2>(acceleration) << std::endl;
 }
 
 void CommandDispatcher::printAngularAcceleration() {
     auto angularAcceleration = sensors_.getAngularAcceleration();
-    std::cout << std::Get<0> << ' '
-        << std::get<1> << ' '
-        << std::get<2> << std::endl;
+    std::cout << std::get<0>(angularAcceleration) << ' ' << std::get<1>(angularAcceleration) << ' ' << std::get<2>(angularAcceleration) << std::endl;
 }
 
 void CommandDispatcher::printHeading() {
     auto heading = sensors_.getHeading();
-    std::cout << std::Get<0> << ' '
-        << std::get<1> << ' '
-        << std::get<2> << std::endl;
+    std::cout << std::get<0>(heading) << ' ' << std::get<1>(heading) << ' ' << std::get<2>(heading) << std::endl;
 }

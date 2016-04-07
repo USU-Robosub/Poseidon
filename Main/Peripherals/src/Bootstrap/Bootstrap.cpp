@@ -14,6 +14,7 @@
 #include <HMC5883L.h>
 #include <BMP085.h>
 #include <ImuPower.h>
+#include <ImuFactory.h>
 
 int main() {
 
@@ -30,7 +31,7 @@ int main() {
     auto sensorFactory = ImuFactory(bmp, hmc, mpu);
     ImuSensor subSensors(sensorFactory, scriptLogger);
 
-    auto imuP = ImuPower(accelerometerGyro, dCompass);
+    auto imuP = ImuPower(mpu, hmc);
     auto ep = EscPower(serial);
     auto pm = PowerManager(ep, imuP);
     auto lights = Headlights(serial);

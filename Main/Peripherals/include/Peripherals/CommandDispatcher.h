@@ -8,7 +8,9 @@
 #include "ThrustController.h"
 #include "IHeadlights.h"
 #include "PowerManager.h"
-#include <istream>
+#include "ImuSensor.h"
+#include <iostream>
+#include <stdexcept>
 #include <string>
 #include <sstream>
 #include <tuple>
