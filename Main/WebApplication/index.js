@@ -56,20 +56,17 @@ app.get('/turnOffImuSensor', function(req, res) {
 
 app.get('/getAcceleration', function(req, res) {
 	peripherals.stdin.write("getAcceleration\n");
-	var result = peripherals.stdout.read();
-	res.send('getAcceleration' + result);
+	res.send('ran getAcceleration');
 });
 
 app.get('/getAngularAcceleration', function(req, res) {
 	peripherals.stdin.write("getAngularAcceleration\n");
-	var result = peripherals.stdout.read();
-	res.send('getAngularAcceleration' + result);
+	res.send('ran getAngularAcceleration');
 });
 
 app.get('/getHeading', function(req, res) {
 	peripherals.stdin.write("getHeading\n");
-	var result = peripherals.stdout.read();
-	res.send('getHeading' + result);
+	res.send('ran getHeading');
 });
 
 app.get('/getInternalTemperature', function(req, res) {
