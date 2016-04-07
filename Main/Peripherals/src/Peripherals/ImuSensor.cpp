@@ -18,50 +18,78 @@ ImuSensor::ImuSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger) :
 
 FloatTuple ImuSensor::getAcceleration()
 {
-    return accelerometer_->getAcceleration();
+    auto accelerometerResults = accelerometer_->getAcceleration();
+    std::stringstream logResults;
+    logResults << "A: " << std::get<0>(accelerometerResults) << ' ' << std::get<1>(accelerometerResults) << ' ' << std::get<2>(accelerometerResults);
+    logger_->info(logResults.str());
+    return accelerometerResults;
 }
 
 
 
 FloatTuple ImuSensor::getAngularAcceleration() 
 {
-    return gyroscope_->getAngularAcceleration();
+    auto gyroscopeResults = gyroscope_->getAngularAcceleration();
+    std::stringstream logResults;
+    logResults << "A: " << std::get<0>(gyroscopeResults) << ' ' << std::get<1>(gyroscopeResults) << ' ' << std::get<2>(gyroscopeResults);
+    logger_->info(logResults.str());
+    return gyroscopeResults;
 }
 
 
 
 FloatTuple ImuSensor::getHeading()
 {
-    return compass_->getHeading();
+    auto compassResults = compass_->getHeading();
+    std::stringstream logResults;
+    logResults << "A: " << std::get<0>(compassResults) << ' ' << std::get<1>(compassResults) << ' ' << std::get<2>(compassResults);
+    logger_->info(logResults.str());
+    return compassResults;
 }
 
 
 
 int ImuSensor::getExtPressure()
 {
-    return extPressureSensor_->getPressure();
+    auto pressureResults = extPressureSensor_->getPressure();
+    std::stringstream logResults;
+    logResults << "External Pressure: " << pressureResults;
+    logger_->info(logResults.str());
+    return pressureResults;
 }
 
 
 
 int ImuSensor::getIntPressure()
 {
-    return intPressureSensor_->getPressure();
+    auto pressureResults = intPressureSensor_->getPressure();
+    std::stringstream logResults;
+    logResults << "Internal Pressure: " << pressureResults;
+    logger_->info(logResults.str());
+    return pressureResults;
 }
 
 
 
 float ImuSensor::getExtTemperature()
 {
-    return extTemperatureSensor_->getTemperature();
+    auto temperatureResults = extTemperatureSensor_->getTemperature();
+    std::stringstream logResults;
+    logResults << "External Temperature: " << temperatureResults;
+    logger_->info(logResults.str());
+    return temperatureResults;
 }
 
 
 
 float ImuSensor::getIntTemperature()
 {
-    return (intTemperatureSensor1_->getTemperature() + 
+    auto temperatureResults = (intTemperatureSensor1_->getTemperature() + 
             intTemperatureSensor2_->getTemperature()) / 2.0;
+    std::stringstream logResults;
+    logResults << "Internal Temperature: " << temperatureResults;
+    logger_->info(logResults.str());
+    return temperatureResults;
 }
 
 

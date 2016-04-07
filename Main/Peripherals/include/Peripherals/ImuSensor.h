@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <string>
+#include <sstream>
 #include <tuple>
 
 typedef std::tuple<float, float, float> FloatTuple;
