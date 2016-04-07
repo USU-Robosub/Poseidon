@@ -12,6 +12,7 @@
 #include <Headlights.h>
 #include <MPU6050.h>
 #include <HMC5883L.h>
+#include <BMP085.h>
 #include <ImuPower.h>
 
 int main() {
@@ -20,15 +21,21 @@ int main() {
     auto serial = Serial();
     auto thrusterFactory = SerialThrusterFactory(serial);
     ThrustController tc(thrusterFactory, scriptLogger);
-    auto accelerometerGyro = std::make_shared<MPU6050>();
-    auto compass = std::make_shared<HMC5883L>();
 
-    auto imuP = ImuPower(accelerometerGyro, compass);
+
+    auto mpu = std::make_shared<MPU6050>();
+    auto hmc = std::make_shared<HMC5883L>();
+    auto bmp = std::make_shared<BMP085>();
+
+    auto sensorFactory = ImuFactory(bmp, hmc, mpu);
+    ImuSensor subSensors(sensorFactory, scriptLogger);
+
+    auto imuP = ImuPower(accelerometerGyro, dCompass);
     auto ep = EscPower(serial);
     auto pm = PowerManager(ep, imuP);
     auto lights = Headlights(serial);
 
-    CommandDispatcher cd(std::cin, tc, pm, lights);
+    CommandDispatcher cd(std::cin, tc, pm, lights, subSensors);
     cd.runLoop();
 
     return 0;
