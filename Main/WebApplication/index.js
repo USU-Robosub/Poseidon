@@ -16,7 +16,6 @@ new CppInterface.CppLogSource(loggerSocket, console);
 
 peripherals = spawner.spawn('../Peripherals/Release/Bootstrap', ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort]);
 
-
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
 
