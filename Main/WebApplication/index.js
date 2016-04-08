@@ -1,6 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
+var CppInterface = require('../Brain/CppInterface');
+var ConsoleLogger = require('./ConsoleLogger');
 var app = express();
 
 var stdoutData = ''
@@ -10,7 +12,10 @@ peripherals.stdout.on('data', function(data) {
 	stdoutData = data + '\n' + stdoutData;
 });
 
-
+var thrustController = new CppInterface.ThrustController(peripherals.stdin);
+var headLights = new CppInterface.HeadLights(peripherals.stdin);
+var powerManager = new CppInterface.PowerManager(peripherals.stdin);
+var logger = new CppInterface.CppLogger(peripherals.stdout, new ConsoleLogger());
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -31,14 +36,13 @@ app.get('/stdoutData', function(req, res) {
 
 // From IThrustController
 app.post('/goDirection', function(req, res) {
-	cmdString = 'goDirection ' + req.body.forward + ' ' + req.body.strafe + ' ' + req.body.dive;
-	peripherals.stdin.write(cmdString + "\n");
-	res.send(cmdString);
+	var params = req.body;
+	thrustController.goDirection(params.forward, params.strafe, params.dive);
+	res.send('');
 });
 
 app.post('/faceDirection', function(req, res) {
-	cmdString = 'faceDirection ' + req.body.yaw;
-	peripherals.stdin.write(cmdString + "\n");
+	thrustController.faceDirection(req.body.yaw, req.body.pitch || 0)
 	res.send(cmdString);
 });
 
@@ -87,12 +91,12 @@ app.get('/exit', function(req, res) {
 
 // From IPowerController {
 app.get('/turnOnEscs', function(req, res) {
-	peripherals.stdin.write("turnOnEscs\n");
+	powerManager.turnOnEscs();
 	res.send('turnOnEscs');
 });
 
 app.get('/turnOffEscs', function(req, res) {
-	peripherals.stdin.write("turnOffEscs\n");
+	powerManager.turnOffEscs();
 	res.send('turnOffEscs');
 });
 
@@ -120,7 +124,7 @@ app.post('/setYawThrust', function(req, res) {
 
 // Headlight Control
 app.get('/headlight', function(req, res) {
-	peripherals.stdin.write('switchLights' + "\n");
+    headLights.toggleLights();
 	res.send('toggled Headlights');
 });
 

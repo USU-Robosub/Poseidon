@@ -6,7 +6,7 @@ private:
 public:
   LightController() {
     pinMode(LIGHTS, OUTPUT);
-    digitalWrite(LIGHTS, LOW);
+    digitalWrite(LIGHTS, HIGH);
   }
   void execute() {
     while(!Serial.available());
