@@ -17,16 +17,16 @@ add_subdirectory("tests/gtest-1.7.0")
 enable_testing()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-include_directories(tests/Mocks/include)
-file(GLOB_RECURSE MOCK_FILES "tests/Mocks/src/*.cpp")
-add_library(Mocks SHARED ${MOCK_FILES})
+#include_directories(tests/Mocks/include)
+#file(GLOB_RECURSE MOCK_FILES "tests/Mocks/src/*.cpp")
+#add_library(Mocks SHARED ${MOCK_FILES})
 
 file(GLOB_RECURSE TEST_FILES "tests/Specs/*.cpp")
 add_executable(Specs ${TEST_FILES})
 
 target_link_libraries(Specs gtest gtest_main)
-target_link_libraries(Specs Mocks Peripherals)
-target_link_libraries(Mocks Peripherals)
+#target_link_libraries(Specs Mocks Peripherals)
+#target_link_libraries(Mocks Peripherals)
 
 add_test(Test Specs)
 
