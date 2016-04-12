@@ -31,6 +31,7 @@ private:
     void printAcceleration();
     void printAngularAcceleration();
     void printHeading();
+
     void setForwardTrim(std::stringstream& cmdString);
     void setDiveTrim(std::stringstream& cmdString);
 
