@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <utility>
+#include <sstream>
 
 typedef std::pair<float, float> FloatPair;
 
