@@ -40,22 +40,68 @@
 					}
 				};
 			</get-tag>
+			<single-get-tag>
+				<div>
+					<button onclick={ get }>{ url }</button>
+					<p>Result: { result }</p>
+				</div>
+
+				var self = this;
+				self.url = self.opts.url;
+
+				self.get = function() {
+					axios.get(self.opts.url).then(function (response) {
+						self.result = response.data;
+						self.update();
+						setTimeout(function() {
+							self.result = '';
+							self.update();
+						}, 500);
+					});
+				};
+			</single-get-tag>
 			<post-tag>
 				<div>
-					<button onclick={ post }>{ url }</button>
-					<div each={ argument, i in arguments }>{ argument }<input type="number" id={ argument }/></div>
+					<button onclick={ post }>{ url }</button><button onclick={ toggleAbsolute }>Toggle Slider</button>
+					<div each={ argument, i in arguments }>
+						<span>{ argument }</span>
+						<input type={ inputType } onchange={ update } oninput={ update } id={ argument } min={ min } max={ max } step={ step }/>
+						<span if={ !absolute }>{ self[argument].value }</span>
+					</div>
 					<p>Result: { result }</p>
 				</div>
 
 				var self = this;
 				self.url = self.opts.url;
 				self.arguments = JSON.parse(self.opts.arguments);
+				self.absolute = true;
+				self.min = '';
+				self.max = '';
+				self.step = self.opts.step;
+				self.inputType = 'number'
+
+				self.toggleAbsolute = function() {
+					self.absolute = !self.absolute;
+					if (self.absolute) {
+						self.inputType = 'number';
+						self.min = '';
+						self.max = '';
+					}
+					else {
+						self.inputType = 'range'
+						self.min = self.opts.min;
+						self.max = self.opts.max;
+					}
+					self.update();
+				}
 
 				self.post = function() {
 					var a = {}
 					for (var aIndex in self.arguments) {
 						a[self.arguments[aIndex]] = self[self.arguments[aIndex]].value;
 					}
+					console.log(self);
+					console.log(a);
 					axios.post(self.opts.url, a).then(function (response) {
 						self.result = response.data;
 						self.update();
@@ -68,24 +114,25 @@
 	<body>
 		<div>
 			<div style="width: 50%; float: left;">
-				<get-tag url='/initialize'></get-tag>
-				<get-tag url='/getForwardAccel'></get-tag>
-				<get-tag url='/getStrafeAccel'></get-tag>
-				<get-tag url='/getDiveAccel'></get-tag>
-				<get-tag url='/getForwardAngle'></get-tag>
-				<get-tag url='/getStrafeAngle'></get-tag>
-				<get-tag url='/getDiveAngle'></get-tag>
+				<!-- <get-tag url='/initialize'></get-tag> -->
+				<!-- <get-tag url='/getForwardAccel'></get-tag> -->
+				<!-- <get-tag url='/getStrafeAccel'></get-tag> -->
+				<!-- <get-tag url='/getDiveAccel'></get-tag> -->
+				<!-- <get-tag url='/getForwardAngle'></get-tag> -->
+				<!-- <get-tag url='/getStrafeAngle'></get-tag> -->
+				<!-- <get-tag url='/getDiveAngle'></get-tag> -->
 				<get-tag url='/turnOnEscs'></get-tag>
 				<get-tag url='/turnOffEscs'></get-tag>
+				<single-get-tag url='/headlight'></single-get-tag>
 			</div>
 			<div style="width: 50%; float: right;">
-				<post-tag url='/thrust' arguments='["powerLevel"]'></post-tag>
-				<post-tag url='/goDirection' arguments='["forward", "strafe", "dive"]'></post-tag>
-				<post-tag url='/faceDirection' arguments='["yaw"]'></post-tag>
-				<post-tag url='/setForwardThrust' arguments='["velocity"]'></post-tag>
-				<post-tag url='/setDiveThrust' arguments='["velocity"]'></post-tag>
-				<post-tag url='/setStrafeThrust' arguments='["velocity"]'></post-tag>
-				<post-tag url='/setYawThrust' arguments='["velocity"]'></post-tag>
+				<!-- <post-tag url='/thrust' arguments='["powerLevel"]'></post-tag> -->
+				<post-tag url='/goDirection' arguments='["forward", "strafe", "dive"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/faceDirection' arguments='["yaw"]' min="-1" max="1" step="0.01"></post-tag>
+				<!-- <post-tag url='/setForwardThrust' arguments='["velocity"]'></post-tag> -->
+				<!-- <post-tag url='/setDiveThrust' arguments='["velocity"]'></post-tag> -->
+				<!-- <post-tag url='/setStrafeThrust' arguments='["velocity"]'></post-tag> -->
+				<!-- <post-tag url='/setYawThrust' arguments='["velocity"]'></post-tag> -->
 			</div>
 		</div>
 		<script type="text/javascript">
