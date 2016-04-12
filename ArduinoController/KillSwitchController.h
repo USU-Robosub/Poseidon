@@ -2,14 +2,16 @@
 
 class KillSwitchController : public IController {
 private:
-  volatile bool active;
+  volatile int active;
   IController ** list;
   int count;
+  const int STAT_LED = 22;
   
 public:
   KillSwitchController(IController ** _list_, int _count_) {
     list = _list_;
     count = _count_;
+    pinMode(STAT_LED, OUTPUT);
   }
     
   void execute() {
@@ -24,9 +26,12 @@ public:
     
   void isr(int interrupt) {
     noInterrupts();
-    active = digitalRead(interrupt) == 1;
+    // when not active, interrupt pin read a '1'
+    // when active, interrupt pin read a '0'
+    active = !digitalRead(interrupt);
     if(active)
       kill();
+    digitalWrite(STAT_LED, active);
     interrupts();
   }
 };
