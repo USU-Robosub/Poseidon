@@ -6,13 +6,13 @@ private:
 public:
   LightController() {
     pinMode(LIGHTS, OUTPUT);
-    kill();
+    digitalWrite(LIGHTS, HIGH);
   }
   void execute() {
     while(!Serial.available());
     digitalWrite(LIGHTS, !Serial.read());
   }
   void kill() {
-    digitalWrite(LIGHTS, HIGH);
+    //digitalWrite(LIGHTS, HIGH);
   }
 };

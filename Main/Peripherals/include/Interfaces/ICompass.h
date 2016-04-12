@@ -5,13 +5,13 @@
 #ifndef PERIPHERALS_I_COMPASS_H
 #define PERIPHERALS_I_COMPASS_H
 
-#include <cstdint>
+#include <tuple>
+
+typedef std::tuple<float, float, float> FloatTuple;
 
 class ICompass {
 public:
-    virtual uint16_t X() = 0;
-    virtual uint16_t Y() = 0;
-    virtual uint16_t Z() = 0;
+    virtual FloatTuple getHeading() = 0;
 };
 
 #endif //PERIPHERALS_I_COMPASS_H

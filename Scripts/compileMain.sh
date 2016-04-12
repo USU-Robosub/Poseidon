@@ -1,3 +1,5 @@
+cd ../Drivers
+git submodule update --recursive
 cd ../Main/Peripherals
 if [ -d Release ]; then
     rm -rf Release
