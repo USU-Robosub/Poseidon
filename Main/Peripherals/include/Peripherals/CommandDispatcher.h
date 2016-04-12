@@ -21,15 +21,18 @@ private:
     std::istream& in_;
     ThrustController& thrustController_;
     PowerManager& powerManager_;
+    IHeadlights& lights_;
+    ImuSensor& sensors_;
+    bool shouldExit_;
+
     void dispatchCommand(std::stringstream& cmd);
     void goDirection(std::stringstream& cmdString);
     void faceDirection(std::stringstream& cmdString);
     void printAcceleration();
     void printAngularAcceleration();
     void printHeading();
-    IHeadlights& lights_;
-    ImuSensor& sensors_;
-    bool shouldExit_;
+    void setForwardTrim(std::stringstream& cmdString);
+    void setDiveTrim(std::stringstream& cmdString);
 
 public:
     CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights, ImuSensor& sensors);

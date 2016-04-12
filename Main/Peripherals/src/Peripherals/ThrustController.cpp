@@ -39,6 +39,24 @@ void ThrustController::faceDirection(float yaw) {
     setThrust(yawPair, std::make_pair(0.0f, 0.0f), 0.0f);
 }
 
+void ThrustController::setForwardTrim(float left, float right) {
+    std::stringstream ss;
+    ss << "Setting forward trim: L " << left << " R " << right;
+    logger_->info(ss.str().c_str());
+
+    forwardTrim.first = left;
+    forwardTrim.second = right;
+}
+
+void ThrustController::setDiveTrim(float front, float back) {
+    std::stringstream ss;
+    ss << "Setting dive trim: F " << front << " B " << back;
+    logger_->info(ss.str().c_str());
+
+    diveTrim.first = front;
+    diveTrim.second = back;
+}
+
 std::pair<float,float> ThrustController::getReciprocalValues(float value) {
     float left, right;
     if(value < 0.0f) {
@@ -53,12 +71,14 @@ std::pair<float,float> ThrustController::getReciprocalValues(float value) {
 }
 
 void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, float dive) {
-    leftForwardThruster_->Thrust(forwardPair.first);
-    rightForwardThruster_->Thrust(forwardPair.second);
+    leftForwardThruster_->Thrust(forwardPair.first * forwardTrim.first);
+    rightForwardThruster_->Thrust(forwardPair.second * forwardTrim.second);
+
     leftStrafeThruster_->Thrust(strafePair.first);
     rightStrafeThruster_->Thrust(strafePair.second);
-    forwardDiveThruster_->Thrust(dive);
-    rearDiveThruster_->Thrust(dive);
+
+    forwardDiveThruster_->Thrust(dive * diveTrim.first);
+    rearDiveThruster_->Thrust(dive * diveTrim.second);
 }
 
 ThrustController::~ThrustController()

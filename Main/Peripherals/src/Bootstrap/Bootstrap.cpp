@@ -31,12 +31,13 @@ int main() {
     auto sensorFactory = ImuFactory(bmp, hmc, mpu);
     ImuSensor subSensors(sensorFactory, scriptLogger);
 
-    auto imuP = ImuPower(mpu, hmc);
+    auto imuP = ImuPower(mpu, hmc, bmp);
     auto ep = EscPower(serial);
     auto pm = PowerManager(ep, imuP);
     auto lights = Headlights(serial);
 
     CommandDispatcher cd(std::cin, tc, pm, lights, subSensors);
+    std::cout << "Ready!\n";
     cd.runLoop();
 
     return 0;

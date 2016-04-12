@@ -34,6 +34,8 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "getHeading") printHeading();
     else if(cmd == "getInternalTemperature") sensors_.getIntTemperature();
     else if(cmd == "getInternalPressure") sensors_.getIntPressure();
+    else if(cmd == "setForwardTrim") setForwardTrim(cmdString);
+    else if(cmd == "setDiveTrim") setDiveTrim(cmdString);
     else if(cmd == "exit") shouldExit_ = true;
 }
 
@@ -64,4 +66,16 @@ void CommandDispatcher::printAngularAcceleration() {
 void CommandDispatcher::printHeading() {
     auto heading = sensors_.getHeading();
     std::cout << std::get<0>(heading) << ' ' << std::get<1>(heading) << ' ' << std::get<2>(heading) << std::endl;
+}
+
+void CommandDispatcher::setForwardTrim(std::stringstream& cmdString) {
+    float a, b;
+    cmdString >> a >> b;
+    thrustController_.setForwardTrim(a, b);
+}
+
+void CommandDispatcher::setDiveTrim(std::stringstream& cmdString) {
+    float a, b;
+    cmdString >> a >> b;
+    thrustController_.setDiveTrim(a, b);
 }
