@@ -78,8 +78,4 @@ void CommandDispatcher::setDiveTrim(std::stringstream& cmdString) {
     float a, b;
     cmdString >> a >> b;
     thrustController_.setDiveTrim(a, b);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 15984a46c65d3b79bd17a21ab6397ac9d82c2aca
