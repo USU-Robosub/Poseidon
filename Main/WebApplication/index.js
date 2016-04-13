@@ -2,19 +2,18 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
+var WebLogger = require('./WebLogger');
 var app = express();
 
-var stdoutData = ''
 
 peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
-peripherals.stdout.on('data', function(data) {
-	stdoutData = data + '\n' + stdoutData;
-});
+
+var webLogger = new WebLogger(console);
 
 var thrustController = new CppInterface.ThrustController(peripherals.stdin);
 var headLights = new CppInterface.HeadLights(peripherals.stdin);
 var powerManager = new CppInterface.PowerManager(peripherals.stdin);
-new CppInterface.CppLogSource(peripherals.stdout, console);
+new CppInterface.CppLogSource(peripherals.stdout, webLogger);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -30,7 +29,7 @@ app.post('/thrust', function(req, res) {
 
 
 app.get('/stdoutData', function(req, res) {
-	res.send(stdoutData);
+	res.send(webLogger.pull());
 });
 
 // From IThrustController
