@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <cstring>
 #include <ThrustController.h>
 #include <CommandDispatcher.h>
 #include "SerialThrusterFactory.h"
@@ -12,32 +11,46 @@
 #include <TcpClient.h>
 #include <map>
 
-std::map<string, int> _createPortMap(int argCount, char** arguments);
+std::ostream* _getOutputStream(std::map<std::string, int>& portMap, string portName);
+std::istream* _getInputStream(std::map<std::string, int>& portMap, string portName);
+std::map<std::string, int> _createPortMap(int argCount, char** arguments);
 std::pair<std::string, int> _getPort(char* portString);
 
 int main(int argCount, char** arguments) {
     auto portMap = _createPortMap(argCount, arguments);
 
-    auto loggerSocket = new TcpClient(portMap["loggerPort"]);
-    auto scriptLogger = std::make_shared<ScriptLogger>(loggerSocket);
-    auto serial = Serial();
+    auto loggerStream = _getOutputStream(portMap, "loggerPort");
+    auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream);
 
+    auto serial = Serial();
     auto thrusterFactory = SerialThrusterFactory(serial);
     ThrustController tc(thrusterFactory, scriptLogger);
 
     auto pm = PowerManager();
-
     auto lights = Headlights(serial);
 
-    auto dispatcherSocket = std::make_shared<TcpClient>(portMap["thrusterPort"]);
-    CommandDispatcher cd(*dispatcherSocket, tc, pm, lights);
+    auto dispatcherStream = _getInputStream(portMap, "thrusterPort");
+    CommandDispatcher cd(*dispatcherStream, tc, pm, lights);
     cd.runLoop();
 
     return 0;
-
 }
 
-std::map<string, int> _createPortMap(int argCount, char** arguments) {
+std::ostream* _getOutputStream(std::map<std::string, int>& portMap, string portName) {
+    std::ostream* out;
+    if(portMap.count(portName)) out = new TcpClient(portMap[portName]);
+    else out = &(std::cout);
+    return out;
+}
+
+std::istream* _getInputStream(std::map<std::string, int>& portMap, string portName) {
+    std::istream* in;
+    if(portMap.count(portName)) in = new TcpClient(portMap[portName]);
+    else in = &(std::cin);
+    return in;
+}
+
+std::map<std::string, int> _createPortMap(int argCount, char** arguments) {
     auto portMap = std::map<string, int>();
     for(auto i = 1; i < argCount; i++) {
         portMap.insert(_getPort(arguments[i]));
@@ -47,8 +60,8 @@ std::map<string, int> _createPortMap(int argCount, char** arguments) {
 
 std::pair<std::string, int> _getPort(char* portString) {
     auto argString = string(portString);
-    int portPosition = argString.find('=');
-    auto portName = argString.substr(2,portPosition-2);
-    auto portAddress = atoi(argString.substr(portPosition+1).c_str());
+    int portPosition = (int)argString.find('=');
+    auto portName = argString.substr(2, (unsigned long)(portPosition - 2));
+    auto portAddress = atoi(argString.substr((unsigned long)(portPosition + 1)).c_str());
     return make_pair(portName, portAddress);
 }
