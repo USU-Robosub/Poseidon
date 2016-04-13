@@ -17,34 +17,33 @@ add_subdirectory("tests/gtest-1.7.0")
 enable_testing()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-include_directories(tests/Mocks/include)
-file(GLOB_RECURSE MOCK_FILES "tests/Mocks/src/*.cpp")
-add_library(Mocks SHARED ${MOCK_FILES})
+#include_directories(tests/Mocks/include)
+#file(GLOB_RECURSE MOCK_FILES "tests/Mocks/src/*.cpp")
+#add_library(Mocks SHARED ${MOCK_FILES})
 
 file(GLOB_RECURSE TEST_FILES "tests/Specs/*.cpp")
 add_executable(Specs ${TEST_FILES})
 
 target_link_libraries(Specs gtest gtest_main)
-target_link_libraries(Specs Mocks Peripherals)
-target_link_libraries(Mocks Peripherals)
+#target_link_libraries(Specs Mocks Peripherals)
+#target_link_libraries(Mocks Peripherals)
 
 add_test(Test Specs)
 
 # Production
-
-# include_directories(../../Drivers/Include/Registers)
-# include_directories(../../Drivers/Include/Sensors)
-# include_directories(../../Drivers/Include/System)
-# file(GLOB_RECURSE IMU_FILES "../../Drivers/Src/Registers/*.cpp")
-# add_library(ImuDrivers SHARED ${IMU_FILES})
+include_directories(../../Drivers/Include/Interfaces)
+include_directories(../../Drivers/Include/Registers)
+include_directories(../../Drivers/Include/Sensors)
+include_directories(../../Drivers/Include/System)
+link_directories(../../Drivers/Build)
 
 include_directories(include/Drivers)
 file(GLOB_RECURSE DRIVER_FILES "src/Drivers/*.cpp")
-add_library(Drivers SHARED ${DRIVER_FILES})
+add_library(Wrappers SHARED ${DRIVER_FILES})
 
 include_directories(include/Bootstrap)
 file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")
 add_executable(Bootstrap ${BOOTSTRAP_FILES})
 
-target_link_libraries(Bootstrap Drivers Peripherals)
-target_link_libraries(Drivers Peripherals)
+target_link_libraries(Bootstrap Wrappers Peripherals Drivers)
+target_link_libraries(Wrappers Peripherals)

@@ -6,6 +6,6 @@ module.exports = {
     HeadLights: require("./Headlights"),
     PowerManager: require("./PowerManager"),
     ThrustController: require("./ThrustController"),
-    CppLogger: require("./CppLogger"),
+    CppLogSource: require("./CppLogSource"),
     ImuReader: require("./ImuReader")
 };

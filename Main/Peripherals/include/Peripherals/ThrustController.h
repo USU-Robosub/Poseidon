@@ -8,6 +8,7 @@
 #include <memory>
 #include <utility>
 #include <cmath>
+#include <sstream>
 
 typedef std::pair<float, float> FloatPair;
 

@@ -42,7 +42,7 @@ void ThrustController::faceDirection(float yaw, float dive) {
     logger_->info("Yawing...");
     auto yawPair = getReciprocalValues(yaw);
 
-    float scaledDive = dive * powerScale;
+    float scaledDive = dive;
     FloatPair divePair;
     divePair.first = getSafeOffset(scaledDive, diveOffset.first);
     divePair.second = getSafeOffset(scaledDive, diveOffset.second);
