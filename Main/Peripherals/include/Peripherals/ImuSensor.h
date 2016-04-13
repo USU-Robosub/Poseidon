@@ -1,16 +1,13 @@
 #ifndef IMU_CONTROLLER
 #define IMU_CONTROLLER
 
-#include "IAccelerometer.h"
-#include "ICompass.h"
-#include "IPressureSensor.h"
-#include "ITemperatureSensor.h"
 #include "IImuFactory.h"
 #include "ILogger.h"
 
 #include <memory>
 #include <utility>
 #include <string>
+#include <sstream>
 #include <tuple>
 
 typedef std::tuple<float, float, float> FloatTuple;
@@ -19,17 +16,23 @@ class ImuSensor {
 public:
     ImuSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger);
     FloatTuple getAcceleration();
-    FloatTuple getAngularAcceleration();
+    FloatTuple getAngularAcceleration(); // gyroscope
     FloatTuple getHeading();
-    int getPressure();
-    float getTemperature();
+    int getExtPressure();
+    int getIntPressure();
+    float getExtTemperature();
+    float getIntTemperature(); // sensor fusion
     ~ImuSensor();
 
 private:
     std::shared_ptr<IAccelerometer> accelerometer_;
+    std::shared_ptr<IGyroscope> gyroscope_;
     std::shared_ptr<ICompass> compass_;
-    std::shared_ptr<IPressureSensor> pressureSensor_;
-    std::shared_ptr<ITemperatureSensor> temperatureSensor_;
+    std::shared_ptr<IPressureSensor> extPressureSensor_;
+    std::shared_ptr<IPressureSensor> intPressureSensor_;
+    std::shared_ptr<ITemperatureSensor> extTemperatureSensor_;
+    std::shared_ptr<ITemperatureSensor> intTemperatureSensor1_;
+    std::shared_ptr<ITemperatureSensor> intTemperatureSensor2_;
     std::shared_ptr<ILogger> logger_;
 };
 

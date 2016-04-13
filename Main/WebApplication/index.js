@@ -4,6 +4,7 @@ var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
 var Sockets = require('../Brain/Sockets');
 var Ports = require('../Brain/Sockets/Ports.json');
+var WebLogger = require('./WebLogger');
 var app = express();
 
 var dispatcherSocket = Sockets.createSocket(Ports.ThrusterPort);
@@ -12,6 +13,7 @@ var headLights = new CppInterface.HeadLights(dispatcherSocket);
 var powerManager = new CppInterface.PowerManager(dispatcherSocket);
 
 var loggerSocket = Sockets.createSocket(Ports.LoggerPort);
+var webLogger = new WebLogger(console);
 new CppInterface.CppLogSource(loggerSocket, console);
 
 peripherals = spawner.spawn('../Peripherals/Release/Bootstrap', ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort]);
@@ -28,6 +30,11 @@ app.post('/thrust', function(req, res) {
 	res.send('thrust ' + req.body.powerLevel);
 });
 
+
+app.get('/stdoutData', function(req, res) {
+	res.send(webLogger.pull());
+});
+
 // From IThrustController
 app.post('/goDirection', function(req, res) {
 	var params = req.body;
@@ -42,28 +49,44 @@ app.post('/faceDirection', function(req, res) {
 
 
 // From Imu
-app.get('/getForwardAccel', function(req, res) {
-	res.send('getForwardAccel');
+app.get('/turnOnImuSensor', function(req, res) {
+	peripherals.stdin.write("turnOnImuSensor\n");
+	res.send('turnOnImuSensor');
 });
 
-app.get('/getStrafeAccel', function(req, res) {
-	res.send('getStrafeAccel');
+app.get('/turnOffImuSensor', function(req, res) {
+	peripherals.stdin.write("turnOffImuSensor\n");
+	res.send('turnOffImuSensor');
 });
 
-app.get('/getDiveAccel', function(req, res) {
-	res.send('getDiveAccel');
+app.get('/getAcceleration', function(req, res) {
+	peripherals.stdin.write("getAcceleration\n");
+	res.send('ran getAcceleration');
 });
 
-app.get('/getForwardAngle', function(req, res) {
-	res.send('getForwardAngle');
+app.get('/getAngularAcceleration', function(req, res) {
+	peripherals.stdin.write("getAngularAcceleration\n");
+	res.send('ran getAngularAcceleration');
 });
 
-app.get('/getStrafeAngle', function(req, res) {
-	res.send('getStrafeAngle');
+app.get('/getHeading', function(req, res) {
+	peripherals.stdin.write("getHeading\n");
+	res.send('ran getHeading');
 });
 
-app.get('/getDiveAngle', function(req, res) {
-	res.send('getDiveAngle');
+app.get('/getInternalTemperature', function(req, res) {
+	peripherals.stdin.write("getInternalTemperature\n");
+	res.send('getInternalTemperature');
+});
+
+app.get('/getInternalPressure', function(req, res) {
+	peripherals.stdin.write("getInternalPressure\n");
+	res.send('getInternalPressure');
+});
+
+app.get('/exit', function(req, res) {
+	peripherals.stdin.write("exit\n");
+	res.send('exit');
 });
 
 

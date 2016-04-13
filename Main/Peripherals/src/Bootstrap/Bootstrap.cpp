@@ -7,9 +7,15 @@
 #include <CommandDispatcher.h>
 #include "SerialThrusterFactory.h"
 #include "ScriptLogger.h"
+#include "EscPower.h"
 #include <Headlights.h>
 #include <TcpClient.h>
 #include <map>
+#include <MPU6050.h>
+#include <HMC5883L.h>
+#include <BMP085.h>
+#include <ImuPower.h>
+#include <ImuFactory.h>
 
 std::ostream* _getOutputStream(std::map<std::string, int>& portMap, string portName);
 std::istream* _getInputStream(std::map<std::string, int>& portMap, string portName);
@@ -21,16 +27,25 @@ int main(int argCount, char** arguments) {
 
     auto loggerStream = _getOutputStream(portMap, "loggerPort");
     auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream);
-
     auto serial = Serial();
     auto thrusterFactory = SerialThrusterFactory(serial);
     ThrustController tc(thrusterFactory, scriptLogger);
 
-    auto pm = PowerManager();
+    auto mpu = std::make_shared<MPU6050>();
+    auto hmc = std::make_shared<HMC5883L>();
+    auto bmp = std::make_shared<BMP085>();
+
+    auto sensorFactory = ImuFactory(bmp, hmc, mpu);
+    ImuSensor subSensors(sensorFactory, scriptLogger);
+
+    auto imuP = ImuPower(mpu, hmc, bmp);
+    auto ep = EscPower(serial);
+    auto pm = PowerManager(ep, imuP);
     auto lights = Headlights(serial);
 
     auto dispatcherStream = _getInputStream(portMap, "thrusterPort");
-    CommandDispatcher cd(*dispatcherStream, tc, pm, lights);
+    CommandDispatcher cd(*dispatcherStream, tc, pm, lights, subSensors);
+    scriptLogger->info("Ready!");
     cd.runLoop();
 
     return 0;
