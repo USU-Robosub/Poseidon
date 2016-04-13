@@ -6,7 +6,7 @@ module.exports = (function() {
 
     function CppLogSource(streamIn, outputLogger) {
         streamIn.on("data", function(data){
-            var logString = input.toString().replace('\n', '');
+            var logString = data.toString().replace('\n', '');
             _translateLog(outputLogger, logString);
         });
     }
@@ -19,5 +19,4 @@ module.exports = (function() {
     }
 
     return CppLogSource;
-
 })();
