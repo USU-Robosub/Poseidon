@@ -5,21 +5,10 @@
 module.exports = (function() {
 
     function CppLogSource(streamIn, outputLogger) {
-        _readStream(streamIn, outputLogger);
-        streamIn.on("readable", function(){
-            _readStream(streamIn, outputLogger);
-        });
-    }
-
-    function _readStream(streamIn, outputLogger) {
-        var input = streamIn.read();
-        outputLogger.log("Received Data!: " + input);
-        while(input) {
+        streamIn.on("data", function(data){
             var logString = input.toString().replace('\n', '');
-            outputLogger.log("Data received: " + logString);
             _translateLog(outputLogger, logString);
-            input = streamIn.read();
-        }
+        });
     }
 
     function _translateLog(outputLogger, logString) {

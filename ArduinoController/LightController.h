@@ -12,4 +12,7 @@ public:
     while(!Serial.available());
     digitalWrite(LIGHTS, !Serial.read());
   }
+  void kill() {
+    //digitalWrite(LIGHTS, HIGH);
+  }
 };
