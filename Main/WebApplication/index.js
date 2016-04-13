@@ -2,20 +2,18 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
-var ConsoleLogger = require('./ConsoleLogger');
+var WebLogger = require('./WebLogger');
 var app = express();
 
-var stdoutData = ''
 
-peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
-peripherals.stdout.on('data', function(data) {
-	stdoutData = data + '\n' + stdoutData;
-});
+// peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
 
-var thrustController = new CppInterface.ThrustController(peripherals.stdin);
-var headLights = new CppInterface.HeadLights(peripherals.stdin);
-var powerManager = new CppInterface.PowerManager(peripherals.stdin);
-var logger = new CppInterface.CppLogger(peripherals.stdout, new ConsoleLogger());
+var webLogger = new WebLogger(console);
+
+// var thrustController = new CppInterface.ThrustController(peripherals.stdin);
+// var headLights = new CppInterface.HeadLights(peripherals.stdin);
+// var powerManager = new CppInterface.PowerManager(peripherals.stdin);
+// new CppInterface.CppLogSource(peripherals.stdout, console);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -31,7 +29,7 @@ app.post('/thrust', function(req, res) {
 
 
 app.get('/stdoutData', function(req, res) {
-	res.send(stdoutData);
+	res.send(webLogger.pull());
 });
 
 // From IThrustController
@@ -42,61 +40,61 @@ app.post('/goDirection', function(req, res) {
 });
 
 app.post('/faceDirection', function(req, res) {
-	thrustController.faceDirection(req.body.yaw, req.body.pitch || 0)
+	thrustController.faceDirection(req.body.yaw)
 	res.send(cmdString);
 });
 
 
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {
-	peripherals.stdin.write("turnOnImuSensor\n");
+	// peripherals.stdin.write("turnOnImuSensor\n");
 	res.send('turnOnImuSensor');
 });
 
 app.get('/turnOffImuSensor', function(req, res) {
-	peripherals.stdin.write("turnOffImuSensor\n");
+	// peripherals.stdin.write("turnOffImuSensor\n");
 	res.send('turnOffImuSensor');
 });
 
 app.get('/getAcceleration', function(req, res) {
-	peripherals.stdin.write("getAcceleration\n");
+	// peripherals.stdin.write("getAcceleration\n");
 	res.send('ran getAcceleration');
 });
 
 app.get('/getAngularAcceleration', function(req, res) {
-	peripherals.stdin.write("getAngularAcceleration\n");
+	// peripherals.stdin.write("getAngularAcceleration\n");
 	res.send('ran getAngularAcceleration');
 });
 
 app.get('/getHeading', function(req, res) {
-	peripherals.stdin.write("getHeading\n");
+	// peripherals.stdin.write("getHeading\n");
 	res.send('ran getHeading');
 });
 
 app.get('/getInternalTemperature', function(req, res) {
-	peripherals.stdin.write("getInternalTemperature\n");
+	// peripherals.stdin.write("getInternalTemperature\n");
 	res.send('getInternalTemperature');
 });
 
 app.get('/getInternalPressure', function(req, res) {
-	peripherals.stdin.write("getInternalPressure\n");
+	// peripherals.stdin.write("getInternalPressure\n");
 	res.send('getInternalPressure');
 });
 
 app.get('/exit', function(req, res) {
-	peripherals.stdin.write("exit\n");
+	// peripherals.stdin.write("exit\n");
 	res.send('exit');
 });
 
 
 // From IPowerController {
 app.get('/turnOnEscs', function(req, res) {
-	powerManager.turnOnEscs();
+	// powerManager.turnOnEscs();
 	res.send('turnOnEscs');
 });
 
 app.get('/turnOffEscs', function(req, res) {
-	powerManager.turnOffEscs();
+	// powerManager.turnOffEscs();
 	res.send('turnOffEscs');
 });
 
@@ -124,11 +122,11 @@ app.post('/setYawThrust', function(req, res) {
 
 // Headlight Control
 app.get('/headlight', function(req, res) {
-    headLights.toggleLights();
+    // headLights.toggleLights();
 	res.send('toggled Headlights');
 });
 
 
-app.listen(80, function () {
+app.listen(8000, function () {
   console.log('Example app listening on port 80!');
 });

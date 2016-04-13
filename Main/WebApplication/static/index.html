@@ -11,7 +11,7 @@
 			<get-tag>
 				<div>
 					<button onclick={ toggle }>{ url }</button>
-					<p>Result: <textarea type="textarea" value="{ result }"</p>
+					<p>Result:</p><textarea type="textarea" value="{ result }" style="min-width: 30em; min-height: 40em;">
 				</div>
 
 				var self = this;
@@ -21,7 +21,7 @@
 
 				self.get = function() {
 					axios.get(self.opts.url).then(function (response) {
-						self.result = response.data;
+						self.result += response.data;
 						self.update();
 					});
 				};
