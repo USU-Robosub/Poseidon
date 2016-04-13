@@ -49,5 +49,5 @@ include_directories(include/Bootstrap)
 file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")
 add_executable(Bootstrap ${BOOTSTRAP_FILES})
 
-target_link_libraries(Bootstrap Wrappers Peripherals Drivers)
+target_link_libraries(Bootstrap Wrappers Peripherals Drivers Sockets)
 target_link_libraries(Wrappers Peripherals)
