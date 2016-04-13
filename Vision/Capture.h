@@ -6,18 +6,17 @@
 
 class Capture {
 public:
-    void record();
-    void inputLoop();
-    static void StartInput(Capture * cap);
-    static void StartRecord(Capture * cap);
+    Capture();
+    void startThreads();
+protected:
+    virtual void process(cv::Mat img);
+    virtual void handleInput(int command);
+    void startInput();
+    void startRecord();
+    cv::Mat grayscale(cv::Mat img);
 
     bool keepRunning = true;
-    std::vector<std::thread> capThreads;
-private:
+    std::vector<std::thread> _captureThreads;
     cv::Mat frame;
-    cv::VideoCapture _cap;
-    Capture();
-    static Capture * _instance;
-public:
-    static Capture *instance();
+    cv::VideoCapture _capture;
 };

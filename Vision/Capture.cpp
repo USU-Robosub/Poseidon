@@ -1,65 +1,61 @@
 #include "Capture.h"
 
-Capture * Capture::_instance = NULL;
-
-// private constructor (Singleton pattern)
 Capture::Capture() { }
 
-Capture* Capture::instance() 
+void Capture::startRecord()
 {
-    if (_instance == NULL)
-    {
-        _instance = new Capture();
-    }
-    return _instance;
-}
-
-void Capture::StartRecord(Capture * cap)
-{
-    cap->record();
-}
-
-void Capture::record()
-{
-    _cap.open(0);
+    _capture.open(0);
 
     while (keepRunning) {
-        _cap >> frame;
-        // run img processing on the frame
-        cv::imshow("flow", frame);
-        cv::waitKey(30);
+        _capture >> frame;
+        // Add in something to make sure the camera recorded
+        process(frame); // Run image processing on the frame
+        //cv::imshow("flow", frame); // Used for testing, but will be removed when running on Pi
+        //cv::waitKey(30); // Also a UI component, can be removed
     }
 }
 
-void Capture::StartInput(Capture * cap)
+void Capture::startThreads()
 {
-    cap->inputLoop();
+    _captureThreads.push_back(std::thread(&Capture::startInput, this));
+    _captureThreads.push_back(std::thread(&Capture::startRecord, this));
+
+    for(int i = 0; i < _captureThreads.size(); i++)
+    {
+        _captureThreads[i].join();
+    }
+}
+
+void Capture::process(cv::Mat img)
+{
+    std::cout << "In parent" << std::endl;
+}
+
+cv::Mat Capture::grayscale(cv::Mat img)
+{
+    cv::Mat grayImg;
+    cv::cvtColor(img, grayImg, cv::COLOR_BGR2HSV);
+
+    return grayImg;
+}
+
+void Capture::handleInput(int command)
+{
+    if(command == -1)
+    {
+        keepRunning = false;
+    }
 }
 
 // All of this code can be run from the main execution program as well, a pointer to the object just needs to be passed in
-void Capture::inputLoop()
+void Capture::startInput()
 {
     int exit = false;
     int command;
-    while(exit == false){
+    while(keepRunning){
         std::cin >> command; // will be replaced with socket commands
-        switch(command)
-        {
-            case 1:
-                //std::cout << gatesDetected() << std::endl;
-                break;
-            case 2:
-                //std::cout << gateXPosition() << std::endl;
-                break;
-            case -1:
-                exit = true;
-                keepRunning = false;
-                break;
-            default:
-                break;
 
-        }
+        // Using int codes for now, will be more advanced in the future
+        handleInput(command);
     }
-
-    std::cout << "Exiting" << std::endl;
 }
