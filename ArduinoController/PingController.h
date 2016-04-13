@@ -10,4 +10,5 @@ public:
     }
     Serial.println("I'm Here!");
   }
+  void kill() { }
 };
