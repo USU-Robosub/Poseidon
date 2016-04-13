@@ -9,22 +9,22 @@ module.exports = (function(){
 
     WebLogger.prototype.info = function(log){
         stored += 'info ' + log;
-        if (callUp && callUp.info) {
-            callUp.info(log);
+        if (parent && parent.info) {
+            parent.info(log);
         }
     };
 
     WebLogger.prototype.warn = function(log){
         stored += 'warn ' + log;
-        if (callUp && callUp.warn) {
-            callUp.warn(log);
+        if (parent && parent.warn) {
+            parent.warn(log);
         }
     };
 
     WebLogger.prototype.error = function(log){
         stored += 'error ' + log;
-        if (callUp && callUp.error) {
-            callUp.error(log);
+        if (parent && parent.error) {
+            parent.error(log);
         }
     };
 

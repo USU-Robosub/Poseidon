@@ -21,7 +21,9 @@
 
 				self.get = function() {
 					axios.get(self.opts.url).then(function (response) {
-						self.result += response.data;
+						if (response.data) {
+							self.result = response.data + '\n' + self.result;	
+						}
 						self.update();
 					});
 				};
