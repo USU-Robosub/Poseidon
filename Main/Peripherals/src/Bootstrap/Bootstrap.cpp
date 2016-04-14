@@ -39,6 +39,7 @@ int main() {
     CommandDispatcher cd(std::cin, tc, pm, lights, subSensors);
     std::cout << "Ready!\n";
     cd.runLoop();
+    std::cout << "\n- End of Line -\n";
 
     return 0;
 
