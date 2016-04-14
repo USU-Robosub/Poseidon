@@ -7,7 +7,6 @@
 class PowerManager
 {
 private:
-	bool escsOn;
     IEscPower& escPower_;
     IImuPower& imuPower_;
 

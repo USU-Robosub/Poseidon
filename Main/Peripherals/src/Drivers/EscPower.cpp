@@ -1,26 +1,13 @@
 #include "EscPower.h"
 
-EscPower::EscPower(Serial& serial) : serial_(serial)
-{
-	escsOn = false;
-}
+EscPower::EscPower(Serial& serial) : serial_(serial) {}
 
 void EscPower::turnOnEscs()
 {
-	if (!escsOn)
-	{
-        serial_.writeByte(0x6);
-        serial_.writeByte(0x1);
-		escsOn = true;
-	}
+        serial_.writeShort(0x0601);
 }
 
 void EscPower::turnOffEscs()
 {
-	if (escsOn)
-	{
-        serial_.writeByte(0x6);
-        serial_.writeByte(0x0);
-		escsOn = false;
-	}
+        serial_.writeShort(0x0600);
 }

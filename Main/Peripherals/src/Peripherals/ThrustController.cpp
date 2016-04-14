@@ -9,10 +9,17 @@ ThrustController::ThrustController(IThrusterFactory& thrusterFactory, std::share
         rearDiveThruster_(thrusterFactory.createRearDiveThruster()),
         logger_(logger)
 {
+    // sets default trim
+    forwardTrim.first = 1;
+    forwardTrim.second = 1;
+    diveTrim.first = 1;
+    diveTrim.second = 1;
 }
 
 void ThrustController::goDirection(float forward, float strafe, float dive) {
-    logger_->info("Thrusting...");
+    std::stringstream ss;
+    ss << "Thrusting... F: " << forward << " S: " << strafe << " D: " << dive;
+    logger_->info(ss.str().c_str());
     auto strafeCorrection = getReciprocalValues(strafe * strafeRatio);
     auto leftForward = strafeCorrection.first + forward;
     auto rightForward = strafeCorrection.second + forward;
