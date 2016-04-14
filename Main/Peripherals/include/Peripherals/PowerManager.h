@@ -7,7 +7,7 @@
 class PowerManager
 {
 private:
-	bool escsOn;
+	//bool escsOn;
 public:
 	PowerManager();
 	void turnOnEscs();

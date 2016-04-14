@@ -18,7 +18,7 @@ ThrustController::ThrustController(IThrusterFactory& thrusterFactory, std::share
 
 void ThrustController::goDirection(float forward, float strafe, float dive) {
     std::stringstream ss;
-    ss << "Thrusting... F: " << forward << " S: " << strafe << " D: " << dive << "\n";
+    ss << "Thrusting... F: " << forward << " S: " << strafe << " D: " << dive;
     logger_->info(ss.str().c_str());
     auto strafeCorrection = getReciprocalValues(strafe * strafeRatio);
     auto leftForward = strafeCorrection.first + forward;
