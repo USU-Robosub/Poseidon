@@ -39,8 +39,6 @@ class ThrustController : public IController {
   
   void execute() {
     uint16_t val = readShort();
-    Serial.print("Thrust Value: ");
-    Serial.println(val);
     servo_.writeMicroseconds(getBoundedThrottle(val));
   }
   

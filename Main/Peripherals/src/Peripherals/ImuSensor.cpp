@@ -2,32 +2,104 @@
 
 ImuSensor::ImuSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger) :
         accelerometer_(imuFactory.createAccelerometer()),
+        gyroscope_(imuFactory.createGyroscope()),
         compass_(imuFactory.createCompass()),
-        pressureSensor_(imuFactory.createPressureSensor()),
+        extPressureSensor_(imuFactory.createExternalPressureSensor()),
+        intPressureSensor_(imuFactory.createInternalPressureSensor()),
+        extTemperatureSensor_(imuFactory.createExternalTemperatureSensor()),
+        intTemperatureSensor1_(imuFactory.createInternalTemperatureSensor1()),
+        intTemperatureSensor2_(imuFactory.createInternalTemperatureSensor2()),
         logger_(logger)
 {
     logger_->info("Initializing sensor...");
 }
 
+
+
 FloatTuple ImuSensor::getAcceleration()
 {
-    return accelerometer_->getAcceleration();
+    auto accelerometerResults = accelerometer_->getAcceleration();
+    std::stringstream logResults;
+    logResults << "Acceleration: " << std::get<0>(accelerometerResults) << ' ' << std::get<1>(accelerometerResults) << ' ' << std::get<2>(accelerometerResults);
+    std::string toLog = logResults.str();
+    logger_->info(toLog.c_str());
+    return accelerometerResults;
 }
+
+
+
+FloatTuple ImuSensor::getAngularAcceleration() 
+{
+    auto gyroscopeResults = gyroscope_->getAngularAcceleration();
+    std::stringstream logResults;
+    logResults << "Angular Acceleration: " << std::get<0>(gyroscopeResults) << ' ' << std::get<1>(gyroscopeResults) << ' ' << std::get<2>(gyroscopeResults);
+    std::string toLog = logResults.str();
+    logger_->info(toLog.c_str());
+    return gyroscopeResults;
+}
+
+
 
 FloatTuple ImuSensor::getHeading()
 {
-    return compass_->getHeading();
+    auto compassResults = compass_->getHeading();
+    std::stringstream logResults;
+    logResults << "Heading: " << std::get<0>(compassResults) << ' ' << std::get<1>(compassResults) << ' ' << std::get<2>(compassResults);
+    std::string toLog = logResults.str();
+    logger_->info(toLog.c_str());
+    return compassResults;
 }
 
-int ImuSensor::getPressure()
+
+
+int ImuSensor::getExtPressure()
 {
-    return pressureSensor_->getPressure();
+    auto pressureResults = extPressureSensor_->getPressure();
+    std::stringstream logResults;
+    logResults << "External Pressure: " << pressureResults;
+    std::string toLog = logResults.str();
+    logger_->info(toLog.c_str());
+    return pressureResults;
 }
 
-float ImuSensor::getTemperature()
+
+
+int ImuSensor::getIntPressure()
 {
-    return temperatureSensor_->getTemperature();
+    auto pressureResults = intPressureSensor_->getPressure();
+    std::stringstream logResults;
+    logResults << "Internal Pressure: " << pressureResults;
+    std::string toLog = logResults.str();
+    logger_->info(toLog.c_str());
+    return pressureResults;
 }
+
+
+
+float ImuSensor::getExtTemperature()
+{
+    auto temperatureResults = extTemperatureSensor_->getTemperature();
+    std::stringstream logResults;
+    logResults << "External Temperature: " << temperatureResults;
+    std::string toLog = logResults.str();
+    logger_->info(toLog.c_str());
+    return temperatureResults;
+}
+
+
+
+float ImuSensor::getIntTemperature()
+{
+    auto temperatureResults = (intTemperatureSensor1_->getTemperature() + 
+            intTemperatureSensor2_->getTemperature()) / 2.0;
+    std::stringstream logResults;
+    logResults << "Internal Temperature: " << temperatureResults;
+    std::string toLog = logResults.str();
+    logger_->info(toLog.c_str());
+    return temperatureResults;
+}
+
+
 
 ImuSensor::~ImuSensor()
 {
