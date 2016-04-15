@@ -41,7 +41,7 @@ app.post('/goDirection', function(req, res) {
 
 app.post('/faceDirection', function(req, res) {
 	thrustController.faceDirection(req.body.yaw)
-	res.send(cmdString);
+	res.send('');
 });
 
 
