@@ -20,6 +20,7 @@
 #ifndef __PRACTICALSOCKET_INCLUDED__
 #define __PRACTICALSOCKET_INCLUDED__
 
+#include <iostream>
 #include <string>            // For string
 #include <cstring>           // For strerror, atoi, and memset
 #include <exception>         // For exception class
@@ -131,6 +132,8 @@ public:
    */
   void connect(const string &foreignAddress, unsigned short foreignPort)
     throw(SocketException);
+    
+  void disconnect() throw(SocketException);
 
   /**
    *   Write the given buffer to this socket.  Call connect() before
