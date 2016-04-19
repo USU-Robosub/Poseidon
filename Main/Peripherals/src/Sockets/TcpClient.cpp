@@ -17,7 +17,10 @@ TcpClient::TcpClient(int port, std::string address) :
 
 TcpClient::~TcpClient() {
 	if(socket != NULL)
+	{
+	    socket->disconnect();
 		delete socket;
+	}
 }
 
 

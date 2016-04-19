@@ -132,6 +132,8 @@ public:
    */
   void connect(const string &foreignAddress, unsigned short foreignPort)
     throw(SocketException);
+    
+  void disconnect() throw(SocketException);
 
   /**
    *   Write the given buffer to this socket.  Call connect() before
