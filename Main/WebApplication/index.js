@@ -12,6 +12,7 @@ var thrustController = new CppInterface.ThrustController(dispatcherSocket);
 var headLights = new CppInterface.HeadLights(dispatcherSocket);
 var powerManager = new CppInterface.PowerManager(dispatcherSocket);
 
+var loggerSocket = Sockets.createSocket(Ports.LoggerPort);
 var webLogger = new WebLogger(console);
 new CppInterface.CppLogSource(loggerSocket, webLogger);
 
