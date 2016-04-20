@@ -1,6 +1,6 @@
 cd ../Drivers
 git submodule update --recursive
-cd ../Main/Peripherals
+cd ../BoneCentral/Peripherals
 if [ -d Release ]; then
     rm -rf Release
 fi
