@@ -6,7 +6,7 @@ var WebLogger = require('./WebLogger');
 var app = express();
 
 
-peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
+var peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
 
 var webLogger = new WebLogger(console);
 
@@ -98,32 +98,27 @@ app.get('/turnOffEscs', function(req, res) {
 	res.send('turnOffEscs');
 });
 
-// From DiveMaster.js
-app.post('/setForwardThrust', function(req, res) {
-	// res.send(diveMaster.setForwardThrust(req.body.velocity));
-	res.send('diveMaster.setForwardThrust(' + req.body.velocity + ')');
-});
-
-app.post('/setDiveThrust', function(req, res) {
-	// res.send(diveMaster.setDiveThrust(req.body.velocity));
-	res.send('diveMaster.setDiveThrust(' + req.body.velocity + ')');
-});
-
-app.post('/setStrafeThrust', function(req, res) {
-	// res.send(diveMaster.setStrafeThrust(req.body.velocity));
-	res.send('diveMaster.setStrafeThrust(' + req.body.velocity + ')');
-});
-
-app.post('/setYawThrust', function(req, res) {
-	// res.send(diveMaster.setYawThrust(req.body.velocity));
-	res.send('diveMaster.setYawThrust(' + req.body.velocity + ')');
-});
-
 
 // Headlight Control
 app.get('/headlight', function(req, res) {
     headLights.toggleLights();
 	res.send('toggled Headlights');
+});
+
+// Script Run
+app.post('/runScript', function(req, res) {
+	var scripts = [
+
+	];
+
+	try {
+		var response = '' + eval(scripts[req.body.scriptId]);
+		return response;
+	}
+	catch(err) {
+		res.send('' + err)
+		return;
+	}
 });
 
 
