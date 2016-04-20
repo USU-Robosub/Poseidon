@@ -26,7 +26,12 @@ void ThrustController::goDirection(float forward, float strafe, float dive) {
     float powerScale = getScaleToMaxPower(leftForward, rightForward);
     auto forwardPair = std::make_pair(leftForward*powerScale, rightForward*powerScale);
     auto strafePair = getReciprocalValues(strafe*powerScale);
-    setThrust(forwardPair, strafePair, dive*powerScale);
+
+    float scaledDive = dive * powerScale;
+    FloatPair divePair;
+    divePair.first = getSafeOffset(scaledDive, diveOffset.first);
+    divePair.second = getSafeOffset(scaledDive, diveOffset.second);
+    setThrust(forwardPair, strafePair, divePair);
 }
 
 float ThrustController::getScaleToMaxPower(float left, float right) {
@@ -40,10 +45,15 @@ float ThrustController::getMaxMag(float left, float right) {
     return right > left ? right : left;
 }
 
-void ThrustController::faceDirection(float yaw) {
+void ThrustController::faceDirection(float yaw, float dive) {
     logger_->info("Yawing...");
     auto yawPair = getReciprocalValues(yaw);
-    setThrust(yawPair, std::make_pair(0.0f, 0.0f), 0.0f);
+
+    float scaledDive = dive;
+    FloatPair divePair;
+    divePair.first = getSafeOffset(scaledDive, diveOffset.first);
+    divePair.second = getSafeOffset(scaledDive, diveOffset.second);
+    setThrust(yawPair, std::make_pair(0.0f, 0.0f), divePair);
 }
 
 void ThrustController::setForwardTrim(float left, float right) {
@@ -64,6 +74,28 @@ void ThrustController::setDiveTrim(float front, float back) {
     diveTrim.second = back;
 }
 
+void ThrustController::setDiveOffset(float front, float back) {
+    std::stringstream ss;
+    ss << "Setting dive Offset: F " << front << " B " << back;
+    logger_->info(ss.str().c_str());
+
+    diveOffset.first = front;
+    diveOffset.second = back;
+}
+
+float ThrustController::getSafeOffset(float a, float b) {
+    float safe = a + b;
+    if(safe > 1)
+        safe = 1;
+    else if(safe < -1)
+        safe = -1;
+    return safe;
+}
+
+void ThrustController::killAllThruster() {
+    setThrust(std::make_pair(0.0f, 0.0f), std::make_pair(0.0f, 0.0f), std::make_pair(0.0f, 0.0f));
+}
+
 std::pair<float,float> ThrustController::getReciprocalValues(float value) {
     float left, right;
     if(value < 0.0f) {
@@ -77,15 +109,15 @@ std::pair<float,float> ThrustController::getReciprocalValues(float value) {
     return std::make_pair(left, right);
 }
 
-void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, float dive) {
+void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, FloatPair divePair) {
     leftForwardThruster_->Thrust(forwardPair.first * forwardTrim.first);
     rightForwardThruster_->Thrust(forwardPair.second * forwardTrim.second);
 
     leftStrafeThruster_->Thrust(strafePair.first);
     rightStrafeThruster_->Thrust(strafePair.second);
 
-    forwardDiveThruster_->Thrust(dive * diveTrim.first);
-    rearDiveThruster_->Thrust(dive * diveTrim.second);
+    forwardDiveThruster_->Thrust(divePair.first * diveTrim.first);
+    rearDiveThruster_->Thrust(divePair.second * diveTrim.second);
 }
 
 ThrustController::~ThrustController()
