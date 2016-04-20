@@ -52,7 +52,6 @@ app.post('/faceDirection', function(req, res) {
 
 app.post('/setOffset', function(req, res) {
 	var params = req.body;
-	// dispatcherSocket.write("setDiveOffset " + params.front + " " + params.back);
 	thrustController.setOffset(params.front, params.back);
 	res.send('');
 })
