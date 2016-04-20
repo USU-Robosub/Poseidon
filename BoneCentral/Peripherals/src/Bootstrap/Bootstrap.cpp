@@ -5,12 +5,11 @@
 #include <iostream>
 #include <ThrustController.h>
 #include <CommandDispatcher.h>
-#include "SerialThrusterFactory.h"
+#include "SerialFactory.h"
 #include "ScriptLogger.h"
-#include <Headlights.h>
+#include "PowerFactoryAdaptor.h"
 #include <TcpClient.h>
 #include <map>
-#include <ImuFactory.h>
 
 std::ostream* _getOutputStream(std::map<std::string, int>& portMap, string portName);
 std::istream* _getInputStream(std::map<std::string, int>& portMap, string portName);
@@ -22,18 +21,18 @@ int main(int argCount, char** arguments) {
 
     auto loggerStream = _getOutputStream(portMap, "loggerPort");
     auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream);
-    auto serial = Serial();
-    auto thrusterFactory = SerialThrusterFactory(serial);
-    ThrustController tc(thrusterFactory, scriptLogger);
+    auto serialFactory = SerialFactory();
+    ThrustController tc(serialFactory, scriptLogger);
 
-    auto sensorFactory = ImuFactory(serial);
+    auto sensorFactory = I2CFactory();
     ImuSensor subSensors(sensorFactory, scriptLogger);
 
-    auto pm = PowerManager(sensorFactory);
-    auto lights = Headlights(serial);
+    auto powerFactory = PowerFactoryAdaptor(sensorFactory, serialFactory);
+    auto pm = PowerManager(powerFactory);
+    auto lights = serialFactory.createHeadlights();
 
     auto dispatcherStream = _getInputStream(portMap, "thrusterPort");
-    CommandDispatcher cd(*dispatcherStream, tc, pm, lights, subSensors);
+    CommandDispatcher cd(*dispatcherStream, tc, pm, *lights, subSensors);
     scriptLogger->info("Ready!");
     cd.runLoop();
     std::cout << "\n- End of Line -\n";

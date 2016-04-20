@@ -2,8 +2,8 @@
 // Created by Nathan Copier on 11/20/2015.
 //
 
-#ifndef PERIPHERALS_RUBY_LOGGER_H
-#define PERIPHERALS_RUBY_LOGGER_H
+#ifndef PERIPHERALS_SCRIPT_LOGGER_H
+#define PERIPHERALS_SCRIPT_LOGGER_H
 
 #include <ostream>
 #include <memory>
@@ -23,4 +23,4 @@ public:
 };
 
 
-#endif //PERIPHERALS_RUBY_LOGGER_H
+#endif //PERIPHERALS_SCRIPT_LOGGER_H

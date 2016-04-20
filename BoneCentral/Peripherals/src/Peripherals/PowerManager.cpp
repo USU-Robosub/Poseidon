@@ -1,6 +1,6 @@
 #include "PowerManager.h"
 
-PowerManager::PowerManager(IImuFactory& imuFactory) : escPower_(imuFactory.createEscPower()),
+PowerManager::PowerManager(IPowerFactory& imuFactory) : escPower_(imuFactory.createEscPower()),
 	imuPower_(imuFactory.createImuPower())
 {
 }

@@ -1,7 +1,7 @@
 #ifndef IMU_CONTROLLER
 #define IMU_CONTROLLER
 
-#include "IImuFactory.h"
+#include "ISensorFactory.h"
 #include "ILogger.h"
 
 #include <memory>
@@ -14,7 +14,7 @@ typedef std::tuple<float, float, float> FloatTuple;
 
 class ImuSensor {
 public:
-    ImuSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger);
+    ImuSensor(ISensorFactory& imuFactory, std::shared_ptr<ILogger> logger);
     FloatTuple getAcceleration();
     FloatTuple getAngularAcceleration(); // gyroscope
     FloatTuple getHeading();

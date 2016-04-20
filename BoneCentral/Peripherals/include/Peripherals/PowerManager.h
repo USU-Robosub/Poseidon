@@ -1,7 +1,7 @@
 #ifndef POWER_MANAGER_H
 #define POWER_MANAGER_H
 
-#include <IImuFactory.h>
+#include <IPowerFactory.h>
 
 class PowerManager
 {
@@ -10,7 +10,7 @@ private:
 	std::shared_ptr<IImuPower> imuPower_;
 
 public:
-	PowerManager(IImuFactory& imuFactory);
+	PowerManager(IPowerFactory& imuFactory);
 	void turnOnEscs();
 	void turnOffEscs();
 	void turnOnImuSensor();

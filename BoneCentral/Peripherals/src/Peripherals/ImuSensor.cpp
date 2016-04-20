@@ -1,6 +1,6 @@
 #include "ImuSensor.h"
 
-ImuSensor::ImuSensor(IImuFactory& imuFactory, std::shared_ptr<ILogger> logger) :
+ImuSensor::ImuSensor(ISensorFactory& imuFactory, std::shared_ptr<ILogger> logger) :
         accelerometer_(imuFactory.createAccelerometer()),
         gyroscope_(imuFactory.createGyroscope()),
         compass_(imuFactory.createCompass()),
