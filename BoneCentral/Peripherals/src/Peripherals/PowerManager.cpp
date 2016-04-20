@@ -1,26 +1,26 @@
 #include "PowerManager.h"
 
-PowerManager::PowerManager(IEscPower& escPower, IImuPower& imuPower) : escPower_(escPower),
-	imuPower_(imuPower)
+PowerManager::PowerManager(IImuFactory& imuFactory) : escPower_(imuFactory.createEscPower()),
+	imuPower_(imuFactory.createImuPower())
 {
 }
 
 void PowerManager::turnOnEscs()
 {
-	escPower_.turnOnEscs();
+	escPower_->turnOnEscs();
 }
 
 void PowerManager::turnOffEscs()
 {
-	escPower_.turnOffEscs();
+	escPower_->turnOffEscs();
 }
 
 void PowerManager::turnOnImuSensor() 
 {
-	imuPower_.wake();
+	imuPower_->wake();
 }
 
 void PowerManager::turnOffImuSensor()
 {
-	imuPower_.sleep();
+	imuPower_->sleep();
 }

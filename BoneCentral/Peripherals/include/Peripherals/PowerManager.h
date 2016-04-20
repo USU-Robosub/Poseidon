@@ -1,17 +1,16 @@
-#ifndef POWERMANAGER
-#define POWERMANAGER
+#ifndef POWER_MANAGER_H
+#define POWER_MANAGER_H
 
-#include <IEscPower.h>
-#include <IImuPower.h>
+#include <IImuFactory.h>
 
 class PowerManager
 {
 private:
-    IEscPower& escPower_;
-    IImuPower& imuPower_;
+    std::shared_ptr<IEscPower> escPower_;
+	std::shared_ptr<IImuPower> imuPower_;
 
 public:
-	PowerManager(IEscPower& escPower, IImuPower& imuPower);
+	PowerManager(IImuFactory& imuFactory);
 	void turnOnEscs();
 	void turnOffEscs();
 	void turnOnImuSensor();

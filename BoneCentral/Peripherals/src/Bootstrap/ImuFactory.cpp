@@ -1,12 +1,10 @@
 #include "ImuFactory.h"
 
-ImuFactory::ImuFactory(
-		std::shared_ptr<BMP085> BMP085_sensor, 
-		std::shared_ptr<HMC5883L> HMC5883L_sensor,
-		std::shared_ptr<MPU6050> MPU6050_sensor) :
-	BMP085_sensor_(BMP085_sensor),
-	HMC5883L_sensor_(HMC5883L_sensor),
-	MPU6050_sensor_(MPU6050_sensor) {}
+ImuFactory::ImuFactory(Serial& serial) :
+	BMP085_sensor_(std::make_shared<BMP085>()),
+	HMC5883L_sensor_(std::make_shared<HMC5883L>()),
+	MPU6050_sensor_(std::make_shared<MPU6050>()),
+	serial_(serial) {}
 
 
 
@@ -54,4 +52,11 @@ std::shared_ptr<IPressureSensor> ImuFactory::createExternalPressureSensor() {
 
 std::shared_ptr<IPressureSensor> ImuFactory::createInternalPressureSensor() {
 	return std::make_shared<InPressureSensor>(BMP085_sensor_);
+}
+
+std::shared_ptr<IImuPower> ImuFactory::createImuPower() {
+	return std::make_shared<ImuPower>(MPU6050_sensor_, HMC5883L_sensor_, BMP085_sensor_);
+}
+std::shared_ptr<IEscPower> ImuFactory::createEscPower() {
+	return std::make_shared<EscPower>(serial_);
 }

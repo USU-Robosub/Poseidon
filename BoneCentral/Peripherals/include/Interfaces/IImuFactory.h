@@ -11,7 +11,8 @@
 #include "ICompass.h"
 #include "ITemperatureSensor.h"
 #include "IPressureSensor.h"
-#include <memory>
+#include "IImuPower.h"
+#include "IEscPower.h"
 
 class IImuFactory {
 public:
@@ -23,6 +24,8 @@ public:
 	virtual std::shared_ptr<ITemperatureSensor> createInternalTemperatureSensor2() = 0;
     virtual std::shared_ptr<IPressureSensor> createExternalPressureSensor() = 0;
     virtual std::shared_ptr<IPressureSensor> createInternalPressureSensor() = 0;
+	virtual std::shared_ptr<IImuPower> createImuPower() = 0;
+	virtual std::shared_ptr<IEscPower> createEscPower() = 0;
 };
 
 #endif //PERIPHERALS_I_IMU_FACTORY_H
