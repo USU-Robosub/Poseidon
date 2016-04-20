@@ -44,6 +44,12 @@ app.post('/faceDirection', function(req, res) {
 	res.send(cmdString);
 });
 
+// From diveOffset
+
+app.post('/setOffset', function(req, res) {
+	var params = req.body;
+	peripherals.stin.write("setDiveOffset " + params.front + " " + params.back)
+})
 
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {
