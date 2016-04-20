@@ -52,7 +52,9 @@ app.post('/faceDirection', function(req, res) {
 
 app.post('/setOffset', function(req, res) {
 	var params = req.body;
-	peripherals.stin.write("setDiveOffset " + params.front + " " + params.back)
+	// dispatcherSocket.write("setDiveOffset " + params.front + " " + params.back);
+	thrustController.setOffset(params.front, params.back);
+	res.send('');
 })
 
 // From Imu
