@@ -48,6 +48,13 @@ app.post('/faceDirection', function(req, res) {
 	res.send('');
 });
 
+// From diveOffset
+
+app.post('/setOffset', function(req, res) {
+	var params = req.body;
+	thrustController.setOffset(params.front, params.back);
+	res.send('');
+})
 
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {

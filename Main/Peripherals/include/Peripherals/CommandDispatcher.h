@@ -34,6 +34,7 @@ private:
 
     void setForwardTrim(std::stringstream& cmdString);
     void setDiveTrim(std::stringstream& cmdString);
+    void setDiveOffset(std::stringstream& cmdString);
 
 public:
     CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights, ImuSensor& sensors);
