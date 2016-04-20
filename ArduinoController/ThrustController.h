@@ -24,10 +24,14 @@ class ThrustController : public IController {
    Servo servo_;
  public:
   ThrustController(ServoPin servoPin) {
-    ThrustController(servoPin, 0);
+    init(servoPin, 0);
   }
   
   ThrustController(ServoPin servoPin, int16_t offset) {
+    init(servoPin, offset);
+  }
+
+  void init(ServoPin servoPin, int16_t offset) {
     tunningOffset = offset;
     servo_.attach(servoPin);
     servo_.writeMicroseconds(IDLE);

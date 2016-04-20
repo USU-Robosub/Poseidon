@@ -3,12 +3,11 @@
 PowerManager::PowerManager(IEscPower& escPower, IImuPower& imuPower) : escPower_(escPower),
 	imuPower_(imuPower)
 {
-	escsOn = false;
 }
 
 void PowerManager::turnOnEscs()
 {
-    escPower_.turnOnEscs();
+	escPower_.turnOnEscs();
 }
 
 void PowerManager::turnOffEscs()
