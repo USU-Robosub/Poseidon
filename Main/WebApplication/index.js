@@ -2,18 +2,21 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
+var Sockets = require('../Brain/Sockets');
+var Ports = require('../Brain/Sockets/Ports.json');
 var WebLogger = require('./WebLogger');
 var app = express();
 
-
-var peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
+var dispatcherSocket = Sockets.createSocket(Ports.ThrusterPort);
+var thrustController = new CppInterface.ThrustController(dispatcherSocket);
+var headLights = new CppInterface.HeadLights(dispatcherSocket);
+var powerManager = new CppInterface.PowerManager(dispatcherSocket);
 
 var webLogger = new WebLogger(console);
+new CppInterface.CppLogSource(loggerSocket, webLogger);
 
-var thrustController = new CppInterface.ThrustController(peripherals.stdin);
-var headLights = new CppInterface.HeadLights(peripherals.stdin);
-var powerManager = new CppInterface.PowerManager(peripherals.stdin);
-new CppInterface.CppLogSource(peripherals.stdout, webLogger);
+var args = ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort];
+peripherals = spawner.spawn('../Peripherals/Release/Bootstrap', args);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -47,42 +50,42 @@ app.post('/faceDirection', function(req, res) {
 
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {
-	peripherals.stdin.write("turnOnImuSensor\n");
+    dispatcherSocket.write("turnOnImuSensor\n");
 	res.send('turnOnImuSensor');
 });
 
 app.get('/turnOffImuSensor', function(req, res) {
-	peripherals.stdin.write("turnOffImuSensor\n");
+    dispatcherSocket.write("turnOffImuSensor\n");
 	res.send('turnOffImuSensor');
 });
 
 app.get('/getAcceleration', function(req, res) {
-	peripherals.stdin.write("getAcceleration\n");
+    dispatcherSocket.write("getAcceleration\n");
 	res.send('ran getAcceleration');
 });
 
 app.get('/getAngularAcceleration', function(req, res) {
-	peripherals.stdin.write("getAngularAcceleration\n");
+    dispatcherSocket.write("getAngularAcceleration\n");
 	res.send('ran getAngularAcceleration');
 });
 
 app.get('/getHeading', function(req, res) {
-	peripherals.stdin.write("getHeading\n");
+    dispatcherSocket.write("getHeading\n");
 	res.send('ran getHeading');
 });
 
 app.get('/getInternalTemperature', function(req, res) {
-	peripherals.stdin.write("getInternalTemperature\n");
+    dispatcherSocket.write("getInternalTemperature\n");
 	res.send('getInternalTemperature');
 });
 
 app.get('/getInternalPressure', function(req, res) {
-	peripherals.stdin.write("getInternalPressure\n");
+    dispatcherSocket.write("getInternalPressure\n");
 	res.send('getInternalPressure');
 });
 
 app.get('/exit', function(req, res) {
-	peripherals.stdin.write("exit\n");
+    dispatcherSocket.write("exit\n");
 	res.send('exit');
 });
 

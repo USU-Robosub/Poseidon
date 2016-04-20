@@ -41,9 +41,13 @@ include_directories(include/Drivers)
 file(GLOB_RECURSE DRIVER_FILES "src/Drivers/*.cpp")
 add_library(Wrappers SHARED ${DRIVER_FILES})
 
+include_directories(include/Sockets)
+file(GLOB_RECURSE SOCKET_FILES "src/Sockets/*.cpp")
+add_library(Sockets SHARED ${SOCKET_FILES})
+
 include_directories(include/Bootstrap)
 file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")
 add_executable(Bootstrap ${BOOTSTRAP_FILES})
 
-target_link_libraries(Bootstrap Wrappers Peripherals Drivers)
+target_link_libraries(Bootstrap Wrappers Peripherals Drivers Sockets)
 target_link_libraries(Wrappers Peripherals)
