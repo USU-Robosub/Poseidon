@@ -6,9 +6,9 @@
 #define PERIPHERALS_COMMAND_DISPATCHER_H
 
 #include "ThrustController.h"
-#include "IHeadlights.h"
 #include "PowerManager.h"
 #include "ImuSensor.h"
+#include "IHeadlights.h"
 #include <iostream>
 #include <stdexcept>
 #include <string>

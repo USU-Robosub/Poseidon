@@ -12,5 +12,5 @@ include_directories(${I2CAdaptor_Includes})
 
 file(GLOB_RECURSE ADAPTOR_FILES "src/*.cpp")
 add_library(Peripherals.I2CAdaptors SHARED ${ADAPTOR_FILES})
-target_link_libraries(Peripherals.I2CAdaptors Drivers Peripherals)
+target_link_libraries(Peripherals.I2CAdaptors Drivers Peripherals.Core)
 set(I2CAdaptor_Includes ${I2CAdaptor_Includes} PARENT_SCOPE)

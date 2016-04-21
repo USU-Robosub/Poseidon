@@ -3,16 +3,6 @@ project(Peripherals)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror -Wextra -pedantic -lpthread")
 
-# Shared Stuff
-
-include_directories(include/Interfaces)
-
-include_directories(include/Peripherals)
-file(GLOB_RECURSE PERIPHERAL_FILES "src/Peripherals/*.cpp")
-add_library(Peripherals SHARED ${PERIPHERAL_FILES})
-
-link_directories(../../Drivers/Build)
-
 # Tests
 
 add_subdirectory("tests/gtest-1.7.0")
@@ -34,6 +24,11 @@ add_test(Test Specs)
 
 # Production
 
+link_directories(../../Drivers/Build)
+
+add_subdirectory(Peripherals.Core)
+include_directories(${Core_Includes})
+
 add_subdirectory(Peripherals.Sockets)
 include_directories(${Socket_Includes})
 
@@ -46,5 +41,5 @@ include_directories(${SerialAdaptor_Includes})
 add_subdirectory(Peripherals.Assembler)
 include_directories(${Assembler_Includes})
 
-add_executable(Peripherals.Start main.cpp)
-target_link_libraries(Peripherals.Start Peripherals.Assembler)
+add_executable(Peripherals main.cpp)
+target_link_libraries(Peripherals Peripherals.Assembler)

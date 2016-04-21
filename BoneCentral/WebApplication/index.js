@@ -17,7 +17,7 @@ var webLogger = new WebLogger(console);
 new CppInterface.CppLogSource(loggerSocket, webLogger);
 
 var args = ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort];
-peripherals = spawner.spawn('../Peripherals/Release/Peripherals.Start', args);
+peripherals = spawner.spawn('../Peripherals/Release/Peripherals', args);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
