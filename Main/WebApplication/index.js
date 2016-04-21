@@ -17,7 +17,7 @@ var webLogger = new WebLogger(console);
 new CppInterface.CppLogSource(loggerSocket, webLogger);
 
 var args = ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort];
-peripherals = spawner.spawn('../Peripherals/Release/Bootstrap', args);
+var peripherals = spawner.spawn('../Peripherals/Release/Bootstrap', args);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -109,32 +109,27 @@ app.get('/turnOffEscs', function(req, res) {
 	res.send('turnOffEscs');
 });
 
-// From DiveMaster.js
-app.post('/setForwardThrust', function(req, res) {
-	// res.send(diveMaster.setForwardThrust(req.body.velocity));
-	res.send('diveMaster.setForwardThrust(' + req.body.velocity + ')');
-});
-
-app.post('/setDiveThrust', function(req, res) {
-	// res.send(diveMaster.setDiveThrust(req.body.velocity));
-	res.send('diveMaster.setDiveThrust(' + req.body.velocity + ')');
-});
-
-app.post('/setStrafeThrust', function(req, res) {
-	// res.send(diveMaster.setStrafeThrust(req.body.velocity));
-	res.send('diveMaster.setStrafeThrust(' + req.body.velocity + ')');
-});
-
-app.post('/setYawThrust', function(req, res) {
-	// res.send(diveMaster.setYawThrust(req.body.velocity));
-	res.send('diveMaster.setYawThrust(' + req.body.velocity + ')');
-});
-
 
 // Headlight Control
 app.get('/headlight', function(req, res) {
     headLights.toggleLights();
 	res.send('toggled Headlights');
+});
+
+// Script Run
+app.post('/runScript', function(req, res) {
+	var scripts = [
+
+	];
+
+	try {
+		var response = '' + eval(scripts[req.body.scriptId]);
+		return response;
+	}
+	catch(err) {
+		res.send('' + err)
+		return;
+	}
 });
 
 
