@@ -7,7 +7,7 @@
 #include <utility>
 #include <ImuSensor.h>
 #include "MockImuFactory.h"
-#include <scriptLogger.h>
+#include "../../Peripherals.Assembler/inlcude/ScriptLogger.h"
 
 void testImuSensor();
 

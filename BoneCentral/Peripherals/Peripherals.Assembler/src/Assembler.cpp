@@ -2,20 +2,9 @@
 // Created by Nathan Copier on 11/10/2015.
 //
 
-#include <iostream>
-#include <ThrustController.h>
-#include <CommandDispatcher.h>
-#include "ScriptLogger.h"
-#include "PowerFactoryAdaptor.h"
-#include <TcpClient.h>
-#include <map>
+#include "Assembler.h"
 
-std::ostream* _getOutputStream(std::map<std::string, int>& portMap, string portName);
-std::istream* _getInputStream(std::map<std::string, int>& portMap, string portName);
-std::map<std::string, int> _createPortMap(int argCount, char** arguments);
-std::pair<std::string, int> _getPort(char* portString);
-
-int main(int argCount, char** arguments) {
+void App_Start(int argCount, char **arguments) {
     auto portMap = _createPortMap(argCount, arguments);
 
     auto loggerStream = _getOutputStream(portMap, "loggerPort");
@@ -35,8 +24,6 @@ int main(int argCount, char** arguments) {
     scriptLogger->info("Ready!");
     cd.runLoop();
     std::cout << "\n- End of Line -\n";
-
-    return 0;
 }
 
 std::ostream* _getOutputStream(std::map<std::string, int>& portMap, string portName) {

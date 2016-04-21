@@ -6,17 +6,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror -Wextra -peda
 # Shared Stuff
 
 include_directories(include/Interfaces)
-link_directories(../../Drivers/Build)
-
-add_subdirectory(Peripherals.I2CAdaptors)
-include_directories(${I2CAdaptor_Includes})
-
-add_subdirectory(Peripherals.SerialAdaptors)
-include_directories(${SerialAdaptor_Includes})
 
 include_directories(include/Peripherals)
 file(GLOB_RECURSE PERIPHERAL_FILES "src/Peripherals/*.cpp")
 add_library(Peripherals SHARED ${PERIPHERAL_FILES})
+
+link_directories(../../Drivers/Build)
 
 # Tests
 
@@ -44,8 +39,14 @@ include_directories(include/Sockets)
 file(GLOB_RECURSE SOCKET_FILES "src/Sockets/*.cpp")
 add_library(Sockets SHARED ${SOCKET_FILES})
 
-include_directories(include/Bootstrap)
-file(GLOB_RECURSE BOOTSTRAP_FILES "src/Bootstrap/*.cpp")
-add_executable(Bootstrap ${BOOTSTRAP_FILES})
+add_subdirectory(Peripherals.I2CAdaptors)
+include_directories(${I2CAdaptor_Includes})
 
-target_link_libraries(Bootstrap Peripherals.I2CAdaptors Peripherals.SerialAdaptors Peripherals Sockets)
+add_subdirectory(Peripherals.SerialAdaptors)
+include_directories(${SerialAdaptor_Includes})
+
+add_subdirectory(Peripherals.Assembler)
+include_directories(${Assembler_Includes})
+
+add_executable(Peripherals.Start main.cpp)
+target_link_libraries(Peripherals.Start Peripherals.Assembler)
