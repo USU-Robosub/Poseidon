@@ -14,7 +14,7 @@ typedef std::tuple<float, float, float> FloatTuple;
 
 class ImuSensor {
 public:
-    ImuSensor(ISensorFactory& imuFactory, std::shared_ptr<ILogger> logger);
+    ImuSensor(ISensorFactory& sensorFactory, std::shared_ptr<ILogger> logger);
     FloatTuple getAcceleration();
     FloatTuple getAngularAcceleration(); // gyroscope
     FloatTuple getHeading();

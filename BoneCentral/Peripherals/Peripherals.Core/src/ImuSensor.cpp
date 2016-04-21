@@ -1,14 +1,14 @@
 #include "ImuSensor.h"
 
-ImuSensor::ImuSensor(ISensorFactory& imuFactory, std::shared_ptr<ILogger> logger) :
-        accelerometer_(imuFactory.createAccelerometer()),
-        gyroscope_(imuFactory.createGyroscope()),
-        compass_(imuFactory.createCompass()),
-        extPressureSensor_(imuFactory.createExternalPressureSensor()),
-        intPressureSensor_(imuFactory.createInternalPressureSensor()),
-        extTemperatureSensor_(imuFactory.createExternalTemperatureSensor()),
-        intTemperatureSensor1_(imuFactory.createInternalTemperatureSensor1()),
-        intTemperatureSensor2_(imuFactory.createInternalTemperatureSensor2()),
+ImuSensor::ImuSensor(ISensorFactory& sensorFactory, std::shared_ptr<ILogger> logger) :
+        accelerometer_(sensorFactory.createAccelerometer()),
+        gyroscope_(sensorFactory.createGyroscope()),
+        compass_(sensorFactory.createCompass()),
+        extPressureSensor_(sensorFactory.createExternalPressureSensor()),
+        intPressureSensor_(sensorFactory.createInternalPressureSensor()),
+        extTemperatureSensor_(sensorFactory.createExternalTemperatureSensor()),
+        intTemperatureSensor1_(sensorFactory.createInternalTemperatureSensor1()),
+        intTemperatureSensor2_(sensorFactory.createInternalTemperatureSensor2()),
         logger_(logger)
 {
     logger_->info("Initializing sensor...");
