@@ -34,10 +34,8 @@ add_test(Test Specs)
 
 # Production
 
-
-include_directories(include/Sockets)
-file(GLOB_RECURSE SOCKET_FILES "src/Sockets/*.cpp")
-add_library(Sockets SHARED ${SOCKET_FILES})
+add_subdirectory(Peripherals.Sockets)
+include_directories(${Socket_Includes})
 
 add_subdirectory(Peripherals.I2CAdaptors)
 include_directories(${I2CAdaptor_Includes})
