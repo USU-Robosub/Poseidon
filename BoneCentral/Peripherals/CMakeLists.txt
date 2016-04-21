@@ -3,27 +3,6 @@ project(Peripherals)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror -Wextra -pedantic -lpthread")
 
-# Tests
-
-link_directories("../../GoogleTest/googletest")
-enable_testing()
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-
-#include_directories(tests/Mocks/include)
-#file(GLOB_RECURSE MOCK_FILES "tests/Mocks/src/*.cpp")
-#add_library(Mocks SHARED ${MOCK_FILES})
-
-file(GLOB_RECURSE TEST_FILES "tests/Specs/*.cpp")
-add_executable(Specs ${TEST_FILES})
-
-target_link_libraries(Specs gtest gtest_main)
-#target_link_libraries(Specs Mocks Peripherals)
-#target_link_libraries(Mocks Peripherals)
-
-add_test(Test Specs)
-
-# Production
-
 link_directories(../../Drivers/Build)
 
 add_subdirectory(Peripherals.Core)
