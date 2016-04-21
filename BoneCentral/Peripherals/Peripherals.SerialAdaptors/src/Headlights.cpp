@@ -2,7 +2,7 @@
 //
 // Created by Kevin Burgon on 02/01/2016
 
-#include "../include/Headlights.h"
+#include "Headlights.h"
 
 Headlights::Headlights(Serial& serial) : serial_(serial)
 {

@@ -7,15 +7,17 @@
 void App_Start(int argCount, char **arguments) {
     auto portMap = _createPortMap(argCount, arguments);
 
+    auto i2CFactory = I2CFactory();
+    auto serialFactory = SerialFactory();
+    auto powerFactory = PowerFactoryAdaptor(i2CFactory, serialFactory);
+    auto sensorFactory = SensorFactoryAdaptor(i2CFactory, serialFactory);
+
     auto loggerStream = _getOutputStream(portMap, "loggerPort");
     auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream);
-    auto serialFactory = SerialFactory();
-    ThrustController tc(serialFactory, scriptLogger);
 
-    auto sensorFactory = I2CFactory();
+    ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
 
-    auto powerFactory = PowerFactoryAdaptor(sensorFactory, serialFactory);
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
 

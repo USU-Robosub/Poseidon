@@ -1,4 +1,4 @@
-#include "../include/Compass.h"
+#include "Compass.h"
 
 Compass::Compass(std::shared_ptr<HMC5883L> compass) : 
 	compass_(compass) {}

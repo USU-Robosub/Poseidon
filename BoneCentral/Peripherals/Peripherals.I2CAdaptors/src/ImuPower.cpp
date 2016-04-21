@@ -1,4 +1,4 @@
-#include "../include/ImuPower.h"
+#include "ImuPower.h"
 
 ImuPower::ImuPower(std::shared_ptr<MPU6050> accelerometer,
 	std::shared_ptr<HMC5883L> compass, std::shared_ptr<BMP085> pressure) :

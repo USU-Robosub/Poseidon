@@ -1,4 +1,4 @@
-#include "../include/Accelerometer.h"
+#include "Accelerometer.h"
 
 Accelerometer::Accelerometer(std::shared_ptr<MPU6050> accelerometer) :
         accelerometer_(accelerometer)

@@ -9,6 +9,8 @@
 #include "SerialThruster.h"
 #include "EscPower.h"
 #include "Headlights.h"
+#include "ExTemperatureSensor.h"
+#include "ExPressureSensor.h"
 #include "Serial.h"
 
 
@@ -22,6 +24,8 @@ public:
     std::shared_ptr<IThruster> createRightStrafeThruster();
     std::shared_ptr<IThruster> createForwardDiveThruster();
     std::shared_ptr<IThruster> createRearDiveThruster();
+    std::shared_ptr<ITemperatureSensor> createExternalTemperatureSensor();
+    std::shared_ptr<IPressureSensor> createExternalPressureSensor();
     std::shared_ptr<IEscPower> createEscPower();
     std::shared_ptr<IHeadlights> createHeadlights();
 };

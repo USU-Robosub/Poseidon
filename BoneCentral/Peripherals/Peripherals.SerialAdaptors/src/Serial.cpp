@@ -2,7 +2,7 @@
 // Created by Nathan Copier on 1/28/2016.
 //
 
-#include "../include/Serial.h"
+#include "Serial.h"
 
 Serial::Serial() {
     std::system("stty -F /dev/ttyACM0 cs8 115200 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");

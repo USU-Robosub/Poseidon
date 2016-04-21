@@ -1,4 +1,4 @@
-#include "../include/ExPressureSensor.h"
+#include "ExPressureSensor.h"
 
 ExPressureSensor::ExPressureSensor()
 {

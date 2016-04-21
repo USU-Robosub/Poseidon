@@ -10,6 +10,7 @@
 #include <CommandDispatcher.h>
 #include "ScriptLogger.h"
 #include "PowerFactoryAdaptor.h"
+#include "SensorFactoryAdaptor.h"
 #include <TcpClient.h>
 #include <map>
 
