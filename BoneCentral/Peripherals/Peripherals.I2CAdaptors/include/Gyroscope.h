@@ -1,8 +1,8 @@
 #ifndef DRIVERS_GYROSCOPE_H
 #define DRIVERS_GYROSCOPE_H
 
-#include "MPU6050.h"
-#include "IGyroscope.h"
+#include <MPU6050.h>
+#include <IGyroscope.h>
 
 #include <memory>
 #include <utility>

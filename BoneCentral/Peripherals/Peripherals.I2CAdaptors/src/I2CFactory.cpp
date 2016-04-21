@@ -1,4 +1,4 @@
-#include "I2CFactory.h"
+#include "../include/I2CFactory.h"
 
 I2CFactory::I2CFactory() :
 	BMP085_sensor_(std::make_shared<BMP085>()),

@@ -197,7 +197,7 @@ void CommunicatingSocket::connect(const string &foreignAddress,
 
 void CommunicatingSocket::disconnect()
   throw(SocketException) {
-  if (::shutdown(sockDesc, ::SHUT_RDWR) < 0) {
+  if (shutdown(sockDesc, SHUT_RDWR) < 0) {
     throw SocketException("Shutdown failed (disconnect())", true);
   }
 }

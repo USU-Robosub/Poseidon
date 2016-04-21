@@ -1,4 +1,4 @@
-#include "Gyroscope.h"
+#include "../include/Gyroscope.h"
 
 Gyroscope::Gyroscope(std::shared_ptr<MPU6050> gyroscope) :
         gyroscope_(gyroscope)

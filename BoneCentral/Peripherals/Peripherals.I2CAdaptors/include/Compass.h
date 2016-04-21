@@ -1,8 +1,8 @@
 #ifndef DRIVERS_COMPASS_H
 #define DRIVERS_COMPASS_H
 
-#include "HMC5883L.h"
-#include "ICompass.h"
+#include <HMC5883L.h>
+#include <ICompass.h>
 
 #include <memory>
 #include <utility>

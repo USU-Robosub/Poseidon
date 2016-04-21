@@ -1,8 +1,8 @@
 #ifndef DRIVER_IN_PRESSURE_SENSOR
 #define DRIVER_IN_PRESSURE_SENSOR
 
-#include "BMP085.h"
-#include "IPressureSensor.h"
+#include <BMP085.h>
+#include <IPressureSensor.h>
 #include <memory>
 
 class InPressureSensor : public IPressureSensor {

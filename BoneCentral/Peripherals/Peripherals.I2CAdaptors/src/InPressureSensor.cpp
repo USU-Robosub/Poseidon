@@ -1,4 +1,4 @@
-#include "InPressureSensor.h"
+#include "../include/InPressureSensor.h"
 
 InPressureSensor::InPressureSensor(std::shared_ptr<BMP085> pressure) :
 	pressure_(pressure) {}

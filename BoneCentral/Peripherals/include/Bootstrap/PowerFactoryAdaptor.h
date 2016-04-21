@@ -5,8 +5,8 @@
 #ifndef PERIPHERALS_POWER_FACTORY_ADAPTOR_H
 #define PERIPHERALS_POWER_FACTORY_ADAPTOR_H
 
-#include "IPowerFactory.h"
-#include "I2CFactory.h"
+#include <IPowerFactory.h>
+#include <I2CFactory.h>
 #include "SerialFactory.h"
 
 class PowerFactoryAdaptor : public IPowerFactory {

@@ -1,8 +1,8 @@
 #ifndef DRIVER_IN_TEMPERATURE_1_SENSOR
 #define DRIVER_IN_TEMPERATURE_1_SENSOR
 
-#include "MPU6050.h"
-#include "ITemperatureSensor.h"
+#include <MPU6050.h>
+#include <ITemperatureSensor.h>
 #include <memory>
 
 class InTemperatureSensor1 : public ITemperatureSensor {

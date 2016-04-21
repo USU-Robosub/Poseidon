@@ -1,8 +1,8 @@
 #ifndef DRIVER_IN_TEMPERATURE_2_SENSOR
 #define DRIVER_IN_TEMPERATURE_2_SENSOR
 
-#include "BMP085.h"
-#include "ITemperatureSensor.h"
+#include <BMP085.h>
+#include <ITemperatureSensor.h>
 #include <memory>
 
 class InTemperatureSensor2 : public ITemperatureSensor {

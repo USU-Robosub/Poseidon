@@ -5,7 +5,6 @@
 #include <iostream>
 #include <ThrustController.h>
 #include <CommandDispatcher.h>
-#include "SerialFactory.h"
 #include "ScriptLogger.h"
 #include "PowerFactoryAdaptor.h"
 #include <TcpClient.h>

@@ -1,9 +1,9 @@
 #ifndef IMU_POWER_H
 #define IMU_POWER_H
 
-#include "MPU6050.h"
-#include "HMC5883L.h"
-#include "BMP085.h"
+#include <MPU6050.h>
+#include <HMC5883L.h>
+#include <BMP085.h>
 #include <IImuPower.h>
 #include <memory>
 #include <utility>
