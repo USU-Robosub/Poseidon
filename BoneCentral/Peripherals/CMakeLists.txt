@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror -Wextra -peda
 
 # Tests
 
-add_subdirectory("tests/gtest-1.7.0")
+link_directories("../../GoogleTest/googletest")
 enable_testing()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
