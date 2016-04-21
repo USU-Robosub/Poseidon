@@ -1,4 +1,4 @@
-#include "EscPower.h"
+#include "../include/EscPower.h"
 
 EscPower::EscPower(Serial& serial) : serial_(serial) {}
 

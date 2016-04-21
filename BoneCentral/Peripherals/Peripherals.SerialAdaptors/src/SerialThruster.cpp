@@ -2,7 +2,7 @@
 // Created by Nathan Copier on 1/28/2016.
 //
 
-#include "SerialThruster.h"
+#include "../include/SerialThruster.h"
 
 SerialThruster::SerialThruster(Serial& serial, ThrusterIndex thrusterIndex)
         : serial_(serial), thrusterIndex_(thrusterIndex) { }

@@ -7,7 +7,7 @@
 
 #include <IPowerFactory.h>
 #include <I2CFactory.h>
-#include "SerialFactory.h"
+#include <Peripherals.SerialAdaptors/include/SerialFactory.h>
 
 class PowerFactoryAdaptor : public IPowerFactory {
 public:

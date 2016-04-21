@@ -1,5 +1,5 @@
-#ifndef ESCPOWER
-#define ESCPOWER
+#ifndef ESC_POWER
+#define ESC_POWER
 
 #include <IEscPower.h>
 #include "Serial.h"

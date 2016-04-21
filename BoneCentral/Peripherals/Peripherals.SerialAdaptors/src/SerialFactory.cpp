@@ -2,7 +2,7 @@
 // Created by Nathan Copier on 1/28/2016.
 //
 
-#include "SerialFactory.h"
+#include "../include/SerialFactory.h"
 
 std::shared_ptr<IThruster> SerialFactory::createLeftForwardThruster() {
     return std::make_shared<SerialThruster>(serial_, LEFT_FORWARD);
