@@ -1,14 +1,23 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
+var CppInterface = require('../Brain/CppInterface');
+var Sockets = require('../Brain/Sockets');
+var Ports = require('../Brain/Sockets/Ports.json');
+var WebLogger = require('./WebLogger');
 var app = express();
 
-peripherals = spawner.spawn('../Peripherals/Release/Bootstrap');
-peripherals.stdout.on('data', function(data) {
-	console.log(data);
-});
+var dispatcherSocket = Sockets.createSocket(Ports.ThrusterPort);
+var thrustController = new CppInterface.ThrustController(dispatcherSocket);
+var headLights = new CppInterface.HeadLights(dispatcherSocket);
+var powerManager = new CppInterface.PowerManager(dispatcherSocket);
 
-var diveMaster = require('../brain/DiveMaster.js');
+var loggerSocket = Sockets.createSocket(Ports.LoggerPort);
+var webLogger = new WebLogger(console);
+new CppInterface.CppLogSource(loggerSocket, webLogger);
+
+var args = ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort];
+var peripherals = spawner.spawn('../Peripherals/Release/Bootstrap', args);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -22,76 +31,105 @@ app.post('/thrust', function(req, res) {
 	res.send('thrust ' + req.body.powerLevel);
 });
 
+
+app.get('/stdoutData', function(req, res) {
+	res.send(webLogger.pull());
+});
+
 // From IThrustController
 app.post('/goDirection', function(req, res) {
-	cmdString = 'goDirection ' + req.body.forward + ' ' + req.body.strafe + ' ' + req.body.dive;
-	peripherals.stdin.write(cmdString + "\n");
-	res.send(cmdString);
+	var params = req.body;
+	thrustController.goDirection(params.forward, params.strafe, params.dive);
+	res.send('');
 });
 
 app.post('/faceDirection', function(req, res) {
-	cmdString = 'faceDirection ' + req.body.yaw;
-	peripherals.stdin.write(cmdString + "\n");
-	res.send(cmdString);
+	thrustController.faceDirection(req.body.yaw)
+	res.send('');
 });
 
+// From diveOffset
+
+app.post('/setOffset', function(req, res) {
+	var params = req.body;
+	thrustController.setOffset(params.front, params.back);
+	res.send('');
+})
 
 // From Imu
-app.get('/getForwardAccel', function(req, res) {
-	res.send('getForwardAccel');
+app.get('/turnOnImuSensor', function(req, res) {
+    dispatcherSocket.write("turnOnImuSensor\n");
+	res.send('turnOnImuSensor');
 });
 
-app.get('/getStrafeAccel', function(req, res) {
-	res.send('getStrafeAccel');
+app.get('/turnOffImuSensor', function(req, res) {
+    dispatcherSocket.write("turnOffImuSensor\n");
+	res.send('turnOffImuSensor');
 });
 
-app.get('/getDiveAccel', function(req, res) {
-	res.send('getDiveAccel');
+app.get('/getAcceleration', function(req, res) {
+    dispatcherSocket.write("getAcceleration\n");
+	res.send('ran getAcceleration');
 });
 
-app.get('/getForwardAngle', function(req, res) {
-	res.send('getForwardAngle');
+app.get('/getAngularAcceleration', function(req, res) {
+    dispatcherSocket.write("getAngularAcceleration\n");
+	res.send('ran getAngularAcceleration');
 });
 
-app.get('/getStrafeAngle', function(req, res) {
-	res.send('getStrafeAngle');
+app.get('/getHeading', function(req, res) {
+    dispatcherSocket.write("getHeading\n");
+	res.send('ran getHeading');
 });
 
-app.get('/getDiveAngle', function(req, res) {
-	res.send('getDiveAngle');
+app.get('/getInternalTemperature', function(req, res) {
+    dispatcherSocket.write("getInternalTemperature\n");
+	res.send('getInternalTemperature');
+});
+
+app.get('/getInternalPressure', function(req, res) {
+    dispatcherSocket.write("getInternalPressure\n");
+	res.send('getInternalPressure');
+});
+
+app.get('/exit', function(req, res) {
+    dispatcherSocket.write("exit\n");
+	res.send('exit');
 });
 
 
 // From IPowerController {
 app.get('/turnOnEscs', function(req, res) {
-	peripherals.stdin.write("turnOnEscs\n");
+	powerManager.turnOnEscs();
 	res.send('turnOnEscs');
 });
 
 app.get('/turnOffEscs', function(req, res) {
-	peripherals.stdin.write("turnOffEscs\n");
+	powerManager.turnOffEscs();
 	res.send('turnOffEscs');
 });
 
-// From DiveMaster.js
-app.post('/setForwardThrust', function(req, res) {
-	// res.send(diveMaster.setForwardThrust(req.body.velocity));
-	res.send('diveMaster.setForwardThrust(' + req.body.velocity + ')');
+
+// Headlight Control
+app.get('/headlight', function(req, res) {
+    headLights.toggleLights();
+	res.send('toggled Headlights');
 });
 
-app.post('/setDiveThrust', function(req, res) {
-	// res.send(diveMaster.setDiveThrust(req.body.velocity));
-	res.send('diveMaster.setDiveThrust(' + req.body.velocity + ')');
-});
+// Script Run
+app.post('/runScript', function(req, res) {
+	var scripts = [
 
-app.post('/setStrafeThrust', function(req, res) {
-	// res.send(diveMaster.setStrafeThrust(req.body.velocity));
-	res.send('diveMaster.setStrafeThrust(' + req.body.velocity + ')');
-});
+	];
 
-app.post('/setYawThrust', function(req, res) {
-	// res.send(diveMaster.setYawThrust(req.body.velocity));
-	res.send('diveMaster.setYawThrust(' + req.body.velocity + ')');
+	try {
+		var response = '' + eval(scripts[req.body.scriptId]);
+		return response;
+	}
+	catch(err) {
+		res.send('' + err)
+		return;
+	}
 });
 
 

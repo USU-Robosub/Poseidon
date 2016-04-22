@@ -14,3 +14,6 @@ Debug/
 #cmake-generated files#
 .cmake
 CMakeCache.txt
+
+# NPM
+node_modules/

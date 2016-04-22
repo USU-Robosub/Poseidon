@@ -1,29 +1,26 @@
 #include "PowerManager.h"
 
-PowerManager::PowerManager()
+PowerManager::PowerManager(IEscPower& escPower, IImuPower& imuPower) : escPower_(escPower),
+	imuPower_(imuPower)
 {
-	escsOn = false;
 }
 
 void PowerManager::turnOnEscs()
 {
-	std::ofstream serialOut("/dev/ttyACM0");
-	if (!escsOn)
-	{
-		serialOut << char(6) << char(1) <<  std::flush;
-		escsOn = true;
-	}
-	serialOut.close();
+	escPower_.turnOnEscs();
 }
 
 void PowerManager::turnOffEscs()
 {
-	
-	std::ofstream serialOut("/dev/ttyACM0");
-	if (escsOn)
-	{
-		serialOut << char(6) << char(0) << std::flush;
-		escsOn = false;
-	}
-	serialOut.close();
+	escPower_.turnOffEscs();
+}
+
+void PowerManager::turnOnImuSensor() 
+{
+	imuPower_.wake();
+}
+
+void PowerManager::turnOffImuSensor()
+{
+	imuPower_.sleep();
 }
