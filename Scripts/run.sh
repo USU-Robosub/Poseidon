@@ -1,2 +1,2 @@
-cd ../Main/Brain
+cd ../BoneCentral/Brain
 node run.js

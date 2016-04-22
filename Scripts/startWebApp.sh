@@ -1,2 +1,2 @@
-cd ../Main/WebApplication
+cd ../BoneCentral/WebApplication
 node index.js
