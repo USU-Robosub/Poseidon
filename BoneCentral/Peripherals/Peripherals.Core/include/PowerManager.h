@@ -10,7 +10,7 @@ private:
 	std::shared_ptr<IImuPower> imuPower_;
 
 public:
-	PowerManager(IPowerFactory& imuFactory);
+	PowerManager(IPowerFactory& powerFactory);
 	void turnOnEscs();
 	void turnOffEscs();
 	void turnOnImuSensor();
