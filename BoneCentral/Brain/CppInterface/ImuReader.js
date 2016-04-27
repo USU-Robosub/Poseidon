@@ -1,24 +1,24 @@
 /**
  * Created by Nathan Copier on 2/17/2016.
  */
-const EventEmitter = require('events').EventEmitter;
+var $ = require("jquery-deferred");
 const util = require('util');
 
 module.exports = (function(){
 
     function ImuReader(iStream, oStream){
-        EventEmitter.call(this);
         this._iStream = iStream;
         this._oStream = oStream;
     }
-    util.inherits(ImuReader, EventEmitter);
 
-    ImuReader.prototype.readData = function(){
+    ImuReader.prototype.getAcceleration = function () {
+        var p = $.Deferred();
         var self = this;
-        this._iStream.once("readable", function(){
-            self.emit("dataReady", JSON.parse(self.readData()));
+        this._iStream.once("data", function (data) {
+            p.resolve(data);
         });
-        this._oStream.write("readData\n");
+        self._oStream.write("getAcceleration\n");
+        return p;
     };
 
     return ImuReader;

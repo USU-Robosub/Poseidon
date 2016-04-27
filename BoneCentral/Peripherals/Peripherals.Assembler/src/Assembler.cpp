@@ -2,6 +2,7 @@
 // Created by Nathan Copier on 11/10/2015.
 //
 
+#include <ImuDispatcher.h>
 #include "Assembler.h"
 
 void App_Start(int argCount, char **arguments) {
@@ -17,6 +18,8 @@ void App_Start(int argCount, char **arguments) {
 
     ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
+    auto imuStream = _getIoStream(portMap, "imuPort");
+    ImuDispatcher id(subSensors, *imuStream, *imuStream);
 
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
@@ -40,6 +43,10 @@ std::istream* _getInputStream(std::map<std::string, int>& portMap, string portNa
     if(portMap.count(portName)) in = new TcpClient(portMap[portName]);
     else in = &(std::cin);
     return in;
+}
+
+std::iostream* _getIoStream(std::map<std::string, int>& portMap, string portName) {
+    return new TcpClient(portMap[portName]);
 }
 
 std::map<std::string, int> _createPortMap(int argCount, char** arguments) {
