@@ -7,5 +7,6 @@ module.exports = {
     PowerManager: require("./PowerManager"),
     ThrustController: require("./ThrustController"),
     CppLogSource: require("./CppLogSource"),
-    ImuSensor: require("./ImuSensor")
+    ImuSensor: require("./ImuSensor"),
+    Factory: require("./Factory")
 };
