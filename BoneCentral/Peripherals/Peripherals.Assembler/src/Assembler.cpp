@@ -26,7 +26,7 @@ void App_Start(int argCount, char **arguments) {
     auto lights = serialFactory.createHeadlights();
 
     auto dispatcherStream = _getSocketStream(portMap, "thrusterPort");
-    CommandDispatcher cd(*dispatcherStream, tc, pm, *lights, subSensors);
+    CommandDispatcher cd(*dispatcherStream, tc, pm, *lights);
     scriptLogger->info("Ready!");
     cd.runLoop();
     id.stopListening();

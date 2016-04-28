@@ -27,6 +27,8 @@ private:
     void _getAcceleration();
     void _getAngularAcceleration();
     void _getHeading();
+    void _getInternalTemperature();
+    void _getInternalPressure();
 
     std::thread thread_;
     ImuSensor& imuSensor_;

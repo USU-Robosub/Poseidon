@@ -91,12 +91,16 @@ app.get('/getHeading', function(req, res) {
 });
 
 app.get('/getInternalTemperature', function(req, res) {
-    dispatcherSocket.write("getInternalTemperature\n");
+    imuReader.getInternalTemperature().done(function(temperature) {
+        webLogger.info("Internal Temperature: " + JSON.stringify(temperature));
+    });
 	res.send('getInternalTemperature');
 });
 
 app.get('/getInternalPressure', function(req, res) {
-    dispatcherSocket.write("getInternalPressure\n");
+    imuReader.getInternalPressure().done(function(pressure) {
+        webLogger.info("Internal Pressure: " + JSON.stringify(pressure));
+    });
 	res.send('getInternalPressure');
 });
 

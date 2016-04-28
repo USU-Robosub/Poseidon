@@ -30,6 +30,8 @@ void ImuDispatcher::dispatchCommand(std::stringstream& cmdString) {
     if(cmd == "getAcceleration") _getAcceleration();
     else if(cmd == "getAngularAcceleration") _getAngularAcceleration();
     else if(cmd == "getHeading") _getHeading();
+    else if(cmd == "getInternalTemperature") _getInternalTemperature();
+    else if(cmd == "getInternalPressure") _getInternalPressure();
 }
 
 void ImuDispatcher::_getAcceleration() {
@@ -63,6 +65,16 @@ void ImuDispatcher::_getHeading() {
             //{"Z", std::get<2>(data)}
     };
     out_ << headingJson << std::endl;
+}
+
+void ImuDispatcher::_getInternalTemperature() {
+    auto data = imuSensor_.getIntTemperature();
+    out_ << json{{"Type", "InternalTemperature"},{"Value",data}} << std::endl;
+}
+
+void ImuDispatcher::_getInternalPressure() {
+    auto data = imuSensor_.getIntPressure();
+    out_ << json{{"Type", "InternalPressure"},{"Value",data}} << std::endl;
 }
 
 void ImuDispatcher::stopListening() {

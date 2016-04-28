@@ -16,6 +16,8 @@ module.exports = (function(){
         this._accelRequest = $.Deferred().resolve();
         this._angularAccelRequest = $.Deferred().resolve();
         this._headingRequest = $.Deferred().resolve();
+        this._inTempRequest = $.Deferred().resolve();
+        this._inPressureRequest = $.Deferred().resolve();
     };
 
     var _handleData = function(self){return function (data) {
@@ -24,6 +26,8 @@ module.exports = (function(){
             if (dataJson.Type == "Acceleration") self._accelRequest.resolve(dataJson);
             else if (dataJson.Type == "AngularAcceleration") self._angularAccelRequest.resolve(dataJson);
             else if (dataJson.Type == "Heading") self._headingRequest.resolve(dataJson);
+            else if (dataJson.Type == "InternalTemperature") self._inTempRequest.resolve(dataJson);
+            else if (dataJson.Type == "InternalPressure") self._inPressureRequest.resolve(dataJson);
         }
         catch(e) {}
     };};
@@ -50,6 +54,22 @@ module.exports = (function(){
             this._oStream.write("getHeading\n");
         }
         return this._headingRequest.promise();
+    };
+
+    ImuReader.prototype.getInternalTemperature = function () {
+        if(this._inTempRequest.state() !== "pending") {
+            this._inTempRequest = $.Deferred();
+            this._oStream.write("getInternalTemperature\n");
+        }
+        return this._inTempRequest.promise();
+    };
+
+    ImuReader.prototype.getInternalPressure = function () {
+        if(this._inPressureRequest.state() !== "pending") {
+            this._inPressureRequest = $.Deferred();
+            this._oStream.write("getInternalPressure\n");
+        }
+        return this._inPressureRequest.promise();
     };
 
     return ImuReader;

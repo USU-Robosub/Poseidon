@@ -4,8 +4,8 @@
 
 #include "CommandDispatcher.h"
 
-CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights, ImuSensor& sensors)
-        : in_(in), thrustController_(thrustController), powerManager_(powerManager), lights_(lights), sensors_(sensors), shouldExit_(false) {}
+CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights)
+        : in_(in), thrustController_(thrustController), powerManager_(powerManager), lights_(lights), shouldExit_(false) {}
 
 void CommandDispatcher::runLoop() {
     while(!shouldExit_) {
@@ -26,8 +26,6 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "switchLights") lights_.switchLights();
     else if(cmd == "turnOnImu") powerManager_.turnOnImuSensor();
     else if(cmd == "turnOffImu") powerManager_.turnOffImuSensor();
-    else if(cmd == "getInternalTemperature") sensors_.getIntTemperature();
-    else if(cmd == "getInternalPressure") sensors_.getIntPressure();
     else if(cmd == "setForwardTrim") setForwardTrim(cmdString);
     else if(cmd == "setDiveTrim") setDiveTrim(cmdString);
     else if(cmd == "setDiveOffset") setDiveOffset(cmdString);

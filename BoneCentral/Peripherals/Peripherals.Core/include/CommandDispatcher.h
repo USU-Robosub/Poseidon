@@ -7,7 +7,6 @@
 
 #include "ThrustController.h"
 #include "PowerManager.h"
-#include "ImuSensor.h"
 #include "IHeadlights.h"
 #include <iostream>
 #include <stdexcept>
@@ -22,7 +21,6 @@ private:
     ThrustController& thrustController_;
     PowerManager& powerManager_;
     IHeadlights& lights_;
-    ImuSensor& sensors_;
     bool shouldExit_;
 
     void dispatchCommand(std::stringstream& cmd);
@@ -34,7 +32,7 @@ private:
     void setDiveOffset(std::stringstream& cmdString);
 
 public:
-    CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights, ImuSensor& sensors);
+    CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights);
     void runLoop();
 
 };
