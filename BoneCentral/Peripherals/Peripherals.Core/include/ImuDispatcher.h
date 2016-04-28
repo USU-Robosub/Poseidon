@@ -29,6 +29,8 @@ private:
     void _getHeading();
     void _getInternalTemperature();
     void _getInternalPressure();
+    void _getExternalTemperature();
+    void _getExternalPressure();
 
     std::thread thread_;
     ImuSensor& imuSensor_;

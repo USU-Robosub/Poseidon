@@ -39,36 +39,21 @@ FloatTuple ImuSensor::getHeading()
 
 int ImuSensor::getExtPressure()
 {
-    auto pressureResults = extPressureSensor_->getPressure();
-    std::stringstream logResults;
-    logResults << "External Pressure: " << pressureResults;
-    std::string toLog = logResults.str();
-    logger_->info(toLog.c_str());
-    return pressureResults;
+    return extPressureSensor_->getPressure();
 }
 
 
 
 int ImuSensor::getIntPressure()
 {
-    auto pressureResults = intPressureSensor_->getPressure();
-    std::stringstream logResults;
-    logResults << "Internal Pressure: " << pressureResults;
-    std::string toLog = logResults.str();
-    logger_->info(toLog.c_str());
-    return pressureResults;
+    return intPressureSensor_->getPressure();
 }
 
 
 
 float ImuSensor::getExtTemperature()
 {
-    auto temperatureResults = extTemperatureSensor_->getTemperature();
-    std::stringstream logResults;
-    logResults << "External Temperature: " << temperatureResults;
-    std::string toLog = logResults.str();
-    logger_->info(toLog.c_str());
-    return temperatureResults;
+    return extTemperatureSensor_->getTemperature();
 }
 
 
@@ -77,10 +62,6 @@ float ImuSensor::getIntTemperature()
 {
     auto temperatureResults = (intTemperatureSensor1_->getTemperature() + 
             intTemperatureSensor2_->getTemperature()) / 2.0;
-    std::stringstream logResults;
-    logResults << "Internal Temperature: " << temperatureResults;
-    std::string toLog = logResults.str();
-    logger_->info(toLog.c_str());
     return temperatureResults;
 }
 

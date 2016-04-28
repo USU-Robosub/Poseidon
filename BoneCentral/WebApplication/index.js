@@ -104,6 +104,20 @@ app.get('/getInternalPressure', function(req, res) {
 	res.send('getInternalPressure');
 });
 
+app.get('/getExternalTemperature', function(req, res) {
+    imuReader.getExternalTemperature().done(function(temperature) {
+        webLogger.info("External Temperature: " + JSON.stringify(temperature));
+    });
+    res.send('getExternalTemperature');
+});
+
+app.get('/getExternalPressure', function(req, res) {
+    imuReader.getExternalPressure().done(function(pressure) {
+        webLogger.info("External Pressure: " + JSON.stringify(pressure));
+    });
+    res.send('getExternalPressure');
+});
+
 app.get('/exit', function(req, res) {
     dispatcherSocket.write("exit\n");
 	res.send('exit');
