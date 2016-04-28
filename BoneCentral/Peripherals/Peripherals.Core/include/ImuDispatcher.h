@@ -24,6 +24,9 @@ public:
 private:
     void _runLoop();
     void dispatchCommand(std::stringstream& cmdString);
+    void _getAcceleration();
+    void _getAngularAcceleration();
+    void _getHeading();
 
     std::thread thread_;
     ImuSensor& imuSensor_;

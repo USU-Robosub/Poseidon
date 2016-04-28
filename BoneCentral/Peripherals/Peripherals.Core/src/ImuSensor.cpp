@@ -18,36 +18,21 @@ ImuSensor::ImuSensor(ISensorFactory& sensorFactory, std::shared_ptr<ILogger> log
 
 FloatTuple ImuSensor::getAcceleration()
 {
-    auto accelerometerResults = accelerometer_->getAcceleration();
-    std::stringstream logResults;
-    logResults << "Acceleration: " << std::get<0>(accelerometerResults) << ' ' << std::get<1>(accelerometerResults) << ' ' << std::get<2>(accelerometerResults);
-    std::string toLog = logResults.str();
-    logger_->info(toLog.c_str());
-    return accelerometerResults;
+    return accelerometer_->getAcceleration();
 }
 
 
 
 FloatTuple ImuSensor::getAngularAcceleration() 
 {
-    auto gyroscopeResults = gyroscope_->getAngularAcceleration();
-    std::stringstream logResults;
-    logResults << "Angular Acceleration: " << std::get<0>(gyroscopeResults) << ' ' << std::get<1>(gyroscopeResults) << ' ' << std::get<2>(gyroscopeResults);
-    std::string toLog = logResults.str();
-    logger_->info(toLog.c_str());
-    return gyroscopeResults;
+    return gyroscope_->getAngularAcceleration();
 }
 
 
 
 FloatTuple ImuSensor::getHeading()
 {
-    auto compassResults = compass_->getHeading();
-    std::stringstream logResults;
-    logResults << "Heading: " << std::get<0>(compassResults) << ' ' << std::get<1>(compassResults) << ' ' << std::get<2>(compassResults);
-    std::string toLog = logResults.str();
-    logger_->info(toLog.c_str());
-    return compassResults;
+    return compass_->getHeading();
 }
 
 

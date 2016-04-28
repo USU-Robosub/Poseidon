@@ -71,18 +71,22 @@ app.get('/turnOffImuSensor', function(req, res) {
 
 app.get('/getAcceleration', function(req, res) {
     imuReader.getAcceleration().done(function(accel) {
-        webLogger.log("Acceleration: " + accel);
+        webLogger.info("Acceleration: " + JSON.stringify(accel));
     });
 	res.send('ran getAcceleration');
 });
 
 app.get('/getAngularAcceleration', function(req, res) {
-    dispatcherSocket.write("getAngularAcceleration\n");
+    imuReader.getAngularAcceleration().done(function(accel) {
+        webLogger.info("Angular Acceleration: " + JSON.stringify(accel));
+    });
     res.send('ran getAngularAcceleration');
 });
 
 app.get('/getHeading', function(req, res) {
-    dispatcherSocket.write("getHeading\n");
+    imuReader.getHeading().done(function(heading) {
+        webLogger.info("Heading: " + JSON.stringify(heading));
+    });
 	res.send('ran getHeading');
 });
 

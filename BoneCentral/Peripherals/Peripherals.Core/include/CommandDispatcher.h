@@ -28,9 +28,6 @@ private:
     void dispatchCommand(std::stringstream& cmd);
     void goDirection(std::stringstream& cmdString);
     void faceDirection(std::stringstream& cmdString);
-    void printAcceleration();
-    void printAngularAcceleration();
-    void printHeading();
 
     void setForwardTrim(std::stringstream& cmdString);
     void setDiveTrim(std::stringstream& cmdString);

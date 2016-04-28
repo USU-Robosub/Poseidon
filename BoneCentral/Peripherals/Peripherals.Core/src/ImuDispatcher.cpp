@@ -27,16 +27,42 @@ void ImuDispatcher::_runLoop() {
 void ImuDispatcher::dispatchCommand(std::stringstream& cmdString) {
     std::string cmd;
     cmdString >> cmd;
-    if(cmd == "getAcceleration") {
-        auto data = imuSensor_.getAcceleration();
-        auto accelJson = json{
-                {"Type", "Acceleration"},
-                {"X", std::get<0>(data)},
-                {"Y", std::get<1>(data)},
-                {"Z", std::get<2>(data)}
-        };
-        out_ << accelJson.dump() << std::endl;
-    }
+    if(cmd == "getAcceleration") _getAcceleration();
+    else if(cmd == "getAngularAcceleration") _getAngularAcceleration();
+    else if(cmd == "getHeading") _getHeading();
+}
+
+void ImuDispatcher::_getAcceleration() {
+    auto data = imuSensor_.getAcceleration();
+    auto accelJson = json{
+            {"Type", "Acceleration"},
+            {"X", std::get<0>(data)},
+            {"Y", std::get<1>(data)},
+            {"Z", std::get<2>(data)}
+    };
+    out_ << accelJson << std::endl;
+}
+
+void ImuDispatcher::_getAngularAcceleration() {
+    auto data = imuSensor_.getAngularAcceleration();
+    auto accelJson = json{
+            {"Type", "AngularAcceleration"},
+            {"X", std::get<0>(data)},
+            {"Y", std::get<1>(data)},
+            {"Z", std::get<2>(data)}
+    };
+    out_ << accelJson << std::endl;
+}
+
+void ImuDispatcher::_getHeading() {
+    auto data = imuSensor_.getHeading();
+    auto headingJson = json{
+            {"Type", "Heading"},
+            {"X", std::get<0>(data)},
+            {"Y", std::get<1>(data)}//,
+            //{"Z", std::get<2>(data)}
+    };
+    out_ << headingJson << std::endl;
 }
 
 void ImuDispatcher::stopListening() {
