@@ -12,7 +12,7 @@ var thrustController = new CppInterface.ThrustController(dispatcherSocket);
 var headLights = new CppInterface.HeadLights(dispatcherSocket);
 var powerManager = new CppInterface.PowerManager(dispatcherSocket);
 var imuSocket = Sockets.createSocket(Ports.ImuPort);
-var imuReader = new CppInterface.ImuReader(imuSocket, imuSocket);
+var imuSensor = new CppInterface.ImuSensor(imuSocket, imuSocket);
 
 var loggerSocket = Sockets.createSocket(Ports.LoggerPort);
 var webLogger = new WebLogger(console);
@@ -70,49 +70,49 @@ app.get('/turnOffImuSensor', function(req, res) {
 });
 
 app.get('/getAcceleration', function(req, res) {
-    imuReader.getAcceleration().done(function(accel) {
+    imuSensor.getAcceleration().done(function(accel) {
         webLogger.info("Acceleration: " + JSON.stringify(accel));
     });
 	res.send('ran getAcceleration');
 });
 
 app.get('/getAngularAcceleration', function(req, res) {
-    imuReader.getAngularAcceleration().done(function(accel) {
+    imuSensor.getAngularAcceleration().done(function(accel) {
         webLogger.info("Angular Acceleration: " + JSON.stringify(accel));
     });
     res.send('ran getAngularAcceleration');
 });
 
 app.get('/getHeading', function(req, res) {
-    imuReader.getHeading().done(function(heading) {
+    imuSensor.getHeading().done(function(heading) {
         webLogger.info("Heading: " + JSON.stringify(heading));
     });
 	res.send('ran getHeading');
 });
 
 app.get('/getInternalTemperature', function(req, res) {
-    imuReader.getInternalTemperature().done(function(temperature) {
+    imuSensor.getInternalTemperature().done(function(temperature) {
         webLogger.info("Internal Temperature: " + JSON.stringify(temperature));
     });
 	res.send('getInternalTemperature');
 });
 
 app.get('/getInternalPressure', function(req, res) {
-    imuReader.getInternalPressure().done(function(pressure) {
+    imuSensor.getInternalPressure().done(function(pressure) {
         webLogger.info("Internal Pressure: " + JSON.stringify(pressure));
     });
 	res.send('getInternalPressure');
 });
 
 app.get('/getExternalTemperature', function(req, res) {
-    imuReader.getExternalTemperature().done(function(temperature) {
+    imuSensor.getExternalTemperature().done(function(temperature) {
         webLogger.info("External Temperature: " + JSON.stringify(temperature));
     });
     res.send('getExternalTemperature');
 });
 
 app.get('/getExternalPressure', function(req, res) {
-    imuReader.getExternalPressure().done(function(pressure) {
+    imuSensor.getExternalPressure().done(function(pressure) {
         webLogger.info("External Pressure: " + JSON.stringify(pressure));
     });
     res.send('getExternalPressure');

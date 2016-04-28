@@ -5,7 +5,7 @@ var $ = require("jquery-deferred");
 
 module.exports = (function(){
 
-    function ImuReader(iStream, oStream){
+    function ImuSensor(iStream, oStream){
         this._iStream = iStream;
         this._oStream = oStream;
         _initializePromises.call(this);
@@ -36,7 +36,7 @@ module.exports = (function(){
         catch(e) {}
     };};
 
-    ImuReader.prototype.getAcceleration = function () {
+    ImuSensor.prototype.getAcceleration = function () {
         if(this._accelRequest.state() !== "pending") {
             this._accelRequest = $.Deferred();
             this._oStream.write("getAcceleration\n");
@@ -44,7 +44,7 @@ module.exports = (function(){
         return this._accelRequest.promise();
     };
 
-    ImuReader.prototype.getAngularAcceleration = function () {
+    ImuSensor.prototype.getAngularAcceleration = function () {
         if(this._angularAccelRequest.state() !== "pending") {
             this._angularAccelRequest = $.Deferred();
             this._oStream.write("getAngularAcceleration\n");
@@ -52,7 +52,7 @@ module.exports = (function(){
         return this._angularAccelRequest.promise();
     };
 
-    ImuReader.prototype.getHeading = function () {
+    ImuSensor.prototype.getHeading = function () {
         if(this._headingRequest.state() !== "pending") {
             this._headingRequest = $.Deferred();
             this._oStream.write("getHeading\n");
@@ -60,7 +60,7 @@ module.exports = (function(){
         return this._headingRequest.promise();
     };
 
-    ImuReader.prototype.getInternalTemperature = function () {
+    ImuSensor.prototype.getInternalTemperature = function () {
         if(this._inTempRequest.state() !== "pending") {
             this._inTempRequest = $.Deferred();
             this._oStream.write("getInternalTemperature\n");
@@ -68,7 +68,7 @@ module.exports = (function(){
         return this._inTempRequest.promise();
     };
 
-    ImuReader.prototype.getInternalPressure = function () {
+    ImuSensor.prototype.getInternalPressure = function () {
         if(this._inPressureRequest.state() !== "pending") {
             this._inPressureRequest = $.Deferred();
             this._oStream.write("getInternalPressure\n");
@@ -76,7 +76,7 @@ module.exports = (function(){
         return this._inPressureRequest.promise();
     };
 
-    ImuReader.prototype.getExternalTemperature = function () {
+    ImuSensor.prototype.getExternalTemperature = function () {
         if(this._exTempRequest.state() !== "pending") {
             this._exTempRequest = $.Deferred();
             this._oStream.write("getExternalTemperature\n");
@@ -84,7 +84,7 @@ module.exports = (function(){
         return this._exTempRequest.promise();
     };
 
-    ImuReader.prototype.getExternalPressure = function () {
+    ImuSensor.prototype.getExternalPressure = function () {
         if(this._exPressureRequest.state() !== "pending") {
             this._exPressureRequest = $.Deferred();
             this._oStream.write("getExternalPressure\n");
@@ -92,6 +92,6 @@ module.exports = (function(){
         return this._exPressureRequest.promise();
     };
 
-    return ImuReader;
+    return ImuSensor;
 
 })();
