@@ -1,9 +1,8 @@
 #include "PowerManager.h"
 
-PowerManager::PowerManager(IPowerFactory& imuFactory) : escPower_(imuFactory.createEscPower()),
-	imuPower_(imuFactory.createImuPower())
-{
-}
+PowerManager::PowerManager(IPowerFactory& powerFactory) :
+		escPower_(powerFactory.createEscPower()),
+		imuPower_(powerFactory.createImuPower()) { }
 
 void PowerManager::turnOnEscs()
 {

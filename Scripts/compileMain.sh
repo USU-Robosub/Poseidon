@@ -7,7 +7,7 @@ fi
 mkdir Release
 cd Release
 cmake ..
-make Bootstrap
+make Peripherals
 
 cd ../../WebApplication
 npm install
