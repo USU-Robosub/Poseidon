@@ -11,10 +11,12 @@ Serial::Serial() {
 }
 
 void Serial::writeByte(unsigned short byteValue) {
+    std::lock_guard<std::mutex> guard(serialLock_);
     *output_ << char(byteValue & 0xFF) << std::flush;
 }
 
 void Serial::writeShort(unsigned short shortValue) {
+    std::lock_guard<std::mutex> guard(serialLock_);
     *output_ << char(shortValue >> 8) << char(shortValue & 0xFF) << std::flush;
 }
 
@@ -22,3 +24,5 @@ Serial::~Serial() {
     input_->close();
     output_->close();
 }
+
+std::mutex Serial::serialLock_;

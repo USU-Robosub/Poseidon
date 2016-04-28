@@ -14,7 +14,7 @@ void App_Start(int argCount, char **arguments) {
     auto sensorFactory = SensorFactoryAdaptor(i2CFactory, serialFactory);
 
     auto loggerStream = _getSocketStream(portMap, "loggerPort");
-    auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream);
+    auto scriptLogger = std::make_shared<ScriptLogger>(*loggerStream);
 
     ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
