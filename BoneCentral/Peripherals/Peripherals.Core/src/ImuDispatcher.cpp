@@ -3,6 +3,7 @@
 //
 
 #include "ImuDispatcher.h"
+using json = nlohmann::json;
 
 ImuDispatcher::ImuDispatcher(ImuSensor& imuSensor, std::istream& in, std::ostream& out) :
         imuSensor_(imuSensor),
@@ -28,7 +29,13 @@ void ImuDispatcher::dispatchCommand(std::stringstream& cmdString) {
     cmdString >> cmd;
     if(cmd == "getAcceleration") {
         auto data = imuSensor_.getAcceleration();
-        out_ << std::get<0>(data) << " " << std::get<1>(data) << " " << std::get<2>(data) << " " << std::endl;
+        auto accelJson = json{
+                {"Type", "Acceleration"},
+                {"X", std::get<0>(data)},
+                {"Y", std::get<1>(data)},
+                {"Z", std::get<2>(data)}
+        };
+        out_ << accelJson.dump() << std::endl;
     }
 }
 

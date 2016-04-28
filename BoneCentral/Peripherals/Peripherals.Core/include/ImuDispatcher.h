@@ -10,6 +10,7 @@
 #include <sstream>
 #include <thread>
 #include <atomic>
+#include <json.h>
 #include "ImuSensor.h"
 
 

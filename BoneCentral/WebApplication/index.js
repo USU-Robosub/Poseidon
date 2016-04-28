@@ -71,7 +71,7 @@ app.get('/turnOffImuSensor', function(req, res) {
 
 app.get('/getAcceleration', function(req, res) {
     imuReader.getAcceleration().done(function(accel) {
-        console.log("Acceleration: " + accel);
+        webLogger.log("Acceleration: " + accel);
     });
 	res.send('ran getAcceleration');
 });

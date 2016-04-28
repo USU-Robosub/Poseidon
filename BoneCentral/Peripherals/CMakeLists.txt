@@ -4,6 +4,7 @@ project(Peripherals)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror -Wextra -pedantic -lpthread")
 
 link_directories(../../Drivers/Build)
+include_directories(lib)
 
 add_subdirectory(Peripherals.Core)
 include_directories(${Core_Includes})
