@@ -60,12 +60,12 @@ app.post('/setOffset', function(req, res) {
 
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {
-    dispatcherSocket.write("turnOnImuSensor\n");
+	powerManager.turnOnImu();
 	res.send('turnOnImuSensor');
 });
 
 app.get('/turnOffImuSensor', function(req, res) {
-    dispatcherSocket.write("turnOffImuSensor\n");
+    powerManager.turnOffImu();
 	res.send('turnOffImuSensor');
 });
 

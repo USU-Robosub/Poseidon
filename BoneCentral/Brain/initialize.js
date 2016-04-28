@@ -8,6 +8,9 @@ var cppInterfaceFactory = new CppInterface.Factory();
 CppInterface.initializePeripherals();
 var powerManager = cppInterfaceFactory.createPowerManager();
 powerManager.turnOnEscs();
+powerManager.turnOnImu();
+
+
 
 var goThroughGate = require("./GoThroughGate");
 var bumpBuoy = require("./BumpBuoy");
@@ -22,6 +25,6 @@ Utilities.Wait(500).then(
 });
 
 
-
-
+powerManager.turnOffImu();
 powerManager.turnOffEscs();
+CppInterface.exitPeripherals();
