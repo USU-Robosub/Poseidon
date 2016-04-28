@@ -8,15 +8,27 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <thread>
+#include <atomic>
 #include "ImuSensor.h"
 
 
 class ImuDispatcher {
 public:
     ImuDispatcher(ImuSensor& imuSensor, std::istream& in, std::ostream& out);
+    void startListening();
+    void stopListening();
+    ~ImuDispatcher();
 
 private:
-    void dispatchCommand(std::stringstream& cmdString, std::ostream& out, ImuSensor& imuSensor);
+    void _runLoop();
+    void dispatchCommand(std::stringstream& cmdString);
+
+    std::thread thread_;
+    ImuSensor& imuSensor_;
+    std::istream& in_;
+    std::ostream& out_;
+    std::atomic_bool shouldExit_;
 };
 
 

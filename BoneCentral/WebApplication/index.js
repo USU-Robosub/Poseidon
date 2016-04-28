@@ -99,6 +99,7 @@ app.get('/getInternalPressure', function(req, res) {
 app.get('/exit', function(req, res) {
     dispatcherSocket.write("exit\n");
 	res.send('exit');
+    process.exit();
 });
 
 

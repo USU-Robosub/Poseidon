@@ -13,39 +13,28 @@ void App_Start(int argCount, char **arguments) {
     auto powerFactory = PowerFactoryAdaptor(i2CFactory, serialFactory);
     auto sensorFactory = SensorFactoryAdaptor(i2CFactory, serialFactory);
 
-    auto loggerStream = _getOutputStream(portMap, "loggerPort");
+    auto loggerStream = _getSocketStream(portMap, "loggerPort");
     auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream);
 
     ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
-    auto imuStream = _getIoStream(portMap, "imuPort");
+    auto imuStream = _getSocketStream(portMap, "imuPort");
     ImuDispatcher id(subSensors, *imuStream, *imuStream);
+    id.startListening();
 
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
 
-    auto dispatcherStream = _getInputStream(portMap, "thrusterPort");
+    auto dispatcherStream = _getSocketStream(portMap, "thrusterPort");
     CommandDispatcher cd(*dispatcherStream, tc, pm, *lights, subSensors);
     scriptLogger->info("Ready!");
     cd.runLoop();
+    id.stopListening();
+    imuStream->disconnect();
     std::cout << "\n- End of Line -\n";
 }
 
-std::ostream* _getOutputStream(std::map<std::string, int>& portMap, string portName) {
-    std::ostream* out;
-    if(portMap.count(portName)) out = new TcpClient(portMap[portName]);
-    else out = &(std::cout);
-    return out;
-}
-
-std::istream* _getInputStream(std::map<std::string, int>& portMap, string portName) {
-    std::istream* in;
-    if(portMap.count(portName)) in = new TcpClient(portMap[portName]);
-    else in = &(std::cin);
-    return in;
-}
-
-std::iostream* _getIoStream(std::map<std::string, int>& portMap, string portName) {
+TcpClient* _getSocketStream(std::map<std::string, int>& portMap, string portName) {
     return new TcpClient(portMap[portName]);
 }
 

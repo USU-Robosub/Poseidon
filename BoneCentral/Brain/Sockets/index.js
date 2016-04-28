@@ -8,8 +8,20 @@ var Net = require('net');
 module.exports.createSocket = function (port) {
     var passThrough = new Streams.PassThrough();
     Net.createServer(function (socket) {
-        socket.pipe(passThrough);
-        passThrough.pipe(socket);
+        _handleClient(socket, passThrough);
     }).listen(port);
     return passThrough;
+};
+
+var _handleClient = function (socket, passThrough) {
+    _pipeError(socket, passThrough);
+    socket.pipe(passThrough);
+    passThrough.pipe(socket);
+};
+
+var _pipeError = function (socket, passThrough) {
+    socket.on("error", function (err) {
+        if (err === "Error: read ECONNRESET") return;
+        passThrough.emit("error", err)
+    });
 };
