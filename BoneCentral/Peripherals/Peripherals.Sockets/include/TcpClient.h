@@ -15,12 +15,13 @@ class TcpClient : private std::streambuf, public iostream
 	static const unsigned int BUF_SIZE = 64;
 	char* outputBuffer_;
 	char* inputBuffer_;
-    TCPSocket *socket;
+    TCPSocket* socket;
 
 	int connect_(int port, std::string address);
 
 public:
 	TcpClient(int port, std::string address = "127.0.0.1");
+	void disconnect();
     int sync();
     int underflow();
 	virtual ~TcpClient();

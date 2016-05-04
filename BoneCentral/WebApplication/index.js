@@ -11,13 +11,15 @@ var dispatcherSocket = Sockets.createSocket(Ports.ThrusterPort);
 var thrustController = new CppInterface.ThrustController(dispatcherSocket);
 var headLights = new CppInterface.HeadLights(dispatcherSocket);
 var powerManager = new CppInterface.PowerManager(dispatcherSocket);
+var imuSocket = Sockets.createSocket(Ports.ImuPort);
+var imuReader = new CppInterface.ImuReader(imuSocket, imuSocket);
 
 var loggerSocket = Sockets.createSocket(Ports.LoggerPort);
 var webLogger = new WebLogger(console);
 new CppInterface.CppLogSource(loggerSocket, webLogger);
 
-var args = ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort];
-var peripherals = spawner.spawn('../Peripherals/Release/Peripherals', args);
+var args = ["--thrusterPort=" + Ports.ThrusterPort, "--imuPort=" + Ports.ImuPort, "--loggerPort=" + Ports.LoggerPort];
+spawner.spawn('../Peripherals/Release/Peripherals', args);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -54,7 +56,7 @@ app.post('/setOffset', function(req, res) {
 	var params = req.body;
 	thrustController.setOffset(params.front, params.back);
 	res.send('');
-})
+});
 
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {
@@ -68,33 +70,58 @@ app.get('/turnOffImuSensor', function(req, res) {
 });
 
 app.get('/getAcceleration', function(req, res) {
-    dispatcherSocket.write("getAcceleration\n");
+    imuReader.getAcceleration().done(function(accel) {
+        webLogger.info("Acceleration: " + JSON.stringify(accel));
+    });
 	res.send('ran getAcceleration');
 });
 
 app.get('/getAngularAcceleration', function(req, res) {
-    dispatcherSocket.write("getAngularAcceleration\n");
-	res.send('ran getAngularAcceleration');
+    imuReader.getAngularAcceleration().done(function(accel) {
+        webLogger.info("Angular Acceleration: " + JSON.stringify(accel));
+    });
+    res.send('ran getAngularAcceleration');
 });
 
 app.get('/getHeading', function(req, res) {
-    dispatcherSocket.write("getHeading\n");
+    imuReader.getHeading().done(function(heading) {
+        webLogger.info("Heading: " + JSON.stringify(heading));
+    });
 	res.send('ran getHeading');
 });
 
 app.get('/getInternalTemperature', function(req, res) {
-    dispatcherSocket.write("getInternalTemperature\n");
+    imuReader.getInternalTemperature().done(function(temperature) {
+        webLogger.info("Internal Temperature: " + JSON.stringify(temperature));
+    });
 	res.send('getInternalTemperature');
 });
 
 app.get('/getInternalPressure', function(req, res) {
-    dispatcherSocket.write("getInternalPressure\n");
+    imuReader.getInternalPressure().done(function(pressure) {
+        webLogger.info("Internal Pressure: " + JSON.stringify(pressure));
+    });
 	res.send('getInternalPressure');
+});
+
+app.get('/getExternalTemperature', function(req, res) {
+    imuReader.getExternalTemperature().done(function(temperature) {
+        webLogger.info("External Temperature: " + JSON.stringify(temperature));
+    });
+    res.send('getExternalTemperature');
+});
+
+app.get('/getExternalPressure', function(req, res) {
+    imuReader.getExternalPressure().done(function(pressure) {
+        webLogger.info("External Pressure: " + JSON.stringify(pressure));
+    });
+    res.send('getExternalPressure');
 });
 
 app.get('/exit', function(req, res) {
     dispatcherSocket.write("exit\n");
 	res.send('exit');
+    process.exit();
 });
 
 

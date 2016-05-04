@@ -8,14 +8,14 @@
 #include <iostream>
 #include <ThrustController.h>
 #include <CommandDispatcher.h>
+#include <ImuDispatcher.h>
 #include "ScriptLogger.h"
 #include "PowerFactoryAdaptor.h"
 #include "SensorFactoryAdaptor.h"
 #include <TcpClient.h>
 #include <map>
 
-std::ostream* _getOutputStream(std::map<std::string, int>& portMap, string portName);
-std::istream* _getInputStream(std::map<std::string, int>& portMap, string portName);
+TcpClient* _getSocketStream(std::map<std::string, int>& portMap, string portName);
 std::map<std::string, int> _createPortMap(int argCount, char** arguments);
 std::pair<std::string, int> _getPort(char* portString);
 
