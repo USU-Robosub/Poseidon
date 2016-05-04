@@ -3,12 +3,12 @@
 // consider passing in parameters for color
 GateDetector::GateDetector() : Capture()
 {
-    _lowHue = 91;
-    _highHue = 179;
-    _lowSaturation = 61;
-    _highSaturation = 145;
-    _lowValue = 116;
-    _highValue = 255;
+    _lowHue = 0;
+    _highHue = 19;
+    _lowSaturation = 204;
+    _highSaturation = 255;
+    _lowValue = 0;
+    _highValue = 155;
 
     for(int i = 0; i < QUEUE_SIZE; i++){
         _leftXs.push_back(0);
@@ -25,6 +25,14 @@ void GateDetector::process(cv::Mat img)
 
     cv::inRange(grayImg, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), thresholdedImg);
 
+    //morphological opening (removes small objects from the foreground)
+    cv::erode(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) ); 
+
+    //morphological closing (removes small holes from the foreground)
+    cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) ); 
+    cv::erode(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+
     cv::Mat edgesImg, cdst;
     std::vector<cv::Vec4i> lines;
 
@@ -32,7 +40,7 @@ void GateDetector::process(cv::Mat img)
 
     cv::cvtColor(edgesImg, cdst, CV_GRAY2BGR);
 
-    cv::HoughLinesP(edgesImg, lines, 1, CV_PI/180, 1, 100, 100);
+    cv::HoughLinesP(edgesImg, lines, 1, CV_PI/180, 50, 100, 50);
     if(lines.size() > 0)
     {
         std::cout << lines.size() << std::endl;
@@ -43,10 +51,10 @@ void GateDetector::process(cv::Mat img)
         }
     }
 
-    cv::imwrite("thresh.jpg", thresholdedImg);
-    cv::imwrite("lines.jpg", cdst);
-    //cv::imshow("lines", cdst);
-    //cv::waitKey(30);
+    //cv::imwrite("thresh.jpg", thresholdedImg);
+    //cv::imwrite("lines.jpg", cdst);
+    cv::imshow("lines", cdst);
+    cv::waitKey(30);
 }
 
 void GateDetector::handleInput(int command)
