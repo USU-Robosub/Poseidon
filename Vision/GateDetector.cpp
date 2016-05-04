@@ -23,31 +23,40 @@ void GateDetector::process(cv::Mat img)
     cv::Mat grayImg = Capture::grayscale(img);
     cv::Mat thresholdedImg;
 
+    // Only considers pixels in the correct color range
     cv::inRange(grayImg, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), thresholdedImg);
 
-    //morphological opening (removes small objects from the foreground)
+    // Morphological opening (removes small objects from the foreground)
     cv::erode(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
     cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) ); 
 
-    //morphological closing (removes small holes from the foreground)
+    // Morphological closing (removes small holes from the foreground)
     cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) ); 
     cv::erode(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
 
+    
     cv::Mat edgesImg, cdst;
     std::vector<cv::Vec4i> lines;
 
-    cv::Canny(thresholdedImg, edgesImg, 50, 200, 3); // detects edges (not necessarily lines)
+    // Detect edges
+    cv::Canny(thresholdedImg, edgesImg, 50, 200, 3);
 
     cv::cvtColor(edgesImg, cdst, CV_GRAY2BGR);
 
-    cv::HoughLinesP(edgesImg, lines, 1, CV_PI/180, 50, 100, 50);
+    cv::HoughLinesP(edgesImg, lines, 1, CV_PI/180, 50, 100, 10);
     if(lines.size() > 0)
     {
-        std::cout << lines.size() << std::endl;
+        //std::cout << lines.size() << std::endl;
         for( size_t i = 0; i < lines.size(); i++ )
         {
-            cv::Vec4i l = lines[i];
-            cv::line( cdst, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 3, CV_AA);
+            cv::Vec4i line = lines[i];
+            if(std::abs(line[0] - line[2]) <= 25)
+            {
+                std::cout << "WIDTH: " << frameWidth << " HEIGHT: " << frameHeight << std::endl;
+                std::cout << "x1: " << convertXCoordinate(line[0]) << " y1: " << convertYCoordinate(line[1]) << std::endl;
+                std::cout << "x2: " << convertXCoordinate(line[2]) << " y2: " << convertYCoordinate(line[3]) << std::endl;
+                cv::line( cdst, cv::Point(line[0], line[1]), cv::Point(line[2], line[3]), cv::Scalar(0,0,255), 3, CV_AA);
+            }
         }
     }
 

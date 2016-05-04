@@ -5,6 +5,8 @@ Capture::Capture() { }
 void Capture::startRecord()
 {
     _capture.open(0);
+    frameWidth = _capture.get(CV_CAP_PROP_FRAME_WIDTH);
+    frameHeight = _capture.get(CV_CAP_PROP_FRAME_HEIGHT);
 
     while (keepRunning) {
         _capture >> frame;
@@ -28,7 +30,19 @@ void Capture::startThreads()
 
 void Capture::process(cv::Mat img)
 {
-    std::cout << "In parent" << std::endl;
+    std::cout << "In base class, not doing anything" << std::endl;
+}
+
+// We decided to put the origin at the middle of the camera to make it easier for the brain
+// This converts an absolute x-coordinate to a relative one based on the camera resolution
+int Capture::convertXCoordinate(int x)
+{
+    return x - frameWidth / 2;
+}
+
+int Capture::convertYCoordinate(int y)
+{
+    return (y - frameHeight / 2) * -1;
 }
 
 cv::Mat Capture::grayscale(cv::Mat img)
