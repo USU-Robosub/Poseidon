@@ -1,6 +1,6 @@
-[submodule "Drivers"]
+[submodule "Libraries/Drivers"]
 	path = Libraries/Drivers
-	url = https://github.com/USU-Robosub/Drivers
-[submodule "GoogleTest"]
-	path = Libraries/GoogleTest
+	url = https://github.com/USU-Robosub/Drivers.git
+[submodule "Libraries/googletest"]
+	path = Libraries/googletest
 	url = https://github.com/google/googletest.git
