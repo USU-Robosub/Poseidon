@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(Peripherals.I2CAdaptors)
 
-get_filename_component(Drivers_Path "../../../Drivers/Include" ABSOLUTE)
+get_filename_component(Drivers_Path "../../../Libraries/Drivers/Include" ABSOLUTE)
 set(I2CAdaptor_Includes
         "${Drivers_Path}/Interfaces "
         "${Drivers_Path}/Registers "
