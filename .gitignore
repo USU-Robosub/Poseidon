@@ -18,3 +18,7 @@ CMakeCache.txt
 
 # NPM
 node_modules/
+
+# Submodules
+Drivers/
+googletest/
