@@ -21,6 +21,7 @@ class TcpClient : private std::streambuf, public iostream
 
 public:
 	TcpClient(int port, std::string address = "127.0.0.1");
+	void disconnect();
     int sync();
     int underflow();
 	virtual ~TcpClient();
