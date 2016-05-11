@@ -10,6 +10,7 @@
 
 Release/
 Debug/
+Build/
 
 #cmake-generated files#
 .cmake
@@ -17,3 +18,7 @@ CMakeCache.txt
 
 # NPM
 node_modules/
+
+# Submodules
+Drivers/
+googletest/
