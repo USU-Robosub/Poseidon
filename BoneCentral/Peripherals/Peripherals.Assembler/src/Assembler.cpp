@@ -2,7 +2,6 @@
 // Created by Nathan Copier on 11/10/2015.
 //
 
-#include <ImuDispatcher.h>
 #include "Assembler.h"
 
 void App_Start(int argCount, char **arguments) {
@@ -18,17 +17,15 @@ void App_Start(int argCount, char **arguments) {
 
     ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
-    auto dispatcherStream = _getSocketStream(portMap, "dispatcherPort");
-    ImuDispatcher id(subSensors, dispatcherStream ? *dispatcherStream : std::cin, dispatcherStream ? *dispatcherStream : std::cout);
-    id.startListening();
-
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
 
-    CommandDispatcher cd( dispatcherStream ? *dispatcherStream : std::cin, tc, pm, *lights);
+    auto dispatcherStream = _getSocketStream(portMap, "dispatcherPort");
+    auto inputStream = dispatcherStream ? *dispatcherStream : std::cin;
+    auto outputStream = dispatcherStream ? *dispatcherStream : std::cout;
+    CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights);
     scriptLogger->info("Ready!");
     cd.runLoop();
-    id.stopListening();
     dispatcherStream->disconnect();
     std::cout << "\n- End of Line -\n";
 }
