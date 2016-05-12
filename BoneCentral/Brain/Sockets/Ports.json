@@ -1,5 +1,4 @@
 {
-  "ThrusterPort": 25564,
-  "LoggerPort": 25565,
-  "ImuPort": 25566
+  "DispatcherPort": 25564,
+  "LoggerPort": 25565
 }

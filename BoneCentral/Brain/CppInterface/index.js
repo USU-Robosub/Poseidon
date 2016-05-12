@@ -16,8 +16,7 @@ module.exports = {
     Factory: require("./Factory"),
     initializePeripherals: function () {
         var args = [
-            "--thrusterPort=" + Ports.ThrusterPort,
-            "--imuPort=" + Ports.ImuPort,
+            "--dispatcherPort=" + Ports.DispatcherPort,
             "--loggerPort=" + Ports.LoggerPort
         ];
         childProcess = Spawner.spawn("../../Peripherals/Release/Peripherals", args)

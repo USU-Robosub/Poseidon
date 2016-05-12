@@ -2,7 +2,6 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
-var Ports = require('../Brain/Sockets/Ports.json');
 var WebLogger = require('./WebLogger');
 var app = express();
 
@@ -16,8 +15,7 @@ var imuSensor = interfaceFactory.createImuSensor();
 var webLogger = new WebLogger(console);
 interfaceFactory.createCppLogSource(webLogger);
 
-var args = ["--thrusterPort=" + Ports.ThrusterPort, "--imuPort=" + Ports.ImuPort, "--loggerPort=" + Ports.LoggerPort];
-spawner.spawn('../Peripherals/Release/Peripherals', args);
+CppInterface.initializePeripherals();
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());

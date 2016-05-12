@@ -18,19 +18,18 @@ void App_Start(int argCount, char **arguments) {
 
     ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
-    auto imuStream = _getSocketStream(portMap, "imuPort");
-    ImuDispatcher id(subSensors, imuStream ? *imuStream : std::cin, imuStream ? *imuStream : std::cout);
+    auto dispatcherStream = _getSocketStream(portMap, "dispatcherPort");
+    ImuDispatcher id(subSensors, dispatcherStream ? *dispatcherStream : std::cin, dispatcherStream ? *dispatcherStream : std::cout);
     id.startListening();
 
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
 
-    auto dispatcherStream = _getSocketStream(portMap, "thrusterPort");
     CommandDispatcher cd( dispatcherStream ? *dispatcherStream : std::cin, tc, pm, *lights);
     scriptLogger->info("Ready!");
     cd.runLoop();
     id.stopListening();
-    imuStream->disconnect();
+    dispatcherStream->disconnect();
     std::cout << "\n- End of Line -\n";
 }
 
