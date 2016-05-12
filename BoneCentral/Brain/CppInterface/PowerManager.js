@@ -20,6 +20,10 @@ module.exports = (function(){
         this._cmdOut.write("turnOffImuSensor\n");
     };
 
+    PowerManager.prototype.exit = function () {
+        this._cmdOut.write("exit\n");
+    };
+
     return PowerManager;
 
 })();

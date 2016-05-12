@@ -2,21 +2,19 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
-var Sockets = require('../Brain/Sockets');
 var Ports = require('../Brain/Sockets/Ports.json');
 var WebLogger = require('./WebLogger');
 var app = express();
 
-var dispatcherSocket = Sockets.createSocket(Ports.ThrusterPort);
-var thrustController = new CppInterface.ThrustController(dispatcherSocket);
-var headLights = new CppInterface.HeadLights(dispatcherSocket);
-var powerManager = new CppInterface.PowerManager(dispatcherSocket);
-var imuSocket = Sockets.createSocket(Ports.ImuPort);
-var imuSensor = new CppInterface.ImuSensor(imuSocket, imuSocket);
+var interfaceFactory = new CppInterface.Factory();
 
-var loggerSocket = Sockets.createSocket(Ports.LoggerPort);
+var thrustController = interfaceFactory.createThrustController();
+var headLights = interfaceFactory.createHeadlights();
+var powerManager = interfaceFactory.createPowerManager();
+var imuSensor = interfaceFactory.createImuSensor();
+
 var webLogger = new WebLogger(console);
-new CppInterface.CppLogSource(loggerSocket, webLogger);
+interfaceFactory.createCppLogSource(webLogger);
 
 var args = ["--thrusterPort=" + Ports.ThrusterPort, "--imuPort=" + Ports.ImuPort, "--loggerPort=" + Ports.LoggerPort];
 spawner.spawn('../Peripherals/Release/Peripherals', args);
@@ -119,7 +117,7 @@ app.get('/getExternalPressure', function(req, res) {
 });
 
 app.get('/exit', function(req, res) {
-    dispatcherSocket.write("exit\n");
+	powerManager.exit();
 	res.send('exit');
     process.exit();
 });

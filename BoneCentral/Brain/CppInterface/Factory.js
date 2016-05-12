@@ -18,8 +18,8 @@ module.exports = (function() {
 
     function Factory() {}
 
-    Factory.prototype.createCppLogSource = function () {
-        return new CppLogSource(logSocket, console)
+    Factory.prototype.createCppLogSource = function (loggerOutput) {
+        return new CppLogSource(logSocket, loggerOutput)
     };
 
     Factory.prototype.createHeadlights = function () {

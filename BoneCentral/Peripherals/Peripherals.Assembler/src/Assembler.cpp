@@ -14,19 +14,19 @@ void App_Start(int argCount, char **arguments) {
     auto sensorFactory = SensorFactoryAdaptor(i2CFactory, serialFactory);
 
     auto loggerStream = _getSocketStream(portMap, "loggerPort");
-    auto scriptLogger = std::make_shared<ScriptLogger>(*loggerStream);
+    auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream ? *loggerStream : std::cout);
 
     ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
     auto imuStream = _getSocketStream(portMap, "imuPort");
-    ImuDispatcher id(subSensors, *imuStream, *imuStream);
+    ImuDispatcher id(subSensors, imuStream ? *imuStream : std::cin, imuStream ? *imuStream : std::cout);
     id.startListening();
 
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
 
     auto dispatcherStream = _getSocketStream(portMap, "thrusterPort");
-    CommandDispatcher cd(*dispatcherStream, tc, pm, *lights);
+    CommandDispatcher cd( dispatcherStream ? *dispatcherStream : std::cin, tc, pm, *lights);
     scriptLogger->info("Ready!");
     cd.runLoop();
     id.stopListening();
@@ -35,6 +35,7 @@ void App_Start(int argCount, char **arguments) {
 }
 
 TcpClient* _getSocketStream(std::map<std::string, int>& portMap, string portName) {
+    if(!portMap.count(portName)) return NULL;
     return new TcpClient(portMap[portName]);
 }
 
