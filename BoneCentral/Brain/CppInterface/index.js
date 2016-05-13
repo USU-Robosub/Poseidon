@@ -4,6 +4,7 @@
 
 var Spawner = require("child_process");
 var Ports = require("../Sockets/Ports.json");
+var Path = require("path");
 
 var childProcess = null;
 
@@ -19,7 +20,7 @@ module.exports = {
             "--dispatcherPort=" + Ports.DispatcherPort,
             "--loggerPort=" + Ports.LoggerPort
         ];
-        childProcess = Spawner.spawn("../../Peripherals/Release/Peripherals", args)
+        childProcess = Spawner.spawn(Path.resolve(__dirname, "../../Peripherals/Release/Peripherals"), args);
     },
     exitPeripherals: function () {
         // exit child process

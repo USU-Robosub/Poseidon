@@ -1,6 +1,5 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
 var WebLogger = require('./WebLogger');
 var app = express();
@@ -42,7 +41,7 @@ app.post('/goDirection', function(req, res) {
 });
 
 app.post('/faceDirection', function(req, res) {
-	thrustController.faceDirection(req.body.yaw)
+	thrustController.faceDirection(req.body.yaw);
 	res.send('');
 });
 

@@ -13,7 +13,7 @@ var Ports = require('../Sockets/Ports.json');
 module.exports = (function() {
 
     var logSocket = Sockets.createSocket(Ports.LoggerPort);
-    var dispatcherSocket = Sockets.createSocket(Ports.ThrusterPort);
+    var dispatcherSocket = Sockets.createSocket(Ports.DispatcherPort);
     var imuSocket = Sockets.createSocket(Ports.ImuPort);
 
     function Factory() {}

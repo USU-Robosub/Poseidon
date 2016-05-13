@@ -15,6 +15,7 @@
 #include <sstream>
 #include <tuple>
 #include <json.h>
+#include "ILogger.h"
 
 class CommandDispatcher {
 
