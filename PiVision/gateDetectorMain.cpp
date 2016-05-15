@@ -1,6 +1,6 @@
 #include "GateDetector.h"
 
-int main(int argc, char** argv) {
+int main(void) {
     GateDetector gd;
 
     gd.startThreads();
