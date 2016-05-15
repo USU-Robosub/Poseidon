@@ -11,3 +11,6 @@ make Peripherals
 
 cd ../../WebApplication
 npm install
+
+cd ../Brain
+npm install
