@@ -12,7 +12,7 @@
 
 class TcpClient : private std::streambuf, public iostream
 {
-	static const unsigned int BUF_SIZE = 64;
+	static const unsigned int BUF_SIZE = 256;
 	char* outputBuffer_;
 	char* inputBuffer_;
     TCPSocket *socket;

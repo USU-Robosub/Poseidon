@@ -14,7 +14,7 @@ var imuSensor = interfaceFactory.createImuSensor();
 var webLogger = new WebLogger(console);
 interfaceFactory.createCppLogSource(webLogger);
 
-CppInterface.initializePeripherals();
+CppInterface.Peripherals.initialize();
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -114,9 +114,9 @@ app.get('/getExternalPressure', function(req, res) {
 });
 
 app.get('/exit', function(req, res) {
-	powerManager.exit();
 	res.send('exit');
-    process.exit();
+	powerManager.exit();
+	process.exit();
 });
 
 

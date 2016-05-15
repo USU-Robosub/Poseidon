@@ -3,6 +3,7 @@
 //
 
 #include "CommandDispatcher.h"
+#include <unistd.h>
 using json = nlohmann::json;
 
 CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out, ImuSensor& imuSensor, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights)
@@ -26,6 +27,8 @@ void CommandDispatcher::runLoop() {
 void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     std::string cmd;
     cmdString >> cmd;
+    std::cout << "Received command: `" << cmd << "` with length: " << cmd.size() << std::endl;
+    sleep(2);
     if(cmd == "goDirection") goDirection(cmdString);
     else if(cmd == "faceDirection") faceDirection(cmdString);
     else if(cmd == "turnOnEscs") powerManager_.turnOnEscs();
@@ -88,6 +91,7 @@ void CommandDispatcher::_getAcceleration() {
 }
 
 void CommandDispatcher::_getAngularAcceleration() {
+    std::cout << "Fetching angular acceleration" << std::endl;
     auto data = imuSensor_.getAngularAcceleration();
     auto accelJson = json{
             {"Type", "AngularAcceleration"},
@@ -95,6 +99,7 @@ void CommandDispatcher::_getAngularAcceleration() {
             {"Y", std::get<1>(data)},
             {"Z", std::get<2>(data)}
     };
+    std::cout << accelJson << std::endl;
     out_ << accelJson << std::endl;
 }
 

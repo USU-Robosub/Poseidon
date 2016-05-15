@@ -21,7 +21,6 @@ void App_Start(int argCount, char **arguments) {
     auto lights = serialFactory.createHeadlights();
 
     auto dispatcherStream = _getSocketStream(portMap, "dispatcherPort");
-    std::cout << "Dispatcher stream: " << (void*)dispatcherStream << std::endl;
     std::istream& inputStream = dispatcherStream ? *dispatcherStream : std::cin;
     std::ostream& outputStream = dispatcherStream ? *dispatcherStream : std::cout;
     CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights);

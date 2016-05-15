@@ -5,7 +5,7 @@
 var CppInterface = require("./CppInterface");
 var Utilities = require("./Utilities");
 var cppInterfaceFactory = new CppInterface.Factory();
-CppInterface.initializePeripherals();
+CppInterface.Peripherals.initialize();
 var powerManager = cppInterfaceFactory.createPowerManager();
 powerManager.turnOnEscs();
 powerManager.turnOnImu();
@@ -27,4 +27,4 @@ Utilities.Wait(500).then(
 
 powerManager.turnOffImu();
 powerManager.turnOffEscs();
-CppInterface.exitPeripherals();
+powerManager.exit();

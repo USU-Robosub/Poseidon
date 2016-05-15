@@ -6,17 +6,18 @@ var Streams = require('stream');
 var Net = require('net');
 
 module.exports.createSocket = function (port) {
-    var passThrough = new Streams.PassThrough();
+    var input = new Streams.PassThrough();
+    var output = new Streams.PassThrough();
     Net.createServer(function (socket) {
-        _handleClient(socket, passThrough);
+        _handleClient(socket, input, output);
     }).listen(port);
-    return passThrough;
+    return {Input: input, Output: output};
 };
 
-var _handleClient = function (socket, passThrough) {
-    _pipeError(socket, passThrough);
-    socket.pipe(passThrough);
-    passThrough.pipe(socket);
+var _handleClient = function (socket, input, output) {
+    _pipeError(socket, output);
+    socket.pipe(output);
+    input.pipe(socket);
 };
 
 var _pipeError = function (socket, passThrough) {
