@@ -1,23 +1,20 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var spawner = require('child_process');
 var CppInterface = require('../Brain/CppInterface');
-var Sockets = require('../Brain/Sockets');
-var Ports = require('../Brain/Sockets/Ports.json');
 var WebLogger = require('./WebLogger');
 var app = express();
 
-var dispatcherSocket = Sockets.createSocket(Ports.ThrusterPort);
-var thrustController = new CppInterface.ThrustController(dispatcherSocket);
-var headLights = new CppInterface.HeadLights(dispatcherSocket);
-var powerManager = new CppInterface.PowerManager(dispatcherSocket);
+var interfaceFactory = new CppInterface.Factory();
 
-var loggerSocket = Sockets.createSocket(Ports.LoggerPort);
+var thrustController = interfaceFactory.createThrustController();
+var headLights = interfaceFactory.createHeadlights();
+var powerManager = interfaceFactory.createPowerManager();
+var imuSensor = interfaceFactory.createImuSensor();
+
 var webLogger = new WebLogger(console);
-new CppInterface.CppLogSource(loggerSocket, webLogger);
+interfaceFactory.createCppLogSource(webLogger);
 
-var args = ["--thrusterPort=" + Ports.ThrusterPort, "--loggerPort=" + Ports.LoggerPort];
-var peripherals = spawner.spawn('../Peripherals/Release/Peripherals', args);
+CppInterface.Peripherals.initialize();
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -44,7 +41,7 @@ app.post('/goDirection', function(req, res) {
 });
 
 app.post('/faceDirection', function(req, res) {
-	thrustController.faceDirection(req.body.yaw)
+	thrustController.faceDirection(req.body.yaw);
 	res.send('');
 });
 
@@ -54,47 +51,72 @@ app.post('/setOffset', function(req, res) {
 	var params = req.body;
 	thrustController.setOffset(params.front, params.back);
 	res.send('');
-})
+});
 
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {
-    dispatcherSocket.write("turnOnImuSensor\n");
+	powerManager.turnOnImu();
 	res.send('turnOnImuSensor');
 });
 
 app.get('/turnOffImuSensor', function(req, res) {
-    dispatcherSocket.write("turnOffImuSensor\n");
+    powerManager.turnOffImu();
 	res.send('turnOffImuSensor');
 });
 
 app.get('/getAcceleration', function(req, res) {
-    dispatcherSocket.write("getAcceleration\n");
+    imuSensor.getAcceleration().done(function(accel) {
+        webLogger.info("Acceleration: " + JSON.stringify(accel));
+    });
 	res.send('ran getAcceleration');
 });
 
 app.get('/getAngularAcceleration', function(req, res) {
-    dispatcherSocket.write("getAngularAcceleration\n");
-	res.send('ran getAngularAcceleration');
+    imuSensor.getAngularAcceleration().done(function(accel) {
+        webLogger.info("Angular Acceleration: " + JSON.stringify(accel));
+    });
+    res.send('ran getAngularAcceleration');
 });
 
 app.get('/getHeading', function(req, res) {
-    dispatcherSocket.write("getHeading\n");
+    imuSensor.getHeading().done(function(heading) {
+        webLogger.info("Heading: " + JSON.stringify(heading));
+    });
 	res.send('ran getHeading');
 });
 
 app.get('/getInternalTemperature', function(req, res) {
-    dispatcherSocket.write("getInternalTemperature\n");
+    imuSensor.getInternalTemperature().done(function(temperature) {
+        webLogger.info("Internal Temperature: " + JSON.stringify(temperature));
+    });
 	res.send('getInternalTemperature');
 });
 
 app.get('/getInternalPressure', function(req, res) {
-    dispatcherSocket.write("getInternalPressure\n");
+    imuSensor.getInternalPressure().done(function(pressure) {
+        webLogger.info("Internal Pressure: " + JSON.stringify(pressure));
+    });
 	res.send('getInternalPressure');
 });
 
+app.get('/getExternalTemperature', function(req, res) {
+    imuSensor.getExternalTemperature().done(function(temperature) {
+        webLogger.info("External Temperature: " + JSON.stringify(temperature));
+    });
+    res.send('getExternalTemperature');
+});
+
+app.get('/getExternalPressure', function(req, res) {
+    imuSensor.getExternalPressure().done(function(pressure) {
+        webLogger.info("External Pressure: " + JSON.stringify(pressure));
+    });
+    res.send('getExternalPressure');
+});
+
 app.get('/exit', function(req, res) {
-    dispatcherSocket.write("exit\n");
 	res.send('exit');
+	powerManager.exit();
+	process.exit();
 });
 
 

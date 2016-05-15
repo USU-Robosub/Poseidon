@@ -3,9 +3,16 @@
 //
 
 #include "CommandDispatcher.h"
+using json = nlohmann::json;
 
-CommandDispatcher::CommandDispatcher(std::istream& in, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights, ImuSensor& sensors)
-        : in_(in), thrustController_(thrustController), powerManager_(powerManager), lights_(lights), sensors_(sensors), shouldExit_(false) {}
+CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out, ImuSensor& imuSensor, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights)
+        : in_(in),
+          out_(out),
+          imuSensor_(imuSensor),
+          thrustController_(thrustController),
+          powerManager_(powerManager),
+          lights_(lights),
+          shouldExit_(false) {}
 
 void CommandDispatcher::runLoop() {
     while(!shouldExit_) {
@@ -26,17 +33,16 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "switchLights") lights_.switchLights();
     else if(cmd == "turnOnImu") powerManager_.turnOnImuSensor();
     else if(cmd == "turnOffImu") powerManager_.turnOffImuSensor();
-    // else if(cmd == "getAcceleration") sensors_.getAcceleration();
-    else if(cmd == "getAcceleration") printAcceleration();
-    // else if(cmd == "getAngularAcceleration") sensors_.getAngularAcceleration();
-    else if(cmd == "getAngularAcceleration") printAngularAcceleration();
-    // else if(cmd == "getHeading") sensors_.getHeading();
-    else if(cmd == "getHeading") printHeading();
-    else if(cmd == "getInternalTemperature") sensors_.getIntTemperature();
-    else if(cmd == "getInternalPressure") sensors_.getIntPressure();
     else if(cmd == "setForwardTrim") setForwardTrim(cmdString);
     else if(cmd == "setDiveTrim") setDiveTrim(cmdString);
     else if(cmd == "setDiveOffset") setDiveOffset(cmdString);
+    else if(cmd == "getAcceleration") _getAcceleration();
+    else if(cmd == "getAngularAcceleration") _getAngularAcceleration();
+    else if(cmd == "getHeading") _getHeading();
+    else if(cmd == "getInternalTemperature") _getInternalTemperature();
+    else if(cmd == "getInternalPressure") _getInternalPressure();
+    else if(cmd == "getExternalTemperature") _getExternalTemperature();
+    else if(cmd == "getExternalPressure") _getExternalPressure();
     else if(cmd == "exit") shouldExit_ = true;
 }
 
@@ -50,21 +56,6 @@ void CommandDispatcher::faceDirection(std::stringstream& cmdString) {
     float yaw;
     cmdString >> yaw;
     thrustController_.faceDirection(yaw);
-}
-
-void CommandDispatcher::printAcceleration() {
-    auto acceleration = sensors_.getAcceleration();
-    std::cout << std::get<0>(acceleration) << ' ' << std::get<1>(acceleration) << ' ' << std::get<2>(acceleration) << std::endl;
-}
-
-void CommandDispatcher::printAngularAcceleration() {
-    auto angularAcceleration = sensors_.getAngularAcceleration();
-    std::cout << std::get<0>(angularAcceleration) << ' ' << std::get<1>(angularAcceleration) << ' ' << std::get<2>(angularAcceleration) << std::endl;
-}
-
-void CommandDispatcher::printHeading() {
-    auto heading = sensors_.getHeading();
-    std::cout << std::get<0>(heading) << ' ' << std::get<1>(heading) << ' ' << std::get<2>(heading) << std::endl;
 }
 
 void CommandDispatcher::setForwardTrim(std::stringstream& cmdString) {
@@ -83,4 +74,58 @@ void CommandDispatcher::setDiveOffset(std::stringstream& cmdString) {
     float a, b;
     cmdString >> a >> b;
     thrustController_.setDiveOffset(a, b);
+}
+
+void CommandDispatcher::_getAcceleration() {
+    auto data = imuSensor_.getAcceleration();
+    auto accelJson = json{
+            {"Type", "Acceleration"},
+            {"X", std::get<0>(data)},
+            {"Y", std::get<1>(data)},
+            {"Z", std::get<2>(data)}
+    };
+    out_ << accelJson << std::endl;
+}
+
+void CommandDispatcher::_getAngularAcceleration() {
+    std::cout << "Fetching angular acceleration" << std::endl;
+    auto data = imuSensor_.getAngularAcceleration();
+    auto accelJson = json{
+            {"Type", "AngularAcceleration"},
+            {"X", std::get<0>(data)},
+            {"Y", std::get<1>(data)},
+            {"Z", std::get<2>(data)}
+    };
+    out_ << accelJson << std::endl;
+}
+
+void CommandDispatcher::_getHeading() {
+    auto data = imuSensor_.getHeading();
+    auto headingJson = json{
+            {"Type", "Heading"},
+            {"X", std::get<0>(data)},
+            {"Y", std::get<1>(data)}//,
+            //{"Z", std::get<2>(data)}
+    };
+    out_ << headingJson << std::endl;
+}
+
+void CommandDispatcher::_getInternalTemperature() {
+    auto data = imuSensor_.getIntTemperature();
+    out_ << json{{"Type", "InternalTemperature"},{"Value",data}} << std::endl;
+}
+
+void CommandDispatcher::_getInternalPressure() {
+    auto data = imuSensor_.getIntPressure();
+    out_ << json{{"Type", "InternalPressure"},{"Value",data}} << std::endl;
+}
+
+void CommandDispatcher::_getExternalTemperature() {
+    auto data = imuSensor_.getExtTemperature();
+    out_ << json{{"Type", "ExternalTemperature"},{"Value",data}} << std::endl;
+}
+
+void CommandDispatcher::_getExternalPressure() {
+    auto data = imuSensor_.getExtPressure();
+    out_ << json{{"Type", "ExternalPressure"},{"Value",data}} << std::endl;
 }

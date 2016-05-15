@@ -8,6 +8,6 @@ set(Assembler_Includes
 		"${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories(${Assembler_Includes})
 file(GLOB_RECURSE ASSEMBLER_FILES "src/*.cpp")
-add_library(Peripherals.Assembler ${ASSEMBLER_FILES})
+add_library(Peripherals.Assembler SHARED ${ASSEMBLER_FILES})
 target_link_libraries(Peripherals.Assembler Peripherals.I2CAdaptors Peripherals.SerialAdaptors Peripherals.Core Sockets)
 set(Assembler_Includes ${Assembler_Includes} PARENT_SCOPE)
