@@ -11,7 +11,7 @@ public:
     void startThreads();
 protected:
     virtual void process(cv::Mat img) = 0;
-    virtual void handleInput(int command);
+    virtual void handleInput(std::string command);
     void startInput();
     void startRecord();
     cv::Mat grayscale(cv::Mat img);

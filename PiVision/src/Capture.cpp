@@ -48,23 +48,22 @@ cv::Mat Capture::grayscale(cv::Mat img)
     return grayImg;
 }
 
-void Capture::handleInput(int command)
+void Capture::handleInput(std::string command)
 {
-    if(command == -1)
+    if(command.compare("quit") == 0)
     {
         keepRunning = false;
     }
 }
 
-// All of this code can be run from the main execution program as well, a pointer to the object just needs to be passed in
+// All of this code can be run from the main execution program as well, a pointer to the object would just need to be passed in
 void Capture::startInput()
 {
     // int exit = false;
-    int command;
+    std::string command;
     while(keepRunning){
         std::cin >> command; // will be replaced with socket commands
 
-        // Using int codes for now, will be more advanced in the future
         handleInput(command);
     }
 }
