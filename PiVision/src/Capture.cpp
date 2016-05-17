@@ -22,15 +22,10 @@ void Capture::startThreads()
     _captureThreads.push_back(std::thread(&Capture::startInput, this));
     _captureThreads.push_back(std::thread(&Capture::startRecord, this));
 
-    for(int i = 0; i < _captureThreads.size(); i++)
+    for(auto i = 0u; i < _captureThreads.size(); i++)
     {
         _captureThreads[i].join();
     }
-}
-
-void Capture::process(cv::Mat img)
-{
-    std::cout << "In base class, not doing anything" << std::endl;
 }
 
 // We decided to put the origin at the middle of the camera to make it easier for the brain
@@ -64,7 +59,7 @@ void Capture::handleInput(int command)
 // All of this code can be run from the main execution program as well, a pointer to the object just needs to be passed in
 void Capture::startInput()
 {
-    int exit = false;
+    // int exit = false;
     int command;
     while(keepRunning){
         std::cin >> command; // will be replaced with socket commands

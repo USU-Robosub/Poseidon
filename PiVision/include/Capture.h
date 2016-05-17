@@ -10,7 +10,7 @@ public:
     Capture();
     void startThreads();
 protected:
-    virtual void process(cv::Mat img);
+    virtual void process(cv::Mat img) = 0;
     virtual void handleInput(int command);
     void startInput();
     void startRecord();

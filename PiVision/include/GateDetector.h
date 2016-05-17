@@ -3,7 +3,6 @@
 class GateDetector : public Capture
 {
 public:
-    GateDetector();
     void process(cv::Mat img);
     void handleInput(int n);
 private:

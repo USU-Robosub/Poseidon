@@ -1,4 +1,4 @@
-#include "GateDetector.h"
+#include <GateDetector.h>
 
 int main(void) {
     GateDetector gd;
