@@ -73,7 +73,7 @@ void ThrustController::setStrafeTrim(float left, float right) {
     logger_->info(ss.str().c_str());
 
     strafeTrim.first = left;
-    strafetrim.second = right;
+    strafeTrim.second = right;
 }
 
 void ThrustController::setDiveTrim(float front, float back) {
