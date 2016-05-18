@@ -34,6 +34,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "turnOnImu") powerManager_.turnOnImuSensor();
     else if(cmd == "turnOffImu") powerManager_.turnOffImuSensor();
     else if(cmd == "setForwardTrim") setForwardTrim(cmdString);
+    else if(cmd == "setStrafeTrim") setStrafeTrim(cmdString);
     else if(cmd == "setDiveTrim") setDiveTrim(cmdString);
     else if(cmd == "setDiveOffset") setDiveOffset(cmdString);
     else if(cmd == "getAcceleration") _getAcceleration();
@@ -62,6 +63,12 @@ void CommandDispatcher::setForwardTrim(std::stringstream& cmdString) {
     float a, b;
     cmdString >> a >> b;
     thrustController_.setForwardTrim(a, b);
+}
+
+void CommandDispatcher::setStrafeTrim(std::stringstream& cmdString) {
+    float a, b;
+    cmdString >> a >> b;
+    thrustController_.setStrafeTrim(a, b);
 }
 
 void CommandDispatcher::setDiveTrim(std::stringstream& cmdString) {

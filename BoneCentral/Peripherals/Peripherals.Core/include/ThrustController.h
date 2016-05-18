@@ -19,6 +19,7 @@ public:
     void goDirection(float forward, float strafe, float dive);
     void faceDirection(float yaw, float dive = 0.0f);
     void setForwardTrim(float left, float right);
+    void setStrafeTrim(float left, float right);
     void setDiveTrim(float front, float back);
     void setDiveOffset(float front, float back);
     void killAllThruster();
