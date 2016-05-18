@@ -19,8 +19,8 @@ module.exports = (function(){
             "faceDirection " + yaw + " " + pitch + "\n";
         this._cmdOut.write(cmdString);
     };
-    
-    ThrustController.prototype.setOffset = function(front, back) {
+
+    ThrustController.prototype.setDiveOffset = function(front, back) {
         var cmdString = "setDiveOffset " + front + " " + back + "\n";
         this._cmdOut.write(cmdString);
     }
