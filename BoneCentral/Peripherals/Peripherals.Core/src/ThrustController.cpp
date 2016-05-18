@@ -67,7 +67,7 @@ void ThrustController::setForwardTrim(float left, float right) {
     forwardTrim.second = right;
 }
 
-void ThrustController::setForwardTrim(float left, float right) {
+void ThrustController::setStrafeTrim(float left, float right) {
     std::stringstream ss;
     ss << "Setting strafe trim: L " << left << " R " << right;
     logger_->info(ss.str().c_str());
