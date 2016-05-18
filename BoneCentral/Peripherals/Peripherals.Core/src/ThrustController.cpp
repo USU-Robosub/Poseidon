@@ -14,6 +14,8 @@ ThrustController::ThrustController(IThrusterFactory& thrusterFactory, std::share
     forwardTrim.second = 1;
     diveTrim.first = 1;
     diveTrim.second = 1;
+    strafeTrim.first = 1;
+    strafeTrim.second = 1;
 }
 
 void ThrustController::goDirection(float forward, float strafe, float dive) {
@@ -113,8 +115,8 @@ void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, Fl
     leftForwardThruster_->Thrust(forwardPair.first * forwardTrim.first);
     rightForwardThruster_->Thrust(forwardPair.second * forwardTrim.second);
 
-    leftStrafeThruster_->Thrust(strafePair.first);
-    rightStrafeThruster_->Thrust(strafePair.second);
+    leftStrafeThruster_->Thrust(strafePair.first * strafeTrim.first);
+    rightStrafeThruster_->Thrust(strafePair.second * strafeTrim.second);
 
     forwardDiveThruster_->Thrust(divePair.first * diveTrim.first);
     rearDiveThruster_->Thrust(divePair.second * diveTrim.second);

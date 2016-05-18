@@ -42,6 +42,7 @@ private:
     FloatPair forwardTrim;
     FloatPair diveTrim;
     FloatPair diveOffset;
+    FloatPair strafeTrim;
 
     FloatPair getReciprocalValues(float value);
     float getSafeOffset(float a, float b);
