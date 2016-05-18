@@ -55,11 +55,11 @@ app.post('/setDiveOffset', function(req, res) {
 
 // From setStrafeTrim
 
-app.post('/setStrafeTrim'. function(req, res) {
+app.post('/setStrafeTrim', function(req, res) {
 	var params = req.body;
 	thrustController.setStrafeTrim(params.left, params.right);
 	res.send('');
-})
+});
 
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {

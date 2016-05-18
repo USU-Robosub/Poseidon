@@ -25,6 +25,11 @@ module.exports = (function(){
         this._cmdOut.write(cmdString);
     }
 
+    ThrustController.prototype.setStrafeTrim = function(left, right) {
+        var cmdString = "setStrafeTrim " + left + " " + right + "\n";
+        this._cmdOut.write(cmdString);
+    }
+
     return ThrustController;
 
 })();
