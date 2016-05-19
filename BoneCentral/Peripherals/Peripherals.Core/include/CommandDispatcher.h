@@ -33,6 +33,7 @@ private:
     void faceDirection(std::stringstream& cmdString);
 
     void setForwardTrim(std::stringstream& cmdString);
+    void setStrafeTrim(std::stringstream& cmdString);
     void setDiveTrim(std::stringstream& cmdString);
     void setDiveOffset(std::stringstream& cmdString);
 

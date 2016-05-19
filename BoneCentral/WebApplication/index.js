@@ -47,9 +47,17 @@ app.post('/faceDirection', function(req, res) {
 
 // From diveOffset
 
-app.post('/setOffset', function(req, res) {
+app.post('/setDiveOffset', function(req, res) {
 	var params = req.body;
-	thrustController.setOffset(params.front, params.back);
+	thrustController.setDiveOffset(params.front, params.back);
+	res.send('');
+});
+
+// From setStrafeTrim
+
+app.post('/setStrafeTrim', function(req, res) {
+	var params = req.body;
+	thrustController.setStrafeTrim(params.left, params.right);
 	res.send('');
 });
 
