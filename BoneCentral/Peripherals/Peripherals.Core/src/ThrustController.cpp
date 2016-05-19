@@ -72,8 +72,8 @@ void ThrustController::setStrafeTrim(float left, float right) {
     ss << "Setting strafe trim: L " << left << " R " << right;
     logger_->info(ss.str().c_str());
 
-    strafeTrim.first = left;
-    strafeTrim.second = right;
+    strafeTrim.first = right;
+    strafeTrim.second = left;
 }
 
 void ThrustController::setDiveTrim(float front, float back) {
