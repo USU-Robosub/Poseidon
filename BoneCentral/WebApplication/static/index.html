@@ -115,9 +115,24 @@
 
 	<body>
 		<div>
-			<div style="width: 50%; float: left;">
+			<div style="width: 22%; float: left;">
+				<single-get-tag url='/turnOnEscs'></single-get-tag>
+				<single-get-tag url='/turnOffEscs'></single-get-tag>
 				<single-get-tag url='/turnOnImuSensor'></single-get-tag>
 				<single-get-tag url='/turnOffImuSensor'></single-get-tag>
+				<single-get-tag url='/headlight'></single-get-tag>
+				<post-tag url='/runScript' arguments='["scriptId"]' min="0" max="3" step="1"></post-tag>
+				<single-get-tag url='/exit'></single-get-tag>
+			</div>
+			<div style="width: 22%; float: left;">
+				<post-tag url='/goDirection' arguments='["forward", "strafe", "dive"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/faceDirection' arguments='["yaw"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/setForwardTrim' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/setStrafeTrim' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/setDiveTrim' arguments='["front", "back"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/setDiveOffset' arguments='["front", "back"]' min="-1" max="1" step="0.01"></post-tag>
+			</div>
+			<div style="width: 22%; float: left;">
 				<single-get-tag url='/getAcceleration'></single-get-tag>
 				<single-get-tag url='/getAngularAcceleration'></single-get-tag>
 				<single-get-tag url='/getHeading'></single-get-tag>
@@ -125,19 +140,8 @@
 				<single-get-tag url='/getInternalPressure'></single-get-tag>
 				<single-get-tag url='/getExternalTemperature'></single-get-tag>
 				<single-get-tag url='/getExternalPressure'></single-get-tag>
-				<single-get-tag url='/exit'></single-get-tag>
-				<single-get-tag url='/turnOnEscs'></single-get-tag>
-				<single-get-tag url='/turnOffEscs'></single-get-tag>
-				<single-get-tag url='/headlight'></single-get-tag>
 			</div>
-			<div style="width: 50%; float: right;">
-				<post-tag url='/goDirection' arguments='["forward", "strafe", "dive"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/faceDirection' arguments='["yaw"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/runScript' arguments='["scriptId"]' min="0" max="3" step="1"></post-tag>
-				<post-tag url='/setDiveOffset' arguments='["front", "back"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/setForwardTrim' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/setStrafeTrim' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/setDiveTrim' arguments='["front", "back"]' min="-1" max="1" step="0.01"></post-tag>
+			<div style="width: 33%; float: left;">
 				<get-tag url='/stdoutData'></get-tag>
 			</div>
 		</div>
