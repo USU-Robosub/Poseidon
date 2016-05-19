@@ -45,11 +45,11 @@ app.post('/faceDirection', function(req, res) {
 	res.send('');
 });
 
-// From diveOffset
+// From setForwardTrim
 
-app.post('/setDiveOffset', function(req, res) {
+app.post('/setForwardTrim', function(req, res) {
 	var params = req.body;
-	thrustController.setDiveOffset(params.front, params.back);
+	thrustController.setForwardTrim(params.left, params.right);
 	res.send('');
 });
 
@@ -58,6 +58,22 @@ app.post('/setDiveOffset', function(req, res) {
 app.post('/setStrafeTrim', function(req, res) {
 	var params = req.body;
 	thrustController.setStrafeTrim(params.left, params.right);
+	res.send('');
+});
+
+// From setDiveTrim
+
+app.post('/setDiveTrim', function(req, res) {
+	var params = req.body;
+	thrustController.setDiveTrim(params.front, params.back);
+	res.send('');
+});
+
+// From diveOffset
+
+app.post('/setDiveOffset', function(req, res) {
+	var params = req.body;
+	thrustController.setDiveOffset(params.front, params.back);
 	res.send('');
 });
 
