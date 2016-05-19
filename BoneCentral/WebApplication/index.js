@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var CppInterface = require('../Brain/CppInterface');
 var WebLogger = require('./WebLogger');
+var FileLogger = require('./FileLogger');
 var app = express();
 
 var interfaceFactory = new CppInterface.Factory();
@@ -11,7 +12,8 @@ var headLights = interfaceFactory.createHeadlights();
 var powerManager = interfaceFactory.createPowerManager();
 var imuSensor = interfaceFactory.createImuSensor();
 
-var webLogger = new WebLogger(console);
+var fileLogger = new FileLogger("./test.log");
+var webLogger = new WebLogger(fileLogger);
 interfaceFactory.createCppLogSource(webLogger);
 
 CppInterface.Peripherals.initialize();
