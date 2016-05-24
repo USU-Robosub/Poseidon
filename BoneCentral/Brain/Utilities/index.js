@@ -12,5 +12,8 @@ module.exports = {
         return waitDeferred.promise();
     },
 
-    Promise: $.Deferred
+    Promises: {
+        Deferred: $.Deferred,
+        WhenAll: $.when
+    }
 };
