@@ -14,9 +14,9 @@ module.exports = (function(){
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.faceDirection = function(yaw, pitch){
+    ThrustController.prototype.faceDirection = function(yaw, dive){
         var cmdString =
-            "faceDirection " + yaw + " " + pitch + "\n";
+            "faceDirection " + yaw + " " + dive + "\n";
         this._cmdOut.write(cmdString);
     };
 

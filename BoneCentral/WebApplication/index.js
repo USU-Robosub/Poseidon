@@ -43,7 +43,7 @@ app.post('/goDirection', function(req, res) {
 });
 
 app.post('/faceDirection', function(req, res) {
-	thrustController.faceDirection(req.body.yaw);
+	thrustController.faceDirection(req.body.yaw, req.body.dive);
 	res.send('');
 });
 
