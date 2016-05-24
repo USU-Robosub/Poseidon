@@ -54,9 +54,9 @@ void CommandDispatcher::goDirection(std::stringstream& cmdString) {
 }
 
 void CommandDispatcher::faceDirection(std::stringstream& cmdString) {
-    float yaw;
-    cmdString >> yaw;
-    thrustController_.faceDirection(yaw);
+    float yaw, dive;
+    cmdString >> yaw >> dive;
+    thrustController_.faceDirection(yaw, dive);
 }
 
 void CommandDispatcher::setForwardTrim(std::stringstream& cmdString) {
