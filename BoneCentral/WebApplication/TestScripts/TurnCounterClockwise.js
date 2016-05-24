@@ -3,6 +3,7 @@
  */
 
 var Utilities = require("../../Brain/Utilities");
+var Wait = Utilities.Wait;
 var timeDelay = 1000;
 
 module.exports = (function () {
@@ -10,8 +11,7 @@ module.exports = (function () {
         execute: function (thrustController, imuSensor, logger) {
             logger.info("Turning for " + timeDelay + " milliseconds.");
             thrustController.faceDirection(-0.2, 0);
-            var promise = Utilities.Wait(timeDelay);
-            promise.then(function () {
+            Wait(timeDelay).then(function () {
                 thrustController.faceDirection(0, 0);
             });
         }

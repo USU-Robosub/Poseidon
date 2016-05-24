@@ -4,6 +4,7 @@
 
 
 var Utilities = require("../../Brain/Utilities");
+var Wait = Utilities.Wait;
 var Promises = Utilities.Promises;
 
 module.exports = (function () {
@@ -17,7 +18,7 @@ var _thrustForward = function (timeDelay, thrustController, logger) {
     var promise = Promises.Deferred();
     logger.info("Thrusting forward for " + timeDelay + " milliseconds.");
     thrustController.goDirection(0.2, 0, 0);
-    Utilities.Wait(timeDelay).then(function () {
+    Wait(timeDelay).then(function () {
         logger.info("Stopping...");
         thrustController.goDirection(0, 0, 0);
         promise.resolve();
