@@ -10,9 +10,9 @@ var diveThrust = 0.2;
 module.exports = (function () {
     return {
         execute: function (thrustController, imuSensor, logger) {
-            Promises.WhenAll(function () {
-                return _dive(3000, thrustController, logger);
-            }).then(function () {
+            Promises.WhenAll(
+                _dive(3000, thrustController, logger)
+            ).then(function () {
                 return _thrustForward(3000, thrustController, logger);
             }).then(function () {
                 return _turnClockwise(2000, thrustController, logger)
