@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var fileSystem = require('fs');
 var path = require("path");
 var CppInterface = require('../Brain/CppInterface');
+var VisionInterface = require("../Brain/VisionInterface");
 var WebLogger = require('./WebLogger');
 var FileLogger = require('./FileLogger');
 var app = express();
@@ -19,6 +20,9 @@ var webLogger = new WebLogger(fileLogger);
 interfaceFactory.createCppLogSource(webLogger);
 
 CppInterface.Peripherals.initialize();
+
+var visionFactoy = new VisionInterface.Factory();
+var gateDetector = visionFactoy.createGateDetector(webLogger);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -164,6 +168,13 @@ app.get('/turnOffEscs', function(req, res) {
 app.get('/headlight', function(req, res) {
     headLights.toggleLights();
 	res.send('toggled Headlights');
+});
+
+app.get('/getPoleCoordinates', function (req, res) {
+    gateDetector.getPoleCoordinates().done(function (poleCoords) {
+        webLogger.info("Pole Coordinates: " + JSON.stringify(poleCoords));
+    });
+    res.send('getPoleCoordinates');
 });
 
 // Script Run
