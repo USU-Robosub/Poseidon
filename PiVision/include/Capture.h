@@ -4,6 +4,7 @@
 #include <vector>
 #include <chrono>
 #include <cmath>
+#include <algorithm>
 
 class Capture {
 public:

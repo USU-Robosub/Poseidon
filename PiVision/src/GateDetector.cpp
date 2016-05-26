@@ -1,16 +1,46 @@
 #include "GateDetector.h"
 
-void GateDetector::clusterPoles(std::vector<int> lineXCoords)
+int GateDetector::averageLines(std::vector<int> lineXCoords)
 {
-    // Basic code for now, will be replaced shortly
     float totalX = 0;
     for( size_t i = 0; i < lineXCoords.size(); i++ )    
     {
         totalX += lineXCoords[i];
     }
 
-    // super simple, but will be fixed soon
-    averageXCoord = totalX / lineXCoords.size();
+    return int(totalX / lineXCoords.size());
+}
+
+void GateDetector::clusterPoles(std::vector<int> lineXCoords)
+{
+    bool left = true;
+    std::vector<int> xPos;
+    std::sort(lineXCoords.begin(), lineXCoords.end());
+
+    if(lineXCoords.size() > 1)
+    {
+        xPos.push_back(lineXCoords[0]);
+        for(size_t i = 1; i < lineXCoords.size(); i++)
+        {
+            if(lineXCoords[i] - xPos[i - 1] > MAX_DIST || i == lineXCoords.size() - 1)
+            {
+                if(left)
+                {
+                    leftGateX = averageLines(xPos);
+                    left = false;
+                    xPos.clear();
+                }
+                else
+                {
+                    rightGateX = averageLines(xPos);
+                }
+            }
+
+            xPos.push_back(lineXCoords[i]);
+        }
+    }
+
+    averageXCoord = averageLines(lineXCoords);
 }
 
 void GateDetector::process(cv::Mat img)
@@ -42,7 +72,7 @@ void GateDetector::process(cv::Mat img)
     cv::HoughLinesP(edgesImg, lines, 1, CV_PI/180, 50, 100, 10);
     if(lines.size() > 0)
     {
-        std::vector<int> lineXCoords;
+        lineXCoords.clear();
         // Iterate through lines
         for( size_t i = 0; i < lines.size(); i++ )
         {
@@ -79,8 +109,22 @@ void GateDetector::process(cv::Mat img)
 void GateDetector::handleInput(std::string command)
 {
     Capture::handleInput(command);
+
     if(command.compare("GATE_center") == 0)
     {
         std::cout << averageXCoord << std::endl;
+    }
+    else if(command.compare("GATE_right") == 0)
+    {
+        std::cout << rightGateX << std::endl; // give you the avg right gate position
+    }
+    else if(command.compare("GATE_left") == 0)
+    {
+        std::cout << leftGateX << std::endl; // give the avg left gate position
+    }
+    else if(command.compare("GATE_allX") == 0)
+    {
+        // here you could send the line x coordinates through the socket
+        std::cout << lineXCoords.size() << std::endl;
     }
 }
