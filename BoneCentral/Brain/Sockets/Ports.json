@@ -1,4 +1,5 @@
 {
   "DispatcherPort": 25564,
-  "LoggerPort": 25565
+  "LoggerPort": 25565,
+  "VisionPort": 25566
 }

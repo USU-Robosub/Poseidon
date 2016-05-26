@@ -22,7 +22,9 @@ module.exports = (function () {
             var dataJson = JSON.parse(data.toString());
             if(dataJson.Type == "PoleCoordinates") self._poleCoordRequest.resolve(dataJson);
         }
-        catch (e) {}
+        catch (e) {
+            this._logger.warn("GateDetector failed to deserialize JSON!");
+        }
     };};
 
     GateDetector.prototype.GetPoleCoordinates = function () {
