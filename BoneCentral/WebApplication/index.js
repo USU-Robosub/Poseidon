@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var fileSystem = require('fs');
+var path = require("path");
 var CppInterface = require('../Brain/CppInterface');
 var WebLogger = require('./WebLogger');
 var FileLogger = require('./FileLogger');
@@ -170,12 +171,14 @@ app.post('/runScript', function(req, res) {
 	var scriptIndex = req.body.scriptId;
 	fileSystem.readdir("./TestScripts", function (err, fileNames) {
 		if(fileNames[scriptIndex]) {
-			var script = require( "./TestScripts/" + fileNames[scriptIndex]);
+            var filePath = path.resolve("TestScripts", fileNames[scriptIndex]);
+            if(require.cache[filePath]) delete require.cache[filePath];
+			var script = require(filePath);
             script.execute(thrustController, imuSensor, webLogger, headLights, powerManager);
-			res.send('ran script')
+			res.send('ran ' + fileNames[scriptIndex]);
 		}
 		else {
-			res.send('script not found')
+			res.send('script not found');
 		}
 	})
 });
