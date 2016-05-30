@@ -21,9 +21,8 @@ uint16_t buf[BUF_DIM_SIZE][BUF_SIZE]; // 4 buffers of 255 samples
 int ADC_Stage = 0;                    // 0 - off; 1 - active/busy; 2 - ready;
 int samples   = 20;                   // default 20 sample intervals
 float freq    = 25000;                // default 25kHz
-bool found    = false;
+bool sfound   = false;
 int threshold = 3276;                 // 80% or 4095 (max value)
-int bufIdxOff = 0;                    // store last found index
 int time1 = 0, time2 = 0, time3 = 0;  // time intervals
 
 const uint8_t DRDY = 24, ENDRX = 27;
@@ -188,7 +187,7 @@ ChannelBuffers SortDMA()
 void testForSound() {
   for(int i = 0; i < BUF_SIZE; i++) {
     if(buf[obufn][i] >= threshold) {
-      found = true;
+      sfound = true;
       bufIdxOff = (i/3)*3;  // get first channel index: i = 25; (i/3)*3 = 24;
       break;
     }
