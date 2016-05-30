@@ -32,7 +32,7 @@ const uint8_t SET_FREQ = 1;
 
 
 
-private void Transform(Complex[] input, int start, int length, float & res, float & maxMag)
+void Transform(Complex[] input, int start, int length, float & res, float & maxMag)
 {
     int N = length;
     float _res_ = 0;
@@ -58,7 +58,7 @@ private void Transform(Complex[] input, int start, int length, float & res, floa
 
 
 
-private bool Helper_Algorithm(Complex[] data, int start, int length)
+bool Helper_Algorithm(Complex[] data, int start, int length)
 {
     float test, result;
     Transform(data, start, length, &result, &test);
@@ -68,7 +68,7 @@ private bool Helper_Algorithm(Complex[] data, int start, int length)
 
 
 
-private void Algorithm(ChannelBuffers buffers)
+void Algorithm(ChannelBuffers buffers)
 {
     time1 = 0;
     time2 = 0;
