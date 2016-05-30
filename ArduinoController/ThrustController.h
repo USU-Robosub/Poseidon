@@ -10,11 +10,6 @@ enum ServoPin {
   BACK_DIVE = 6
 };
 
-uint16_t readShort() {
-  while(Serial.available() < 2) {}
-  return Serial.read() << 8 | Serial.read();
-}
-
 class ThrustController : public IController {
  private:
    const uint16_t IDLE = 1500;
