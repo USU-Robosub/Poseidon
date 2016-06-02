@@ -1,5 +1,17 @@
 #include "GateDetector.h"
 
+GateDetector::GateDetector() {
+    auto fin = std::fstream("PoleHsv.json");
+    json hsvJson;
+    fin >> hsvJson;
+    _lowHue = hsvJson["MinHue"];
+    _highHue = hsvJson["MaxHue"];
+    _lowSaturation = hsvJson["MinSaturation"];
+    _highSaturation = hsvJson["MaxSaturation"];
+    _lowValue = hsvJson["MinValue"];
+    _highValue = hsvJson["MaxValue"];
+}
+
 int GateDetector::averageLines(std::vector<int> lineXCoords)
 {
     float totalX = 0;
