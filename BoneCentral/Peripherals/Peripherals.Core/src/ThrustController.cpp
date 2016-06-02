@@ -14,6 +14,8 @@ ThrustController::ThrustController(IThrusterFactory& thrusterFactory, std::share
     forwardTrim.second = 1;
     diveTrim.first = 1;
     diveTrim.second = 1;
+    strafeTrim.first = 1;
+    strafeTrim.second = 1;
 }
 
 void ThrustController::goDirection(float forward, float strafe, float dive) {
@@ -65,6 +67,15 @@ void ThrustController::setForwardTrim(float left, float right) {
     forwardTrim.second = right;
 }
 
+void ThrustController::setStrafeTrim(float left, float right) {
+    std::stringstream ss;
+    ss << "Setting strafe trim: L " << left << " R " << right;
+    logger_->info(ss.str().c_str());
+
+    strafeTrim.first = right;
+    strafeTrim.second = left;
+}
+
 void ThrustController::setDiveTrim(float front, float back) {
     std::stringstream ss;
     ss << "Setting dive trim: F " << front << " B " << back;
@@ -113,8 +124,8 @@ void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, Fl
     leftForwardThruster_->Thrust(forwardPair.first * forwardTrim.first);
     rightForwardThruster_->Thrust(forwardPair.second * forwardTrim.second);
 
-    leftStrafeThruster_->Thrust(strafePair.first);
-    rightStrafeThruster_->Thrust(strafePair.second);
+    leftStrafeThruster_->Thrust(strafePair.first * strafeTrim.first);
+    rightStrafeThruster_->Thrust(strafePair.second * strafeTrim.second);
 
     forwardDiveThruster_->Thrust(divePair.first * diveTrim.first);
     rearDiveThruster_->Thrust(divePair.second * diveTrim.second);
