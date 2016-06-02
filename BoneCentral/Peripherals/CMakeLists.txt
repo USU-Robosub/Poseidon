@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror -Wextra -peda
 
 link_directories(../../Libraries/Drivers/Build)
 link_directories(../../Libraries/Sockets/Build)
-include_directories(lib)
+include_directories(../../Libraries/Json)
 
 add_subdirectory(Peripherals.Core)
 include_directories(${Core_Includes})
