@@ -15,15 +15,14 @@
 
 
 volatile int bufn,obufn;
-const uint8_t BUF_SIZE = 1024;        // 340 samples * 3 channels = ~1024
-const uint8_t BUF_DIM_SIZE = 2;
+const uint16_t BUF_SIZE     = 1024;   // 340 samples * 3 channels = ~1024
+const uint16_t BUF_DIM_SIZE = 2;
 uint16_t buf[BUF_DIM_SIZE][BUF_SIZE]; // 4 buffers of 255 samples
-int ADC_Stage = 0;                    // 0 - off; 1 - active/busy; 2 - ready;
-int samples   = 20;                   // default 20 sample intervals
-float freq    = 25000;                // default 25kHz
-bool found    = false;
-int threshold = 3276;                 // 80% or 4095 (max value)
-int bufIdxOff = 0;                    // store last found index
+int ADC_Stage               = 0;      // 0 - off; 1 - active/busy; 2 - ready;
+int samples                 = 20;     // default 20 sample intervals
+float freq                  = 25000;  // default 25kHz
+bool sfound                 = false;
+int threshold               = 1228;   // 80% of 4095 (max value)
 int time1 = 0, time2 = 0, time3 = 0;  // time intervals
 
 const uint8_t DRDY = 24, ENDRX = 27;
@@ -33,7 +32,30 @@ const uint8_t SET_FREQ = 1;
 
 
 
-private void Transform(Complex[] input, int start, int length, float & res, float & maxMag)
+class ChannelBuffers {
+public:
+  ChannelBuffers(int bufSize) {
+    size = bufSize;
+    channelA = new Complex[size];
+    channelB = new Complex[size];
+    channelC = new Complex[size];
+  }
+
+  ~ChannelBuffers() {
+    delete channelA;
+    delete channelB;
+    delete channelC;
+  }
+  
+  Complex * channelA;
+  Complex * channelB;
+  Complex * channelC;
+  int size;
+};
+
+
+
+void transform(Complex* input, int start, int length, float & res, float & maxMag)
 {
     int N = length;
     float _res_ = 0;
@@ -43,9 +65,11 @@ private void Transform(Complex[] input, int start, int length, float & res, floa
     for (int n = 0; n < N; n++)
     {
         Complex output;
-        for (int k = 0; k < N; k++)
-            output += input[k + start] *
-                Complex.FromPolarCoordinates(1, arg * (float)n * (float)k);
+        for (int k = 0; k < N; k++) {
+          Complex * polar = Complex::fromPolarCoordinates(1, arg * (float)n * (float)k);
+          polar->multiply(input[k + start]);
+          output.add(*polar);
+        }
 
         if (output.Magnitude() > maxMag)
             maxMag = (float)output.Magnitude();
@@ -59,17 +83,17 @@ private void Transform(Complex[] input, int start, int length, float & res, floa
 
 
 
-private bool Helper_Algorithm(Complex[] data, int start, int length)
+bool helper_Algorithm(Complex* data, int start, int length)
 {
-    float test, result;
-    Transform(data, start, length, &result, &test);
+    float test = 0, result = 0;
+    transform(data, start, length, result, test);
     test = test == 0 ? 1 : test * 0.8F;
     return result >= test;
 }
 
 
 
-private void Algorithm(ChannelBuffers buffers)
+void algorithm(ChannelBuffers buffers)
 {
     time1 = 0;
     time2 = 0;
@@ -87,36 +111,36 @@ private void Algorithm(ChannelBuffers buffers)
     {
         if (ch1_nfound)
         {
-            if (Helper_Algorithm(buffers.chA, cha_off, samples))
+            if (helper_Algorithm(buffers.channelA, cha_off, samples))
             {
                 found      = true;
                 ch1_nfound = false;
             }
             cha_off += samples;
             // handle overflow
-            if (ch1_nfound && cha_off + samples >= buffers.Size)
+            if (ch1_nfound && cha_off + samples >= buffers.size)
                 break;
         }
         if (ch2_nfound)
         {
-            if (Helper_Algorithm(buffers.chB, chb_off, samples))
+            if (helper_Algorithm(buffers.channelB, chb_off, samples))
             {
                 found      = true;
                 ch2_nfound = false;
             }
             chb_off += samples;
-            if (ch2_nfound && chb_off + samples >= buffers.Size)
+            if (ch2_nfound && chb_off + samples >= buffers.size)
                 break;
         }
         if (ch3_nfound)
         {
-            if (Helper_Algorithm(buffers.chC, chc_off, samples))
+            if (helper_Algorithm(buffers.channelC, chc_off, samples))
             {
                 found      = true;
                 ch3_nfound = false;
             }
             chc_off += samples;
-            if (ch3_nfound && chc_off + samples >= buffers.Size)
+            if (ch3_nfound && chc_off + samples >= buffers.size)
                 break;
         }
 
@@ -144,7 +168,7 @@ private void Algorithm(ChannelBuffers buffers)
 
 
 
-ChannelBuffers SortDMA()
+ChannelBuffers sortDMA()
 {
     ChannelBuffers buffers(BUF_SIZE * BUF_DIM_SIZE / 3);
 
@@ -154,30 +178,30 @@ ChannelBuffers SortDMA()
     do {
         for (j = 0; j < BUF_SIZE; j++)
         {
-            uint16_t value = buf[bufrdy][j];
+            uint16_t value = buf[obufn][j];
 
             uint8_t tag = (uint8_t)(value >> 12);
             Complex cval((value & 0x0FFF) / (float)0x0FFF, 0);
 
-            if (tag == 5 && c < buffers.Size)
+            if (tag == 5 && c < buffers.size)
             {
-                buffers.chC[c] = cval;
+                buffers.channelC[c] = cval;
                 c++;
             }
-            else if (tag == 6 && b < buffers.Size)
+            else if (tag == 6 && b < buffers.size)
             {
-                buffers.chB[b] = cval;
+                buffers.channelB[b] = cval;
                 b++;
             }
-            else if (tag == 7 && a < buffers.Size)
+            else if (tag == 7 && a < buffers.size)
             {
-                buffers.chA[a] = cval;
+                buffers.channelA[a] = cval;
                 a++;
             }
         }
 
         i++;
-        bufrdy = (bufrdy + 1) % BUF_DIM_SIZE;
+        obufn = (obufn + 1) % BUF_DIM_SIZE;
     } while (i < BUF_DIM_SIZE);
 
     return buffers;
@@ -185,11 +209,13 @@ ChannelBuffers SortDMA()
 
 
 
+const int CENTER_LINE = 2048; // ~4097 / 2
+
 void testForSound() {
   for(int i = 0; i < BUF_SIZE; i++) {
-    if(buf[obufn][i] >= threshold) {
-      found = true;
-      bufIdxOff = (i/3)*3;  // get first channel index: i = 25; (i/3)*3 = 24;
+    if(buf[obufn][i] >= (CENTER_LINE + threshold) ||
+       buf[obufn][i] <= (CENTER_LINE - threshold)) {
+      sfound = true;
       break;
     }
   }
@@ -200,7 +226,7 @@ void testForSound() {
 
 void softReset() {
   ADC->ADC_CR = 1;                  // software reset
-  sfound      = false
+  sfound      = false;
 }
 
 
@@ -224,29 +250,6 @@ void ADC_Handler() {
     }
   }
 }
-
-
-
-class ChannelBuffers {
-public:
-  ChannelBuffers(int bufSize) {
-    size = bufSize;
-    channelA = new Complex[size];
-    channelB = new Complex[size];
-    channelC = new Complex[size];
-  }
-
-  ~ChannelBuffers() {
-    delete channelA;
-    delete channelB;
-    delete channelC;
-  }
-  
-  Complex * channelA;
-  Complex * channelB;
-  Complex * channelC;
-  int size;
-};
 
 
 
@@ -287,6 +290,30 @@ public:
     freq = static_cast<float>(value);
     samples = (int)(500000.0 / freq);
   }
+
+
+
+  void printData() {
+    Serial.print("{\"State\":");
+    if(ADC_Stage == 0) {
+      Serial.print("\"activated\"");
+      configure();
+    }
+    else if(ADC_Stage == 1) {
+      Serial.print("\"busy\"");
+    }
+    else {
+      Serial.print("\"data\"");
+      ADC_Stage = 0;
+    }
+    Serial.print(",\"A\":\"");
+    Serial.print(time1);
+    Serial.print("\",\"B\":\"");
+    Serial.print(time2);
+    Serial.print("\",\"C\":\"");
+    Serial.print(time3);
+    Serial.println("\"}");
+  }
   
 
 
@@ -295,23 +322,7 @@ public:
     uint8_t process = Serial.read();
 
     if(process == ACTIVE_SENSOR) {
-      if(ADC_Stage == 0) {
-        Serial.println("activated");
-        configure();
-      }
-      else if(ADC_Stage == 1) {
-        Serial.println("busy");
-      }
-      else {
-        Serial.print("data[")
-        Serial.print(time1);
-        Serial.print(",");
-        Serial.print(time2);
-        Serial.print(",");
-        Serial.print(time3);
-        Serial.println("]");
-        ADC_Stage = 0;
-      }
+      printData();
     }
     else if(process == SET_FREQ) {
       uint16_t value = readShort();
@@ -326,6 +337,6 @@ public:
 
   void kill() {
     softReset();
-    ADC_stage = 0;
+    ADC_Stage = 0;
   }
 };

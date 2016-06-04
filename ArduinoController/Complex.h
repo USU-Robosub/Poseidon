@@ -17,7 +17,7 @@ public:
         return (float)sqrt(real*real + imaginary * imaginary);
     }
 
-    static Complex FromPolarCoordinates(float radius, float theta) {
+    static Complex* fromPolarCoordinates(float radius, float theta) {
 
         return new Complex(radius * cos(theta), radius * sin(theta));
     }
@@ -33,12 +33,22 @@ public:
         return first;
     }
 
-    friend Complex operator *(Complex first, const Complex& second) {
+    friend Complex* operator *(Complex first, const Complex& second) {
         return new Complex(
             (first.real * second.real     ) - (first.imaginary * second.imaginary),
             (first.real * second.imaginary) + (first.imaginary * second.real     ));
     }
 
+    void multiply(Complex second) {
+        real      = (real * second.real     ) - (imaginary * second.imaginary);
+        imaginary = (real * second.imaginary) + (imaginary * second.real     );
+    }
+
+    void add(Complex second) {
+      real      += second.real;
+      imaginary += second.imaginary;
+    }
+
     float real;
     float imaginary;
-}
+};
