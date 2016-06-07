@@ -2,8 +2,8 @@
 #include "IController.h"
 
 enum ServoPin {
-  LEFT_FORWARD = 11,
-  RIGHT_FORWARD = 10,
+  LEFT_FORWARD = 12,
+  RIGHT_FORWARD = 11,
   LEFT_STRAFE = 9,
   RIGHT_STRAFE = 8,
   FRONT_DIVE = 7,
