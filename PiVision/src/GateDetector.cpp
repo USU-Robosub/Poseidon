@@ -1,15 +1,9 @@
 #include "GateDetector.h"
 
+json readHsvJson();
+
 GateDetector::GateDetector() {
-    auto fin = std::fstream("PoleHsv.json");
-    json hsvJson;
-    fin >> hsvJson;
-    _lowHue = hsvJson["MinHue"];
-    _highHue = hsvJson["MaxHue"];
-    _lowSaturation = hsvJson["MinSaturation"];
-    _highSaturation = hsvJson["MaxSaturation"];
-    _lowValue = hsvJson["MinValue"];
-    _highValue = hsvJson["MaxValue"];
+    refreshHsv();
 }
 
 int GateDetector::averageLines(std::vector<int> lineXCoords)
@@ -139,4 +133,28 @@ void GateDetector::handleInput(std::string command)
         // here you could send the line x coordinates through the socket
         std::cout << lineXCoords.size() << std::endl;
     }
+    else if(command.compare("RefreshHsv") == 0) {
+        refreshHsv_();
+    }
+}
+
+void GateDetector::refreshHsv() {
+    setHsvJson(readHsvJson());
+}
+
+json readHsvJson() {
+    auto fin = std::fstream("PoleHsv.json");
+    json hsvJson;
+    fin >> hsvJson;
+    fin.close();
+    return hsvJson;
+}
+
+void GateDetector::setHsvValues_(json hsvJson) {
+    _lowHue = hsvJson["MinHue"];
+    _highHue = hsvJson["MaxHue"];
+    _lowSaturation = hsvJson["MinSaturation"];
+    _highSaturation = hsvJson["MaxSaturation"];
+    _lowValue = hsvJson["MinValue"];
+    _highValue = hsvJson["MaxValue"];
 }

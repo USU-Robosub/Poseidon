@@ -9,6 +9,7 @@ public:
     GateDetector();
     void process(cv::Mat img);
     void handleInput(std::string command);
+    void refreshHsv();
 
 private:
     void clusterPoles(std::vector<int> lineXCoords);
@@ -17,7 +18,9 @@ private:
     const int ANGLE = 25;
     const int MAX_DIST = 50;
     float averageXCoord = 0;
+
     // Used for finding the orange color, subject to change
+    void readHsvValues_(json hsvJson);
     int _lowHue = 0;
     int _highHue = 255;
     int _lowSaturation = 0;
