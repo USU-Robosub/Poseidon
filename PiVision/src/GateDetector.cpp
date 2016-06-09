@@ -39,6 +39,11 @@ void GateDetector::clusterPoles(std::vector<int> lineXCoords)
             xPos.push_back(lineXCoords[i]);
         }
     }
+    else
+    {
+        leftGateX = -1;
+        rightGateX = -1;
+    }
 
     averageXCoord = averageLines(lineXCoords);
 }

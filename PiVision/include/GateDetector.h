@@ -21,6 +21,6 @@ private:
     int _lowValue = 0;
     int _highValue = 255;
 
-    int rightGateX = 0;
-    int leftGateX = 0;
+    int rightGateX = -1;
+    int leftGateX = -1;
 };
