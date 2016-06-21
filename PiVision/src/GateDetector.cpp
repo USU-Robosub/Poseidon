@@ -58,12 +58,12 @@ void GateDetector::process(cv::Mat img)
 
     // Morphological opening (removes small objects from the foreground)
     cv::erode(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) ); 
+    cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
 
     // Morphological closing (removes small holes from the foreground)
-    cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) ); 
+    cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
     cv::erode(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    
+
     cv::Mat edgesImg, cdst;
     std::vector<cv::Vec4i> lines;
 
@@ -72,6 +72,32 @@ void GateDetector::process(cv::Mat img)
 
     // Simplify the color
     cv::cvtColor(edgesImg, cdst, CV_GRAY2BGR);
+
+    std::vector<std::vector<cv::Point>> contours;
+    std::vector<cv::Vec4i> hierarchy;
+
+    cv::findContours(thresholdedImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0,0));
+//    std::vector<cv::RotatedRect> rectangles;
+//    for(auto i = 0u; i < contours.size(); i++) {
+//        rectangles[i] = cv::minAreaRect(cv::Mat(contours[i]));
+//    }
+
+    std::vector<cv::RotatedRect> rectangles;
+
+    for(auto i = 0u; i < contours.size(); i++) {
+        auto rect = cv::minAreaRect(contours[i]);
+        if(rect.size.height > rect.size.width * 2) rectangles.push_back(rect);
+    }
+
+    std::cout << "Rectangle Count: " << rectangles.size() << std::endl;
+
+    for (auto j = 0u; j < rectangles.size(); ++j) {
+        auto rectangle = rectangles[j];
+        std::cout << "Rectangle Center: [" << rectangle.center.x << ", ";
+        std::cout << rectangle.center.y << "]" << std::endl;
+        std::cout << "Rectangle Size: [" << rectangle.size.width << ", ";
+        std::cout << rectangle.size.height << "]" << std::endl;
+    }
 
     // Find all lines of a certain length
     cv::HoughLinesP(edgesImg, lines, 1, CV_PI/180, 50, 100, 10);
@@ -105,7 +131,7 @@ void GateDetector::process(cv::Mat img)
     //cv::imwrite("lines.jpg", cdst);
 
     // If you want to show the image on screen (debugging only)
-    //cv::imshow("lines", cdst);
+    cv::imshow("lines", cdst);
 
     // Must stay in if you are debugging
     cv::waitKey(30);

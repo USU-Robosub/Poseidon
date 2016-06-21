@@ -12,8 +12,8 @@ void Capture::startRecord()
         _capture >> frame;
         // Add in something to make sure the camera recorded
         process(frame); // Run image processing on the frame
-        //cv::imshow("flow", frame); // Used for testing, but will be removed when running on Pi
-        //cv::waitKey(30); // Also a UI component, can be removed
+        cv::imshow("flow", frame); // Used for testing, but will be removed when running on Pi
+        cv::waitKey(30); // Also a UI component, can be removed
     }
 }
 
