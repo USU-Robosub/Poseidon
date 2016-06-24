@@ -23,25 +23,17 @@ void GateDetector::process(cv::Mat img)
     // Morphological closing (removes small holes from the foreground)
     cv::dilate(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
     cv::erode(thresholdedImg, thresholdedImg, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-
-    cv::Mat edgesImg, cdst;
-
-    // Detect edges
-    cv::Canny(thresholdedImg, edgesImg, 50, 200, 3);
-
-    // Simplify the color
-    cv::cvtColor(edgesImg, cdst, CV_GRAY2BGR);
+    cv::Canny(thresholdedImg, thresholdedImg, 50, 200, 3);
 
     std::vector<std::vector<cv::Point>> rawContours;
     std::vector<cv::Vec4i> hierarchy;
     cv::findContours(thresholdedImg, rawContours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0,0));
-    std::vector<ContourTuple> contours;
 
-    for (auto n = 0u; n < rawContours.size(); n++) {
-        auto currContour = rawContours[n];
-        auto xPair = getMinMaxX(currContour);
+    std::vector<ContourTuple> contours;
+    for (auto contour : rawContours) {
+        auto xPair = getMinMaxX(contour);
         if (xPair.first < 10 && xPair.second > frameWidth-10) continue;
-        auto contourTuple = std::make_tuple(xPair.first, xPair.second, currContour);
+        auto contourTuple = std::make_tuple(xPair.first, xPair.second, contour);
         contours.push_back(contourTuple);
     }
 
@@ -54,11 +46,11 @@ void GateDetector::process(cv::Mat img)
 
     int currMax = 0;
     std::vector<std::vector<cv::Point>> clusters;
-    for (auto k = 0u; k < contours.size(); k++) {
+    for (auto i = 0u; i < contours.size(); i++) {
         int minX, maxX;
         std::vector<cv::Point> contour;
-        std::tie(minX, maxX, contour) = contours[k];
-        if (k == 0 || minX > currMax) {
+        std::tie(minX, maxX, contour) = contours[i];
+        if (i == 0 || minX > currMax) {
             clusters.push_back(std::vector<cv::Point>());
         }
         for (auto m = 0u; m < contour.size(); m++) {
@@ -69,31 +61,43 @@ void GateDetector::process(cv::Mat img)
     }
 
     std::vector<cv::RotatedRect> rects;
-    auto largestArea = 0u;
-    for (auto l = 0u; l < clusters.size(); l++) {
+    for (auto cluster : clusters) {
         std::vector<cv::Point> hull;
-        cv::convexHull(cv::Mat(clusters[l]), hull);
+        cv::convexHull(cv::Mat(cluster), hull);
         auto rect = cv::minAreaRect(hull);
-        if (rect.size.area() > largestArea) largestArea = (unsigned int)rect.size.area();
         rects.push_back(rect);
     }
 
-    std::vector<cv::RotatedRect> poles;
-    poles_.clear();
-    for (auto n = 0u; n < rects.size(); n++) {
-        if (rects[n].size.area()*3 < largestArea) continue;
-        poles.push_back(rects[n]);
-        cv::Point2f points[4]; rects[n].points(points);
-        json pointsJson;
-        for (auto o = 0u; o < 4; o++) {
-            json pointJson = {{"X", points[o].x}, {"Y", points[o].y}};
-            pointsJson.push_back(pointJson);
+    auto largestArea = 0u;
+    for (auto rect : rects) {
+        if (rect.size.area() > largestArea) largestArea = (unsigned int)rect.size.area();
+    }
+
+    json poles;
+    for (auto rect : rects) {
+        if (rect.size.area()*3 < largestArea) continue;
+        cv::Point2f points[4]; rect.points(points);
+        json pole;
+        for (auto point : points) {
+            json pointJson;
+            pointJson["X"] = point.x;
+            pointJson["Y"] = point.y;
+            pole.push_back(pointJson);
         }
-        poles_.push_back(pointsJson);
-        cv::line(cdst, points[0], points[1], cv::Scalar(255,0,0));
-        cv::line(cdst, points[1], points[2], cv::Scalar(255,0,0));
-        cv::line(cdst, points[2], points[3], cv::Scalar(255,0,0));
-        cv::line(cdst, points[3], points[0], cv::Scalar(255,0,0));
+        poles.push_back(pole);
+    }
+
+    cv::Mat cdst;
+
+    // Simplify the color
+    cv::cvtColor(thresholdedImg, cdst, CV_GRAY2BGR);
+
+    for (auto pole : poles) {
+        for (auto j = 0u; j < 4; j++) {
+            auto pointA = cv::Point(pole[j]["X"], pole[j]["Y"]);
+            auto pointB = cv::Point(pole[(j+1)%4]["X"], pole[(j+1)%4]["Y"]);
+            cv::line(cdst, pointA, pointB, cv::Scalar(255,0,0));
+        }
     }
 
     // If you want to save images
@@ -105,6 +109,8 @@ void GateDetector::process(cv::Mat img)
 
     // Must stay in if you are debugging
     cv::waitKey(30);
+
+    poles_ = poles;
 }
 
 std::pair<int, int> getMinMaxX(std::vector<cv::Point> contour) {
