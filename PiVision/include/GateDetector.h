@@ -3,11 +3,8 @@
 #include <tuple>
 #include <json.h>
 #include <fstream>
+
 using json = nlohmann::json;
-
-struct Pole {
-
-};
 
 class GateDetector : public Capture
 {
@@ -19,8 +16,8 @@ public:
     void setHsvValues(json hsvJson);
 
 private:
-    // Used for finding the orange color, subject to change
     void readHsvValues_(json hsvJson);
+    cv::Mat thresholdImage(cv::Mat image);
     int _lowHue = 0;
     int _highHue = 255;
     int _lowSaturation = 0;
