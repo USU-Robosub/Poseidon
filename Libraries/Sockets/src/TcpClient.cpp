@@ -13,14 +13,17 @@ TcpClient::TcpClient(int port, std::string address) :
 	connect_(port, address);
 }
 
+void TcpClient::disconnect() {
+	if(socket != NULL) {
+		socket->disconnect();
+		socket = NULL;
+	}
+}
+
 
 
 TcpClient::~TcpClient() {
-	if(socket != NULL)
-	{
-	    socket->disconnect();
-		delete socket;
-	}
+	delete socket;
 }
 
 

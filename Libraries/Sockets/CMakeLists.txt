@@ -11,4 +11,3 @@ include_directories(${Socket_Includes})
 # Creates Shared Object Library
 file(GLOB_RECURSE SOCKET_FILES "src/*.cpp")
 add_library(Sockets SHARED ${SOCKET_FILES})
-# set(Socket_Includes ${Socket_Includes} PARENT_SCOPE)

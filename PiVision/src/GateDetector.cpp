@@ -1,8 +1,12 @@
 #include "GateDetector.h"
 
 typedef std::tuple<int, int, std::vector<cv::Point>> ContourTuple;
-
 std::pair<int, int> getMinMaxX(std::vector<cv::Point> contour);
+json readHsvJson();
+
+GateDetector::GateDetector() {
+    refreshHsv();
+}
 
 int GateDetector::averageLines(std::vector<int> lineXCoords)
 {
@@ -119,7 +123,7 @@ void GateDetector::process(cv::Mat img)
         std::vector<cv::Point> hull;
         cv::convexHull(cv::Mat(clusters[l]), hull);
         auto rect = cv::minAreaRect(hull);
-        if (rect.size.area() > largestArea) largestArea = rect.size.area();
+        if (rect.size.area() > largestArea) largestArea = (unsigned int)rect.size.area();
         rects.push_back(rect);
     }
 
@@ -206,4 +210,28 @@ void GateDetector::handleInput(std::string command)
         // here you could send the line x coordinates through the socket
         std::cout << lineXCoords.size() << std::endl;
     }
+    else if(command.compare("RefreshHsv") == 0) {
+        refreshHsv();
+    }
+}
+
+void GateDetector::refreshHsv() {
+    setHsvValues(readHsvJson());
+}
+
+json readHsvJson() {
+    auto fin = std::fstream("PoleHsv.json");
+    json hsvJson;
+    fin >> hsvJson;
+    fin.close();
+    return hsvJson;
+}
+
+void GateDetector::setHsvValues(json hsvJson) {
+    _lowHue = hsvJson["MinHue"];
+    _highHue = hsvJson["MaxHue"];
+    _lowSaturation = hsvJson["MinSaturation"];
+    _highSaturation = hsvJson["MaxSaturation"];
+    _lowValue = hsvJson["MinValue"];
+    _highValue = hsvJson["MaxValue"];
 }

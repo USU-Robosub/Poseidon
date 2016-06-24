@@ -14,16 +14,31 @@ module.exports = (function(){
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.faceDirection = function(yaw, pitch){
+    ThrustController.prototype.faceDirection = function(yaw, dive){
         var cmdString =
-            "faceDirection " + yaw + " " + pitch + "\n";
+            "faceDirection " + yaw + " " + dive + "\n";
         this._cmdOut.write(cmdString);
     };
-    
-    ThrustController.prototype.setOffset = function(front, back) {
+
+    ThrustController.prototype.setDiveOffset = function(front, back) {
         var cmdString = "setDiveOffset " + front + " " + back + "\n";
         this._cmdOut.write(cmdString);
-    }
+    };
+
+    ThrustController.prototype.setForwardTrim = function(left, right) {
+        var cmdString = "setForwardTrim " + left + " " + right + "\n";
+        this._cmdOut.write(cmdString);
+    };
+
+    ThrustController.prototype.setStrafeTrim = function(left, right) {
+        var cmdString = "setStrafeTrim " + left + " " + right + "\n";
+        this._cmdOut.write(cmdString);
+    };
+
+    ThrustController.prototype.setDiveTrim = function(front, back) {
+        var cmdString = "setDiveTrim " + front + " " + back + "\n";
+        this._cmdOut.write(cmdString);
+    };
 
     return ThrustController;
 

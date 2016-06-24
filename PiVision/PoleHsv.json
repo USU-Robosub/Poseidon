@@ -1,0 +1,8 @@
+{
+  "MinHue":0,
+  "MaxHue": 179,
+  "MinSaturation":0,
+  "MaxSaturation": 133,
+  "MinValue":0,
+  "MaxValue": 255
+}

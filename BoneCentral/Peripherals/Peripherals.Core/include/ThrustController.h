@@ -17,8 +17,9 @@ class ThrustController
 public:
     ThrustController(IThrusterFactory& thrusterFactory, std::shared_ptr<ILogger> logger);
     void goDirection(float forward, float strafe, float dive);
-    void faceDirection(float yaw, float dive = 0.0f);
+    void faceDirection(float yaw, float dive);
     void setForwardTrim(float left, float right);
+    void setStrafeTrim(float left, float right);
     void setDiveTrim(float front, float back);
     void setDiveOffset(float front, float back);
     void killAllThruster();
@@ -42,6 +43,7 @@ private:
     FloatPair forwardTrim;
     FloatPair diveTrim;
     FloatPair diveOffset;
+    FloatPair strafeTrim;
 
     FloatPair getReciprocalValues(float value);
     float getSafeOffset(float a, float b);
