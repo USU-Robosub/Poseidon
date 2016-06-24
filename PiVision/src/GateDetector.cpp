@@ -1,5 +1,9 @@
 #include "GateDetector.h"
 
+typedef std::tuple<int, int, std::vector<cv::Point>> ContourTuple;
+
+std::pair<int, int> getMinMaxX(std::vector<cv::Point> contour);
+
 int GateDetector::averageLines(std::vector<int> lineXCoords)
 {
     float totalX = 0;
@@ -73,31 +77,64 @@ void GateDetector::process(cv::Mat img)
     // Simplify the color
     cv::cvtColor(edgesImg, cdst, CV_GRAY2BGR);
 
-    std::vector<std::vector<cv::Point>> contours;
+    std::vector<std::vector<cv::Point>> rawContours;
     std::vector<cv::Vec4i> hierarchy;
+    cv::findContours(thresholdedImg, rawContours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0,0));
+    std::vector<ContourTuple> contours;
 
-    cv::findContours(thresholdedImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0,0));
-//    std::vector<cv::RotatedRect> rectangles;
-//    for(auto i = 0u; i < contours.size(); i++) {
-//        rectangles[i] = cv::minAreaRect(cv::Mat(contours[i]));
-//    }
-
-    std::vector<cv::RotatedRect> rectangles;
-
-    for(auto i = 0u; i < contours.size(); i++) {
-        auto rect = cv::minAreaRect(contours[i]);
-        if(rect.size.height > rect.size.width * 2) rectangles.push_back(rect);
+    for (auto n = 0u; n < rawContours.size(); n++) {
+        auto currContour = rawContours[n];
+        auto xPair = getMinMaxX(currContour);
+        if (xPair.first < 10 && xPair.second > frameWidth-10) continue;
+        auto contourTuple = std::make_tuple(xPair.first, xPair.second, currContour);
+        contours.push_back(contourTuple);
     }
 
-    std::cout << "Rectangle Count: " << rectangles.size() << std::endl;
+    std::sort(contours.begin(), contours.end(), [](ContourTuple left, ContourTuple right){
+        int leftVal, rightVal;
+        std::tie(leftVal, std::ignore, std::ignore) = left;
+        std::tie(rightVal, std::ignore, std::ignore) = right;
+        return leftVal < rightVal;
+    });
 
-    for (auto j = 0u; j < rectangles.size(); ++j) {
-        auto rectangle = rectangles[j];
-        std::cout << "Rectangle Center: [" << rectangle.center.x << ", ";
-        std::cout << rectangle.center.y << "]" << std::endl;
-        std::cout << "Rectangle Size: [" << rectangle.size.width << ", ";
-        std::cout << rectangle.size.height << "]" << std::endl;
+    int currMax = 0;
+    std::vector<std::vector<cv::Point>> clusters;
+    for (auto k = 0u; k < contours.size(); k++) {
+        int minX, maxX;
+        std::vector<cv::Point> contour;
+        std::tie(minX, maxX, contour) = contours[k];
+        if (k == 0 || minX > currMax) {
+            clusters.push_back(std::vector<cv::Point>());
+        }
+        for (auto m = 0u; m < contour.size(); m++) {
+            clusters[clusters.size()-1].push_back(contour[m]);
+        }
+        if(currMax < maxX) currMax = maxX;
+
     }
+
+    std::vector<cv::RotatedRect> rects;
+    auto largestArea = 0u;
+    for (auto l = 0u; l < clusters.size(); l++) {
+        std::vector<cv::Point> hull;
+        cv::convexHull(cv::Mat(clusters[l]), hull);
+        auto rect = cv::minAreaRect(hull);
+        if (rect.size.area() > largestArea) largestArea = rect.size.area();
+        rects.push_back(rect);
+    }
+
+    std::vector<cv::RotatedRect> poles;
+    for (auto n = 0u; n < rects.size(); n++) {
+        if (rects[n].size.area()*3 < largestArea) continue;
+        poles.push_back(rects[n]);
+        cv::Point2f points[4]; rects[n].points(points);
+        cv::line(cdst, points[0], points[1], cv::Scalar(255,0,0));
+        cv::line(cdst, points[1], points[2], cv::Scalar(255,0,0));
+        cv::line(cdst, points[2], points[3], cv::Scalar(255,0,0));
+        cv::line(cdst, points[3], points[0], cv::Scalar(255,0,0));
+    }
+
+    std::cout << "Pole Count: " << poles.size() << std::endl;
 
     // Find all lines of a certain length
     cv::HoughLinesP(edgesImg, lines, 1, CV_PI/180, 50, 100, 10);
@@ -135,6 +172,17 @@ void GateDetector::process(cv::Mat img)
 
     // Must stay in if you are debugging
     cv::waitKey(30);
+}
+
+std::pair<int, int> getMinMaxX(std::vector<cv::Point> contour) {
+    if (contour.size() == 0) return std::make_pair(-1,-1);
+    int minX = contour[0].x, maxX = contour[0].x;
+    for (auto i = 1u; i < contour.size(); i++) {
+            int currX = contour[i].x;
+            if (currX < minX) minX = currX;
+            else if (currX > maxX) maxX = currX;
+        }
+    return std::make_pair(minX, maxX);
 }
 
 void GateDetector::handleInput(std::string command)

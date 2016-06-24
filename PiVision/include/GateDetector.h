@@ -1,4 +1,10 @@
 #include "Capture.h"
+#include <utility>
+#include <tuple>
+
+struct Pole {
+
+};
 
 class GateDetector : public Capture
 {
