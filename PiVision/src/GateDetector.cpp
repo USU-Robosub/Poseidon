@@ -13,8 +13,9 @@ std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& cluster
 unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles);
 
 #ifdef DEBUG
-void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTuple>& contourTuples, PointClusters& clusters);
-void showRectangles(const json& poles, const cv::Mat& debugFeed);
+void showDebugFeed(cv::Mat thresholdedImg, json poles, std::vector<ContourTuple> contourTuples, PointClusters clusters,
+                   int frameWidth, int frameHeight);
+void showRectangles(json poles, cv::Mat debugFeed, int frameWidth, int frameHeight);
 void showContours(const std::vector<ContourTuple>& contourTuples, const cv::Mat& debugFeed);
 void showClusters(const PointClusters& clusters, const cv::Mat& debugFeed);
 #endif
@@ -56,7 +57,7 @@ void GateDetector::process(cv::Mat& img)
     auto poles = rectanglesToPoles_(rectangles);
     poles_ = poles;
 #ifdef DEBUG
-    showDebugFeed(thresholdedImg, poles_, contours, clusters);
+    showDebugFeed(thresholdedImg, poles_, contours, clusters, frameWidth, frameHeight);
 #endif
 }
 
@@ -191,14 +192,15 @@ void GateDetector::handleInput(std::string command) {
 }
 
 #ifdef DEBUG
-void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTuple>& contourTuples, PointClusters& clusters) {
+void showDebugFeed(cv::Mat thresholdedImg, json poles, std::vector<ContourTuple> contourTuples, PointClusters clusters,
+                   int frameWidth, int frameHeight) {
     cv::Mat debugFeed;
 
     // Simplify the color
     cvtColor(thresholdedImg, debugFeed, CV_GRAY2BGR);
     showContours(contourTuples, debugFeed);
     showClusters(clusters, debugFeed);
-    showRectangles(poles, debugFeed);
+    showRectangles(poles, debugFeed, frameWidth, frameHeight);
 
     // If you want to save images
     //cv::imwrite("thresh.jpg", thresholdedImg);
@@ -236,11 +238,11 @@ void showClusters(const PointClusters& clusters, const cv::Mat& debugFeed) {
     }
 }
 
-void showRectangles(const json& poles, const cv::Mat& debugFeed) {
+void showRectangles(json poles, cv::Mat debugFeed, int frameWidth, int frameHeight) {
     for (auto pole : poles) {
         for (auto i = 0u; i < 4; i++) {
-            auto pointA = cv::Point(pole[i]["X"], pole[i]["Y"]);
-            auto pointB = cv::Point(pole[(i + 1) % 4]["X"], pole[(i + 1) % 4]["Y"]);
+            auto pointA = cv::Point((int)pole[i]["X"]+frameWidth/2, -(int)pole[i]["Y"]+frameHeight/2);
+            auto pointB = cv::Point((int)pole[(i + 1) % 4]["X"]+frameWidth/2, -(int)pole[(i + 1) % 4]["Y"]+frameHeight/2);
             line(debugFeed, pointA, pointB, cv::Scalar(255, 0, 0));
         }
     }

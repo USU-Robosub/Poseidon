@@ -4,13 +4,12 @@ Capture::Capture() { }
 
 void Capture::startRecord()
 {
-    _capture.open(0);
+    _capture.open(1);
     frameWidth = (int)_capture.get(CV_CAP_PROP_FRAME_WIDTH);
     frameHeight = (int)_capture.get(CV_CAP_PROP_FRAME_HEIGHT);
 
     while (keepRunning) {
         _capture >> frame;
-        // Add in something to make sure the camera recorded
         process(frame); // Run image processing on the frame
 #ifdef DEBUG
         cv::imshow("flow", frame); // Used for testing, but will be removed when running on Pi
