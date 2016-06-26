@@ -10,14 +10,13 @@ class GateDetector : public Capture
 {
 public:
     GateDetector();
-    void process(cv::Mat img);
+    void process(cv::Mat& img);
     void handleInput(std::string command);
     void refreshHsv();
     void setHsvValues(json hsvJson);
 
 private:
-    void readHsvValues_(json hsvJson);
-    cv::Mat thresholdImage(cv::Mat image);
+    cv::Mat thresholdImage(cv::Mat& image);
     int _lowHue = 0;
     int _highHue = 255;
     int _lowSaturation = 0;

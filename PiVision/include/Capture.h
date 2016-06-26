@@ -11,7 +11,7 @@ public:
     Capture();
     void startThreads();
 protected:
-    virtual void process(cv::Mat img) = 0;
+    virtual void process(cv::Mat& img) = 0;
     virtual void handleInput(std::string command);
     void startInput();
     void startRecord();

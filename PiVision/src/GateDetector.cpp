@@ -6,17 +6,17 @@ typedef std::tuple<int, int, std::vector<cv::Point>> ContourTuple;
 
 json readHsvJson();
 
-std::vector<ContourTuple> findContoursInImage(cv::Mat thresholdedImg, int frameWidth);
-std::pair<int, int> getMinMaxX(std::vector<cv::Point> contour);
-void sortContours(std::vector<ContourTuple> contours);
-PointClusters clusterContours(std::vector<ContourTuple> contours);
-std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters clusters);
-json rectanglesToPoles(std::vector<cv::RotatedRect> rectangles);
-json rectangleToPole(cv::RotatedRect rectangle);
-unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect> rectangles);
+std::vector<ContourTuple> findContoursInImage(cv::Mat& thresholdedImg, int frameWidth);
+std::pair<int, int> getMinMaxX(std::vector<cv::Point>& contour);
+void sortContours(std::vector<ContourTuple>& contours);
+PointClusters clusterContours(std::vector<ContourTuple>& contours);
+std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& clusters);
+json rectanglesToPoles(std::vector<cv::RotatedRect>& rectangles);
+json rectangleToPole(cv::RotatedRect& rectangle);
+unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles);
 
 #ifdef DEBUG
-void showDebugFeed(cv::Mat thresholdedImg, json poles);
+void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTuple>& contourTuples, PointClusters& clusters);
 #endif
 
 GateDetector::GateDetector() {
@@ -44,7 +44,7 @@ void GateDetector::setHsvValues(json hsvJson) {
     _highValue = hsvJson["MaxValue"];
 }
 
-void GateDetector::process(cv::Mat img)
+void GateDetector::process(cv::Mat& img)
 {
     auto grayImg = Capture::grayscale(img);
     auto thresholdedImg = thresholdImage(grayImg);
@@ -55,11 +55,11 @@ void GateDetector::process(cv::Mat img)
     auto poles = rectanglesToPoles(rectangles);
     poles_ = poles;
 #ifdef DEBUG
-    showDebugFeed(thresholdedImg, poles_);
+    showDebugFeed(thresholdedImg, poles_, contours, clusters);
 #endif
 }
 
-cv::Mat GateDetector::thresholdImage(cv::Mat image) {
+cv::Mat GateDetector::thresholdImage(cv::Mat& image) {
     cv::Mat thresholdedImg;
 
     // Only considers pixels in the correct color range
@@ -76,7 +76,7 @@ cv::Mat GateDetector::thresholdImage(cv::Mat image) {
     return thresholdedImg;
 }
 
-std::vector<ContourTuple> findContoursInImage(cv::Mat thresholdedImg, int frameWidth) {
+std::vector<ContourTuple> findContoursInImage(cv::Mat& thresholdedImg, int frameWidth) {
     PointClusters rawContours;
     std::vector<cv::Vec4i> hierarchy;
     findContours(thresholdedImg, rawContours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
@@ -90,38 +90,38 @@ std::vector<ContourTuple> findContoursInImage(cv::Mat thresholdedImg, int frameW
     return contours;
 }
 
-std::pair<int, int> getMinMaxX(std::vector<cv::Point> contour) {
+std::pair<int, int> getMinMaxX(std::vector<cv::Point>& contour) {
     if (contour.size() == 0) return std::make_pair(-1,-1);
     int minX = contour[0].x, maxX = contour[0].x;
     for (auto i = 1u; i < contour.size(); i++) {
         int currX = contour[i].x;
-        if (currX < minX) minX = currX;
-        else if (currX > maxX) maxX = currX;
+        if (minX > currX) minX = currX;
+        if (maxX < currX) maxX = currX;
     }
     return std::make_pair(minX, maxX);
 }
 
-void sortContours(std::vector<ContourTuple> contours) {
-    sort(contours.begin(), contours.end(), [](ContourTuple left, ContourTuple right){
+void sortContours(std::vector<ContourTuple>& contours) {
+    std::sort(contours.begin(), contours.end(), [](ContourTuple left, ContourTuple right){
         int leftVal, rightVal;
-        tie(leftVal, std::ignore, std::ignore) = left;
-        tie(rightVal, std::ignore, std::ignore) = right;
+        std::tie(leftVal, std::ignore, std::ignore) = left;
+        std::tie(rightVal, std::ignore, std::ignore) = right;
         return leftVal < rightVal;
     });
 }
 
-PointClusters clusterContours(std::vector<ContourTuple> contours) {
-    int currMax = 0;
+PointClusters clusterContours(std::vector<ContourTuple>& contours) {
+    int currMax = -1;
     PointClusters clusters;
     for (auto i = 0u; i < contours.size(); i++) {
         int minX, maxX;
         std::vector<cv::Point> contour;
-        tie(minX, maxX, contour) = contours[i];
+        std::tie(minX, maxX, contour) = contours[i];
         if (i == 0 || minX > currMax) {
             clusters.push_back(std::vector<cv::Point>());
         }
-        for (auto m = 0u; m < contour.size(); m++) {
-            clusters[clusters.size()-1].push_back(contour[m]);
+        for (auto point : contour) {
+            clusters[clusters.size()-1].push_back(point);
         }
         if(currMax < maxX) currMax = maxX;
 
@@ -129,18 +129,18 @@ PointClusters clusterContours(std::vector<ContourTuple> contours) {
     return clusters;
 }
 
-std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters clusters) {
-    std::vector<cv::RotatedRect> rects;
+std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& clusters) {
+    std::vector<cv::RotatedRect> rectangles;
     for (auto cluster : clusters) {
         std::vector<cv::Point> hull;
         convexHull(cv::Mat(cluster), hull);
         auto rect = minAreaRect(hull);
-        rects.push_back(rect);
+        rectangles.push_back(rect);
     }
-    return rects;
+    return rectangles;
 }
 
-json rectanglesToPoles(std::vector<cv::RotatedRect> rectangles) {
+json rectanglesToPoles(std::vector<cv::RotatedRect>& rectangles) {
     auto largestArea = findAreaOfLargestRectangles(rectangles);
     json poles;
     for (auto rect : rectangles) {
@@ -151,7 +151,7 @@ json rectanglesToPoles(std::vector<cv::RotatedRect> rectangles) {
     return poles;
 }
 
-unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect> rectangles) {
+unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles) {
     auto largestArea = 0u;
     for (auto rect : rectangles) {
         if (rect.size.area() > largestArea) largestArea = (unsigned int)rect.size.area();
@@ -159,7 +159,7 @@ unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect> rectangles
     return largestArea;
 }
 
-json rectangleToPole(cv::RotatedRect rectangle) {
+json rectangleToPole(cv::RotatedRect& rectangle) {
     cv::Point2f points[4]; rectangle.points(points);
     json pole;
     for (auto point : points) {
@@ -171,28 +171,52 @@ json rectangleToPole(cv::RotatedRect rectangle) {
     return pole;
 }
 
-void GateDetector::handleInput(std::string command)
-{
+void GateDetector::handleInput(std::string command) {
     Capture::handleInput(command);
 
-    if(command.compare("getPoleCount") == 0)
-    {
+    if(command.compare("getPoleCount") == 0) {
         std::cout << poles_.size() << std::endl;
+    }
+
+    else if(command.compare("refreshHsv") == 0) {
+        refreshHsv();
     }
 }
 
 #ifdef DEBUG
-void showDebugFeed(cv::Mat thresholdedImg, json poles) {
+void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTuple>& contourTuples, PointClusters& clusters) {
     cv::Mat debugFeed;
 
     // Simplify the color
     cvtColor(thresholdedImg, debugFeed, CV_GRAY2BGR);
 
     for (auto pole : poles) {
-        for (auto j = 0u; j < 4; j++) {
-            auto pointA = cv::Point(pole[j]["X"], pole[j]["Y"]);
-            auto pointB = cv::Point(pole[(j + 1) % 4]["X"], pole[(j + 1) % 4]["Y"]);
-            line(debugFeed, pointA, pointB, cv::Scalar(255, 0, 0));
+        for (auto i = 0u; i < 4; i++) {
+            auto pointA = cv::Point(pole[i]["X"], pole[i]["Y"]);
+            auto pointB = cv::Point(pole[(i + 1) % 4]["X"], pole[(i + 1) % 4]["Y"]);
+            cv::line(debugFeed, pointA, pointB, cv::Scalar(255, 0, 0));
+        }
+    }
+
+    for (auto i = 0u; i < contourTuples.size(); i++) {
+        std::vector<cv::Point> contour;
+        int minX, maxX;
+        std::tie(minX, maxX, contour) = contourTuples[i];
+        if (contour.size() < 2) continue;
+        for (auto j = 1u; j < contour.size(); j++) {
+            auto point1 = contour[j];
+            auto point2 = contour[(j+1)%contour.size()];
+            cv::line(debugFeed, point1, point2, cv::Scalar(0,0,255));
+        }
+    }
+
+    for (auto cluster : clusters) {
+        std::vector<cv::Point> hull;
+        convexHull(cv::Mat(cluster), hull);
+        for (auto i = 0u; i < hull.size(); i++) {
+            auto point1 = hull[i];
+            auto point2 = hull[(i+1)%hull.size()];
+            cv::line(debugFeed, point1, point2, cv::Scalar(0,255,0));
         }
     }
 
