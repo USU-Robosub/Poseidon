@@ -10,8 +10,6 @@ std::pair<int, int> getMinMaxX(std::vector<cv::Point>& contour);
 void sortContours(std::vector<ContourTuple>& contours);
 PointClusters clusterContours(std::vector<ContourTuple>& contours);
 std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& clusters);
-json rectanglesToPoles(std::vector<cv::RotatedRect>& rectangles);
-json rectangleToPole(cv::RotatedRect& rectangle);
 unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles);
 
 #ifdef DEBUG
@@ -49,19 +47,19 @@ void GateDetector::setHsvValues(json hsvJson) {
 void GateDetector::process(cv::Mat& img)
 {
     auto grayImg = Capture::grayscale(img);
-    auto thresholdedImg = thresholdImage(grayImg);
+    auto thresholdedImg = thresholdImage_(grayImg);
     auto contours = findContoursInImage(thresholdedImg, frameWidth);
     sortContours(contours);
     auto clusters = clusterContours(contours);
     auto rectangles = findRectanglesAroundClusters(clusters);
-    auto poles = rectanglesToPoles(rectangles);
+    auto poles = rectanglesToPoles_(rectangles);
     poles_ = poles;
 #ifdef DEBUG
     showDebugFeed(thresholdedImg, poles_, contours, clusters);
 #endif
 }
 
-cv::Mat GateDetector::thresholdImage(cv::Mat& image) {
+cv::Mat GateDetector::thresholdImage_(cv::Mat& image) {
     cv::Mat thresholdedImg;
 
     // Only considers pixels in the correct color range
@@ -142,12 +140,12 @@ std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& cluster
     return rectangles;
 }
 
-json rectanglesToPoles(std::vector<cv::RotatedRect>& rectangles) {
+json GateDetector::rectanglesToPoles_(std::vector<cv::RotatedRect>& rectangles) {
     auto largestArea = findAreaOfLargestRectangles(rectangles);
-    json poles;
+    json poles = json::array();
     for (auto rect : rectangles) {
         if (rect.size.area()*3 < largestArea) continue;
-        json pole = rectangleToPole(rect);
+        auto pole = rectangleToPole_(rect);
         poles.push_back(pole);
     }
     return poles;
@@ -161,13 +159,14 @@ unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangle
     return largestArea;
 }
 
-json rectangleToPole(cv::RotatedRect& rectangle) {
+json GateDetector::rectangleToPole_(cv::RotatedRect& rectangle) {
     cv::Point2f points[4]; rectangle.points(points);
     json pole;
     for (auto point : points) {
-        json pointJson;
-        pointJson["X"] = point.x;
-        pointJson["Y"] = point.y;
+        auto pointJson = json{
+                {"X", convertXCoordinate((int)point.x)},
+                {"Y", convertYCoordinate((int)point.y)}
+        };
         pole.push_back(pointJson);
     }
     return pole;
@@ -176,12 +175,17 @@ json rectangleToPole(cv::RotatedRect& rectangle) {
 void GateDetector::handleInput(std::string command) {
     Capture::handleInput(command);
 
-    if(command.compare("getPoleCount") == 0) {
-        std::cout << poles_.size() << std::endl;
+    if(command.compare("getPoleCoordinates") == 0) {
+        auto poleCoords = json{
+                {"Type",  "PoleCoordinates"},
+                {"Poles", poles_}
+        };
+        std::cout << poleCoords << std::endl;
     }
 
     else if(command.compare("refreshHsv") == 0) {
         refreshHsv();
+        std::cout << "{\"Type\":\"RefreshHsv\"}" << std::endl;
     }
 }
 

@@ -16,7 +16,9 @@ public:
     void setHsvValues(json hsvJson);
 
 private:
-    cv::Mat thresholdImage(cv::Mat& image);
+    cv::Mat thresholdImage_(cv::Mat& image);
+    json rectanglesToPoles_(std::vector<cv::RotatedRect>& rectangles);
+    json rectangleToPole_(cv::RotatedRect& rectangle);
     int _lowHue = 0;
     int _highHue = 255;
     int _lowSaturation = 0;
