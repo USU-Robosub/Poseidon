@@ -8,16 +8,16 @@ var WebLogger = require('./WebLogger');
 var FileLogger = require('./FileLogger');
 var app = express();
 
-var interfaceFactory = new CppInterface.Factory();
+var peripheralsFactory = new CppInterface.Factory();
 
-var thrustController = interfaceFactory.createThrustController();
-var headLights = interfaceFactory.createHeadlights();
-var powerManager = interfaceFactory.createPowerManager();
-var imuSensor = interfaceFactory.createImuSensor();
+var thrustController = peripheralsFactory.createThrustController();
+var headLights = peripheralsFactory.createHeadlights();
+var powerManager = peripheralsFactory.createPowerManager();
+var imuSensor = peripheralsFactory.createImuSensor();
 
 var fileLogger = new FileLogger("./test.log");
 var webLogger = new WebLogger(fileLogger);
-interfaceFactory.createCppLogSource(webLogger);
+peripheralsFactory.createCppLogSource(webLogger);
 
 CppInterface.Peripherals.initialize();
 
@@ -170,11 +170,35 @@ app.get('/headlight', function(req, res) {
 	res.send('toggled Headlights');
 });
 
+app.get('/startSearchingForPoles', function (req, res) {
+    gateDetector.startSearching();
+    res.send('startSearchingForPoles');
+});
+
 app.get('/getPoleCoordinates', function (req, res) {
     gateDetector.getPoleCoordinates().done(function (poleCoords) {
         webLogger.info("Pole Coordinates: " + JSON.stringify(poleCoords));
     });
     res.send('getPoleCoordinates');
+});
+
+app.post('/refreshHsv', function (req, res) {
+	var params = req.body;
+	var hsv = {
+        MinHue: params.MinHue,
+        MaxHue: params.MaxHue,
+        MinSaturation: params.MinSaturation,
+        MaxSaturation: params.MaxSaturation,
+        MinValue: params.MinValue,
+        MaxValue: params.MaxValue
+    };
+	gateDetector.refreshHsv(hsv);
+	res.send('refreshHsv');
+});
+
+app.get('/stopSearchingForPoles', function (req, res) {
+    gateDetector.stopSearching();
+    res.send('stopSearchingForPoles');
 });
 
 // Script Run
