@@ -17,6 +17,10 @@ unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangle
 
 #ifdef DEBUG
 void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTuple>& contourTuples, PointClusters& clusters);
+void showRectangles(const json& poles, const cv::Mat& debugFeed);
+void showContours(const std::vector<ContourTuple>& contourTuples, const cv::Mat& debugFeed);
+void showClusters(const PointClusters& clusters, const cv::Mat& debugFeed);
+
 #endif
 
 GateDetector::GateDetector() {
@@ -189,36 +193,9 @@ void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTupl
 
     // Simplify the color
     cvtColor(thresholdedImg, debugFeed, CV_GRAY2BGR);
-
-    for (auto pole : poles) {
-        for (auto i = 0u; i < 4; i++) {
-            auto pointA = cv::Point(pole[i]["X"], pole[i]["Y"]);
-            auto pointB = cv::Point(pole[(i + 1) % 4]["X"], pole[(i + 1) % 4]["Y"]);
-            cv::line(debugFeed, pointA, pointB, cv::Scalar(255, 0, 0));
-        }
-    }
-
-    for (auto i = 0u; i < contourTuples.size(); i++) {
-        std::vector<cv::Point> contour;
-        int minX, maxX;
-        std::tie(minX, maxX, contour) = contourTuples[i];
-        if (contour.size() < 2) continue;
-        for (auto j = 1u; j < contour.size(); j++) {
-            auto point1 = contour[j];
-            auto point2 = contour[(j+1)%contour.size()];
-            cv::line(debugFeed, point1, point2, cv::Scalar(0,0,255));
-        }
-    }
-
-    for (auto cluster : clusters) {
-        std::vector<cv::Point> hull;
-        convexHull(cv::Mat(cluster), hull);
-        for (auto i = 0u; i < hull.size(); i++) {
-            auto point1 = hull[i];
-            auto point2 = hull[(i+1)%hull.size()];
-            cv::line(debugFeed, point1, point2, cv::Scalar(0,255,0));
-        }
-    }
+    showContours(contourTuples, debugFeed);
+    showClusters(clusters, debugFeed);
+    showRectangles(poles, debugFeed);
 
     // If you want to save images
     //cv::imwrite("thresh.jpg", thresholdedImg);
@@ -229,4 +206,41 @@ void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTupl
 
     cv::waitKey(30);
 }
+
+void showContours(const std::vector<ContourTuple>& contourTuples, const cv::Mat& debugFeed) {
+    for (auto i = 0u; i < contourTuples.size(); i++) {
+        std::vector<cv::Point> contour;
+        int minX, maxX;
+        tie(minX, maxX, contour) = contourTuples[i];
+        if (contour.size() < 2) continue;
+        for (auto j = 1u; j < contour.size(); j++) {
+            auto point1 = contour[j];
+            auto point2 = contour[(j+1)%contour.size()];
+            line(debugFeed, point1, point2, cv::Scalar(0, 0, 255));
+        }
+    }
+}
+
+void showClusters(const PointClusters& clusters, const cv::Mat& debugFeed) {
+    for (auto cluster : clusters) {
+        std::vector<cv::Point> hull;
+        convexHull(cv::Mat(cluster), hull);
+        for (auto i = 0u; i < hull.size(); i++) {
+            auto point1 = hull[i];
+            auto point2 = hull[(i+1)%hull.size()];
+            line(debugFeed, point1, point2, cv::Scalar(0, 255, 0));
+        }
+    }
+}
+
+void showRectangles(const json& poles, const cv::Mat& debugFeed) {
+    for (auto pole : poles) {
+        for (auto i = 0u; i < 4; i++) {
+            auto pointA = cv::Point(pole[i]["X"], pole[i]["Y"]);
+            auto pointB = cv::Point(pole[(i + 1) % 4]["X"], pole[(i + 1) % 4]["Y"]);
+            line(debugFeed, pointA, pointB, cv::Scalar(255, 0, 0));
+        }
+    }
+}
+
 #endif
