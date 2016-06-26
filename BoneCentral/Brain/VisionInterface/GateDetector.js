@@ -50,10 +50,10 @@ module.exports = (function () {
         return this._poleCoordRequest.promise();
     };
 
-    GateDetector.prototype.refreshHsv = function (hsvJson) {
+    GateDetector.prototype.refreshHsv = function () {
         if(this._hsvRequest.state() !== "pending") {
             this._hsvRequest = Promises.Deferred();
-            this._oStream.write("refreshHsv " + hsvJson.stringify() + "\n");
+            this._oStream.write("refreshHsv\n");
         }
         return this._hsvRequest.promise();
     };

@@ -182,17 +182,8 @@ app.get('/getPoleCoordinates', function (req, res) {
     res.send('getPoleCoordinates');
 });
 
-app.post('/refreshHsv', function (req, res) {
-	var params = req.body;
-	var hsv = {
-        MinHue: params.MinHue,
-        MaxHue: params.MaxHue,
-        MinSaturation: params.MinSaturation,
-        MaxSaturation: params.MaxSaturation,
-        MinValue: params.MinValue,
-        MaxValue: params.MaxValue
-    };
-	gateDetector.refreshHsv(hsv);
+app.get('/refreshHsv', function (req, res) {
+	gateDetector.refreshHsv();
 	res.send('refreshHsv');
 });
 
