@@ -16,7 +16,7 @@ protected:
     virtual void handleInput(std::string command);
     void startInput();
     void startRecord();
-    cv::Mat grayscale(cv::Mat img);
+    cv::Mat grayScale(cv::Mat img);
     int convertXCoordinate(int x);
     int convertYCoordinate(int y);
 

@@ -5,8 +5,8 @@ Capture::Capture() { }
 void Capture::startRecord()
 {
     _capture.open(0);
-    frameWidth = _capture.get(CV_CAP_PROP_FRAME_WIDTH);
-    frameHeight = _capture.get(CV_CAP_PROP_FRAME_HEIGHT);
+    frameWidth = (int)_capture.get(CV_CAP_PROP_FRAME_WIDTH);
+    frameHeight = (int)_capture.get(CV_CAP_PROP_FRAME_HEIGHT);
 
     while (keepRunning) {
         _capture >> frame;
@@ -42,7 +42,7 @@ int Capture::convertYCoordinate(int y)
     return (y - frameHeight / 2) * -1;
 }
 
-cv::Mat Capture::grayscale(cv::Mat img)
+cv::Mat Capture::grayScale(cv::Mat img)
 {
     cv::Mat grayImg;
     cv::cvtColor(img, grayImg, cv::COLOR_BGR2HSV);

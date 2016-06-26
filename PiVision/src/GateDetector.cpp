@@ -28,7 +28,8 @@ void GateDetector::refreshHsv() {
 }
 
 json readHsvJson() {
-    auto fin = std::fstream("PoleHsv.json");
+    std::fstream fin;
+    fin.open("PoleHsv.json");
     json hsvJson;
     fin >> hsvJson;
     fin.close();
@@ -46,7 +47,7 @@ void GateDetector::setHsvValues(json hsvJson) {
 
 void GateDetector::process(cv::Mat& img)
 {
-    auto grayImg = Capture::grayscale(img);
+    auto grayImg = Capture::grayScale(img);
     auto thresholdedImg = thresholdImage_(grayImg);
     auto contours = findContoursInImage(thresholdedImg, frameWidth);
     sortContours(contours);
