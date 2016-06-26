@@ -1,5 +1,4 @@
 #include "GateDetector.h"
-#define DEBUG
 
 typedef std::vector<std::vector<cv::Point>> PointClusters;
 typedef std::tuple<int, int, std::vector<cv::Point>> ContourTuple;
@@ -20,7 +19,6 @@ void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTupl
 void showRectangles(const json& poles, const cv::Mat& debugFeed);
 void showContours(const std::vector<ContourTuple>& contourTuples, const cv::Mat& debugFeed);
 void showClusters(const PointClusters& clusters, const cv::Mat& debugFeed);
-
 #endif
 
 GateDetector::GateDetector() {
