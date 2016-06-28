@@ -10,11 +10,11 @@
 class Capture {
 public:
     Capture();
-    void startThreads();
+    void startThreads(std::istream& in, std::ostream& out);
 protected:
     virtual void process(cv::Mat& img) = 0;
-    virtual void handleInput(std::string command);
-    void startInput();
+    virtual void handleInput(std::string command, std::ostream& out);
+    void startInput(std::istream& in, std::ostream& out);
     void startRecord();
     cv::Mat grayScale(cv::Mat img);
     int convertXCoordinate(int x);

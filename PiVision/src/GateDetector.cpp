@@ -182,15 +182,15 @@ json GateDetector::rectangleToPole_(cv::RotatedRect& rectangle) {
     return pole;
 }
 
-void GateDetector::handleInput(std::string command) {
-    Capture::handleInput(command);
+void GateDetector::handleInput(std::string command, std::ostream& out) {
+    Capture::handleInput(command, out);
 
     if(command.compare("getPoleCoordinates") == 0) {
         auto poleCoords = json{
                 {"Type",  "PoleCoordinates"},
                 {"Poles", poles_}
         };
-        std::cout << poleCoords << std::endl;
+        out << poleCoords << std::endl;
     }
 
     else if(command.compare("refreshHsv") == 0) {

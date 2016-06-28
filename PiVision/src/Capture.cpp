@@ -18,10 +18,10 @@ void Capture::startRecord()
     }
 }
 
-void Capture::startThreads()
+void Capture::startThreads(std::istream& in, std::ostream& out)
 {
-    _captureThreads.push_back(std::thread(&Capture::startInput, this));
-    _captureThreads.push_back(std::thread(&Capture::startRecord, this));
+    _captureThreads.push_back(std::thread([&](){startInput(in, out);}));
+    _captureThreads.push_back(std::thread([&](){startRecord();}));
 
     for(auto i = 0u; i < _captureThreads.size(); i++)
     {
@@ -49,7 +49,7 @@ cv::Mat Capture::grayScale(cv::Mat img)
     return grayImg;
 }
 
-void Capture::handleInput(std::string command)
+void Capture::handleInput(std::string command, std::ostream&)
 {
     if(command.compare("quit") == 0)
     {
@@ -58,13 +58,13 @@ void Capture::handleInput(std::string command)
 }
 
 // All of this code can be run from the main execution program as well, a pointer to the object would just need to be passed in
-void Capture::startInput()
+void Capture::startInput(std::istream& in, std::ostream& out)
 {
     // int exit = false;
     std::string command;
     while(keepRunning){
-        std::cin >> command; // will be replaced with socket commands
+        in >> command; // will be replaced with socket commands
 
-        handleInput(command);
+        handleInput(command, out);
     }
 }

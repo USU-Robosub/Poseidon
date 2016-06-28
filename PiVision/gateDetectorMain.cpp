@@ -3,5 +3,5 @@
 int main(void) {
     GateDetector gd;
 
-    gd.startThreads();
+    gd.startThreads(std::cin, std::cout);
 }
