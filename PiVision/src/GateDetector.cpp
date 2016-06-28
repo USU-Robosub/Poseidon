@@ -65,23 +65,31 @@ cv::Mat GateDetector::thresholdImage_(cv::Mat& image) {
     cv::Mat thresholdedImg;
 
     // Only considers pixels in the correct color range
-    inRange(image, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), thresholdedImg);
+    if (_lowHue > _highHue) {
+        cv::Mat lower, upper;
+        cv::inRange(image, cv::Scalar(0, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), lower);
+        cv::inRange(image, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(180, _highSaturation, _highValue), upper);
+        thresholdedImg = lower | upper;
+    }
+    else {
+        cv::inRange(image, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), thresholdedImg);
+    }
 
     // Morphological opening (removes small objects from the foreground)
-    erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
 
     // Morphological closing (removes small holes from the foreground)
-    dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    Canny(thresholdedImg, thresholdedImg, 50, 200, 3);
+    cv::dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::Canny(thresholdedImg, thresholdedImg, 50, 200, 3);
     return thresholdedImg;
 }
 
 std::vector<ContourTuple> findContoursInImage(cv::Mat& thresholdedImg, int frameWidth) {
     PointClusters rawContours;
     std::vector<cv::Vec4i> hierarchy;
-    findContours(thresholdedImg, rawContours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+    cv::findContours(thresholdedImg, rawContours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
     std::vector<ContourTuple> contours;
     for (auto contour : rawContours) {
         auto xPair = getMinMaxX(contour);
