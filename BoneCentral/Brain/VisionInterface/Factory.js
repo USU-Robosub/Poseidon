@@ -13,7 +13,7 @@ module.exports = (function () {
     function Factory() {}
 
     Factory.prototype.createGateDetector = function (logger) {
-        return new GateDetector(visionSocket.Input, visionSocket.Output, logger)
+        return new GateDetector(visionSocket.Output, visionSocket.Input, logger)
     };
 
     return Factory;

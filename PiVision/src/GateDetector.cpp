@@ -195,7 +195,7 @@ void GateDetector::handleInput(std::string command, std::ostream& out) {
 
     else if(command.compare("refreshHsv") == 0) {
         refreshHsv();
-        std::cout << "{\"Type\":\"RefreshHsv\"}" << std::endl;
+        out << "{\"Type\":\"RefreshHsv\"}" << std::endl;
     }
 }
 

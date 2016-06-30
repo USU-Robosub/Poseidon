@@ -10,7 +10,7 @@ module.exports = (function () {
         this._oStream = oStream;
         this._logger = logger;
         _initializePromises.call(this);
-        iStream.on("data",  _handleData(this));
+        iStream.on("data", _handleData(this));
     }
 
     var _initializePromises = function () {
