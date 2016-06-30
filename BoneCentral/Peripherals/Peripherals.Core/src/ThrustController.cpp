@@ -36,17 +36,6 @@ void ThrustController::goDirection(float forward, float strafe, float dive) {
     setThrust(forwardPair, strafePair, divePair);
 }
 
-float ThrustController::getScaleToMaxPower(float left, float right) {
-    auto power = getMaxMag(left, right);
-    return power > maxPower ? maxPower / power : 1;
-}
-
-float ThrustController::getMaxMag(float left, float right) {
-    if(left < 0) left *= -1;
-    if(right < 0) left *= -1;
-    return right > left ? right : left;
-}
-
 void ThrustController::faceDirection(float yaw, float dive) {
     logger_->info("Yawing...");
     auto yawPair = getReciprocalValues(yaw);
@@ -118,6 +107,28 @@ std::pair<float,float> ThrustController::getReciprocalValues(float value) {
         right = -1 * value;
     }
     return std::make_pair(left, right);
+}
+
+void ThrustController::thrustForward(float left, float right) {
+    auto scaleToMax = getScaleToMaxPower(left, right);
+    leftForwardThruster_->Thrust(left*scaleToMax);
+    rightForwardThruster_->Thrust(right*scaleToMax);
+}
+
+float ThrustController::getScaleToMaxPower(float left, float right) {
+    auto power = getMaxMag(left, right);
+    return power > maxPower ? maxPower / power : 1;
+}
+
+float ThrustController::getMaxMag(float left, float right) {
+    if(left < 0) left *= -1;
+    if(right < 0) left *= -1;
+    return right > left ? right : left;
+}
+
+void ThrustController::dive(float front, float rear) {
+    forwardDiveThruster_->Thrust(front);
+    rearDiveThruster_->Thrust(rear);
 }
 
 void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, FloatPair divePair) {

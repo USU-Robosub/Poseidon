@@ -31,6 +31,8 @@ private:
     void dispatchCommand(std::stringstream& cmd);
     void goDirection(std::stringstream& cmdString);
     void faceDirection(std::stringstream& cmdString);
+    void thrustForward(std::stringstream& cmdString);
+    void dive(std::stringstream& cmdString);
 
     void setForwardTrim(std::stringstream& cmdString);
     void setStrafeTrim(std::stringstream& cmdString);

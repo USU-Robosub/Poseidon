@@ -40,6 +40,16 @@ module.exports = (function(){
         this._cmdOut.write(cmdString);
     };
 
+    ThrustController.prototype.thrustForward = function (left, right) {
+        var cmdString = "thrustForward " + left + " " + right + "\n";
+        this._cmdOut.write(cmdString);
+    };
+
+    ThrustController.prototype.dive = function (forward, rear) {
+        var cmdString = "dive " + forward + " " + rear + "\n";
+        this._cmdOut.write(cmdString);
+    };
+
     return ThrustController;
 
 })();
