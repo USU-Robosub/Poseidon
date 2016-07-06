@@ -29,7 +29,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     if(cmd == "goDirection") goDirection(cmdString);
     else if(cmd == "faceDirection") faceDirection(cmdString);
     else if(cmd == "thrustForward") thrustForward(cmdString);
-    else if(cmd == "faceDirection") dive(cmdString);
+    else if(cmd == "dive") dive(cmdString);
     else if(cmd == "turnOnEscs") powerManager_.turnOnEscs();
     else if(cmd == "turnOffEscs") powerManager_.turnOffEscs();
     else if(cmd == "switchLights") lights_.switchLights();

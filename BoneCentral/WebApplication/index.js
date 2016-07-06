@@ -54,6 +54,18 @@ app.get('/stdoutData', function(req, res) {
 	res.send(webLogger.pull());
 });
 
+app.post('/thrustForward', function (req, res) {
+	var params = req.body;
+	thrustController.thrustForward(params.left, params.right);
+	res.send('');
+});
+
+app.post('/dive', function (req, res) {
+    var params = req.body;
+    thrustController.dive(params.forward, params.rear);
+    res.send('');
+});
+
 // From IThrustController
 app.post('/goDirection', function(req, res) {
 	var params = req.body;

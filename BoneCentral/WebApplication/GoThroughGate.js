@@ -2,15 +2,23 @@
  * Created by floris on 6/29/16.
  */
 
-var utilities = require("../Brain/Utilities/index");
-var wait = utilities.Wait;
-
-const MAINTAIN_DIVE = 0.29;
-const SINK = 0.5;
-const TICK = 100; // in ms
-const MINIMUM_THRUST = 0.15;
-
 module.exports = (function(){
+
+    var utilities = require("../Brain/Utilities/index");
+    var wait = utilities.Wait;
+
+    const MAINTAIN_DIVE = 0.29;
+    const SINK = 0.5;
+    const TICK = 30; // in ms
+    const MINIMUM_THRUST = 0.15;
+    const THRUST_INCREMENT = 0.0005;
+    const NEUTRAL = 0.0;
+    const TargetBox = {
+        LEFT: -25,
+        RIGHT: 25,
+        TOP: 25,
+        BOTTOM: -25
+    };
 
     function GoThroughGate(gateDetector, thrustController) {
         this._gateDetector = gateDetector;
@@ -25,15 +33,14 @@ module.exports = (function(){
     };
 
     var _setDefaults = function() {
-        this._leftThrust = 0.0;
-        this._rightThrust = 0.0;
+        this._leftThrust = NEUTRAL;
+        this._rightThrust = NEUTRAL;
         this._diveThrust = SINK;
     };
 
     var _runTick = function() {
         if (this._shouldQuit) {
-            this._thrustController.thrustForward(0,0);
-            this._thrustController.dive(0,0);
+            _killThrusters.call(this);
             return;
         }
         wait(TICK).done(function () {
@@ -44,11 +51,20 @@ module.exports = (function(){
         }.bind(this));
     };
 
+    var _killThrusters = function () {
+        this._thrustController.thrustForward(0, 0);
+        this._thrustController.dive(0, 0);
+    };
+
+    var _travelToGate = function (poles) {
+        var gateCenter = _getGateCenter(poles);
+        _alignX.call(this, gateCenter);
+        _alignY.call(this, gateCenter);
+    };
+
     var _trackGate = function(poles) {
         if (poles.length === 2) {
-            var gateCenter = _getGateCenter(poles);
-            _alignX.call(this, gateCenter);
-            _alignY.call(this, gateCenter);
+            _travelToGate.call(this, poles);
         }
     };
 
@@ -88,21 +104,21 @@ module.exports = (function(){
     };
 
     var _hasDriftedRight = function (target) {
-        return target.X < -25;
+        return target.X < TargetBox.LEFT;
     };
 
     var _listLeft = function () {
-        _incrementLeftThrust.call(this, -0.002);
-        _incrementRightThrust.call(this, 0.002);
+        _incrementLeftThrust.call(this, -THRUST_INCREMENT);
+        _incrementRightThrust.call(this, THRUST_INCREMENT);
     };
 
     var _hasDriftedLeft = function (target) {
-        return target.X > 25;
+        return target.X > TargetBox.RIGHT;
     };
 
     var _listRight = function () {
-        _incrementLeftThrust.call(this, 0.002);
-        _incrementRightThrust.call(this, -0.002);
+        _incrementLeftThrust.call(this, THRUST_INCREMENT);
+        _incrementRightThrust.call(this, -THRUST_INCREMENT);
     };
 
     var _incrementLeftThrust = function(diff) {
@@ -121,7 +137,7 @@ module.exports = (function(){
     };
 
     var _hasReachedDepth = function (target) {
-        return target.Y > -50;
+        return target.Y > TargetBox.BOTTOM;
     };
 
     var _isStillDiving = function () {
@@ -133,19 +149,19 @@ module.exports = (function(){
     };
 
     var _hasDriftedDown = function (target) {
-        return target.Y > 25;
+        return target.Y > TargetBox.TOP;
     };
 
     var _reduceDive = function () {
-        _incrementDiveThrust.call(this, -0.002);
+        _incrementDiveThrust.call(this, -THRUST_INCREMENT);
     };
 
     var _hasDriftedUp = function (target) {
-        return target.Y < -25;
+        return target.Y < TargetBox.BOTTOM;
     };
 
     var _increaseDive = function () {
-        _incrementDiveThrust.call(this, 0.002);
+        _incrementDiveThrust.call(this, THRUST_INCREMENT);
     };
 
     var _incrementDiveThrust = function(diff) {
@@ -153,7 +169,7 @@ module.exports = (function(){
         this._diveThrust = thrust + diff;
     };
 
-    function normalizeThrust(thrust) {
+    var normalizeThrust = function(thrust) {
         if (_belowForwardMinThrust(thrust)) {
             thrust = MINIMUM_THRUST;
         }
@@ -161,14 +177,14 @@ module.exports = (function(){
             thrust = -MINIMUM_THRUST;
         }
         return _roundToFourSigFigs(thrust);
-    }
+    };
 
     var _belowForwardMinThrust = function (thrust) {
-        return thrust < MINIMUM_THRUST && thrust > 0;
+        return NEUTRAL < thrust && thrust < MINIMUM_THRUST;
     };
 
     var _belowReverseMinThrust = function (thrust) {
-        return thrust > -MINIMUM_THRUST && thrust < 0;
+        return -MINIMUM_THRUST < thrust && thrust < NEUTRAL;
     };
 
     var _roundToFourSigFigs = function (num) {

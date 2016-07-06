@@ -2,26 +2,28 @@
  * Created by Nathan Copier on 4/28/2016.
  */
 
-var CppInterface = require("./CppInterface");
 var Utilities = require("./Utilities");
-var cppInterfaceFactory = new CppInterface.Factory();
-CppInterface.Peripherals.initialize();
-var powerManager = cppInterfaceFactory.createPowerManager();
+var peripheralsInterface = require("./CppInterface");
+var peripheralsFactory = new peripheralsInterface.Factory();
+var visionInterface = require("./VisionInterface");
+var visionFactory = new visionInterface.Factory();
+peripheralsInterface.Peripherals.initialize();
+var powerManager = peripheralsFactory.createPowerManager();
 powerManager.turnOnEscs();
 powerManager.turnOnImu();
 
 
-
-var goThroughGate = require("./GoThroughGate");
+var GoThroughGate = require("./GoThroughGate");
 var bumpBuoy = require("./BumpBuoy");
 var surfaceAtPinger = require("./SurfaceAtPinger");
 
-Utilities.Wait(500).then(
-    goThroughGate(cppInterfaceFactory)
-).then(function(){
-    bumpBuoy(cppInterfaceFactory)
+Utilities.Wait(500).then( function () {
+    var gTg = new GoThroughGate(visionFactory, peripheralsFactory);
+    return gTg.execute();
+}).then(function(){
+    bumpBuoy(peripheralsFactory)
 }).then(function () {
-    surfaceAtPinger(cppInterfaceFactory)
+    surfaceAtPinger(peripheralsFactory)
 });
 
 
