@@ -22,3 +22,5 @@ node_modules/
 # Submodules
 Drivers/
 googletest/
+
+TestFootage

@@ -121,7 +121,7 @@
 				<single-get-tag url='/turnOnImuSensor'></single-get-tag>
 				<single-get-tag url='/turnOffImuSensor'></single-get-tag>
 				<single-get-tag url='/headlight'></single-get-tag>
-				<post-tag url='/runScript' arguments='["scriptId"]' min="0" max="3" step="1"></post-tag>
+				<post-tag url='/runScript' arguments='["scriptId"]' min="0" max="6" step="1"></post-tag>
 				<single-get-tag url='/exit'></single-get-tag>
 			</div>
 			<div style="width: 22%; float: left;">
@@ -140,6 +140,10 @@
 				<single-get-tag url='/getInternalPressure'></single-get-tag>
 				<single-get-tag url='/getExternalTemperature'></single-get-tag>
 				<single-get-tag url='/getExternalPressure'></single-get-tag>
+				<single-get-tag url='/startSearchingForPoles'></single-get-tag>
+				<single-get-tag url='/getPoleCoordinates'></single-get-tag>
+				<single-get-tag url='/refreshHsv'></single-get-tag>
+				<single-get-tag url='/stopSearchingForPoles'></single-get-tag>
 			</div>
 			<div style="width: 33%; float: left;">
 				<get-tag url='/stdoutData'></get-tag>

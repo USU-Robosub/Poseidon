@@ -3,22 +3,26 @@ var bodyParser = require('body-parser');
 var fileSystem = require('fs');
 var path = require("path");
 var CppInterface = require('../Brain/CppInterface');
+var VisionInterface = require("../Brain/VisionInterface");
 var WebLogger = require('./WebLogger');
 var FileLogger = require('./FileLogger');
 var app = express();
 
-var interfaceFactory = new CppInterface.Factory();
+var peripheralsFactory = new CppInterface.Factory();
 
-var thrustController = interfaceFactory.createThrustController();
-var headLights = interfaceFactory.createHeadlights();
-var powerManager = interfaceFactory.createPowerManager();
-var imuSensor = interfaceFactory.createImuSensor();
+var thrustController = peripheralsFactory.createThrustController();
+var headLights = peripheralsFactory.createHeadlights();
+var powerManager = peripheralsFactory.createPowerManager();
+var imuSensor = peripheralsFactory.createImuSensor();
 
 var fileLogger = new FileLogger("./test.log");
 var webLogger = new WebLogger(fileLogger);
-interfaceFactory.createCppLogSource(webLogger);
+peripheralsFactory.createCppLogSource(webLogger);
 
 CppInterface.Peripherals.initialize();
+
+var visionFactoy = new VisionInterface.Factory();
+var gateDetector = visionFactoy.createGateDetector(webLogger);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
@@ -164,6 +168,28 @@ app.get('/turnOffEscs', function(req, res) {
 app.get('/headlight', function(req, res) {
     headLights.toggleLights();
 	res.send('toggled Headlights');
+});
+
+app.get('/startSearchingForPoles', function (req, res) {
+    gateDetector.startSearching();
+    res.send('startSearchingForPoles');
+});
+
+app.get('/getPoleCoordinates', function (req, res) {
+    gateDetector.getPoleCoordinates().done(function (poleCoords) {
+        webLogger.info("Pole Coordinates: " + JSON.stringify(poleCoords));
+    });
+    res.send('getPoleCoordinates');
+});
+
+app.get('/refreshHsv', function (req, res) {
+	gateDetector.refreshHsv();
+	res.send('refreshHsv');
+});
+
+app.get('/stopSearchingForPoles', function (req, res) {
+    gateDetector.stopSearching();
+    res.send('stopSearchingForPoles');
 });
 
 // Script Run

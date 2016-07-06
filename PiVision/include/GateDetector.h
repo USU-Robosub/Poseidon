@@ -11,7 +11,7 @@ class GateDetector : public Capture
 public:
     GateDetector();
     void process(cv::Mat& img);
-    void handleInput(std::string command);
+    void handleInput(std::string command, std::ostream& out);
     void refreshHsv();
     void setHsvValues(json hsvJson);
 

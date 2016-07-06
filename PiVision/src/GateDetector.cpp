@@ -13,8 +13,9 @@ std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& cluster
 unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles);
 
 #ifdef DEBUG
-void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTuple>& contourTuples, PointClusters& clusters);
-void showRectangles(const json& poles, const cv::Mat& debugFeed);
+void showDebugFeed(cv::Mat thresholdedImg, json poles, std::vector<ContourTuple> contourTuples, PointClusters clusters,
+                   int frameWidth, int frameHeight);
+void showRectangles(json poles, cv::Mat debugFeed, int frameWidth, int frameHeight);
 void showContours(const std::vector<ContourTuple>& contourTuples, const cv::Mat& debugFeed);
 void showClusters(const PointClusters& clusters, const cv::Mat& debugFeed);
 #endif
@@ -28,7 +29,8 @@ void GateDetector::refreshHsv() {
 }
 
 json readHsvJson() {
-    auto fin = std::fstream("PoleHsv.json");
+    std::fstream fin;
+    fin.open("PoleHsv.json");
     json hsvJson;
     fin >> hsvJson;
     fin.close();
@@ -46,7 +48,7 @@ void GateDetector::setHsvValues(json hsvJson) {
 
 void GateDetector::process(cv::Mat& img)
 {
-    auto grayImg = Capture::grayscale(img);
+    auto grayImg = Capture::grayScale(img);
     auto thresholdedImg = thresholdImage_(grayImg);
     auto contours = findContoursInImage(thresholdedImg, frameWidth);
     sortContours(contours);
@@ -55,7 +57,7 @@ void GateDetector::process(cv::Mat& img)
     auto poles = rectanglesToPoles_(rectangles);
     poles_ = poles;
 #ifdef DEBUG
-    showDebugFeed(thresholdedImg, poles_, contours, clusters);
+    showDebugFeed(thresholdedImg, poles_, contours, clusters, frameWidth, frameHeight);
 #endif
 }
 
@@ -63,23 +65,31 @@ cv::Mat GateDetector::thresholdImage_(cv::Mat& image) {
     cv::Mat thresholdedImg;
 
     // Only considers pixels in the correct color range
-    inRange(image, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), thresholdedImg);
+    if (_lowHue > _highHue) {
+        cv::Mat lower, upper;
+        cv::inRange(image, cv::Scalar(0, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), lower);
+        cv::inRange(image, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(180, _highSaturation, _highValue), upper);
+        thresholdedImg = lower | upper;
+    }
+    else {
+        cv::inRange(image, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), thresholdedImg);
+    }
 
     // Morphological opening (removes small objects from the foreground)
-    erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
 
     // Morphological closing (removes small holes from the foreground)
-    dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    Canny(thresholdedImg, thresholdedImg, 50, 200, 3);
+    cv::dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::Canny(thresholdedImg, thresholdedImg, 50, 200, 3);
     return thresholdedImg;
 }
 
 std::vector<ContourTuple> findContoursInImage(cv::Mat& thresholdedImg, int frameWidth) {
     PointClusters rawContours;
     std::vector<cv::Vec4i> hierarchy;
-    findContours(thresholdedImg, rawContours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+    cv::findContours(thresholdedImg, rawContours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
     std::vector<ContourTuple> contours;
     for (auto contour : rawContours) {
         auto xPair = getMinMaxX(contour);
@@ -172,32 +182,33 @@ json GateDetector::rectangleToPole_(cv::RotatedRect& rectangle) {
     return pole;
 }
 
-void GateDetector::handleInput(std::string command) {
-    Capture::handleInput(command);
+void GateDetector::handleInput(std::string command, std::ostream& out) {
+    Capture::handleInput(command, out);
 
     if(command.compare("getPoleCoordinates") == 0) {
         auto poleCoords = json{
                 {"Type",  "PoleCoordinates"},
                 {"Poles", poles_}
         };
-        std::cout << poleCoords << std::endl;
+        out << poleCoords << std::endl;
     }
 
     else if(command.compare("refreshHsv") == 0) {
         refreshHsv();
-        std::cout << "{\"Type\":\"RefreshHsv\"}" << std::endl;
+        out << "{\"Type\":\"RefreshHsv\"}" << std::endl;
     }
 }
 
 #ifdef DEBUG
-void showDebugFeed(cv::Mat& thresholdedImg, json& poles, std::vector<ContourTuple>& contourTuples, PointClusters& clusters) {
+void showDebugFeed(cv::Mat thresholdedImg, json poles, std::vector<ContourTuple> contourTuples, PointClusters clusters,
+                   int frameWidth, int frameHeight) {
     cv::Mat debugFeed;
 
     // Simplify the color
     cvtColor(thresholdedImg, debugFeed, CV_GRAY2BGR);
     showContours(contourTuples, debugFeed);
     showClusters(clusters, debugFeed);
-    showRectangles(poles, debugFeed);
+    showRectangles(poles, debugFeed, frameWidth, frameHeight);
 
     // If you want to save images
     //cv::imwrite("thresh.jpg", thresholdedImg);
@@ -235,11 +246,11 @@ void showClusters(const PointClusters& clusters, const cv::Mat& debugFeed) {
     }
 }
 
-void showRectangles(const json& poles, const cv::Mat& debugFeed) {
+void showRectangles(json poles, cv::Mat debugFeed, int frameWidth, int frameHeight) {
     for (auto pole : poles) {
         for (auto i = 0u; i < 4; i++) {
-            auto pointA = cv::Point(pole[i]["X"], pole[i]["Y"]);
-            auto pointB = cv::Point(pole[(i + 1) % 4]["X"], pole[(i + 1) % 4]["Y"]);
+            auto pointA = cv::Point((int)pole[i]["X"]+frameWidth/2, -(int)pole[i]["Y"]+frameHeight/2);
+            auto pointB = cv::Point((int)pole[(i + 1) % 4]["X"]+frameWidth/2, -(int)pole[(i + 1) % 4]["Y"]+frameHeight/2);
             line(debugFeed, pointA, pointB, cv::Scalar(255, 0, 0));
         }
     }

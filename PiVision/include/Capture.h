@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <thread>
@@ -10,13 +10,13 @@
 class Capture {
 public:
     Capture();
-    void startThreads();
+    void startThreads(std::istream& in, std::ostream& out);
 protected:
     virtual void process(cv::Mat& img) = 0;
-    virtual void handleInput(std::string command);
-    void startInput();
+    virtual void handleInput(std::string command, std::ostream& out);
+    void startInput(std::istream& in, std::ostream& out);
     void startRecord();
-    cv::Mat grayscale(cv::Mat img);
+    cv::Mat grayScale(cv::Mat img);
     int convertXCoordinate(int x);
     int convertYCoordinate(int y);
 
