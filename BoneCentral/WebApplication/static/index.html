@@ -116,6 +116,8 @@
 	<body>
 		<div>
 			<div style="width: 22%; float: left;">
+				<single-get-tag url='/goThroughGate'></single-get-tag>
+				<single-get-tag url='/terminate'></single-get-tag>
 				<single-get-tag url='/turnOnEscs'></single-get-tag>
 				<single-get-tag url='/turnOffEscs'></single-get-tag>
 				<single-get-tag url='/turnOnImuSensor'></single-get-tag>
@@ -125,6 +127,8 @@
 				<single-get-tag url='/exit'></single-get-tag>
 			</div>
 			<div style="width: 22%; float: left;">
+				<post-tag url='/thrustForward' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/dive' arguments='["forward", "rear"]' min="-1" max="1" step="0.01"></post-tag>
 				<post-tag url='/goDirection' arguments='["forward", "strafe", "dive"]' min="-1" max="1" step="0.01"></post-tag>
 				<post-tag url='/faceDirection' arguments='["yaw", "dive"]' min="-1" max="1" step="0.01"></post-tag>
 				<post-tag url='/setForwardTrim' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>

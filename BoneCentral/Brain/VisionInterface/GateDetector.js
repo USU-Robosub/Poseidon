@@ -25,12 +25,12 @@ module.exports = (function () {
             var dataJson = JSON.parse(data.toString());
             if(dataJson.Type == null) dataJson.Type = "";
             if(dataJson.Type == "startedSearching") self._startRequest.resolve(dataJson);
-            if(dataJson.Type == "PoleCoordinates") self._poleCoordRequest.resolve(dataJson);
+            if(dataJson.Type == "PoleCoordinates") self._poleCoordRequest.resolve(dataJson.Poles);
             if(dataJson.Type == "HsvRefresh") self._hsvRequest.resolve(dataJson);
             if(dataJson.Type == "stoppedSearching") self._stopRequest.resolve(dataJson);
         }
         catch (e) {
-            this._logger.warn("GateDetector failed to deserialize JSON!");
+            self._logger.warn("GateDetector failed to deserialize JSON!");
         }
     };};
 
@@ -42,7 +42,7 @@ module.exports = (function () {
         return this._startRequest.promise();
     };
 
-    GateDetector.prototype.GetPoleCoordinates = function () {
+    GateDetector.prototype.getPoleCoordinates = function () {
         if(this._poleCoordRequest.state() !== "pending") {
             this._poleCoordRequest = Promises.Deferred();
             this._oStream.write("getPoleCoordinates\n");

@@ -4,7 +4,7 @@
 
 module.exports = (function(){
 
-    var utilities = require("../Utilities/index");
+    var utilities = require("../Brain/Utilities/index");
     var wait = utilities.Wait;
 
     const MAINTAIN_DIVE = 0.29;
@@ -19,17 +19,10 @@ module.exports = (function(){
         TOP: 25,
         BOTTOM: -25
     };
-    /*const States = {
-        DIVE: 0,
-        LONG_RANGE_SEARCH: 1,
-        MEDIUM_RANGE_SEARCH: 2,
-        SHORT_RANGE_SEARCH: 3
-    };*/
 
-    function GoThroughGate(visionFactory, peripheralsFactory) {
-        this._gateDetector = visionFactory.createGateDetector(console);
-        this._thrustController = peripheralsFactory.createThrustController();
-        //this._state = States.DIVE;
+    function GoThroughGate(gateDetector, thrustController) {
+        this._gateDetector = gateDetector;
+        this._thrustController = thrustController;
     }
 
     GoThroughGate.prototype.execute = function () {
@@ -196,6 +189,10 @@ module.exports = (function(){
 
     var _roundToFourSigFigs = function (num) {
         return Math.floor(num * 1000) / 1000;
+    };
+
+    GoThroughGate.prototype.terminate = function () {
+        this._shouldQuit = true;
     };
 
     return GoThroughGate;
