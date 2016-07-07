@@ -13,6 +13,8 @@ void sortContoursByY(std::vector<Contour>& contours);
 PointClusters removeReflections(ContourClusters& contourClusters);
 std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& clusters);
 unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles);
+bool _isRectangle(cv::RotatedRect& rect);
+bool _rectIsOnBottom(cv::RotatedRect& rect, int frameHeight);
 
 #ifdef DEBUG
 void showDebugFeed(cv::Mat thresholdedImg, json poles, std::vector<Contour>& contours, PointClusters clusters,
@@ -185,11 +187,24 @@ json GateDetector::rectanglesToPoles_(std::vector<cv::RotatedRect>& rectangles) 
     json poles = json::array();
     for (auto rect : rectangles) {
         if (rect.size.area()*3 < largestArea) continue;
-        if (rect.size.height*6 < rect.size.width) continue;
+        if (!_isRectangle(rect) and !_rectIsOnBottom(rect, frameHeight)) continue;
         auto pole = rectangleToPole_(rect);
         poles.push_back(pole);
     }
     return poles;
+}
+
+bool _isRectangle(cv::RotatedRect& rect) {
+    if (rect.angle < -45 or rect.angle > 45) return rect.size.width > rect.size.height*6;
+    return rect.size.height > rect.size.width*6;
+}
+
+bool _rectIsOnBottom(cv::RotatedRect& rect, int frameHeight) {
+    float rectHeight;
+    if (rect.angle < -45 or rect.angle > 45) rectHeight = rect.size.width;
+    else rectHeight = rect.size.height;
+    float rectBottom = rect.center.y + rectHeight/2;
+    return rectBottom > frameHeight-10;
 }
 
 unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles) {
