@@ -4,7 +4,7 @@
 
 module.exports = (function(){
 
-    var utilities = require("../Utilities/index");
+    var utilities = require("../Brain/Utilities/index");
     var wait = utilities.Wait;
 
     const MAINTAIN_DIVE = 0.29;
@@ -28,10 +28,11 @@ module.exports = (function(){
         SEARCH_RIGHT: 5
     };
 
-    function GoThroughGate(visionFactory, peripheralsFactory) {
-        this._gateDetector = visionFactory.createGateDetector(console);
+    function GoThroughGate(visionFactory, peripheralsFactory, logger) {
+        this._gateDetector = visionFactory.createGateDetector(logger);
         this._thrustController = peripheralsFactory.createThrustController();
         this._state = States.DIVE;
+        this._logger = logger;
     }
 
     GoThroughGate.prototype.execute = function () {
@@ -70,8 +71,9 @@ module.exports = (function(){
 
     var _trackGate = function(poles) {
         if (poles.length === 2 && this._state !== States.DIVE) this._state = States.CONTINUE;
-        if (poles.length == 1 && this._state !== States.DIVE) this._state = States.BEGIN_SEARCH;
-        if (poles.length == 0) {
+        if (poles.length === 1 && this._state !== States.DIVE) this._state = States.BEGIN_SEARCH;
+        if (poles.length === 0 && this._state !== States.SEARCH_LEFT && this._state !== States.SEARCH_RIGHT) {
+            this._logger.info("Can no longer detect gate. Stopping...");
             this._shouldQuit = true;
             return;
         }
@@ -80,11 +82,10 @@ module.exports = (function(){
         if (this._state === States.DIVE) _continueDive.call(this, poles);
     };
 
-    var _continueDive = function (target) {
-        if (_hasReachedDepth(target)) {
-            _thrustForward.call(this);
-            this._state = States.CONTINUE;
-        }
+    var _beginSearch = function (poles) {
+        var poleCenter = _getPoleCenter(poles[0]);
+        if (poleCenter.X < TargetBox.LEFT) this._state = States.SEARCH_RIGHT;
+        else this._state = States.SEARCH_LEFT;
     };
 
     var _travelToGate = function (poles) {
@@ -93,28 +94,46 @@ module.exports = (function(){
         _alignY.call(this, gateCenter);
     };
 
+    var _continueDive = function (poles) {
+        var gateCenter;
+        if (poles.length === 1) gateCenter = _getPoleCenter(poles[0]);
+        else gateCenter = _getGateCenter(poles);
+        if (_hasReachedDepth(gateCenter)) {
+            _thrustForward.call(this);
+            _maintainDepth.call(this);
+            this._state = States.CONTINUE;
+        }
+    };
+
+    var _hasReachedDepth = function (target) {
+        return target.Y > TargetBox.BOTTOM;
+    };
+
     var _getGateCenter = function(poles) {
-        var leftCenter = _getPoleCenter(poles[0]);
-        var rightCenter = _getPoleCenter(poles[0]);
-        var x = (leftCenter.X + rightCenter.X)/2;
-        var y = (leftCenter.Y + rightCenter.Y)/2;
-        return {X: x, Y: y};
+        var xTotal = 0, yTotal = 0;
+        for (var i = 0; i < poles.length; i++) {
+            xTotal += (0+pole[i].X);
+            yTotal += (0+pole[i].Y);
+        }
+        return {X: xTotal/poles.length, Y: yTotal/poles.length};
     };
 
     var _getPoleCenter = function (pole) {
         var xTotal = 0, yTotal = 0;
         for (var i = 0; i < 4; i++) {
-            xTotal += (+pole[i].X);
-            yTotal += (+pole[i].Y);
+            xTotal += (0+pole[i].X);
+            yTotal += (0+pole[i].Y);
         }
         return {X: xTotal/4, Y: yTotal/4};
     };
 
     var _alignX = function(target) {
         if (_hasDriftedRight(target)) {
+            console.log("Sub has drifted right.\t\tThe target is at X: " + target.X + " Y: " + target.Y);
             _listLeft.call(this);
         }
         else if (_hasDriftedLeft(target)) {
+            console.log("Sub has drifted left. \t\tThe target is at X: " + target.X + " Y: " + target.Y);
             _listRight.call(this);
         }
         this._thrustController.thrustForward(this._leftThrust, this._rightThrust);
@@ -152,14 +171,9 @@ module.exports = (function(){
     };
 
     var _alignY = function(target) {
-        if (_hasReachedDepth(target) && _isStillDiving.call(this)) _maintainDepth.call(this);
-        else if (_hasDriftedDown(target)) _reduceDive.call(this);
-        else if (_hasDriftedUp(target) && !_isStillDiving.call(this)) _increaseDive.call(this);
+        if (_hasDriftedDown(target)) _reduceDive.call(this);
+        else if (_hasDriftedUp(target)) _increaseDive.call(this);
         this._thrustController.dive(this._diveThrust, this._diveThrust);
-    };
-
-    var _hasReachedDepth = function (target) {
-        return target.Y > TargetBox.BOTTOM;
     };
 
     var _maintainDepth = function () {
@@ -194,7 +208,7 @@ module.exports = (function(){
         else if (_belowReverseMinThrust(thrust)) {
             thrust = -MINIMUM_THRUST;
         }
-        return _roundToFourSigFigs(thrust);
+        return _roundToSevenSigFigs(thrust);
     };
 
     var _belowForwardMinThrust = function (thrust) {
@@ -205,8 +219,12 @@ module.exports = (function(){
         return -MINIMUM_THRUST < thrust && thrust < NEUTRAL;
     };
 
-    var _roundToFourSigFigs = function (num) {
-        return Math.floor(num * 1000) / 1000;
+    var _roundToSevenSigFigs = function (num) {
+        return Math.floor(num * 1000000) / 1000000;
+    };
+
+    GoThroughGate.prototype.terminate = function () {
+        this._shouldQuit = true;
     };
 
     return GoThroughGate;
