@@ -70,25 +70,63 @@ module.exports = (function(){
     };
 
     var _trackGate = function(poles) {
-        if (poles.length === 2 && this._state !== States.DIVE) this._state = States.CONTINUE;
-        if (poles.length === 1 && this._state !== States.DIVE) this._state = States.BEGIN_SEARCH;
-        if (poles.length === 0 && this._state !== States.SEARCH_LEFT && this._state !== States.SEARCH_RIGHT) {
+        if (poles.length === 2 && !_isDiving.call(this)) _travelToGate.call(this, poles);
+        if (poles.length === 1 && !_isDiving.call(this) && !_isSearching.call(this)) _beginSearch.call(this, poles);
+        if (poles.length === 1 && _isSearching() && this._hasFoundPole) this._hasFoundPole = true;
+        if (poles.length === 0 && !_isSearching.call(this)) {
             this._logger.info("Can no longer detect gate. Stopping...");
             this._shouldQuit = true;
             return;
         }
-        if (this._state === States.BEGIN_SEARCH) _beginSearch.call(this, poles);
-        if (this._state === States.CONTINUE) _travelToGate.call(this, poles);
+        if (this._state === States.SEARCH_LEFT) _searchLeft.call(this, poles);
+        if (this._state === States.SEARCH_RIGHT) _searchRight.call(this, poles);
         if (this._state === States.DIVE) _continueDive.call(this, poles);
     };
 
+    var _isDiving = function () {
+        return this._state === States.DIVE;
+    };
+
+    var _isSearching = function () {
+        return this._state === States.SEARCH_LEFT || this._state === States.SEARCH_RIGHT;
+    };
+
     var _beginSearch = function (poles) {
+        this._hasFoundPole = true;
         var poleCenter = _getPoleCenter(poles[0]);
-        if (poleCenter.X < TargetBox.LEFT) this._state = States.SEARCH_RIGHT;
+        if (poleCenter.X < 0) this._state = States.SEARCH_RIGHT;
         else this._state = States.SEARCH_LEFT;
     };
 
+    var _searchLeft = function (poles) {
+        if (poles.length === 0 && this._hasFoundPole) {
+            this._state = States.SEARCH_RIGHT;
+            this._hasFoundPole = false;
+            return;
+        }
+        this._leftThrust = -MINIMUM_THRUST;
+        this._rightThrust = MINIMUM_THRUST;
+        _executeThrusting.call(this);
+        if (poles.length !== 0) _alignY.call(this, _getGateCenter(poles));
+    };
+
+    var _searchRight = function (poles) {
+        if (poles.length === 0 && this._hasFoundPole) {
+            this._state = States.SEARCH_LEFT;
+            this._hasFoundPole = false;
+            return;
+        }
+        this._leftThrust = MINIMUM_THRUST;
+        this._rightThrust = -MINIMUM_THRUST;
+        _executeThrusting.call(this);
+        if (poles.length !== 0) _alignY.call(this, _getGateCenter(poles));
+    };
+
     var _travelToGate = function (poles) {
+        if (this._state !== States.CONTINUE) {
+            _thrustForward.call(this);
+            this._state = States.CONTINUE;
+        }
         var gateCenter = _getGateCenter(poles);
         _alignX.call(this, gateCenter);
         _alignY.call(this, gateCenter);
@@ -104,17 +142,16 @@ module.exports = (function(){
     };
 
     var _stopDiving = function () {
-        _thrustForward.call(this);
         _maintainDepth.call(this);
-        _executeThrusting.call(this);
         this._state = States.CONTINUE;
     };
 
     var _getGateCenter = function(poles) {
         var xTotal = 0, yTotal = 0;
         for (var i = 0; i < poles.length; i++) {
-            xTotal += (0+pole[i].X);
-            yTotal += (0+pole[i].Y);
+            var poleCenter = _getPoleCenter(poles[i]);
+            xTotal += (poleCenter.X);
+            yTotal += (poleCenter.Y);
         }
         return {X: xTotal/poles.length, Y: yTotal/poles.length};
     };
@@ -122,8 +159,8 @@ module.exports = (function(){
     var _getPoleCenter = function (pole) {
         var xTotal = 0, yTotal = 0;
         for (var i = 0; i < 4; i++) {
-            xTotal += (0+pole[i].X);
-            yTotal += (0+pole[i].Y);
+            xTotal += (+pole[i].X);
+            yTotal += (+pole[i].Y);
         }
         return {X: xTotal/4, Y: yTotal/4};
     };
@@ -209,11 +246,8 @@ module.exports = (function(){
     };
 
     var normalizeThrust = function(thrust) {
-        if (_belowForwardMinThrust(thrust)) {
-            thrust = MINIMUM_THRUST;
-        }
-        else if (_belowReverseMinThrust(thrust)) {
-            thrust = -MINIMUM_THRUST;
+        if (_belowForwardMinThrust(thrust) || _belowReverseMinThrust(thrust)) {
+            thrust = NEUTRAL;
         }
         return _roundToSevenSigFigs(thrust);
     };

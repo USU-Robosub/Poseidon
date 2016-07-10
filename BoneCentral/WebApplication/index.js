@@ -25,7 +25,7 @@ CppInterface.Peripherals.initialize();
 var visionFactoy = new VisionInterface.Factory();
 var gateDetector = visionFactoy.createGateDetector(webLogger);
 
-var goThroughGate = new GoThroughGate(gateDetector, thrustController);
+var goThroughGate = new GoThroughGate(visionFactoy, peripheralsFactory, webLogger);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
