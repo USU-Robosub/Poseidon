@@ -95,18 +95,19 @@ module.exports = (function(){
     };
 
     var _continueDive = function (poles) {
-        var gateCenter;
-        if (poles.length === 1) gateCenter = _getPoleCenter(poles[0]);
-        else gateCenter = _getGateCenter(poles);
-        if (_hasReachedDepth(gateCenter)) {
-            _thrustForward.call(this);
-            _maintainDepth.call(this);
-            this._state = States.CONTINUE;
-        }
+        var gateCenter = _getGateCenter(poles);
+        if (_hasReachedDepth(gateCenter)) _stopDiving.call(this);
     };
 
     var _hasReachedDepth = function (target) {
         return target.Y > TargetBox.BOTTOM;
+    };
+
+    var _stopDiving = function () {
+        _thrustForward.call(this);
+        _maintainDepth.call(this);
+        _executeThrusting.call(this);
+        this._state = States.CONTINUE;
     };
 
     var _getGateCenter = function(poles) {
@@ -136,7 +137,7 @@ module.exports = (function(){
             console.log("Sub has drifted left. \t\tThe target is at X: " + target.X + " Y: " + target.Y);
             _listRight.call(this);
         }
-        this._thrustController.thrustForward(this._leftThrust, this._rightThrust);
+        _executeThrusting.call(this);
     };
 
     var _thrustForward = function () {
@@ -163,11 +164,11 @@ module.exports = (function(){
     };
 
     var _incrementLeftThrust = function(diff) {
-        this._leftThrust = normalizeThrust(this._leftThrust + diff);
+        this._leftThrust = _roundToSevenSigFigs(this._leftThrust + diff);
     };
 
     var _incrementRightThrust = function(diff) {
-        this._rightThrust = normalizeThrust(this._rightThrust + diff);
+        this._rightThrust = _roundToSevenSigFigs(this._rightThrust + diff);
     };
 
     var _alignY = function(target) {
@@ -199,6 +200,12 @@ module.exports = (function(){
     var _incrementDiveThrust = function(diff) {
         var thrust = this._diveThrust;
         this._diveThrust = thrust + diff;
+    };
+
+    var _executeThrusting = function() {
+        var left = normalizeThrust(this._leftThrust);
+        var right = normalizeThrust(this._rightThrust);
+        this._thrustController.thrustForward(left, right);
     };
 
     var normalizeThrust = function(thrust) {
