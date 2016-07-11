@@ -6,11 +6,14 @@ module.exports = (function(){
 
     var utilities = require("../Brain/Utilities/index");
     var wait = utilities.Wait;
+    var $ = utilities.Promises;
 
+    const COAST_TIME = 1000; // in ms
     const MAINTAIN_DIVE = 0.29;
     const SINK = 0.5;
     const TICK = 30; // in ms
     const MINIMUM_THRUST = 0.15;
+    const NORMAL_THRUST = 0.2;
     const THRUST_INCREMENT = 0.0005;
     const NEUTRAL = 0.0;
     const TargetBox = {
@@ -25,7 +28,8 @@ module.exports = (function(){
         CONTINUE: 2,
         BEGIN_SEARCH: 3,
         SEARCH_LEFT: 4,
-        SEARCH_RIGHT: 5
+        SEARCH_RIGHT: 5,
+        PASSING_GATE: 6
     };
 
     function GoThroughGate(visionFactory, peripheralsFactory, logger) {
@@ -36,6 +40,7 @@ module.exports = (function(){
     }
 
     GoThroughGate.prototype.execute = function () {
+        this._deferred = $.Deferred();
         _setDefaults.call(this);
         this._shouldQuit = false;
         this._thrustController.dive(this._diveThrust, this._diveThrust);
@@ -43,6 +48,7 @@ module.exports = (function(){
             this._state = States.DIVE;
         }.bind(this));
         _runTick.call(this);
+        return this._deferred.promise();
     };
 
     var _setDefaults = function() {
@@ -52,8 +58,10 @@ module.exports = (function(){
     };
 
     var _runTick = function() {
+        if (this._state === States.PASSING_GATE) return;
         if (this._shouldQuit) {
             _killThrusters.call(this);
+            this._deferred.fail();
             return;
         }
         wait(TICK).done(function () {
@@ -72,11 +80,19 @@ module.exports = (function(){
     var _trackGate = function(poles) {
         if (poles.length === 2 && !_isDiving.call(this)) _travelToGate.call(this, poles);
         if (poles.length === 1 && !_isDiving.call(this) && !_isSearching.call(this)) _beginSearch.call(this, poles);
-        if (poles.length === 1 && _isSearching() && this._hasFoundPole) this._hasFoundPole = true;
-        if (poles.length === 0 && !_isSearching.call(this)) {
+        if (poles.length === 1 && _isSearching.call(this) && this._hasFoundPole) this._hasFoundPole = true;
+        if (poles.length === 0 && !_isSearching.call(this) && !this._isNearGate) {
             this._logger.info("Can no longer detect gate. Stopping...");
             this._shouldQuit = true;
             return;
+        }
+        if (poles.length === 0 && this._isNearGate) {
+            console.log(this._isNearGate);
+            this._thrustController.thrustForward(NORMAL_THRUST, NORMAL_THRUST);
+            this._state = States.PASSING_GATE;
+            wait(COAST_TIME).done(function () {
+                this._deferred.resolve();
+            }.bind(this));
         }
         if (this._state === States.SEARCH_LEFT) _searchLeft.call(this, poles);
         if (this._state === States.SEARCH_RIGHT) _searchRight.call(this, poles);
@@ -127,6 +143,9 @@ module.exports = (function(){
             _thrustForward.call(this);
             this._state = States.CONTINUE;
         }
+        var poleLeft = _getPoleCenter(poles[0]);
+        var poleRight = _getPoleCenter(poles[1]);
+        if (poleLeft.X < -200 && poleRight.X > 200) this._isNearGate = true;
         var gateCenter = _getGateCenter(poles);
         _alignX.call(this, gateCenter);
         _alignY.call(this, gateCenter);
@@ -178,8 +197,8 @@ module.exports = (function(){
     };
 
     var _thrustForward = function () {
-        _incrementLeftThrust.call(this, 0.2);
-        _incrementRightThrust.call(this, 0.2);
+        _incrementLeftThrust.call(this, NORMAL_THRUST);
+        _incrementRightThrust.call(this, NORMAL_THRUST);
     };
 
     var _hasDriftedRight = function (target) {

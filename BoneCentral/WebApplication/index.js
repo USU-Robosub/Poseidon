@@ -31,7 +31,9 @@ app.use('/', express.static('static'));
 app.use(bodyParser.json());
 
 app.get("/goThroughGate", function (req, res) {
-    goThroughGate.execute();
+    goThroughGate.execute().done(function () {
+		thrustController.goDirection(0, 0, 0);
+	});
     res.send("Going through gate");
 });
 
