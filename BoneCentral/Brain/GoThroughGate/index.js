@@ -32,7 +32,7 @@ module.exports = (function(){
         this._gateDetector = visionFactory.createGateDetector(logger);
         this._thrustManager = thrustManager;
         this._thrustManager.setTargetBox(TargetBox);
-        this._state = States.DIVE;
+        this._state = States.INITIAL_DIVE;
         this._logger = logger;
     }
 

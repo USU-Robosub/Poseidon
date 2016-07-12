@@ -7,7 +7,7 @@ var VisionInterface = require("../Brain/VisionInterface");
 var WebLogger = require('./WebLogger');
 var FileLogger = require('./FileLogger');
 var app = express();
-var GoThroughGate = require("./GoThroughGate");
+var GoThroughGate = require("../Brain/GoThroughGate");
 
 var peripheralsFactory = new CppInterface.Factory();
 var ThrustManager = require("../Brain/ThrustManager");
@@ -40,7 +40,7 @@ app.get("/goThroughGate", function (req, res) {
 });
 
 app.get("/terminate", function (req, res) {
-    goThroughGate.terminate();
+    goThroughGate._shouldQuit = true;
     res.send("Terminated");
 });
 
