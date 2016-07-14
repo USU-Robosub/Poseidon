@@ -12,6 +12,11 @@ module.exports = (function () {
 
     const MAINTAIN_DIVE = 0.29;
 
+    const PULSE_INTERVAL_RATE = 50;
+    const PULSE_DELAY = PULSE_INTERVAL_RATE/2;
+
+    var pulseInterval;
+
     function ThrustManager(factory){
         this._thrustController = factory.createThrustController();
         this._leftThrust = NEUTRAL;
@@ -117,16 +122,48 @@ module.exports = (function () {
         return Math.floor(num * 1000000) / 1000000;
     };
 
-    ThrustManager.prototype.yawLeft = function () {
-        this._leftThrust = -MINIMUM_THRUST;
-        this._rightThrust = MINIMUM_THRUST;
-        _executeForwardThrust.call(this);
+    ThrustManager.prototype.yawLeft = function (yawMagnitude) {
+        if (yawMagnitude >= MINIMUM_THRUST) {
+            this._leftThrust = -MINIMUM_THRUST;
+            this._rightThrust = MINIMUM_THRUST;
+            _executeForwardThrust.call(this);
+        }
+        _pulseYawLeft.call(this);
     };
 
-    ThrustManager.prototype.yawRight = function () {
-        this._leftThrust = MINIMUM_THRUST;
-        this._rightThrust = -MINIMUM_THRUST;
-        _executeForwardThrust.call(this);
+    var _pulseYawLeft = function() {
+        pulseInterval = setInterval(function() {
+            this._rightThrust = MINIMUM_THRUST;
+            this._leftThrust = -MINIMUM_THRUST;
+            _executeForwardThrustWithPulse.call(this);
+            setTimeout(function() {
+                this._rightThrust = NEUTRAL;
+                _executeForwardThrustWithPulse.call(this);
+            }, PULSE_DELAY);
+        }, PULSE_INTERVAL_RATE);
+    };
+
+    ThrustManager.prototype.yawRight = function (yawMagnitude) {
+        if (yawMagnitude >= MINIMUM_THRUST) {
+            this._leftThrust = MINIMUM_THRUST;
+            this._rightThrust = -MINIMUM_THRUST;
+            _executeForwardThrust.call(this);
+        }
+        else {
+            _pulseYawRight.call(this);
+        }
+    };
+
+    var _pulseYawRight = function() {
+        pulseInterval = setInterval(function() {
+            this._leftThrust = MINIMUM_THRUST;
+            this._rightThrust = -MINIMUM_THRUST;
+            _executeForwardThrustWithPulse.call(this);
+            setTimeout(function() {
+                this._leftThrust = NEUTRAL;
+                _executeForwardThrustWithPulse.call(this);
+            }, PULSE_DELAY);
+        }, PULSE_INTERVAL_RATE);
     };
 
     ThrustManager.prototype.dive = function () {
@@ -143,10 +180,17 @@ module.exports = (function () {
     };
 
     var _executeForwardThrust = function() {
+        clearInterval(pulseInterval);
         var left = normalizeThrust(this._leftThrust);
         var right = normalizeThrust(this._rightThrust);
         this._thrustController.thrustForward(left, right);
     };
+
+    var _executeForwardThrustWithPulse = function() {
+        var left = normalizeThrust(this._leftThrust);
+        var right = normalizeThrust(this._rightThrust);
+        this._thrustController.thrustForward(left, right);
+    }
 
     var _executeDiveThrust = function () {
         var diveThrust = normalizeThrust(this._diveThrust);
