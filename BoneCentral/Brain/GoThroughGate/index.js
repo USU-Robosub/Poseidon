@@ -9,7 +9,7 @@ module.exports = (function(){
     var $ = utilities.Promises;
 
     const COAST_TIME = 1000; // in ms
-    const TICK = 300; // in ms
+    const TICK = 30; // in ms
 
     const States = {
         INITIAL_DIVE: 0,
@@ -25,7 +25,7 @@ module.exports = (function(){
         LEFT: -25,
         RIGHT: 25,
         TOP: 25,
-        BOTTOM: -75
+        BOTTOM: -25
     };
 
     function GoThroughGate(visionFactory, thrustManager, logger) {
@@ -65,7 +65,7 @@ module.exports = (function(){
     var _trackGate = function(poles) {
         if (poles.length === 2 && !_isDiving.call(this)) _travelToGate.call(this, poles);
         if (poles.length === 1 && !_isDiving.call(this) && !_isSearching.call(this)) _beginSearch.call(this, poles);
-        if (poles.length === 1 && _isSearching.call(this) && this._hasFoundPole) this._hasFoundPole = true;
+        if (poles.length === 1 && _isSearching.call(this) && !this._hasFoundPole) this._hasFoundPole = true;
         if (poles.length === 0 && !_isSearching.call(this) && !this._isNearGate) {
             this._logger.info("Can no longer detect gate. Stopping...");
             this._shouldQuit = true;
