@@ -170,7 +170,8 @@ module.exports = (function () {
         this._leftThrust = NEUTRAL;
         this._rightThrust = NEUTRAL;
         _executeForwardThrust.call(this);
-        this._thrustController.dive(SINK, SINK);
+        this._diveThrust = SINK;
+        _executeDiveThrust.call(this);
     };
 
     ThrustManager.prototype.killThrusters = function () {
@@ -195,6 +196,25 @@ module.exports = (function () {
     var _executeDiveThrust = function () {
         var diveThrust = normalizeThrust(this._diveThrust);
         this._thrustController.dive(diveThrust, diveThrust)
+    };
+
+    var normalizeThrust = function(thrust) {
+        if (_belowForwardMinThrust(thrust) || _belowReverseMinThrust(thrust)) {
+            thrust = NEUTRAL;
+        }
+        return _roundToSevenSigFigs(thrust);
+    };
+
+    var _belowForwardMinThrust = function (thrust) {
+        return NEUTRAL < thrust && thrust < MINIMUM_THRUST;
+    };
+
+    var _belowReverseMinThrust = function (thrust) {
+        return -MINIMUM_THRUST < thrust && thrust < NEUTRAL;
+    };
+
+    var _roundToSevenSigFigs = function (num) {
+        return Math.floor(num * 1000000) / 1000000;
     };
 
     return ThrustManager;
