@@ -4,13 +4,13 @@
 
 module.exports = (function () {
 
-    const SINK = 0.5;
+    const SINK = 0.4;
     const MINIMUM_THRUST = 0.15;
     const NORMAL_THRUST = 0.2;
     const THRUST_INCREMENT = 0.0005;
     const NEUTRAL = 0.0;
 
-    const MAINTAIN_DIVE = 0.29;
+    const MAINTAIN_DIVE = 0.25;
 
     const PULSE_INTERVAL_RATE = 50;
     const PULSE_DELAY = PULSE_INTERVAL_RATE/2;
