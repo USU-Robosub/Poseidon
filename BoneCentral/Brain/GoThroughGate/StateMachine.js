@@ -8,10 +8,8 @@ const States = {
     SEARCH_LEFT: 2,
     SEARCH_RIGHT: 3,
     CONTINUE: 4,
-    DRIFTED_LEFT: 5,
-    DRIFTED_RIGHT: 6,
-    NEAR_GATE: 7,
-    PASSING_GATE: 8,
+    NEAR_GATE: 5,
+    PASSING_GATE: 6,
     FAIL: -1
 };
 
@@ -21,20 +19,22 @@ module.exports = (function () {
         this._state = States.INITIAL_DIVE;
     }
 
-    StateMachine.prototype.doTransition = function(poleCount, gateCenter) {
+    StateMachine.prototype.doTransition = function(gate) {
         if (this._state === States.INITIAL_DIVE) _transitionFromInitialDive.call(this);
-        else  if (this._state === States.DIVE) _transitionFromDive.call(this, poleCount, gateCenter);
-        else if (this._state === States.SEARCH_LEFT) _transitionFromSearchLeft.call(this, poleCount);
-        else if (this._state === States.DRIFTED_RIGHT) _transitionFromSearchRight.call(this, poleCount);
-        else if (this._state === States.CONTINUE) _transitionFromContinue.call(this, poleCount, gateCenter);
-        else if (this._state === States.NEAR_GATE) _transitionFromNearGate.call(this, poleCount);
+        else  if (this._state === States.DIVE) _transitionFromDive.call(this, gate);
+        else if (this._state === States.SEARCH_LEFT) _transitionFromSearchLeft.call(this, gate);
+        else if (this._state === States.SEARCH_RIGHT) _transitionFromSearchRight.call(this, gate);
+        else if (this._state === States.CONTINUE) _transitionFromContinue.call(this, gate);
+        else if (this._state === States.NEAR_GATE) _transitionFromNearGate.call(this, gate);
     };
 
     var _transitionFromInitialDive = function () {
         this._state = States.DIVE;
     };
 
-    var _transitionFromDive = function (poleCount, gateCenter) {
+    var _transitionFromDive = function (gate) {
+        var poleCount = gate.getPoleCount();
+        var gateCenter = gate.getGateCenter();
         if (poleCount < 1) this._state = States.FAIL;
         else if (_hasReachedDepth.call(this, gateCenter) && poleCount === 1) this._state = States.SEARCH_LEFT;
         else if (_hasReachedDepth.call(this, gateCenter) && poleCount > 1) this._state = States.CONTINUE;
@@ -44,22 +44,26 @@ module.exports = (function () {
         return target.Y > 0; // this._targetBox.BOTTOM;
     };
 
-    var _transitionFromSearchLeft = function (poleCount) {
+    var _transitionFromSearchLeft = function (gate) {
+        var poleCount = gate.getPoleCount();
         if (poleCount < 1) this._state = States.SEARCH_RIGHT;
         else if(poleCount > 1) this._state = States.CONTINUE;
     };
 
-    var _transitionFromSearchRight = function (poleCount) {
+    var _transitionFromSearchRight = function (gate) {
+        var poleCount = gate.getPoleCount();
         if (poleCount <= 1) this._state = States.FAIL;
         else if (poleCount > 1) this._state = States.CONTINUE;
     };
 
-    var _transitionFromContinue = function (poleCount) {
-        if (someUnknownCondition) this._state = States.NEAR_GATE;
+    var _transitionFromContinue = function (gate) {
+        var poleCount = gate.getPoleCount();
+        if (false) this._state = States.NEAR_GATE;
         else if (poleCount < 1) this._state = States.FAIL;
     };
 
-    var _transitionFromNearGate = function (poleCount) {
+    var _transitionFromNearGate = function (gate) {
+        var poleCount = gate.getPoleCount();
         if (poleCount < 1) this._state = States.PASSING_GATE;
     };
 
