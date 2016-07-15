@@ -7,32 +7,40 @@ module.exports = function () {
     function Gate(poles) {
         this._poleCount = poles.length;
         if (poles.length === 1) {
-            this._gateCenter = null;
-            var poleCenter = _calculatePoleCenter(poles[0]);
-            if (poleCenter.X < 0) {
-                this._leftPole = poleCenter;
-                this._rightPole = null;
-            }
-            else {
-                this._leftPole = null;
-                this._rightPole = poleCenter;
-            }
+            _constructFromOnePole.call(this, poles[0]);
         }
         else if (poles.length === 2) {
-            if (poles[0].X < poles[1].X) {
-                this._leftPole = poles[0];
-                this._rightPole = poles[1];
-            }
-            else {
-                this._leftPole = poles[1];
-                this._rightPole = poles[0];
-            }
-            this._gateCenter = _calculateGateCenter(poles);
+            _constructFromTwoPoles.call(this, poles[0], poles[1]);
         }
         else {
             this._leftPole = this._rightPole = this._gateCenter = null;
         }
     }
+
+    var _constructFromOnePole = function (pole) {
+        this._gateCenter = null;
+        var poleCenter = _calculatePoleCenter(pole);
+        if (poleCenter.X < 0) {
+            this._leftPole = poleCenter;
+            this._rightPole = null;
+        }
+        else {
+            this._leftPole = null;
+            this._rightPole = poleCenter;
+        }
+    };
+
+    var _constructFromTwoPoles = function (pole1, pole2) {
+        if (pole1.X < pole2.X) {
+            this._leftPole = pole1;
+            this._rightPole = pole2;
+        }
+        else {
+            this._leftPole = pole2;
+            this._rightPole = pole1;
+        }
+        this._gateCenter = _calculateGateCenter(pole1, pole2);
+    };
 
     var _calculateGateCenter = function(poleLeft, poleRight) {
         var xTotal = poleLeft.X + poleRight.X;
