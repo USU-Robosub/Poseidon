@@ -8,8 +8,7 @@ const States = {
     SEARCH_LEFT: 2,
     SEARCH_RIGHT: 3,
     CONTINUE: 4,
-    NEAR_GATE: 5,
-    PASSING_GATE: 6,
+    PASSING_GATE: 5,
     FAIL: -1
 };
 
@@ -26,7 +25,6 @@ module.exports = (function () {
         else if (this._state === States.SEARCH_LEFT) _transitionFromSearchLeft.call(this, gate);
         else if (this._state === States.SEARCH_RIGHT) _transitionFromSearchRight.call(this, gate);
         else if (this._state === States.CONTINUE) _transitionFromContinue.call(this, gate);
-        else if (this._state === States.NEAR_GATE) _transitionFromNearGate.call(this, gate);
     };
 
     var _transitionFromInitialDive = function () {
@@ -63,13 +61,6 @@ module.exports = (function () {
 
     var _transitionFromContinue = function (gate) {
         console.log("Transitioning from Continue");
-        var poleCount = gate.getPoleCount();
-        if (false) this._state = States.NEAR_GATE;
-        else if (poleCount < 1) this._state = States.FAIL;
-    };
-
-    var _transitionFromNearGate = function (gate) {
-        console.log("Transitioning from Near Gate");
         var poleCount = gate.getPoleCount();
         if (poleCount < 1) this._state = States.PASSING_GATE;
     };
