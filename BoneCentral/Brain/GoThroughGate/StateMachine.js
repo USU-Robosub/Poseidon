@@ -15,6 +15,9 @@ const States = {
 
 module.exports = (function () {
 
+    var utilities = require("../Utilities/index");
+    var wait = utilities.Wait;
+
     function StateMachine(logger) {
         this._state = States.INITIAL_DIVE;
         this._logger = logger
@@ -40,6 +43,11 @@ module.exports = (function () {
         console.log("Transitioning from Thrust Forward");
         var poleCount = gate.getPoleCount();
         if (poleCount > 0) this._state = States.DIVE;
+        if (this._forwardWait) return;
+        this._forwardWait = wait(2000);
+        this._forwardWait.done(function () {
+            if (this._state === States.THRUST_FORWARD) this._state = States.FAIL;
+        }.bind(this));
     };
 
     var _transitionFromDive = function (gate) {
