@@ -67,7 +67,7 @@ module.exports = (function () {
         return this._leftPole;
     };
 
-    Gate.prototype.getLeftPole = function () {
+    Gate.prototype.getRightPole = function () {
         return this._rightPole;
     };
 

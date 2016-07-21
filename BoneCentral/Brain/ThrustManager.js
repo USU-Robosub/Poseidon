@@ -166,7 +166,7 @@ module.exports = (function () {
 
     var _executeDiveThrust = function () {
         var diveThrust = normalizeThrust(this._diveThrust);
-        this._thrustController.dive(diveThrust, diveThrust)
+        this._thrustController.dive(diveThrust, diveThrust);
     };
 
     var normalizeThrust = function(thrust) {
