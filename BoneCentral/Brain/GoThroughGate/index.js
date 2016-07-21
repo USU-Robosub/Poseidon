@@ -43,8 +43,7 @@ module.exports = (function(){
 
     var _runTick = function() {
         if (this._shouldQuit) {
-            this._thrustManager.killThrusters();
-            this._deferred.fail();
+            _reset.call(this);
             return;
         }
         wait(TICK).done(function () {
@@ -55,6 +54,12 @@ module.exports = (function(){
                 _runTick.call(this);
             }.bind(this));
         }.bind(this));
+    };
+
+    var _reset = function () {
+        this._stateMachine = null;
+        this._thrustManager.killThrusters();
+        this._deferred.fail();
     };
 
     var _performActionFromState = function(gate) {
@@ -95,6 +100,7 @@ module.exports = (function(){
     var _coastThroughGate = function () {
         this._thrustManager.thrustForward();
         wait(COAST_TIME).done(function () {
+            this._stateMachine = null;
             this._deferred.resolve();
         }.bind(this));
     };
