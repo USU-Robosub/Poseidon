@@ -35,7 +35,6 @@ module.exports = (function(){
         this._shouldQuit = false;
         this._thrustManager.dive();
         wait(500).done(function () {
-            this._stateMachine.doTransition();
             _runTick.call(this);
         }.bind(this));
         return this._deferred.promise();
@@ -64,11 +63,16 @@ module.exports = (function(){
             this._shouldQuit = true;
             return;
         }
+        if (state === States.THRUST_FORWARD) _thrustForward.call(this);
         if (state === States.DIVE) _continueDive.call(this, gate);
         if (state === States.SEARCH_LEFT) _searchLeft.call(this, gate);
         if (state === States.SEARCH_RIGHT) _searchRight.call(this, gate);
-        if (state === States.CONTINUE) _travelToGate.call(this, gate);
+        if (state === States.THRUST_TOWARDS_GATE) _travelToGate.call(this, gate);
         if (state === States.PASSING_GATE) _coastThroughGate.call(this);
+    };
+
+    var _thrustForward = function () {
+        this._thrustManager.thrustForward();
     };
 
     var _travelToGate = function (gate) {
