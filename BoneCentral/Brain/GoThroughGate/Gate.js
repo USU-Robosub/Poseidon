@@ -80,8 +80,10 @@ module.exports = (function () {
         var thisPole = this._leftPole || this._rightPole;
         var leftOffset = thisPole.X - gate.getLeftPole().X;
         var rightOffset = thisPole.X - gate.getRightPole().X;
-        if (Math.abs(leftOffset) < Math.abs(rightOffset)) return leftOffset;
-        return rightOffset;
+        if (Math.abs(leftOffset) < Math.abs(rightOffset)) {
+            return  leftOffset >= 0 ? leftOffset : leftOffset * -0.5;
+        }
+        return rightOffset <= 0 ? rightOffset : rightOffset * -0.5;
     };
 
     return Gate;
