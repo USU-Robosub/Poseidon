@@ -2,7 +2,7 @@
  * Created by floris on 7/14/16.
  */
 
-module.exports = function () {
+module.exports = (function () {
 
     function Gate(poles) {
         this._poleCount = poles.length;
@@ -43,8 +43,10 @@ module.exports = function () {
     };
 
     var _calculateGateCenter = function(poleLeft, poleRight) {
-        var xTotal = poleLeft.X + poleRight.X;
-        var yTotal = poleLeft.Y + poleRight.Y;
+        var left = _calculatePoleCenter(poleLeft);
+        var right = _calculatePoleCenter(poleRight);
+        var xTotal = (+left.X) + (+right.X);
+        var yTotal = (+left.Y) + (+right.Y);
         return {X: xTotal/2, Y: yTotal/2};
     };
 
@@ -70,17 +72,18 @@ module.exports = function () {
     };
 
     Gate.prototype.getPoleCount = function () {
+        console.log("Pole Count: " + this._poleCount);
         return this._poleCount;
     };
 
     Gate.prototype.getOffsetFrom = function (gate) {
         var thisPole = this._leftPole || this._rightPole;
         var leftOffset = thisPole.X - gate.getLeftPole().X;
-        var rightOffset = thisPole.X - gate.getLeftPole().X;
+        var rightOffset = thisPole.X - gate.getRightPole().X;
         if (Math.abs(leftOffset) < Math.abs(rightOffset)) return leftOffset;
         return rightOffset;
     };
 
     return Gate;
 
-};
+})();

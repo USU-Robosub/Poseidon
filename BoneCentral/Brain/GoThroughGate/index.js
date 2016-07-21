@@ -30,14 +30,14 @@ module.exports = (function(){
     }
 
     GoThroughGate.prototype.execute = function () {
-        this._stateMachine = new StateMachine();
+        this._stateMachine = new StateMachine(this._logger);
         this._deferred = $.Deferred();
         this._shouldQuit = false;
         this._thrustManager.dive();
         wait(500).done(function () {
             this._stateMachine.doTransition();
+            _runTick.call(this);
         }.bind(this));
-        _runTick.call(this);
         return this._deferred.promise();
     };
 
@@ -72,6 +72,11 @@ module.exports = (function(){
     };
 
     var _travelToGate = function (gate) {
+        if (!this._finishedDiving) {
+            this._finishedDiving = true;
+            this._thrustManager.maintainDepth();
+            this._thrustManager.thrustForward();
+        }
         var gateCenter = null;
         var poleCount = gate.getPoleCount();
         if (poleCount === 2) {

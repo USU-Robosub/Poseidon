@@ -15,8 +15,9 @@ const States = {
 
 module.exports = (function () {
 
-    function StateMachine() {
+    function StateMachine(logger) {
         this._state = States.INITIAL_DIVE;
+        this._logger = logger
     }
 
     StateMachine.prototype.doTransition = function(gate) {
@@ -29,10 +30,12 @@ module.exports = (function () {
     };
 
     var _transitionFromInitialDive = function () {
+        console.log("Transitioning from Initial Dive");
         this._state = States.DIVE;
     };
 
     var _transitionFromDive = function (gate) {
+        console.log("Transitioning from Dive");
         var poleCount = gate.getPoleCount();
         var gateCenter = gate.getGateCenter();
         if (poleCount < 1) this._state = States.FAIL;
@@ -45,24 +48,28 @@ module.exports = (function () {
     };
 
     var _transitionFromSearchLeft = function (gate) {
+        console.log("Transitioning from Search Left");
         var poleCount = gate.getPoleCount();
         if (poleCount < 1) this._state = States.SEARCH_RIGHT;
         else if(poleCount > 1) this._state = States.CONTINUE;
     };
 
     var _transitionFromSearchRight = function (gate) {
+        console.log("Transitioning from Search Right");
         var poleCount = gate.getPoleCount();
         if (poleCount <= 1) this._state = States.FAIL;
         else if (poleCount > 1) this._state = States.CONTINUE;
     };
 
     var _transitionFromContinue = function (gate) {
+        console.log("Transitioning from Continue");
         var poleCount = gate.getPoleCount();
         if (false) this._state = States.NEAR_GATE;
         else if (poleCount < 1) this._state = States.FAIL;
     };
 
     var _transitionFromNearGate = function (gate) {
+        console.log("Transitioning from Near Gate");
         var poleCount = gate.getPoleCount();
         if (poleCount < 1) this._state = States.PASSING_GATE;
     };
