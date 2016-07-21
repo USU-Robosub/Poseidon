@@ -11,6 +11,8 @@ peripheralsInterface.Peripherals.initialize();
 var powerManager = peripheralsFactory.createPowerManager();
 powerManager.turnOnEscs();
 powerManager.turnOnImu();
+var ThrustManager = require("./ThrustManager");
+var thrustManager = new ThrustManager(peripheralsFactory);
 
 
 var GoThroughGate = require("./GoThroughGate");
@@ -18,7 +20,7 @@ var bumpBuoy = require("./BumpBuoy");
 var surfaceAtPinger = require("./SurfaceAtPinger");
 
 Utilities.Wait(500).then( function () {
-    var gTg = new GoThroughGate(visionFactory, peripheralsFactory);
+    var gTg = new GoThroughGate(visionFactory, thrustManager, console);
     return gTg.execute();
 }).then(function(){
     bumpBuoy(peripheralsFactory)

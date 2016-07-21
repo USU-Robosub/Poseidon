@@ -4,7 +4,7 @@ Capture::Capture() { }
 
 void Capture::startRecord()
 {
-    _capture.open(1);
+    _capture.open(0);
     frameWidth = (int)_capture.get(CV_CAP_PROP_FRAME_WIDTH);
     frameHeight = (int)_capture.get(CV_CAP_PROP_FRAME_HEIGHT);
 

@@ -7,9 +7,11 @@ var VisionInterface = require("../Brain/VisionInterface");
 var WebLogger = require('./WebLogger');
 var FileLogger = require('./FileLogger');
 var app = express();
-var GoThroughGate = require("./GoThroughGate");
+var GoThroughGate = require("../Brain/GoThroughGate");
 
 var peripheralsFactory = new CppInterface.Factory();
+var ThrustManager = require("../Brain/ThrustManager");
+var thrustManager = new ThrustManager(peripheralsFactory);
 
 var thrustController = peripheralsFactory.createThrustController();
 var headLights = peripheralsFactory.createHeadlights();
@@ -25,18 +27,20 @@ CppInterface.Peripherals.initialize();
 var visionFactoy = new VisionInterface.Factory();
 var gateDetector = visionFactoy.createGateDetector(webLogger);
 
-var goThroughGate = new GoThroughGate(gateDetector, thrustController);
+var goThroughGate = new GoThroughGate(visionFactoy, thrustManager, webLogger);
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
 
 app.get("/goThroughGate", function (req, res) {
-    goThroughGate.execute();
+    goThroughGate.execute().done(function () {
+		thrustController.goDirection(0, 0, 0);
+	});
     res.send("Going through gate");
 });
 
 app.get("/terminate", function (req, res) {
-    goThroughGate.terminate();
+    goThroughGate._shouldQuit = true;
     res.send("Terminated");
 });
 

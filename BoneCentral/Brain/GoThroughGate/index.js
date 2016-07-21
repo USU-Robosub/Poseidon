@@ -2,200 +2,114 @@
  * Created by floris on 6/29/16.
  */
 
+var StateMachine = require("./StateMachine");
+var Gate = require("./Gate");
+
 module.exports = (function(){
 
     var utilities = require("../Utilities/index");
     var wait = utilities.Wait;
+    var $ = utilities.Promises;
 
-    const MAINTAIN_DIVE = 0.29;
-    const SINK = 0.5;
+    const COAST_TIME = 1000; // in ms
     const TICK = 30; // in ms
-    const MINIMUM_THRUST = 0.15;
-    const THRUST_INCREMENT = 0.0005;
-    const NEUTRAL = 0.0;
+    const States = StateMachine.States;
+
     const TargetBox = {
         LEFT: -25,
         RIGHT: 25,
         TOP: 25,
         BOTTOM: -25
     };
-    /*const States = {
-        DIVE: 0,
-        LONG_RANGE_SEARCH: 1,
-        MEDIUM_RANGE_SEARCH: 2,
-        SHORT_RANGE_SEARCH: 3
-    };*/
 
-    function GoThroughGate(visionFactory, peripheralsFactory) {
-        this._gateDetector = visionFactory.createGateDetector(console);
-        this._thrustController = peripheralsFactory.createThrustController();
-        //this._state = States.DIVE;
+    function GoThroughGate(visionFactory, thrustManager, logger) {
+        this._gateDetector = visionFactory.createGateDetector(logger);
+        this._thrustManager = thrustManager;
+        this._thrustManager.setTargetBox(TargetBox);
+        this._logger = logger;
     }
 
     GoThroughGate.prototype.execute = function () {
-        _setDefaults.call(this);
+        this._stateMachine = new StateMachine(this._logger);
+        this._deferred = $.Deferred();
         this._shouldQuit = false;
-        this._thrustController.dive(this._diveThrust, this._diveThrust);
-        _runTick.call(this);
-    };
-
-    var _setDefaults = function() {
-        this._leftThrust = NEUTRAL;
-        this._rightThrust = NEUTRAL;
-        this._diveThrust = SINK;
+        this._thrustManager.dive();
+        wait(500).done(function () {
+            this._stateMachine.doTransition();
+            _runTick.call(this);
+        }.bind(this));
+        return this._deferred.promise();
     };
 
     var _runTick = function() {
         if (this._shouldQuit) {
-            _killThrusters.call(this);
+            this._thrustManager.killThrusters();
+            this._deferred.fail();
             return;
         }
         wait(TICK).done(function () {
             this._gateDetector.getPoleCoordinates().done(function (poles) {
-                _trackGate.call(this, poles);
+                var gate = new Gate(poles);
+                this._stateMachine.doTransition(gate);
+                _performActionFromState.call(this, gate);
                 _runTick.call(this);
             }.bind(this));
         }.bind(this));
     };
 
-    var _killThrusters = function () {
-        this._thrustController.thrustForward(0, 0);
-        this._thrustController.dive(0, 0);
-    };
-
-    var _travelToGate = function (poles) {
-        var gateCenter = _getGateCenter(poles);
-        _alignX.call(this, gateCenter);
-        _alignY.call(this, gateCenter);
-    };
-
-    var _trackGate = function(poles) {
-        if (poles.length === 2) {
-            _travelToGate.call(this, poles);
+    var _performActionFromState = function(gate) {
+        var state = this._stateMachine.getState();
+        if (state === States.FAIL) {
+            this._logger.info("Can no longer detect gate. Stopping...");
+            this._shouldQuit = true;
+            return;
         }
+        if (state === States.DIVE) _continueDive.call(this, gate);
+        if (state === States.SEARCH_LEFT) _searchLeft.call(this, gate);
+        if (state === States.SEARCH_RIGHT) _searchRight.call(this, gate);
+        if (state === States.CONTINUE) _travelToGate.call(this, gate);
+        if (state === States.PASSING_GATE) _coastThroughGate.call(this);
     };
 
-    var _getGateCenter = function(poles) {
-        var leftCenter = _getPoleCenter(poles[0]);
-        var rightCenter = _getPoleCenter(poles[0]);
-        var x = (leftCenter.X + rightCenter.X)/2;
-        var y = (leftCenter.Y + rightCenter.Y)/2;
-        return {X: x, Y: y};
-    };
-
-    var _getPoleCenter = function (pole) {
-        var xTotal = 0, yTotal = 0;
-        for (var i = 0; i < 4; i++) {
-            xTotal += (+pole[i].X);
-            yTotal += (+pole[i].Y);
+    var _travelToGate = function (gate) {
+        if (!this._finishedDiving) {
+            this._finishedDiving = true;
+            this._thrustManager.maintainDepth();
+            this._thrustManager.thrustForward();
         }
-        return {X: xTotal/4, Y: yTotal/4};
-    };
-
-    var _alignX = function(target) {
-        if (_hasReachedDepth(target) && _isStillDiving.call(this)) {
-            _thrustForward.call(this);
+        var gateCenter = null;
+        var poleCount = gate.getPoleCount();
+        if (poleCount === 2) {
+            this._lastGate = gate;
+            gateCenter = gate.getGateCenter();
         }
-        if (_hasDriftedRight(target)) {
-            _listLeft.call(this);
+        else if (poleCount === 1) {
+            var offset = gate.getOffsetFrom(this._lastGate);
+            gateCenter = this._lastGate.getGateCenter();
+            gateCenter.X += offset;
         }
-        else if (_hasDriftedLeft(target)) {
-            _listRight.call(this);
-        }
-        this._thrustController.thrustForward(this._leftThrust, this._rightThrust);
+        this._thrustManager.alignX(gateCenter);
+        this._thrustManager.alignY(gateCenter);
     };
 
-    var _thrustForward = function () {
-        _incrementLeftThrust.call(this, 0.2);
-        _incrementRightThrust.call(this, 0.2);
+    var _coastThroughGate = function () {
+        this._thrustManager.thrustForward();
+        wait(COAST_TIME).done(function () {
+            this._deferred.resolve();
+        }.bind(this));
     };
 
-    var _hasDriftedRight = function (target) {
-        return target.X < TargetBox.LEFT;
+    var _searchLeft = function (gate) {
+        this._thrustManager.yawLeft();
+        if (gate.getPoleCount() !== 0) this._thrustManager.alignY(gate.getGateCenter());
     };
 
-    var _listLeft = function () {
-        _incrementLeftThrust.call(this, -THRUST_INCREMENT);
-        _incrementRightThrust.call(this, THRUST_INCREMENT);
+    var _searchRight = function (gate) {
+        this._thrustManager.yawRight();
+        if (gate.getPoleCount !== 0) this._thrustManager.alignY(gate.getGateCenter());
     };
 
-    var _hasDriftedLeft = function (target) {
-        return target.X > TargetBox.RIGHT;
-    };
-
-    var _listRight = function () {
-        _incrementLeftThrust.call(this, THRUST_INCREMENT);
-        _incrementRightThrust.call(this, -THRUST_INCREMENT);
-    };
-
-    var _incrementLeftThrust = function(diff) {
-        this._leftThrust = normalizeThrust(this._leftThrust + diff);
-    };
-
-    var _incrementRightThrust = function(diff) {
-        this._rightThrust = normalizeThrust(this._rightThrust + diff);
-    };
-
-    var _alignY = function(target) {
-        if (_hasReachedDepth(target) && _isStillDiving.call(this)) _maintainDepth.call(this);
-        else if (_hasDriftedDown(target)) _reduceDive.call(this);
-        else if (_hasDriftedUp(target) && !_isStillDiving.call(this)) _increaseDive.call(this);
-        this._thrustController.dive(this._diveThrust, this._diveThrust);
-    };
-
-    var _hasReachedDepth = function (target) {
-        return target.Y > TargetBox.BOTTOM;
-    };
-
-    var _isStillDiving = function () {
-        return this._diveThrust === SINK;
-    };
-
-    var _maintainDepth = function () {
-        this._diveThrust = MAINTAIN_DIVE;
-    };
-
-    var _hasDriftedDown = function (target) {
-        return target.Y > TargetBox.TOP;
-    };
-
-    var _reduceDive = function () {
-        _incrementDiveThrust.call(this, -THRUST_INCREMENT);
-    };
-
-    var _hasDriftedUp = function (target) {
-        return target.Y < TargetBox.BOTTOM;
-    };
-
-    var _increaseDive = function () {
-        _incrementDiveThrust.call(this, THRUST_INCREMENT);
-    };
-
-    var _incrementDiveThrust = function(diff) {
-        var thrust = this._diveThrust;
-        this._diveThrust = thrust + diff;
-    };
-
-    var normalizeThrust = function(thrust) {
-        if (_belowForwardMinThrust(thrust)) {
-            thrust = MINIMUM_THRUST;
-        }
-        else if (_belowReverseMinThrust(thrust)) {
-            thrust = -MINIMUM_THRUST;
-        }
-        return _roundToFourSigFigs(thrust);
-    };
-
-    var _belowForwardMinThrust = function (thrust) {
-        return NEUTRAL < thrust && thrust < MINIMUM_THRUST;
-    };
-
-    var _belowReverseMinThrust = function (thrust) {
-        return -MINIMUM_THRUST < thrust && thrust < NEUTRAL;
-    };
-
-    var _roundToFourSigFigs = function (num) {
-        return Math.floor(num * 1000) / 1000;
+    var _continueDive = function (gateCenter) {
     };
 
     return GoThroughGate;

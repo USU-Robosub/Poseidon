@@ -6,6 +6,14 @@
 
 using json = nlohmann::json;
 
+struct Contour {
+    int MinX;
+    int MaxX;
+    int MinY;
+    int MaxY;
+    std::vector<cv::Point> Contour;
+};
+
 class GateDetector : public Capture
 {
 public:
