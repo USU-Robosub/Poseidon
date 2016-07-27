@@ -4,26 +4,28 @@ class KillSwitchController : public IController {
 private:
   volatile int active;
   IController ** list;
-  int count;
+  int count, self;
   const int STAT_LED = 22;
   
 public:
-  KillSwitchController(IController ** _list_, int _count_) {
+  KillSwitchController(IController ** _list_, int _count_, int _self_) {
     list = _list_;
     count = _count_;
+    self = _self_;
     pinMode(STAT_LED, OUTPUT);
   }
-    
+
   void execute() {
     Serial.println(active?'1':'0');
   }
-    
+
   void kill() {
     for(int i = 0; i<count; i++) {
-      list[i]->kill();
+      if(i != self)
+        list[i]->kill();
     }
   }
-    
+
   void isr(int interrupt) {
     noInterrupts();
     // when not active, interrupt pin read a '1'
