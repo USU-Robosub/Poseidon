@@ -9,12 +9,9 @@ std::vector<Contour> findContoursInImage(cv::Mat& thresholdedImg, int frameWidth
 Contour getMinMax(std::vector<cv::Point>& contour);
 void sortContoursByX(std::vector<Contour>& contours);
 ContourClusters clusterContours(std::vector<Contour>& contours);
-void sortContoursByY(std::vector<Contour>& contours);
 PointClusters removeReflections(ContourClusters& contourClusters);
 std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& clusters);
 unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles);
-bool _isRectangle(cv::RotatedRect& rect);
-bool _rectIsOnBottom(cv::RotatedRect& rect, int frameHeight);
 
 #ifdef DEBUG
 void showDebugFeed(cv::Mat thresholdedImg, json poles, std::vector<Contour>& contours, PointClusters clusters,
@@ -52,8 +49,7 @@ void GateDetector::setHsvValues(json hsvJson) {
 
 void GateDetector::process(cv::Mat& img)
 {
-    auto grayImg = Capture::grayScale(img);
-    auto thresholdedImg = thresholdImage_(grayImg);
+    auto thresholdedImg = thresholdImage_(img);
     auto contours = findContoursInImage(thresholdedImg, frameWidth);
     sortContoursByX(contours);
     auto clusters = clusterContours(contours);
@@ -66,29 +62,17 @@ void GateDetector::process(cv::Mat& img)
 #endif
 }
 
-cv::Mat GateDetector::thresholdImage_(cv::Mat& image) {
-    cv::Mat thresholdedImg;
-
-    // Only considers pixels in the correct color range
-    if (_lowHue > _highHue) {
-        cv::Mat lower, upper;
-        cv::inRange(image, cv::Scalar(0, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), lower);
-        cv::inRange(image, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(180, _highSaturation, _highValue), upper);
-        thresholdedImg = lower | upper;
+cv::Mat GateDetector::thresholdImage_(cv::Mat& image1) {
+    cv::Mat channels[3];
+    cv::split(Capture::toHsv(image1), channels);
+    for (auto i = 0; i < channels[2].rows * channels[2].cols; i++) {
+        channels[2].at<uchar>(i) = channels[2].at<uchar>(i) < 125 && channels[2].at<uchar>(i) > 100 ? 255 : 0;
     }
-    else {
-        cv::inRange(image, cv::Scalar(_lowHue, _lowSaturation, _lowValue), cv::Scalar(_highHue, _highSaturation, _highValue), thresholdedImg);
-    }
-
-    // Morphological opening (removes small objects from the foreground)
-    cv::erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    cv::dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-
-    // Morphological closing (removes small holes from the foreground)
-    cv::dilate(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    cv::erode(thresholdedImg, thresholdedImg, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
-    cv::Canny(thresholdedImg, thresholdedImg, 50, 200, 3);
-    return thresholdedImg;
+    cv::dilate(channels[2], channels[2], getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::erode(channels[2], channels[2], getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
+    cv::Canny(channels[2], channels[2], 10, 200, 5);
+    imshow("", channels[2]);
+    return  channels[2];
 }
 
 std::vector<Contour> findContoursInImage(cv::Mat& thresholdedImg, int frameWidth) {
@@ -126,14 +110,10 @@ void sortContoursByX(std::vector<Contour>& contours) {
 }
 
 ContourClusters clusterContours(std::vector<Contour>& contours) {
-    int currMax = -1;
     ContourClusters clusters;
     for (auto i = 0u; i < contours.size(); i++) {
         auto contour = contours[i];
-        if (i == 0 || contour.MinX > currMax) {
-            clusters.push_back(std::vector<Contour>());
-        }
-        if(currMax < contour.MaxX) currMax = contour.MaxX;
+        clusters.push_back(std::vector<Contour>());
         clusters[clusters.size()-1].push_back(contour);
     }
     return clusters;
@@ -143,32 +123,15 @@ PointClusters removeReflections(ContourClusters& contourClusters) {
     PointClusters trimmedClusters;
     trimmedClusters.reserve(contourClusters.size());
     for (auto cluster : contourClusters) {
-        sortContoursByY(cluster);
         std::vector<cv::Point> pointCluster;
-        for (auto point : cluster[0].Contour) {
-            pointCluster.push_back(point);
-        }
-        auto maxY = cluster[0].MaxY;
-        auto minX = cluster[0].MinX; auto maxX = cluster[0].MaxX;
-        for (auto i = 1u; i < cluster.size(); i++) {
-            auto minY = maxY - (maxX-minX)*5;
-            if (cluster[i].MaxY > (minY+maxY)/2 || (cluster[i].MinY+cluster[i].MaxY)/2 > minY) {
-                if (cluster[i].MinX < minX) minX = cluster[i].MinX;
-                if (cluster[i].MaxX > maxX) maxX = cluster[i].MaxX;
-                for (auto p : cluster[i].Contour) {
-                    pointCluster.push_back(p);
-                }
+        for (auto i = 0u; i < cluster.size(); i++) {
+            for (auto p : cluster[i].Contour) {
+                pointCluster.push_back(p);
             }
         }
         trimmedClusters.push_back(pointCluster);
     }
     return trimmedClusters;
-}
-
-void sortContoursByY(std::vector<Contour>& contours) {
-    std::sort(contours.begin(), contours.end(), [](Contour left, Contour right){
-        return left.MaxY > right.MaxY;
-    });
 }
 
 std::vector<cv::RotatedRect> findRectanglesAroundClusters(PointClusters& clusters) {
@@ -187,24 +150,10 @@ json GateDetector::rectanglesToPoles_(std::vector<cv::RotatedRect>& rectangles) 
     json poles = json::array();
     for (auto rect : rectangles) {
         if (rect.size.area()*3 < largestArea) continue;
-        if (!_isRectangle(rect) and !_rectIsOnBottom(rect, frameHeight)) continue;
         auto pole = rectangleToPole_(rect);
         poles.push_back(pole);
     }
     return poles;
-}
-
-bool _isRectangle(cv::RotatedRect& rect) {
-    if (rect.angle < -45 or rect.angle > 45) return rect.size.width > rect.size.height*6;
-    return rect.size.height > rect.size.width*6;
-}
-
-bool _rectIsOnBottom(cv::RotatedRect& rect, int frameHeight) {
-    float rectHeight;
-    if (rect.angle < -45 or rect.angle > 45) rectHeight = rect.size.width;
-    else rectHeight = rect.size.height;
-    float rectBottom = rect.center.y + rectHeight/2;
-    return rectBottom > frameHeight-10;
 }
 
 unsigned int findAreaOfLargestRectangles(std::vector<cv::RotatedRect>& rectangles) {
