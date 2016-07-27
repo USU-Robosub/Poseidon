@@ -9,7 +9,7 @@ void showDebugFeed(json poles,
 void showRectangles(json poles, cv::Mat debugFeed, int frameWidth, int frameHeight);
 
 GateDetector::GateDetector() {
-    template_ = cv::imread("./gate_template.png");
+    template_ = cv::imread("../gate_template.png");
 }
 
 void GateDetector::process(cv::Mat& img)
@@ -36,7 +36,6 @@ cv::RotatedRect GateDetector::thresholdImage_(cv::Mat& image) {
 
     cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, cv::Mat());
     cv::rectangle(image, minLoc, cv::Point(minLoc.x + template_.cols, minLoc.y + template_.rows), cv::Scalar::all(0), 2, 8, 0);
-    cv::imshow("", image);
     cv::Point center(maxLoc.x + template_.cols/2, maxLoc.y + template_.rows/2);
     return cv::RotatedRect(center, cv::Size2f(1, 1), 0);
 }
@@ -80,8 +79,6 @@ void showDebugFeed(json pole,
 
     // If you want to show the image on screen (debugging only)
     //imshow("poles", debugFeed);
-
-    cv::waitKey(30);
 }
 
 void showRectangles(json pole, cv::Mat debugFeed, int frameWidth, int frameHeight) {
