@@ -35,28 +35,21 @@ module.exports = (function () {
     var _transitionFromInitialDive = function (gate) {
         console.log("Transitioning from Initial Dive");
         var poleCount = gate.getPoleCount();
-        if (poleCount < 1) this._state = States;
-        else this._state = States.DIVE;
+        this._state = States.DIVE;
     };
 
     var _transitionFromThrustForward = function(gate) {
         console.log("Transitioning from Thrust Forward");
         var poleCount = gate.getPoleCount();
-        if (poleCount > 0) this._state = States.DIVE;
         if (this._forwardWait) return;
         this._forwardWait = wait(2000);
-        this._forwardWait.done(function () {
-            if (this._state === States.THRUST_FORWARD) this._state = States.FAIL;
-        }.bind(this));
     };
 
     var _transitionFromDive = function (gate) {
         console.log("Transitioning from Dive");
         var poleCount = gate.getPoleCount();
         var gateCenter = gate.getGateCenter();
-        if (poleCount < 1) this._state = States.FAIL;
-        else if (_hasReachedDepth.call(this, gateCenter) && poleCount === 1) this._state = States.SEARCH_LEFT;
-        else if (_hasReachedDepth.call(this, gateCenter) && poleCount > 1) this._state = States.THRUST_TOWARDS_GATE;
+        this._state = States.THRUST_TOWARDS_GATE;
     };
 
     var _hasReachedDepth = function (target) {
@@ -66,21 +59,17 @@ module.exports = (function () {
     var _transitionFromSearchLeft = function (gate) {
         console.log("Transitioning from Search Left");
         var poleCount = gate.getPoleCount();
-        if (poleCount < 1) this._state = States.SEARCH_RIGHT;
-        else if(poleCount > 1) this._state = States.THRUST_TOWARDS_GATE;
+        States.THRUST_TOWARDS_GATE;
     };
 
     var _transitionFromSearchRight = function (gate) {
         console.log("Transitioning from Search Right");
         var poleCount = gate.getPoleCount();
-        if (poleCount <= 1) this._state = States.FAIL;
-        else if (poleCount > 1) this._state = States.THRUST_TOWARDS_GATE;
+        States.THRUST_TOWARDS_GATE;
     };
 
     var _transitionFromThrustTowardsGate = function (gate) {
         console.log("Transitioning from Thrust Towards Gate");
-        var poleCount = gate.getPoleCount();
-        if (poleCount < 1) this._state = States.PASSING_GATE;
     };
 
     StateMachine.prototype.getState = function () {
