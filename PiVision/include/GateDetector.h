@@ -6,33 +6,17 @@
 
 using json = nlohmann::json;
 
-struct Contour {
-    int MinX;
-    int MaxX;
-    int MinY;
-    int MaxY;
-    std::vector<cv::Point> Contour;
-};
-
 class GateDetector : public Capture
 {
 public:
     GateDetector();
     void process(cv::Mat& img);
     void handleInput(std::string command, std::ostream& out);
-    void refreshHsv();
-    void setHsvValues(json hsvJson);
 
 private:
-    cv::Mat thresholdImage_(cv::Mat& image);
-    json rectanglesToPoles_(std::vector<cv::RotatedRect>& rectangles);
+    cv::RotatedRect thresholdImage_(cv::Mat& image);
     json rectangleToPole_(cv::RotatedRect& rectangle);
-    int _lowHue = 0;
-    int _highHue = 255;
-    int _lowSaturation = 0;
-    int _highSaturation = 255;
-    int _lowValue = 0;
-    int _highValue = 255;
+    cv::Mat template_;
 
     json poles_ = json::array();
 };
