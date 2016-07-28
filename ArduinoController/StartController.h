@@ -6,10 +6,10 @@ private:
 public:
   void execute() {
     if(activated) {
-      Serial.println("1");
+      Serial.println("{\"R\":\"1\"");
     }
     else {
-      Serial.println("0");
+      Serial.println("{\"R\":\"0\"");
     }
     activated = false;
   }
