@@ -16,6 +16,7 @@ protected:
     virtual void handleInput(std::string command, std::ostream& out);
     void startInput(std::istream& in, std::ostream& out);
     void startRecord();
+    cv::Mat getSingleFrame();
     cv::Mat grayScale(cv::Mat img);
     int convertXCoordinate(int x);
     int convertYCoordinate(int y);
@@ -27,4 +28,6 @@ protected:
     cv::Mat frame;
     cv::VideoCapture _capture;
     unsigned int frameCount_;
+
+    bool hasStartedRecording_;
 };

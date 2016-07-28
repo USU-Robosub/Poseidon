@@ -1,9 +1,23 @@
 #include "Capture.h"
 
-Capture::Capture() { }
+Capture::Capture() {
+    hasStartedRecording_ = false;
+}
+
+cv::Mat Capture::getSingleFrame() {
+    cv::Mat result;
+    if(!hasStartedRecording_) {
+        _capture.open(0);
+        _capture >> result;
+        _capture.release();
+    }
+    return result;
+}
 
 void Capture::startRecord()
 {
+    hasStartedRecording_ = true;
+    // _capture.open("./CompEntranceGate0.mp4");
     _capture.open(0);
     frameWidth = (int)_capture.get(CV_CAP_PROP_FRAME_WIDTH);
     frameHeight = (int)_capture.get(CV_CAP_PROP_FRAME_HEIGHT);
