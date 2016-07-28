@@ -12,16 +12,19 @@ public:
     GateDetector();
     void process(cv::Mat& img);
     void handleInput(std::string command, std::ostream& out);
+    ~GateDetector();
 
 private:
-	void scaleTemplates();
-    cv::RotatedRect thresholdImage_(cv::Mat& image);
+    const int TEMPLATE_COUNT = 1;
+    const int SCALE_FACTOR_X = 1280;
+    const int SCALE_FACTOR_Y = 720;
+
+	void scaleTemplates(cv::Mat camera);
+    cv::RotatedRect thresholdImage_(cv::Mat& image, cv::Mat& imageTemplate);
     json rectangleToPole_(cv::RotatedRect& rectangle);
-    cv::Mat template_[TEMPLATE_COUNT];
+    cv::Mat *template_;
 
     json poles_ = json::array();
 
-    const int TEMPLATE_COUNT = 2;
-	const int SCALE_FACTOR_X = 1280;
-	const int SCALE_FACTOR_Y = 720;
+
 };
