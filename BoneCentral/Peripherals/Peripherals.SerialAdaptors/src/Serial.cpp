@@ -20,6 +20,13 @@ void Serial::writeShort(unsigned short shortValue) {
     *output_ << char(shortValue >> 8) << char(shortValue & 0xFF) << std::flush;
 }
 
+json Serial::readJson() {
+    std::lock_guard<std::mutex> guard(serialLock_);
+    json arduinoData;
+    *input >> _arduinoData;
+    return arduinoData;
+}
+
 Serial::~Serial() {
     input_->close();
     output_->close();
