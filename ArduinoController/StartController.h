@@ -2,14 +2,14 @@
 
 class StartController : public IController {
 private:
-  bool activated;
+  bool activated = false;
 public:
   void execute() {
     if(activated) {
-      Serial.println("{\"R\":\"1\"");
+      Serial.println("{\"R\":\"1\"}");
     }
     else {
-      Serial.println("{\"R\":\"0\"");
+      Serial.println("{\"R\":\"0\"}");
     }
     activated = false;
   }
