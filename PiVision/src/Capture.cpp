@@ -12,8 +12,9 @@ void Capture::startRecord()
         _capture >> frame;
         process(frame); // Run image processing on the frame
 #ifdef DEBUG
-        cv::imshow("flow", frame); // Used for testing, but will be removed when running on Pi
-        cv::waitKey(30); // Also a UI component, can be removed
+        frameCount_++;
+        if (frameCount_ % 10 == 0) cv::imshow("flow", frame); // Used for testing, but will be removed when running on Pi
+        cv::waitKey(1); // Also a UI component, can be removed
 #endif
     }
 }

@@ -26,4 +26,5 @@ protected:
     std::vector<std::thread> _captureThreads;
     cv::Mat frame;
     cv::VideoCapture _capture;
+    unsigned int frameCount_;
 };

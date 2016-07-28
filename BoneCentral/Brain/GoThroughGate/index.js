@@ -35,7 +35,6 @@ module.exports = (function(){
         this._shouldQuit = false;
         this._thrustManager.dive();
         wait(500).done(function () {
-            this._stateMachine.doTransition();
             _runTick.call(this);
         }.bind(this));
         return this._deferred.promise();
@@ -43,8 +42,7 @@ module.exports = (function(){
 
     var _runTick = function() {
         if (this._shouldQuit) {
-            this._thrustManager.killThrusters();
-            this._deferred.fail();
+            _reset.call(this);
             return;
         }
         wait(TICK).done(function () {
@@ -57,6 +55,12 @@ module.exports = (function(){
         }.bind(this));
     };
 
+    var _reset = function () {
+        this._stateMachine = null;
+        this._thrustManager.killThrusters();
+        this._deferred.fail();
+    };
+
     var _performActionFromState = function(gate) {
         var state = this._stateMachine.getState();
         if (state === States.FAIL) {
@@ -64,11 +68,16 @@ module.exports = (function(){
             this._shouldQuit = true;
             return;
         }
+        if (state === States.THRUST_FORWARD) _thrustForward.call(this);
         if (state === States.DIVE) _continueDive.call(this, gate);
         if (state === States.SEARCH_LEFT) _searchLeft.call(this, gate);
         if (state === States.SEARCH_RIGHT) _searchRight.call(this, gate);
-        if (state === States.CONTINUE) _travelToGate.call(this, gate);
+        if (state === States.THRUST_TOWARDS_GATE) _travelToGate.call(this, gate);
         if (state === States.PASSING_GATE) _coastThroughGate.call(this);
+    };
+
+    var _thrustForward = function () {
+        this._thrustManager.thrustForward();
     };
 
     var _travelToGate = function (gate) {
@@ -95,6 +104,7 @@ module.exports = (function(){
     var _coastThroughGate = function () {
         this._thrustManager.thrustForward();
         wait(COAST_TIME).done(function () {
+            this._stateMachine = null;
             this._deferred.resolve();
         }.bind(this));
     };
