@@ -4,15 +4,19 @@
 
 const States = {
     INITIAL_DIVE: 0,
-    DIVE: 1,
-    SEARCH_LEFT: 2,
-    SEARCH_RIGHT: 3,
-    CONTINUE: 4,
-    PASSING_GATE: 5,
+    THRUST_FORWARD: 1,
+    DIVE: 2,
+    SEARCH_LEFT: 3,
+    SEARCH_RIGHT: 4,
+    THRUST_TOWARDS_GATE: 5,
+    PASSING_GATE: 6,
     FAIL: -1
 };
 
 module.exports = (function () {
+
+    var utilities = require("../Utilities/index");
+    var wait = utilities.Wait;
 
     function StateMachine(logger) {
         this._state = States.INITIAL_DIVE;
@@ -20,16 +24,30 @@ module.exports = (function () {
     }
 
     StateMachine.prototype.doTransition = function(gate) {
-        if (this._state === States.INITIAL_DIVE) _transitionFromInitialDive.call(this);
+        if (this._state === States.INITIAL_DIVE) _transitionFromInitialDive.call(this, gate);
+        else if (this._state === States.THRUST_FORWARD) _transitionFromThrustForward.call(this, gate);
         else  if (this._state === States.DIVE) _transitionFromDive.call(this, gate);
         else if (this._state === States.SEARCH_LEFT) _transitionFromSearchLeft.call(this, gate);
         else if (this._state === States.SEARCH_RIGHT) _transitionFromSearchRight.call(this, gate);
-        else if (this._state === States.CONTINUE) _transitionFromContinue.call(this, gate);
+        else if (this._state === States.THRUST_TOWARDS_GATE) _transitionFromThrustTowardsGate.call(this, gate);
     };
 
-    var _transitionFromInitialDive = function () {
+    var _transitionFromInitialDive = function (gate) {
         console.log("Transitioning from Initial Dive");
-        this._state = States.DIVE;
+        var poleCount = gate.getPoleCount();
+        if (poleCount < 1) this._state = States;
+        else this._state = States.DIVE;
+    };
+
+    var _transitionFromThrustForward = function(gate) {
+        console.log("Transitioning from Thrust Forward");
+        var poleCount = gate.getPoleCount();
+        if (poleCount > 0) this._state = States.DIVE;
+        if (this._forwardWait) return;
+        this._forwardWait = wait(2000);
+        this._forwardWait.done(function () {
+            if (this._state === States.THRUST_FORWARD) this._state = States.FAIL;
+        }.bind(this));
     };
 
     var _transitionFromDive = function (gate) {
@@ -38,7 +56,7 @@ module.exports = (function () {
         var gateCenter = gate.getGateCenter();
         if (poleCount < 1) this._state = States.FAIL;
         else if (_hasReachedDepth.call(this, gateCenter) && poleCount === 1) this._state = States.SEARCH_LEFT;
-        else if (_hasReachedDepth.call(this, gateCenter) && poleCount > 1) this._state = States.CONTINUE;
+        else if (_hasReachedDepth.call(this, gateCenter) && poleCount > 1) this._state = States.THRUST_TOWARDS_GATE;
     };
 
     var _hasReachedDepth = function (target) {
@@ -49,18 +67,18 @@ module.exports = (function () {
         console.log("Transitioning from Search Left");
         var poleCount = gate.getPoleCount();
         if (poleCount < 1) this._state = States.SEARCH_RIGHT;
-        else if(poleCount > 1) this._state = States.CONTINUE;
+        else if(poleCount > 1) this._state = States.THRUST_TOWARDS_GATE;
     };
 
     var _transitionFromSearchRight = function (gate) {
         console.log("Transitioning from Search Right");
         var poleCount = gate.getPoleCount();
         if (poleCount <= 1) this._state = States.FAIL;
-        else if (poleCount > 1) this._state = States.CONTINUE;
+        else if (poleCount > 1) this._state = States.THRUST_TOWARDS_GATE;
     };
 
-    var _transitionFromContinue = function (gate) {
-        console.log("Transitioning from Continue");
+    var _transitionFromThrustTowardsGate = function (gate) {
+        console.log("Transitioning from Thrust Towards Gate");
         var poleCount = gate.getPoleCount();
         if (poleCount < 1) this._state = States.PASSING_GATE;
     };
