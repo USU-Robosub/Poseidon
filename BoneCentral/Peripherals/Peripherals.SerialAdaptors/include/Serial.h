@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <thread>
 #include <mutex>
+#include <json.h>
 
 
 class Serial {
@@ -21,6 +22,7 @@ public:
     Serial();
     void writeByte(unsigned short byteValue);
     void writeShort(unsigned short shortValue);
+    json readJson();
     ~Serial();
 };
 
