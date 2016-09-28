@@ -23,6 +23,7 @@ public:
     void writeByte(unsigned short byteValue);
     void writeShort(unsigned short shortValue);
     json readJson();
+    char readChar();
     ~Serial();
 };
 

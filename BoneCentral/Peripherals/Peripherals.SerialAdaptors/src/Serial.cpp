@@ -23,8 +23,15 @@ void Serial::writeShort(unsigned short shortValue) {
 json Serial::readJson() {
     std::lock_guard<std::mutex> guard(serialLock_);
     json arduinoData;
-    *input >> _arduinoData;
+    *input >> arduinoData;
     return arduinoData;
+}
+
+char Serial::readChar() {
+    std::lock_guard<std::mutex> guard(serialLock_);
+    char arduinoReading;
+    *input >> arduinoReading;
+    return arduinoReading;
 }
 
 Serial::~Serial() {
