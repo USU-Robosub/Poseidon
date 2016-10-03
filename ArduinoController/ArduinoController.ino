@@ -14,6 +14,7 @@ class IController* controllers[CONTROLLER_CNT];
 
 void setup() {
   Serial.begin(115200);
+  Serial.print('R');
   
   controllers[0] = new ThrustController(LEFT_FORWARD, 50);
   controllers[1] = new ThrustController(RIGHT_FORWARD, 50);
@@ -33,6 +34,22 @@ void setup() {
     [](){((KillSwitchController*)controllers[KILL_ADDR])->isr(KILLPIN);},
     CHANGE
   );
+ CleanBuffer();
+}
+
+//This will clean the garbage out of the buffer during startup.
+void CleanBuffer(){
+  while(true){
+    if(Serial.available()){
+      #ifdef UNO
+      if(Serial.read() != 240)
+      #else
+      if(Serial.read() != 0)
+      #endif
+      
+      break;      
+    }    
+  }  
 }
 
 void loop() {
