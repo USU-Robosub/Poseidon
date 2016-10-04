@@ -18,12 +18,15 @@ private:
     std::shared_ptr<std::ifstream> input_;
     std::shared_ptr<std::ofstream> output_;
     static std::mutex serialLock_;
+    bool arduinoInitialized_;
 public:
     Serial();
     void writeByte(unsigned short byteValue);
     void writeShort(unsigned short shortValue);
     json readJson();
     char readChar();
+    void initializeArduino();
+    bool getArduinoInitialized();
     ~Serial();
 };
 
