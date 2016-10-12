@@ -34,22 +34,7 @@ void setup() {
     [](){((KillSwitchController*)controllers[KILL_ADDR])->isr(KILLPIN);},
     CHANGE
   );
- CleanBuffer();
-}
-
-//This will clean the garbage out of the buffer during startup.
-void CleanBuffer(){
-  while(true){
-    if(Serial.available()){
-      #ifdef UNO
-      if(Serial.read() != 240)
-      #else
-      if(Serial.read() != 0)
-      #endif
-      
-      break;      
-    }    
-  }  
+ while((!Serial.available())||(Serial.read()==0));
 }
 
 void loop() {
