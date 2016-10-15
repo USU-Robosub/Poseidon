@@ -12,6 +12,7 @@
 #include <mutex>
 #include <json.h>
 
+using json = nlohmann::json;
 
 class Serial {
 private:
