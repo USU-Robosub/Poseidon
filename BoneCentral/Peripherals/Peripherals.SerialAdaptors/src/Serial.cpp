@@ -4,12 +4,12 @@
 
 #include "Serial.h"
 
-Serial::Serial() {
+Serial::Serial(std::shared_ptr<ScriptLogger> logger) : logger_(logger) {
     std::system("stty -F /dev/ttyACM0 cs8 115200 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
     input_ = std::make_shared<std::ifstream>("/dev/ttyACM0");
     output_ = std::make_shared<std::ofstream>("/dev/ttyACM0");
     arduinoInitialized_ = false;
-    initializeArduino();
+    std::thread signalwait([](){ initializeArduino(); });
 }
 
 void Serial::writeByte(unsigned short byteValue) {
@@ -51,13 +51,12 @@ char Serial::readChar() {
 }
 
 void initializeArduino() {
-    // TODO: create initialization code
-    arduinoInitialized_ = true;
+    std::lock_guard<std::mutex> guard(serialLock_);
+    auto arduinoVal = readChar('R');
+    writeShort(3);
 }
 
 Serial::~Serial() {
     input_->close();
     output_->close();
 }
-
-std::mutex Serial::serialLock_;
