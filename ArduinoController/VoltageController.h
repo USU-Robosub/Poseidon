@@ -5,15 +5,15 @@
 
 class VoltageController : public IController {
   private:
-    const int VOLT = 10;
+    uint8_t volt_;
   
   public:
-    VoltageController() {
-      pinMode(VOLT, INPUT);
+    VoltageController(uint8_t volt) : volt_(volt) {
+      pinMode(volt_, INPUT);
     }
     
     void execute() {
-      int value = analogRead(VOLT);
+      int value = analogRead(volt_);
       /*
        * Measured Values for Calibration
        * P1 = (11.32, 700); P2 = (8.38, 517)

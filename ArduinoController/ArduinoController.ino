@@ -10,7 +10,7 @@
 #include "StartController.h"
 #include "PinJSON.h"
 
-const uint8_t KILLPIN = 50;
+const uint8_t KILLPIN = 50; // Needs to remain global (therefore outside of JSON) for lambda interrupt
 const uint8_t KILL_ADDR = 10;
 const uint32_t CONTROLLER_CNT = 13u;
 class IController* controllers[CONTROLLER_CNT];
@@ -27,10 +27,10 @@ void setup() {
   controllers[4] = new ThrustController(json["thrust"]["front_dive"].as<uint8_t>());
   controllers[5] = new ThrustController(json["thrust"]["back_dive"].as<uint8_t>());
   controllers[6] = new EscController(json["esc"].asObject());
-  controllers[7] = new LedController();
+  controllers[7] = new LedController(json["led"].asObject());
   controllers[8] = new PingController();
-  controllers[9] = new LightController();
-  controllers[11]= new VoltageController();
+  controllers[9] = new LightController(json["light"]["lights"].as<uint8_t>());
+  controllers[11]= new VoltageController(json["voltage"]["volt"].as<uint8_t>());
   controllers[12]= new StartController();
   controllers[KILL_ADDR]= new KillSwitchController(controllers, CONTROLLER_CNT, KILL_ADDR);
   attachInterrupt(
