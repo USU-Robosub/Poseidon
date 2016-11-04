@@ -1,3 +1,5 @@
+#include <ArduinoJson.h>
+
 #include "ThrustController.h"
 #include "EscController.h"
 #include "LedController.h"
@@ -6,6 +8,7 @@
 #include "KillSwitchController.h"
 #include "VoltageController.h"
 #include "StartController.h"
+#include "PinJSON.h"
 
 const uint8_t KILLPIN = 50;
 const uint8_t KILL_ADDR = 10;
@@ -14,14 +17,16 @@ class IController* controllers[CONTROLLER_CNT];
 
 void setup() {
   Serial.begin(115200);
+  DynamicJsonBuffer buffer;
+  auto json = buffer.parse(PinJSON::json);
   
-  controllers[0] = new ThrustController(LEFT_FORWARD, 50);
-  controllers[1] = new ThrustController(RIGHT_FORWARD, 50);
-  controllers[2] = new ThrustController(LEFT_STRAFE, 50);
-  controllers[3] = new ThrustController(RIGHT_STRAFE, 50);
-  controllers[4] = new ThrustController(FRONT_DIVE);
-  controllers[5] = new ThrustController(BACK_DIVE);
-  controllers[6] = new EscController();
+  controllers[0] = new ThrustController(json["thrust"]["left_forward"].as<uint8_t>(), 50);
+  controllers[1] = new ThrustController(json["thrust"]["right_forward"].as<uint8_t>(), 50);
+  controllers[2] = new ThrustController(json["thrust"]["left_strafe"].as<uint8_t>(), 50);
+  controllers[3] = new ThrustController(json["thrust"]["right_strafe"].as<uint8_t>(), 50);
+  controllers[4] = new ThrustController(json["thrust"]["front_dive"].as<uint8_t>());
+  controllers[5] = new ThrustController(json["thrust"]["back_dive"].as<uint8_t>());
+  controllers[6] = new EscController(json["esc"].asObject());
   controllers[7] = new LedController();
   controllers[8] = new PingController();
   controllers[9] = new LightController();
