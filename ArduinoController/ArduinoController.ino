@@ -17,6 +17,7 @@ class IController* controllers[CONTROLLER_CNT];
 
 void setup() {
   Serial.begin(115200);
+  Serial.print('R');
   DynamicJsonBuffer buffer;
   auto json = buffer.parse(PinJSON::json);
   
@@ -38,6 +39,7 @@ void setup() {
     [](){((KillSwitchController*)controllers[KILL_ADDR])->isr(KILLPIN);},
     CHANGE
   );
+ while((!Serial.available())||(Serial.read()==0));
 }
 
 void loop() {
