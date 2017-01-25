@@ -54,6 +54,7 @@ void initializeArduino() {
     std::lock_guard<std::mutex> guard(serialLock_);
     auto arduinoVal = readChar('R');
     writeShort(3);
+    arduinoInitialized_ = true;
 }
 
 Serial::~Serial() {
