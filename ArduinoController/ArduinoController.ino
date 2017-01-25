@@ -14,6 +14,7 @@ class IController* controllers[CONTROLLER_CNT];
 
 void setup() {
   Serial.begin(115200);
+  Serial.print('R');
   
   controllers[0] = new ThrustController(LEFT_FORWARD, 50);
   controllers[1] = new ThrustController(RIGHT_FORWARD, 50);
@@ -33,6 +34,7 @@ void setup() {
     [](){((KillSwitchController*)controllers[KILL_ADDR])->isr(KILLPIN);},
     CHANGE
   );
+ while((!Serial.available())||(Serial.read()==0));
 }
 
 void loop() {

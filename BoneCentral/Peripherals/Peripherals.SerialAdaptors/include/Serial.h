@@ -13,6 +13,7 @@
 #include <json.h>
 #include <ScriptLogger.h>
 
+using json = nlohmann::json;
 
 class Serial {
 private:
