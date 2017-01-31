@@ -1,17 +1,28 @@
-set(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSTEM_VERSION 1)
+# this one is important
+SET (CMAKE_SYSTEM_NAME Linux)
+# this one not so much
+SET (CMAKE_SYSTEM_VERSION 1)
 
-set(CMAKE_C_COMPILER [path to raspberry pi tool chain repository]/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc)
-set(CMAKE_CXX_COMPILER [path to raspberry pi tool chain repository]/raspberrypi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-g++)
+# Check for Raspberry Pi Tools and bail out if they don't have it
+if(DEFINED ENV{PI_TOOLS_HOME})
+  message("Using Raspberry Pi Tools found in $ENV{PI_TOOLS_HOME}")
+else()
+  message("PI_TOOLS_HOME is not set; You must tell CMake where to find Raspberry Pi Tools (cross-compiler)")
+  return()
+endif()
 
-set(CMAKE_FIND_ROOT_PATH [path to raspberry pi tool chain repository]/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian)
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+SET (PiToolsDir arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi)
 
-# Todo add -mfpu=neon-vfpv4
-set(CMAKE_C_FLAGS "-mcpu=cortex-a7" CACHE STRING "Flags for Raspberry Pi 2")
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "Flags for Raspberry Pi 2")
-# For easier testing with qemu-arm.
-set(CMAKE_EXE_LINKER_FLAGS "-static" CACHE STRING "Flags to generate static
-executables")
+# specify the cross compiler
+SET (CMAKE_C_COMPILER $ENV{PI_TOOLS_HOME}/${PiToolsDir}/bin/arm-bcm2708hardfp-linux-gnueabi-gcc)
+SET (CMAKE_CXX_COMPILER $ENV{PI_TOOLS_HOME}/${PiToolsDir}/bin/arm-bcm2708hardfp-linux-gnueabi-g++)
+
+# where is the target environment
+SET (CMAKE_FIND_ROOT_PATH $ENV{PI_TOOLS_HOME}/${PiToolsDir})
+
+# search for programs in the build host directories
+SET (CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+
+# for libraries and headers in the target directories
+SET (CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+SET (CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
