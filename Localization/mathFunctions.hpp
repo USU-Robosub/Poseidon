@@ -4,10 +4,11 @@
 #include<cmath>
 namespace mathFunctions
 {
-	float correlation_coefficient(float** image, int x, int y);
+	float correlation_coefficient(float** image, int x, int y,int left_bound_x,int right_bound_x,int higer_bound,int lesser_bound);
 	float compute_distance(float x, float y);
 }
-float mathFunctions::correlation_coefficient(float** image,int x, int y)
+
+float mathFunctions::correlation_coefficient(float** image,int x, int y,int left_bound_x,int right_bound_x,int lesser_bound,int higher_bound)
 {
 	/*====================================
 	 * this function takes a double pointer
@@ -20,7 +21,7 @@ float mathFunctions::correlation_coefficient(float** image,int x, int y)
 	 * for the data within the square sides 
 	 * length DATA_RANGE*2 centered at (x,y) 
 	 * ===================================*/
-	const int DATA_RANGE=5;
+	const int DATA_RANGE=7;
 	double sum_xy=0;
 	double sum_x=0;
 	double sum_y=0;
@@ -30,15 +31,18 @@ float mathFunctions::correlation_coefficient(float** image,int x, int y)
 	int n=DATA_RANGE*DATA_RANGE*4;
 	std::vector<float> values(DATA_RANGE*4*DATA_RANGE,0);
 	std::vector<float> index_value(DATA_RANGE*4*DATA_RANGE,0);
-	int startLocation_x=x-DATA_RANGE;
-	int startLocation_y=y-DATA_RANGE;
+	int startLocation_x=(x-DATA_RANGE<left_bound_x?left_bound_x:x-DATA_RANGE);
+	int startLocation_y=(y-DATA_RANGE<lesser_bound?lesser_bound:y-DATA_RANGE);
+	int x_range=(startLocation_x+DATA_RANGE*2>right_bound_x?(right_bound_x-startLocation_x):DATA_RANGE*2);
+	int y_range=(startLocation_y+DATA_RANGE*2>higher_bound?(higher_bound-startLocation_y):DATA_RANGE*2);
 
-	for(int i=0; i<DATA_RANGE*2; i++)
+
+	for(int i=0; i<y_range; i++)
 	{
-		for(int j=0; j<DATA_RANGE*2; j++)
+		for(int j=0; j<x_range; j++)
 		{
-			values[i*DATA_RANGE*2+j]=(image[i+startLocation_y][j+startLocation_x])*(i+startLocation_y)*(j+startLocation_x);
-			index_value[i*DATA_RANGE*2+j]=(i+startLocation_y)*(j+startLocation_x); 
+			values[i*x_range+j]=(image[i+startLocation_y][j+startLocation_x])*(i+startLocation_y)*(j+startLocation_x);
+			index_value[i*x_range+j]=(i+startLocation_y)*(j+startLocation_x); 
 		}
 	}
 	
