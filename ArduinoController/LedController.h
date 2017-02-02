@@ -2,23 +2,23 @@
 
 class LedController : public IController {
 private:
-  const uint8_t GREEN = 22;
-  const uint8_t WHITE = 52;
+  uint8_t green_;
+  uint8_t white_;
 public:
-  LedController() {
-    pinMode(WHITE, OUTPUT);
-    digitalWrite(WHITE, LOW);
+  LedController(JsonObject& pins) : green_(pins["green"]), white_(pins["white"]) {
+    pinMode(white_, OUTPUT);
+    digitalWrite(white_, LOW);
   }
   void execute() {
     for(int i = 0; i < 2; i++) {
-      digitalWrite(WHITE, HIGH);
+      digitalWrite(white_, HIGH);
       delay(250);
-      digitalWrite(WHITE, LOW);
+      digitalWrite(white_, LOW);
       delay(250);
     }
   }
   void kill() {
-    digitalWrite(GREEN, LOW);
-    digitalWrite(WHITE, LOW);
+    digitalWrite(green_, LOW);
+    digitalWrite(white_, LOW);
   }
 };

@@ -1,15 +1,6 @@
 #include <Servo.h>
 #include "IController.h"
 
-enum ServoPin {
-  LEFT_FORWARD = 13,
-  RIGHT_FORWARD = 12,
-  LEFT_STRAFE = 11,
-  RIGHT_STRAFE = 9,
-  FRONT_DIVE = 8,
-  BACK_DIVE = 7
-};
-
 uint16_t readShort() {
   while(Serial.available() < 2) {}
   return Serial.read() << 8 | Serial.read();
@@ -23,15 +14,15 @@ class ThrustController : public IController {
    int16_t tunningOffset;
    Servo servo_;
  public:
-  ThrustController(ServoPin servoPin) {
+  ThrustController(uint8_t servoPin) {
     init(servoPin, 0);
   }
   
-  ThrustController(ServoPin servoPin, int16_t offset) {
+  ThrustController(uint8_t servoPin, int16_t offset) {
     init(servoPin, offset);
   }
 
-  void init(ServoPin servoPin, int16_t offset) {
+  void init(uint8_t servoPin, int16_t offset) {
     tunningOffset = offset;
     servo_.attach(servoPin);
     servo_.writeMicroseconds(IDLE);
