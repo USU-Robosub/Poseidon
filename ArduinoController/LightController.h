@@ -9,8 +9,7 @@ public:
     digitalWrite(LIGHTS, HIGH);
   }
   void execute() {
-    while(!Serial.available());
-    digitalWrite(LIGHTS, !Serial.read());
+    digitalWrite(LIGHTS, !SerialTools::readByte());
   }
   void kill() {
     //digitalWrite(LIGHTS, HIGH);

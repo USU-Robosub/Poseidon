@@ -2,6 +2,7 @@
 #define ITHRUSTER_H
 
 #include "Arduino.h"
+#include "SerialTools.h"
 
 class IController {
  public:

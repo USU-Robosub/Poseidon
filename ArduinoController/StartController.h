@@ -5,12 +5,7 @@ private:
   bool activated = false;
 public:
   void execute() {
-    if(activated) {
-      Serial.println("{\"R\":\"1\"}");
-    }
-    else {
-      Serial.println("{\"R\":\"0\"}");
-    }
+    SerialTools::writeByte(activated?0x1:0x0);
     activated = false;
   }
   void kill() {

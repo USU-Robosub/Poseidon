@@ -7,13 +7,11 @@
 #define PERIPHERALS_SERIAL_H
 
 #define DUE
-// #define UNO
 
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <termios.h>
-// #include <fstream>
 #include <memory>
 #include <cstdlib>
 #include <thread>
@@ -27,10 +25,10 @@
 
 class Serial {
 private:
-    // std::shared_ptr<std::ifstream> input_;
-    // std::shared_ptr<std::ofstream> output_;
-    // static std::mutex serialLock_;
+    static std::mutex serialLock_;
     int fd;
+    
+    void configure();
     
 public:
     Serial(std::string device);

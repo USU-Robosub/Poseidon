@@ -14,7 +14,7 @@ class IController* controllers[CONTROLLER_CNT];
 
 void setup() {
   Serial.begin(115200);
-  Serial.print('R');
+  SerialTools::writeString("Ready!", 6);
   
   controllers[0] = new ThrustController(LEFT_FORWARD, 50);
   controllers[1] = new ThrustController(RIGHT_FORWARD, 50);
@@ -34,14 +34,12 @@ void setup() {
     [](){((KillSwitchController*)controllers[KILL_ADDR])->isr(KILLPIN);},
     CHANGE
   );
- while((!Serial.available())||(Serial.read()==0));
+  while((!Serial.available())||(Serial.read()==0));
 }
 
 void loop() {
-  if(Serial.available()) {
-    uint8_t controllerNumber = Serial.read();
-    if(controllerNumber < CONTROLLER_CNT)
-      // only execute if a command exists
-      controllers[controllerNumber]->execute();
-  }
+  uint8_t controllerNumber = SerialTools::readByte();
+  if(controllerNumber < CONTROLLER_CNT)
+    // only execute if a command exists
+    controllers[controllerNumber]->execute();
 }

@@ -10,11 +10,6 @@ enum ServoPin {
   BACK_DIVE = 7
 };
 
-uint16_t readShort() {
-  while(Serial.available() < 2) {}
-  return Serial.read() << 8 | Serial.read();
-}
-
 class ThrustController : public IController {
  private:
    const uint16_t IDLE = 1500;
@@ -38,7 +33,7 @@ class ThrustController : public IController {
   }
   
   void execute() {
-    uint16_t val = readShort();
+    uint16_t val = SerialTools::readShort();
     servo_.writeMicroseconds(getBoundedThrottle(val));
   }
   

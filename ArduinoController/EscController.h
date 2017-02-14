@@ -11,8 +11,7 @@ public:
     }
   }
   void execute() {
-    while(!Serial.available());
-    uint8_t toggle = Serial.read();
+    uint8_t toggle = SerialTools::readByte();
     for(int i = 0; i < 6; i++) {
       digitalWrite(GPIO_PINS[i], !toggle);
     }

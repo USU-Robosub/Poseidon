@@ -16,7 +16,7 @@ public:
   }
 
   void execute() {
-    Serial.println(active?'1':'0');
+    SerialTools::writeByte(active?0x1:0x0);
   }
 
   void kill() {

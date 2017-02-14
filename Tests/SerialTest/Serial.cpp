@@ -1,28 +1,33 @@
 //
-// Created by TekuConcept on 12/22/2016.
+// Created by Nathan Copier on 1/28/2016.
+// Refactored by TekuConcept on 2/13/2017.
 //
+
 #include "Serial.h"
 
+std::mutex Serial::serialLock_;
+
 Serial::Serial(std::string device) {
-    // std::stringstream ss;
-    // ss<<"stty -F "<<device<<" cs8 115200 ignbrk \
-    //     -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon \
-    //     -iexten -echo -echoe -echok -echoctl -echoke noflsh \
-    //     -ixon -crtscts";
-    // std::system(ss.str().c_str());
-    // input_ = std::make_shared<std::ifstream>(device.c_str());
-    // output_ = std::make_shared<std::ofstream>(device.c_str());
-    
-    // *output_ << "R" << std::flush;
-    
+#ifdef DEBUG
+    LOG("\nReceived Device Name: " << device);
+    LOG("\nEntering Serial Debug Mode\n");
+    fd = 0;
+#else
     if((fd = open(device.c_str(), O_RDWR)) < 0) {
         LOG("Device failed to open... entering dummy mode.\n");
         fd = 0;
         return;
     }
-    // check isatty(fd) == 1?
     
-    // configure device
+    configure();
+#endif
+}
+
+Serial::~Serial() {
+    if(fd != 0) close(fd);
+}
+
+void Serial::configure() {
     struct termios topts;
     if(tcgetattr(fd, &topts)) {
         LOG("Failed to get terminal ios options from file descriptor.\n");
@@ -53,33 +58,20 @@ Serial::Serial(std::string device) {
     }
 }
 
-Serial::~Serial() {
-    // input_->close();
-    // output_->close();
-    if(fd != 0) close(fd);
-}
-
 std::string Serial::readString() {
+#ifdef DEBUG
+    return "Dummy String\0";
+#else
     if(fd==0) return "";
-    // std::lock_guard<std::mutex> guard(serialLock_);
     std::stringstream ss;
     char c[1];
     
-    // int i = 0;
-    // std::cerr << std::hex;
     do{
-        // NOTE: if the program halts here
-        // it is because the arduino didn't
-        // write anything to the stream.
-        // c = input_->get();
         read(fd, c, 1);
-        // if(i < 10) {
-        //     std::cerr << (int)c[0] << " ";
-        //     i++;
-        // }
         ss << c[0];
     }while(c[0] != '\0');
     return ss.str();
+#endif
 }
 
 unsigned char Serial::readByte() {
@@ -131,16 +123,9 @@ unsigned short Serial::readUShort() {
 }
 
 void Serial::readData(char* ptr, size_t size) {
-    // std::lock_guard<std::mutex> guard(serialLock_);
-    // input_->read(ptr, size);
-    
-    // for(size_t i = 0; i < size; i++) {
-    //     *input_ >> ptr[i];
-    // }
-    
+    std::lock_guard<std::mutex> guard(serialLock_);
     if(fd!=0) read(fd, ptr, size);
-    else for(unsigned int i = 0; i < size; i++)
-            ptr[i] = 0;
+    else for(unsigned int i = 0; i < size; i++) ptr[i] = 0;
 }
 
 
@@ -155,7 +140,7 @@ void Serial::writeDouble(double value) {
     writeData((char*)&value, 8);
 #else
     float val2 = (float)value;
-    writeData((char*)&val2, 4);
+    writeData((char*)&value, 4);
 #endif
 }
 
@@ -180,13 +165,15 @@ void Serial::writeByte(unsigned char value) {
 }
 
 void Serial::writeData(char* ptr, size_t size) {
+#ifdef DEBUG
+    LOG("Serial Write: " << std::hex << std::setw(2));
+    for(size_t i = 0; i < size; i++) {
+        LOG((unsigned short)ptr[i]);
+    }
+    LOG(std::dec << std::endl);
+#else
+    std::lock_guard<std::mutex> guard(serialLock_);
     if(fd == 0) return;
-    // std::lock_guard<std::mutex> guard(serialLock_);
-    // for(size_t i = 0; i < size; i++) {
-    //     *output_ << ptr[i];
-    // }
-    // *output_ << std::flush;
-    // output_->write(ptr, size);
-    // output_->flush();
     write(fd, ptr, size);
+#endif
 }

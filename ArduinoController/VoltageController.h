@@ -20,8 +20,8 @@ class VoltageController : public IController {
        *
        * Solve for the linear function: x = (y-b)/m
        * voltage = (2.94 * value + 13.56) / 183
-       */      
-      Serial.println((2.94 * value + 13.56) / 183);
+       */
+      SerialTools::writeDouble((2.94 * value + 13.56) / 183);
     }
     
     void kill() {
