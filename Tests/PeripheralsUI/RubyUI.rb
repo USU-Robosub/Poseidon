@@ -17,10 +17,10 @@ end
 start()
 client = @server.accept
 
-client.puts("faceDirection\n0 0")
-client.puts("thrustForward\n1 1")
-client.puts("dive\n1 1")
-client.puts("goDirection\n0 0 0")
+client.puts("faceDirection 0 0\n")
+client.puts("thrustForward 1 1\n")
+client.puts("dive 1 1\n")
+client.puts("goDirection 0 0 0\n")
 
 client.puts("exit")
 

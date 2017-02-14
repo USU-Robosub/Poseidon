@@ -52,24 +52,38 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
 void CommandDispatcher::goDirection(std::stringstream& cmdString) {
     float forward, strafe, dive;
     cmdString >> forward >> strafe >> dive;
+#ifdef DEBUG
+    std::cout << "Forward: " << forward;
+    std::cout << " Strafe: " << strafe;
+    std::cout << " Dive: " << dive << std::endl;
+#endif
     thrustController_.goDirection(forward, strafe, dive);
 }
 
 void CommandDispatcher::faceDirection(std::stringstream& cmdString) {
     float yaw, dive;
     cmdString >> yaw >> dive;
+#ifdef DEBUG
+    std::cout << "Yaw: " << yaw << " Dive: " << dive << std::endl;
+#endif
     thrustController_.faceDirection(yaw, dive);
 }
 
 void CommandDispatcher::thrustForward(std::stringstream &cmdString) {
     float left, right;
     cmdString >> left >> right;
+#ifdef DEBUG
+    std::cout << "Left: " << left << " Right: " << right << std::endl;
+#endif
     thrustController_.thrustForward(left, right);
 }
 
 void CommandDispatcher::dive(std::stringstream &cmdString) {
     float front, rear;
     cmdString >> front >> rear;
+#ifdef DEBUG
+    std::cout << "Front: " << front << " Rear: " << rear << std::endl;
+#endif
     thrustController_.dive(front, rear);
 }
 
