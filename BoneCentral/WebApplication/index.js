@@ -1,34 +1,31 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var fileSystem = require('fs');
-var path = require("path");
-var CppInterface = require('../Brain/CppInterface');
-var VisionInterface = require("../Brain/VisionInterface");
-var WebLogger = require('./WebLogger');
-var FileLogger = require('./FileLogger');
-var app = express();
-var GoThroughGate = require("../Brain/GoThroughGate");
+var express         = require('express');
+var bodyParser      = require('body-parser');
+var fileSystem      = require('fs');
+var path        	= require("path");
+var WebLogger       = require('./WebLogger');
+var FileLogger      = require('./FileLogger');
+var CppInterface    = require('../Brain/CppInterface');
+var VisionInterface	= require("../Brain/VisionInterface");
+var GoThroughGate   = require("../Brain/GoThroughGate");
+var ThrustManager   = require("../Brain/ThrustManager");
 
-var peripheralsFactory = new CppInterface.Factory();
-var ThrustManager = require("../Brain/ThrustManager");
-var thrustManager = new ThrustManager(peripheralsFactory);
+fileLogger 		  	= new FileLogger("./test.log");
+webLogger 			= new WebLogger(fileLogger);
+peripheralsFactory	= new CppInterface.Factory();
+visionFactoy 	  	= new VisionInterface.Factory();
+thrustManager    	= new ThrustManager(peripheralsFactory);
+goThroughGate 		= new GoThroughGate(visionFactoy, thrustManager, webLogger);
 
-var thrustController = peripheralsFactory.createThrustController();
-var headLights = peripheralsFactory.createHeadlights();
-var powerManager = peripheralsFactory.createPowerManager();
-var imuSensor = peripheralsFactory.createImuSensor();
+thrustController    = peripheralsFactory.createThrustController();
+powerManager 		= peripheralsFactory.createPowerManager();
+imuSensor 			= peripheralsFactory.createImuSensor();
+headLights 			= peripheralsFactory.createHeadlights();
+gateDetector 		= visionFactoy.createGateDetector(webLogger);
 
-var fileLogger = new FileLogger("./test.log");
-var webLogger = new WebLogger(fileLogger);
 peripheralsFactory.createCppLogSource(webLogger);
-
 CppInterface.Peripherals.initialize();
 
-var visionFactoy = new VisionInterface.Factory();
-var gateDetector = visionFactoy.createGateDetector(webLogger);
-
-var goThroughGate = new GoThroughGate(visionFactoy, thrustManager, webLogger);
-
+app             	= express();
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
 
@@ -238,7 +235,6 @@ app.post('/runScript', function(req, res) {
 	})
 });
 
-
 app.listen(80, function () {
-  console.log('Example app listening on port 80!');
+  console.log('Web app listening on port 80!');
 });
