@@ -1,24 +1,35 @@
 #include "IController.h"
 
+#define GPIO_CNT 6u
+
 class EscController : public IController {
 private:
-  const uint8_t GPIO_PINS[6] = {36, 39, 41, 47, 49, 53};
+  uint8_t GPIO_PINS[GPIO_CNT] = {
+    ESC_S1_PIN,
+    ESC_S2_PIN,
+    ESC_S3_PIN,
+    ESC_S4_PIN,
+    ESC_S5_PIN,
+    ESC_S6_PIN
+  };
 public:
   EscController() {
-    for(int i = 0; i < 6; i++) {
+    for(uint32_t i = 0; i < GPIO_CNT; i++) {
       pinMode(GPIO_PINS[i], OUTPUT);
       digitalWrite(GPIO_PINS[i], HIGH);
     }
   }
   void execute() {
     uint8_t toggle = SerialTools::readByte();
-    for(int i = 0; i < 6; i++) {
+    for(uint32_t i = 0; i < GPIO_CNT; i++) {
       digitalWrite(GPIO_PINS[i], !toggle);
     }
   }
   void kill() {
-    for(int i = 0; i < 6; i++) {
+    for(uint32_t i = 0; i < GPIO_CNT; i++) {
       digitalWrite(GPIO_PINS[i], HIGH);
     }
   }
 };
+
+#undef GPIO_CNT

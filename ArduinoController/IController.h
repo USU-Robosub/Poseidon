@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "SerialTools.h"
+#include "PinMap.h"
 
 class IController {
  public:

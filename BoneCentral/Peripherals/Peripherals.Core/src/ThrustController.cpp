@@ -1,148 +1,65 @@
 #include "ThrustController.h"
 
 ThrustController::ThrustController(IThrusterFactory& thrusterFactory, std::shared_ptr<ILogger> logger) :
-        leftForwardThruster_(thrusterFactory.createLeftForwardThruster()),
-        rightForwardThruster_(thrusterFactory.createRightForwardThruster()),
-        leftStrafeThruster_(thrusterFactory.createLeftStrafeThruster()),
-        rightStrafeThruster_(thrusterFactory.createRightStrafeThruster()),
-        forwardDiveThruster_(thrusterFactory.createForwardDiveThruster()),
-        rearDiveThruster_(thrusterFactory.createRearDiveThruster()),
-        logger_(logger)
-{
-    // sets default trim
-    forwardTrim.first = 1;
-    forwardTrim.second = 1;
-    diveTrim.first = 1;
-    diveTrim.second = 1;
-    strafeTrim.first = 1;
-    strafeTrim.second = 1;
+        moveThruster_(thrusterFactory.createMoveThruster()),
+        strafeThruster_(thrusterFactory.createStrafeThruster()),
+        diveThruster_(thrusterFactory.createDiveThruster()),
+        yawThruster_(thrusterFactory.createYawThruster()),
+        pitchThruster_(thrusterFactory.createPitchThruster()),
+        rollThruster_(thrusterFactory.createRollThruster()),
+        logger_(logger) { }
+
+void ThrustController::goDirection(float _move_, float _strafe_, float _dive_) {
+    move(_move_);
+    strafe(_strafe_);
+    dive(_dive_);
 }
 
-void ThrustController::goDirection(float forward, float strafe, float dive) {
-    // std::stringstream ss;
-    // ss << "Thrusting... F: " << forward << " S: " << strafe << " D: " << dive;
-    // logger_->info(ss.str().c_str());
-    auto strafeCorrection = getReciprocalValues(strafe * strafeRatio);
-    auto leftForward = strafeCorrection.first + forward;
-    auto rightForward = strafeCorrection.second + forward;
-    float powerScale = getScaleToMaxPower(leftForward, rightForward);
-    auto forwardPair = std::make_pair(leftForward*powerScale, rightForward*powerScale);
-    auto strafePair = getReciprocalValues(strafe*powerScale);
-
-    float scaledDive = dive * powerScale;
-    FloatPair divePair;
-    divePair.first = getSafeOffset(scaledDive, diveOffset.first);
-    divePair.second = getSafeOffset(scaledDive, diveOffset.second);
-    setThrust(forwardPair, strafePair, divePair);
+void ThrustController::move(float throttle) {
+    moveThruster_->Thrust(getSafeThrottle(throttle));
 }
 
-void ThrustController::faceDirection(float yaw, float dive) {
-    // logger_->info("Yawing...");
-    auto yawPair = getReciprocalValues(yaw);
-
-    float scaledDive = dive;
-    FloatPair divePair;
-    divePair.first = getSafeOffset(scaledDive, diveOffset.first);
-    divePair.second = getSafeOffset(scaledDive, diveOffset.second);
-    setThrust(yawPair, std::make_pair(0.0f, 0.0f), divePair);
+void ThrustController::strafe(float throttle) {
+    strafeThruster_->Thrust(getSafeThrottle(throttle));
 }
 
-void ThrustController::setForwardTrim(float left, float right) {
-    std::stringstream ss;
-    ss << "Setting forward trim: L " << left << " R " << right;
-    logger_->info(ss.str().c_str());
-
-    forwardTrim.first = left;
-    forwardTrim.second = right;
+void ThrustController::dive(float throttle) {
+    diveThruster_->Thrust(getSafeThrottle(throttle));
 }
 
-void ThrustController::setStrafeTrim(float left, float right) {
-    std::stringstream ss;
-    ss << "Setting strafe trim: L " << left << " R " << right;
-    logger_->info(ss.str().c_str());
-
-    strafeTrim.first = right;
-    strafeTrim.second = left;
+void ThrustController::rotate(float _yaw_, float _pitch_, float _roll_) {
+    yaw(_yaw_);
+    pitch(_pitch_);
+    roll(_roll_);
 }
 
-void ThrustController::setDiveTrim(float front, float back) {
-    std::stringstream ss;
-    ss << "Setting dive trim: F " << front << " B " << back;
-    logger_->info(ss.str().c_str());
-
-    diveTrim.first = front;
-    diveTrim.second = back;
+void ThrustController::yaw(float throttle) {
+    yawThruster_->Thrust(getSafeThrottle(throttle));
 }
 
-void ThrustController::setDiveOffset(float front, float back) {
-    std::stringstream ss;
-    ss << "Setting dive Offset: F " << front << " B " << back;
-    logger_->info(ss.str().c_str());
-
-    diveOffset.first = front;
-    diveOffset.second = back;
+void ThrustController::pitch(float throttle) {
+    pitchThruster_->Thrust(getSafeThrottle(throttle));
 }
 
-float ThrustController::getSafeOffset(float a, float b) {
-    float safe = a + b;
-    if(safe > 1)
-        safe = 1;
-    else if(safe < -1)
-        safe = -1;
-    return safe;
+void ThrustController::roll(float throttle) {
+    rollThruster_->Thrust(getSafeThrottle(throttle));
 }
 
-void ThrustController::killAllThruster() {
-    setThrust(std::make_pair(0.0f, 0.0f), std::make_pair(0.0f, 0.0f), std::make_pair(0.0f, 0.0f));
+void ThrustController::killAllThrusters() {
+    move(0);
+    strafe(0);
+    dive(0);
+    yaw(0);
+    pitch(0);
+    roll(0);
 }
 
-std::pair<float,float> ThrustController::getReciprocalValues(float value) {
-    float left, right;
-    if(value < 0.0f) {
-        left = value;
-        right = -1 * value * reverseRatio;
-    }
-    else {
-        left = value * reverseRatio;
-        right = -1 * value;
-    }
-    return std::make_pair(left, right);
+float ThrustController::getSafeThrottle(float throttle) {
+    if(throttle > MAX_THROTTLE || throttle < MIN_THROTTLE)
+        return 0;
+    return throttle;
 }
 
-void ThrustController::thrustForward(float left, float right) {
-    auto scaleToMax = getScaleToMaxPower(left, right);
-    leftForwardThruster_->Thrust(left*scaleToMax);
-    rightForwardThruster_->Thrust(right*scaleToMax);
-}
-
-float ThrustController::getScaleToMaxPower(float left, float right) {
-    auto power = getMaxMag(left, right);
-    return power > maxPower ? maxPower / power : 1;
-}
-
-float ThrustController::getMaxMag(float left, float right) {
-    if(left < 0) left *= -1;
-    if(right < 0) left *= -1;
-    return right > left ? right : left;
-}
-
-void ThrustController::dive(float front, float rear) {
-    forwardDiveThruster_->Thrust(front);
-    rearDiveThruster_->Thrust(rear);
-}
-
-void ThrustController::setThrust(FloatPair forwardPair, FloatPair strafePair, FloatPair divePair) {
-    leftForwardThruster_->Thrust(forwardPair.first * forwardTrim.first);
-    rightForwardThruster_->Thrust(forwardPair.second * forwardTrim.second);
-
-    leftStrafeThruster_->Thrust(strafePair.first * strafeTrim.first);
-    rightStrafeThruster_->Thrust(strafePair.second * strafeTrim.second);
-
-    forwardDiveThruster_->Thrust(divePair.first * diveTrim.first);
-    rearDiveThruster_->Thrust(divePair.second * diveTrim.second);
-}
-
-ThrustController::~ThrustController()
-{
+ThrustController::~ThrustController() {
     logger_->info("Stopping Thrusters...");
 }

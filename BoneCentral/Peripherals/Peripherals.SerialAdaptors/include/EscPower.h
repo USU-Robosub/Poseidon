@@ -3,6 +3,7 @@
 
 #include <IEscPower.h>
 #include "Serial.h"
+#include "ArduinoConfig.h"
 
 class EscPower : public IEscPower
 {

@@ -4,6 +4,8 @@
 #ifndef SERIAL_TOOLS_H
 #define SERIAL_TOOLS_H
 
+#include "Debugger.h"
+
 /**
  * Extend the functionality of the Serial object,
  * providing various useful type value streams.
@@ -62,7 +64,9 @@ public:
     while(Serial.available() < size);
     for(int i = 0; i < size; i++) {
       ptr[i] = Serial.read();
+      DHEX((uint8_t)ptr[i]);
     }
+    DMSGN();
   }
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - *\
@@ -110,11 +114,7 @@ public:
 
   static void writeData(char* ptr, int size) {
     for(int i = 0; i < size; i++){
-      // #ifdef DEBUG
-      //   printHex((uint8_t)ptr[i]);
-      // #else
         Serial.print(ptr[i]);
-      // #endif
     }
   }
 
