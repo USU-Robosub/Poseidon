@@ -23,4 +23,3 @@ class VoltageController : public IController {
     
     void kill() { }
 };
-
