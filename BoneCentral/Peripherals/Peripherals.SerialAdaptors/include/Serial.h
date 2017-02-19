@@ -29,6 +29,7 @@ private:
     int fd;
     
     void configure();
+    void ackno();
     
 public:
     Serial(std::string device);

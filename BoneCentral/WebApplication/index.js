@@ -1,26 +1,26 @@
-var express         = require('express');
-var bodyParser      = require('body-parser');
-var fileSystem      = require('fs');
-var path        	= require("path");
-var WebLogger       = require('./WebLogger');
-var FileLogger      = require('./FileLogger');
-var CppInterface    = require('../Brain/CppInterface');
-var VisionInterface	= require("../Brain/VisionInterface");
-var GoThroughGate   = require("../Brain/GoThroughGate");
-var ThrustManager   = require("../Brain/ThrustManager");
+var express         	= require('express');
+var bodyParser      	= require('body-parser');
+var fileSystem      	= require('fs');
+var path        		= require("path");
+var WebLogger       	= require('./WebLogger');
+var FileLogger      	= require('./FileLogger');
+var CppInterface		= require('../Brain/CppInterface');
+var VisionInterface		= require("../Brain/VisionInterface");
+var GoThroughGate   	= require("../Brain/GoThroughGate");
+var ThrustManager   	= require("../Brain/ThrustManager");
 
-fileLogger 		  	= new FileLogger("./test.log");
-webLogger 			= new WebLogger(fileLogger);
-peripheralsFactory	= new CppInterface.Factory();
-visionFactoy 	  	= new VisionInterface.Factory();
-thrustManager    	= new ThrustManager(peripheralsFactory);
-goThroughGate 		= new GoThroughGate(visionFactoy, thrustManager, webLogger);
+var fileLogger 		  	= new FileLogger("./test.log");
+var webLogger 			= new WebLogger(fileLogger);
+var peripheralsFactory	= new CppInterface.Factory();
+var visionFactoy 	  	= new VisionInterface.Factory();
+var thrustManager    	= new ThrustManager(peripheralsFactory);
+var goThroughGate 		= new GoThroughGate(visionFactoy, thrustManager, webLogger);
 
-thrustController    = peripheralsFactory.createThrustController();
-powerManager 		= peripheralsFactory.createPowerManager();
-imuSensor 			= peripheralsFactory.createImuSensor();
-headLights 			= peripheralsFactory.createHeadlights();
-gateDetector 		= visionFactoy.createGateDetector(webLogger);
+var thrustController    = peripheralsFactory.createThrustController();
+var powerManager 		= peripheralsFactory.createPowerManager();
+var imuSensor 			= peripheralsFactory.createImuSensor();
+var headLights 			= peripheralsFactory.createHeadlights();
+var gateDetector 		= visionFactoy.createGateDetector(webLogger);
 
 peripheralsFactory.createCppLogSource(webLogger);
 CppInterface.Peripherals.initialize();

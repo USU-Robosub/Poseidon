@@ -4,13 +4,7 @@
 
 #include "SerialFactory.h"
 
-SerialFactory::SerialFactory() : serial_("/dev/ttyACM0") {
-    std::string response = serial_.readString();
-#ifdef DEBUG
-    LOG("Arduino Message: " << response << "\n");
-#endif
-    serial_.writeByte('R');
-}
+SerialFactory::SerialFactory() : serial_("/dev/ttyACM0") { }
 
 std::shared_ptr<IThruster> SerialFactory::createMoveThruster() {
     return std::make_shared<SerialThruster>(serial_, MOVE_IDX);
