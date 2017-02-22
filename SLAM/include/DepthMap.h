@@ -5,10 +5,6 @@
 #ifndef SLAM_DEPTHMAP_H
 #define SLAM_DEPTHMAP_H
 
-#include "../slam.h"
-
-using namespace slam;
-
 struct DepthMap {
     //TODO
 };
