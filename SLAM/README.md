@@ -8,6 +8,20 @@ Simultaneous Location and Mapping for the USU Autonomous RoboSub.
 
 Use `src` and `include` folders for code.
 
+### Namespace `slam`
+
+Please place everything in `namespace slam`. For example:
+
+```c++
+namespace slam {
+    class MyClass {...}
+    struct MyStruct {...}
+    void doSomething() {...}
+}
+```
+
+### Tests
+
 Use `test` folder for writing unit tests. Every concrete class should have
 a set of associated unit tests.
 
