@@ -9,14 +9,18 @@
 #include "DepthMap.h"
 #include "Pose.h"
 
-struct TelemetryPacket {
+namespace slam {
 
-    CameraFrame &cameraFrame;
-    DepthMap &depthMap;
-    Pose &pose;
+    struct TelemetryPacket {
 
-    TelemetryPacket(CameraFrame& cf, DepthMap& dm, Pose& p) : cameraFrame(cf), depthMap(dm), pose(p) {}
+        std::shared_ptr<CameraFrame> cameraFrame;
+        std::shared_ptr<DepthMap> depthMap;
+        std::shared_ptr<Pose> pose;
 
-};
+    };
+
+}
+
+
 
 #endif //SLAM_TELEMETRYPACKET_H

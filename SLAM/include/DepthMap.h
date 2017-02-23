@@ -5,8 +5,12 @@
 #ifndef SLAM_DEPTHMAP_H
 #define SLAM_DEPTHMAP_H
 
-struct DepthMap {
-    //TODO
-};
+namespace slam {
+
+    struct DepthMap {
+        //TODO
+    };
+
+}
 
 #endif //SLAM_DEPTHMAP_H

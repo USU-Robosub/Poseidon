@@ -5,14 +5,21 @@
 #ifndef SLAM_CAMERAFRAME_H
 #define SLAM_CAMERAFRAME_H
 
-#include "_extras.h"
+#include "_tmp.h"
+#include "RGBColor.h"
+#include <vector>
 
-struct CameraFrame {
+namespace slam {
 
-    const Chrono timestamp;
+    struct CameraFrame {
 
-    //TODO
+        const Chrono timestamp;
+        const std::vector<std::vector<RGBColor>> data;
 
-};
+    };
+
+}
+
+
 
 #endif //SLAM_CAMERAFRAME_H

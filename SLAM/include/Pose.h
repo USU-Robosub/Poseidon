@@ -5,8 +5,13 @@
 #ifndef SLAM_POSE_H
 #define SLAM_POSE_H
 
-struct Pose {
-    //TODO
-};
+namespace slam {
+
+    struct Pose {
+        //TODO
+    };
+
+}
+
 
 #endif //SLAM_POSE_H

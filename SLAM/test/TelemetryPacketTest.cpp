@@ -5,13 +5,37 @@
 #include "catch.hpp"
 #include "../include/TelemetryPacket.h"
 
-TEST_CASE("TelemetryPacket can be constructed") {
+using namespace slam;
 
-    auto pose = Pose();
-    auto frame = CameraFrame();
-    auto depthMap = DepthMap();
-    auto packet = new TelemetryPacket(frame, depthMap, pose);
+TEST_CASE("TelemetryPacket works as expected") {
 
-    REQUIRE(packet != nullptr);
+    auto pose = std::make_shared<Pose>(Pose());
+    auto frame = std::make_shared<CameraFrame>(CameraFrame());
+    auto map = std::make_shared<DepthMap>(DepthMap());
+    auto packet = TelemetryPacket {
+            .cameraFrame = frame,
+            .depthMap = map,
+            .pose = pose
+    };
+
+    SECTION("All of TelemetryPacket's members were initialized") {
+
+        REQUIRE(packet.cameraFrame == frame);
+
+        REQUIRE(packet.depthMap == map);
+
+        REQUIRE(packet.pose == pose);
+
+    }
+
+    SECTION("Chrono works as expected") {
+
+        std::chrono::time_point<std::chrono::steady_clock> ts = frame->timestamp;
+
+        REQUIRE(ts == frame->timestamp);
+
+        REQUIRE(ts == packet.cameraFrame->timestamp);
+
+    }
 
 }
