@@ -25,7 +25,7 @@ namespace slam {
 ### Tests
 
 Use `test/` folder for writing unit tests. Every concrete class should have
-a set of associated unit tests.
+a set of associated unit tests. Structs should also probably have unit tests for sanity's sake.
 
 ### How to build
 ```bash
