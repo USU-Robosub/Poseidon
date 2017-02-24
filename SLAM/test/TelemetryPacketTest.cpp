@@ -12,11 +12,12 @@ TEST_CASE("TelemetryPacket works as expected") {
     auto pose = std::make_shared<Pose>(Pose());
     auto frame = std::make_shared<CameraFrame>(CameraFrame());
     auto map = std::make_shared<DepthMap>(DepthMap());
-    auto packet = TelemetryPacket {
-            .cameraFrame = frame,
-            .depthMap = map,
-            .pose = pose
-    };
+    auto packet = TelemetryPacket();
+
+    packet.cameraFrame = frame;
+    packet.depthMap = map;
+    packet.pose = pose;
+
 
     SECTION("All of TelemetryPacket's members were initialized") {
 
