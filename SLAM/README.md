@@ -24,7 +24,7 @@ namespace slam {
 
 ### Tests
 
-Use `test` folder for writing unit tests. Every concrete class should have
+Use `test/` folder for writing unit tests. Every concrete class should have
 a set of associated unit tests.
 
 ### How to build
