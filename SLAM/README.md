@@ -7,6 +7,7 @@ Simultaneous Location and Mapping for the USU Autonomous RoboSub.
 ## Contributing
 
 Please place all headers `.h` and `.hpp` files in `include/`.
+
 Please place all source `.cpp` files in `src/`.
 
 ### Namespace `slam`
