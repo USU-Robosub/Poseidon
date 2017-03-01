@@ -11,10 +11,18 @@
 
 namespace slam {
 
-    struct CameraFrame {
+    class CameraFrame {
 
-        const Chrono timestamp;
-        const std::vector<std::vector<RGBColor>> data;
+    private:
+        Chrono timestamp;
+        std::vector<std::vector<RGBColor>> data;
+
+    public:
+        CameraFrame(unsigned long width, unsigned long height, Chrono timestamp);
+        CameraFrame(unsigned long width, unsigned long height);
+        Chrono getTimestamp();
+        RGBColor getPixel(unsigned long x, unsigned long y);
+        void setPixel(unsigned long x, unsigned long y, RGBColor pixel);
 
     };
 
