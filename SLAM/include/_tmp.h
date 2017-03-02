@@ -10,7 +10,7 @@
 
 namespace slam {
 
-    using Chrono = std::chrono::time_point<std::chrono::steady_clock>;
+    using Chrono = std::chrono::steady_clock::time_point;
 
     class Output3DWrapper {}; //TODO: remove this and replace usages with the real dso::Output3DWrapper
 

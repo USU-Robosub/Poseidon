@@ -10,7 +10,7 @@ using namespace slam;
 TEST_CASE("TelemetryPacket works as expected") {
 
     auto pose = std::make_shared<Pose>(Pose());
-    auto frame = std::make_shared<CameraFrame>(CameraFrame());
+    auto frame = std::make_shared<CameraFrame>(CameraFrame(640, 480));
     auto map = std::make_shared<DepthMap>(DepthMap());
     auto packet = TelemetryPacket();
 
@@ -31,11 +31,11 @@ TEST_CASE("TelemetryPacket works as expected") {
 
     SECTION("Chrono works as expected") {
 
-        std::chrono::time_point<std::chrono::steady_clock> ts = frame->timestamp;
+        std::chrono::time_point<std::chrono::steady_clock> ts = frame->getTimestamp();
 
-        REQUIRE(ts == frame->timestamp);
+        REQUIRE(ts == frame->getTimestamp());
 
-        REQUIRE(ts == packet.cameraFrame->timestamp);
+        REQUIRE(ts == packet.cameraFrame->getTimestamp());
 
     }
 

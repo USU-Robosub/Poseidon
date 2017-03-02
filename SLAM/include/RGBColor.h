@@ -11,10 +11,10 @@ namespace slam {
 
     struct RGBColor {
 
-        const uint8_t red;
-        const uint8_t green;
-        const uint8_t blue;
-        const uint8_t gray;
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+        uint8_t gray;
 
     };
 
