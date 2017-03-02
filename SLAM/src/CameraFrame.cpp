@@ -6,28 +6,28 @@
 
 namespace slam {
 
-    CameraFrame::CameraFrame(unsigned long width, unsigned long height, Chrono timestamp) {
+    CameraFrame::CameraFrame(unsigned short width, unsigned short height, Chrono timestamp) {
         this->timestamp = timestamp;
         this->data.resize(height);
-        for(unsigned long i = 0; i < height; i++) {
+        for(unsigned short i = 0; i < height; i++) {
             this->data[i].resize(width);
         }
     }
 
-    CameraFrame::CameraFrame(unsigned long width, unsigned long height):
+    CameraFrame::CameraFrame(unsigned short width, unsigned short height):
             CameraFrame(width, height, std::chrono::steady_clock::now()) {
+    }
+
+    void CameraFrame::setPixel(unsigned short x, unsigned short y, RGBColor pixel) {
+        data[y][x] = pixel;
+    }
+
+    RGBColor CameraFrame::getPixel(unsigned short x, unsigned short y) {
+        return data[y][x];
     }
 
     Chrono CameraFrame::getTimestamp() {
         return timestamp;
-    }
-
-    RGBColor CameraFrame::getPixel(unsigned long x, unsigned long y) {
-        return data[y][x];
-    }
-
-    void CameraFrame::setPixel(unsigned long x, unsigned long y, RGBColor pixel) {
-        data[y][x] = pixel;
     }
 
 }

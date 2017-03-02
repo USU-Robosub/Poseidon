@@ -18,11 +18,11 @@ namespace slam {
         std::vector<std::vector<RGBColor>> data;
 
     public:
-        CameraFrame(unsigned long width, unsigned long height, Chrono timestamp);
-        CameraFrame(unsigned long width, unsigned long height);
+        CameraFrame(unsigned short width, unsigned short height, Chrono timestamp);
+        CameraFrame(unsigned short width, unsigned short height);
+        void setPixel(unsigned short, unsigned short y, RGBColor pixel);
+        RGBColor getPixel(unsigned short x, unsigned short y);
         Chrono getTimestamp();
-        RGBColor getPixel(unsigned long x, unsigned long y);
-        void setPixel(unsigned long x, unsigned long y, RGBColor pixel);
 
     };
 
