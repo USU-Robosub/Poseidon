@@ -6,11 +6,12 @@
 		<title>USUb</title>
 		<script type="text/javascript" src="/riot/riot+compiler.min.js"></script>
 		<script type="text/javascript" src="/axios/axios.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
 
 		<script type="riot/tag">
 			<get-tag>
 				<div>
-					<button onclick={ toggle }>{ url }</button>
+					<button class="button button1" onclick={ toggle }>{ url }</button>
 					<p>Result:</p><textarea type="textarea" value="{ result }" style="min-width: 30em; min-height: 40em;">
 				</div>
 
@@ -44,7 +45,7 @@
 			</get-tag>
 			<single-get-tag>
 				<div>
-					<button onclick={ get }>{ url }</button>
+					<button class="button button1" onclick={ get }>{ url }</button>
 					<p>Result: { result }</p>
 				</div>
 
@@ -64,10 +65,10 @@
 			</single-get-tag>
 			<post-tag>
 				<div>
-					<button onclick={ post }>{ url }</button><button onclick={ toggleAbsolute }>Toggle Slider</button>
+					<button class="button button1" onclick={ post }>{ url }</button><button class="button button1" onclick={ toggleAbsolute }>Toggle Slider</button>
 					<div each={ argument, i in arguments }>
 						<span>{ argument }</span>
-						<input type={ inputType } onchange={ update } oninput={ update } id={ argument } min={ min } max={ max } step={ step }/>
+						<input type={ inputType } onchange={ update } oninput={ update } id={ argument } min={ min } max={ max } step={ step } value="0"/>
 						<span if={ !absolute }>{ self[argument].value }</span>
 					</div>
 					<p>Result: { result }</p>
