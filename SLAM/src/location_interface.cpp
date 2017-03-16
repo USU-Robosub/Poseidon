@@ -26,3 +26,15 @@ namespace slam{
 	}
 	
 }
+
+void LocationInterface::getFrame(){
+	
+}
+
+
+void LocationInterface::sendFrameToDSO(){
+
+}
+
+
+}

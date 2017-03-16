@@ -1,6 +1,7 @@
 
 //Created by Emerson Udy
 
+#pragma once
 namespace slam{
 
 	class LocationInterface{
