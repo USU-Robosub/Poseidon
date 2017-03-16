@@ -10,12 +10,12 @@
 
 class IThrusterFactory {
 public:
-    virtual std::shared_ptr<IThruster> createLeftForwardThruster() = 0;
-    virtual std::shared_ptr<IThruster> createRightForwardThruster() = 0;
-    virtual std::shared_ptr<IThruster> createLeftStrafeThruster() = 0;
-    virtual std::shared_ptr<IThruster> createRightStrafeThruster() = 0;
-    virtual std::shared_ptr<IThruster> createForwardDiveThruster() = 0;
-    virtual std::shared_ptr<IThruster> createRearDiveThruster() = 0;
+    virtual std::shared_ptr<IThruster> createMoveThruster() = 0;
+    virtual std::shared_ptr<IThruster> createStrafeThruster() = 0;
+    virtual std::shared_ptr<IThruster> createDiveThruster() = 0;
+    virtual std::shared_ptr<IThruster> createYawThruster() = 0;
+    virtual std::shared_ptr<IThruster> createPitchThruster() = 0;
+    virtual std::shared_ptr<IThruster> createRollThruster() = 0;
 };
 
 #endif //PERIPHERALS_I_THRUSTER_FACTORY_H
