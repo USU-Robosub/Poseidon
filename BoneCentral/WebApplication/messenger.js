@@ -1,8 +1,8 @@
 var hdwr = require('./hardware.js');
 
 module.exports = {
-    goThroughGate:  hdwr.goThroughGate,
-    terminate:      hdwr.terminate,
+    // goThroughGate:  hdwr.goThroughGate,
+    // terminate:      hdwr.terminate,
     
     exit:           hdwr.exit,
     pullWebLog:     hdwr.pullWebLog,
@@ -32,9 +32,5 @@ module.exports = {
     
     toggleLights:   hdwr.toggleLights,
     
-    startPoleSearch:hdwr.startPoleSearch,
-    stopPoleSearch: hdwr.stopPoleSearch,
-    getPoleLocation:hdwr.getPoleLocation,
-    refreshHSV:     hdwr.refreshHSV,
     runScript:      hdwr.runScript
 };
