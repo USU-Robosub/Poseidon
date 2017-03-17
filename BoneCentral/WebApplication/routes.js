@@ -1,14 +1,4 @@
 module.exports = function(app, msngr) {
-    app.get("/goThroughGate", function (req, res) {
-        msngr.goThroughGate();
-        res.send("Going through gate");
-    });
-    
-    app.get("/terminate", function (req, res) {
-        msngr.terminate();
-        res.send("Terminated");
-    });
-    
     //From IThruster
     app.get('/initialize', function(req, res) {
     	res.send('initialize');
@@ -139,26 +129,6 @@ module.exports = function(app, msngr) {
     app.get('/headlight', function(req, res) {
         msngr.toggleLights();
     	res.send('toggled Headlights');
-    });
-    
-    app.get('/startSearchingForPoles', function (req, res) {
-        msngr.startPoleSearch();
-        res.send('startSearchingForPoles');
-    });
-    
-    app.get('/getPoleCoordinates', function (req, res) {
-        msngr.getPoleLocation();
-        res.send('getPoleCoordinates');
-    });
-    
-    app.get('/refreshHsv', function (req, res) {
-    	msngr.refreshHSV();
-    	res.send('refreshHsv');
-    });
-    
-    app.get('/stopSearchingForPoles', function (req, res) {
-        msngr.stopPoleSearch();
-        res.send('stopSearchingForPoles');
     });
     
     // Script Run

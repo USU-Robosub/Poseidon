@@ -4,36 +4,20 @@ var Poseidon    		= require('../Brain/app.js');
 
 var WebLogger       	= require('./WebLogger');
 var FileLogger      	= require('./FileLogger');
-// var GoThroughGate   	= require("../Brain/GoThroughGate");
-var ThrustManager   	= require("../Brain/ThrustManager");
 
 var fileLogger 		  	= new FileLogger("./test.log");
 var webLogger 			= new WebLogger(fileLogger);
-var thrustManager    	= new ThrustManager(Poseidon.HardwareFactory);
-// var goThroughGate 		= new GoThroughGate(Poseidon.VisionFactoy, thrustManager, webLogger);
 
 var thrustController    = Poseidon.HardwareFactory.createThrustController();
 var powerManager 		= Poseidon.HardwareFactory.createPowerManager();
 var imuSensor 			= Poseidon.HardwareFactory.createImuSensor();
 var headLights 			= Poseidon.HardwareFactory.createHeadlights();
-var gateDetector 		= Poseidon.VisionFactory.createGateDetector(webLogger);
-
-// Poseidon.HardwareFactory.createCppLogSource(webLogger);
-// CppInterface.Peripherals.initialize();
 
 function DMSG(x) {
     console.log(x);
 }
 
 module.exports = {
-    goThroughGate: function() {
-        goThroughGate.execute().done(function () {
-    		thrustController.goDirection(0, 0, 0);
-    	});
-    },
-    terminate: function() {
-        goThroughGate._shouldQuit = true;
-    },
     pullWebLog: function() {
         return webLogger.pull();
     },
@@ -136,20 +120,6 @@ module.exports = {
         headLights.toggleLights();
     },
     
-    startPoleSearch: function() {
-        gateDetector.startSearching();
-    },
-    stopPoleSearch: function() {
-        gateDetector.stopSearching();
-    },
-    getPoleLocation: function() {
-        gateDetector.getPoleCoordinates().done(function (poleCoords) {
-            webLogger.info("Pole Coordinates: " + JSON.stringify(poleCoords));
-        });
-    },
-    refreshHSV: function() {
-        gateDetector.refreshHsv();
-    },
     runScript: function(index) {
         fileSystem.readdir("./TestScripts", function (err, fileNames) {
     		if(fileNames[index]) {
