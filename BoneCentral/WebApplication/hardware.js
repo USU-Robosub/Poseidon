@@ -1,27 +1,25 @@
 var fileSystem      	= require('fs');
 var path        		= require("path");
+var Poseidon    		= require('../Brain/app.js');
+
 var WebLogger       	= require('./WebLogger');
 var FileLogger      	= require('./FileLogger');
-var CppInterface		= require('../Brain/CppInterface');
-var VisionInterface		= require("../Brain/VisionInterface");
-var GoThroughGate   	= require("../Brain/GoThroughGate");
+// var GoThroughGate   	= require("../Brain/GoThroughGate");
 var ThrustManager   	= require("../Brain/ThrustManager");
 
 var fileLogger 		  	= new FileLogger("./test.log");
 var webLogger 			= new WebLogger(fileLogger);
-var peripheralsFactory	= new CppInterface.Factory();
-var visionFactoy 	  	= new VisionInterface.Factory();
-var thrustManager    	= new ThrustManager(peripheralsFactory);
-var goThroughGate 		= new GoThroughGate(visionFactoy, thrustManager, webLogger);
+var thrustManager    	= new ThrustManager(Poseidon.HardwareFactory);
+// var goThroughGate 		= new GoThroughGate(Poseidon.VisionFactoy, thrustManager, webLogger);
 
-var thrustController    = peripheralsFactory.createThrustController();
-var powerManager 		= peripheralsFactory.createPowerManager();
-var imuSensor 			= peripheralsFactory.createImuSensor();
-var headLights 			= peripheralsFactory.createHeadlights();
-var gateDetector 		= visionFactoy.createGateDetector(webLogger);
+var thrustController    = Poseidon.HardwareFactory.createThrustController();
+var powerManager 		= Poseidon.HardwareFactory.createPowerManager();
+var imuSensor 			= Poseidon.HardwareFactory.createImuSensor();
+var headLights 			= Poseidon.HardwareFactory.createHeadlights();
+var gateDetector 		= Poseidon.VisionFactory.createGateDetector(webLogger);
 
-peripheralsFactory.createCppLogSource(webLogger);
-CppInterface.Peripherals.initialize();
+// Poseidon.HardwareFactory.createCppLogSource(webLogger);
+// CppInterface.Peripherals.initialize();
 
 function DMSG(x) {
     console.log(x);
