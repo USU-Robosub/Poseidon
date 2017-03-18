@@ -6,10 +6,14 @@ var $ = require("jquery-deferred");
 
 module.exports = {
 
-    Wait: function (milliseconds) {
-        var waitDeferred = $.Deferred();
-        setTimeout(waitDeferred.resolve, milliseconds);
-        return waitDeferred.promise();
+    Wait: function(duration) {
+        return function(args){
+            return new $.Deferred(function(deferred){
+                setTimeout(function(){
+                    deferred.resolve(args);
+                }, duration)
+            });
+        };
     },
 
     Promises: {
