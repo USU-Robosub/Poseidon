@@ -1,7 +1,9 @@
 #include "Compass.h"
 
 Compass::Compass(std::shared_ptr<HMC5883L> compass) : 
-	compass_(compass) {}
+	compass_(compass) {
+	compass_->setOutputRate(HMC5883L::Rate::Hz75);
+}
 
 
 
