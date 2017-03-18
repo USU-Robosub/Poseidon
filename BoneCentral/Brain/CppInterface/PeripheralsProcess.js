@@ -8,8 +8,7 @@ var Ports   = require("../Sockets/Ports.json");
 
 var initialize = function () {
     var args = [
-        "--dispatcherPort=" + Ports.DispatcherPort,
-        "--loggerPort=" + Ports.LoggerPort
+        "--dispatcherPort=" + Ports.DispatcherPort
     ];
     var child = Spawner.spawn(Path.resolve(__dirname, "../../Peripherals/Release/Peripherals"), args);
     child.stdout.on("data", function (data) {

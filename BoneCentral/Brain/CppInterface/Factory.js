@@ -9,14 +9,9 @@ var ImuSensor           = require("./ImuSensor");
 var CppLogSource        = require("./CppLogSource");
 
 module.exports = (function() {
-    function Factory(dispatcherSocket, logSocket) {
+    function Factory(dispatcherSocket) {
         this.dispatcherSocket   = dispatcherSocket;
-        this.logSocket          = logSocket;
     }
-
-    Factory.prototype.createCppLogSource = function (loggerOutput) {
-        return new CppLogSource(this.logSocket.Output, loggerOutput)
-    };
 
     Factory.prototype.createHeadlights = function () {
         return new HeadLights(this.dispatcherSocket.Input);

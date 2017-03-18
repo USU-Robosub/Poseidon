@@ -6,8 +6,7 @@ var HardwareFactory     = require('./CppInterface/Factory.js');
 var Vision              = require('./VisionInterface');
 
 var server              = Sockets.createSocket(Ports.DispatcherPort);
-var logServer           = Sockets.createSocket(Ports.LoggerPort);
-var hardwareFactory     = new HardwareFactory(server, logServer);
+var hardwareFactory     = new HardwareFactory(server);
 var visionFactory       = new Vision.Factory();
 
 if(Config.appStartMode === "auto") {
@@ -15,7 +14,7 @@ if(Config.appStartMode === "auto") {
 }
 else {
     console.log("Entering manual mode: run './Periphers --dispatcherPort="+
-        Ports.DispatcherPort+" --loggerPort="+Ports.LoggerPort+"'");
+        Ports.DispatcherPort+"'");
 }
 
 module.exports = {
