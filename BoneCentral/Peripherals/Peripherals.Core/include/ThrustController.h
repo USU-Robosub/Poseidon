@@ -16,42 +16,33 @@ class ThrustController
 {
 public:
     ThrustController(IThrusterFactory& thrusterFactory, std::shared_ptr<ILogger> logger);
-    void goDirection(float forward, float strafe, float dive);
-    void faceDirection(float yaw, float dive);
-    void thrustForward(float left, float right);
-    void dive(float front, float rear);
-    void setForwardTrim(float left, float right);
-    void setStrafeTrim(float left, float right);
-    void setDiveTrim(float front, float back);
-    void setDiveOffset(float front, float back);
-    void killAllThruster();
+    void goDirection(float _move_, float _strafe_, float _dive_);
+    void rotate(float _yaw_, float _pitch_, float _roll_);
+    void move(float throttle);
+    void strafe(float throttle);
+    void dive(float throttle);
+    void yaw(float throttle);
+    void pitch(float throttle);
+    void roll(float throttle);
+    void killAllThrusters();
     ~ThrustController();
 
 private:
-    std::shared_ptr<IThruster> leftForwardThruster_;
-    std::shared_ptr<IThruster> rightForwardThruster_;
-    std::shared_ptr<IThruster> leftStrafeThruster_;
-    std::shared_ptr<IThruster> rightStrafeThruster_;
-    std::shared_ptr<IThruster> forwardDiveThruster_;
-    std::shared_ptr<IThruster> rearDiveThruster_;
+    std::shared_ptr<IThruster> moveThruster_;
+    std::shared_ptr<IThruster> strafeThruster_;
+    std::shared_ptr<IThruster> diveThruster_;
+    std::shared_ptr<IThruster> yawThruster_;
+    std::shared_ptr<IThruster> pitchThruster_;
+    std::shared_ptr<IThruster> rollThruster_;
 
     std::shared_ptr<ILogger> logger_;
 
-    const float maxPower = 1.0f;
-    const float minPower = 0.0f;
-    const float reverseRatio = 0.84507f;
-    const float strafeRatio = 0.7f;
-
-    FloatPair forwardTrim;
-    FloatPair diveTrim;
-    FloatPair diveOffset;
-    FloatPair strafeTrim;
-
-    FloatPair getReciprocalValues(float value);
-    float getSafeOffset(float a, float b);
-    float getScaleToMaxPower(float left, float right);
-    float getMaxMag(float left, float right);
-    void setThrust(FloatPair forwardPair, FloatPair strafePair, FloatPair divePair);
+    const float MAX_THROTTLE = 1.0f;
+    const float MIN_THROTTLE = -1.0f;
+    // const float reverseRatio = 0.84507f;
+    // const float strafeRatio = 0.7f;
+    
+    float getSafeThrottle(float throttle);
 };
 
 #endif

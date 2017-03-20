@@ -13,15 +13,14 @@ void Headlights::switchLights()
 {
 	if (areOn)
 	{
-
-		serial_.writeByte(0x9);
-		serial_.writeByte(0x0);
+        serial_.writeByte(LIGHT_IDX);
+        serial_.writeByte(DISABLE);
 		areOn = false;
 	}
 	else
 	{
-		serial_.writeByte(0x9);
-		serial_.writeByte(0x1);
+        serial_.writeByte(LIGHT_IDX);
+        serial_.writeByte(ENABLE);
 		areOn = true;
 	}
 }

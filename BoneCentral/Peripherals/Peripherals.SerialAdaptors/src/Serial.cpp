@@ -1,63 +1,191 @@
 //
 // Created by Nathan Copier on 1/28/2016.
+// Refactored by TekuConcept on 2/13/2017.
 //
 
 #include "Serial.h"
 
-Serial::Serial(std::shared_ptr<ScriptLogger> logger) : logger_(logger) {
-    std::system("stty -F /dev/ttyACM0 cs8 115200 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
-    input_ = std::make_shared<std::ifstream>("/dev/ttyACM0");
-    output_ = std::make_shared<std::ofstream>("/dev/ttyACM0");
-    arduinoInitialized_ = false;
-    std::thread signalwait([](){ initializeArduino(); });
-}
+std::mutex Serial::serialLock_;
 
-void Serial::writeByte(unsigned short byteValue) {
-    if (arduinoInitialized_)
-    {
-        std::lock_guard<std::mutex> guard(serialLock_);
-        *output_ << char(byteValue & 0xFF) << std::flush;
+Serial::Serial(std::string device) {
+#ifdef DEBUG
+    LOG("\nReceived Device Name: " << device);
+    LOG("\nEntering Serial Debug Mode\n");
+    fd = 0;
+#else
+    if((fd = open(device.c_str(), O_RDWR)) < 0) {
+        LOG("Device failed to open... entering dummy mode.\n");
+        fd = 0;
+        return;
     }
-}
-
-void Serial::writeShort(unsigned short shortValue) {
-    if (arduinoInitialized_)
-    {
-        std::lock_guard<std::mutex> guard(serialLock_);
-        *output_ << char(shortValue >> 8) << char(shortValue & 0xFF) << std::flush;
-    }
-}
-
-json Serial::readJson() {
-    if (arduinoInitialized_)
-    {
-        std::lock_guard<std::mutex> guard(serialLock_);
-        json arduinoData;
-        *input >> arduinoData;
-        return arduinoData;
-    }
-    return {};
-}
-
-char Serial::readChar() {
-    if (arduinoInitialized_)
-    {
-        std::lock_guard<std::mutex> guard(serialLock_);
-        char arduinoReading;
-        *input >> arduinoReading;
-        return arduinoReading;
-    }
-    return '';
-}
-
-void initializeArduino() {
-    std::lock_guard<std::mutex> guard(serialLock_);
-    auto arduinoVal = readChar('R');
-    writeShort(3);
-    arduinoInitialized_ = true;
+    
+    configure();
+#endif
+    ackno();
 }
 
 Serial::~Serial() {
-    input_->close();
-    output_->close();
+    if(fd != 0) close(fd);
+}
+
+void Serial::configure() {
+    struct termios topts;
+    if(tcgetattr(fd, &topts)) {
+        LOG("Failed to get terminal ios options from file descriptor.\n");
+        throw 1;
+    }
+    if(cfsetispeed(&topts, B115200)) {
+        LOG("Failed to set input baud rate.\n");
+        throw 1;
+    }
+    if(cfsetospeed(&topts, B115200)) {
+        LOG("Failed to set output baud rate.\n");
+        throw 1;
+    }
+    topts.c_cflag &= ~(PARENB|CSTOPB|CSIZE|CRTSCTS);
+    topts.c_cflag |= CS8|CREAD|CLOCAL;
+    topts.c_iflag &= ~(IXON | IXOFF | IXANY);
+    topts.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+    topts.c_oflag &= ~OPOST;
+    topts.c_cc[VMIN] = 1;
+    topts.c_cc[VTIME] = 0;
+    if(tcsetattr(fd, TCSANOW, &topts)) {
+        LOG("Failed to set terminal ios options for file descriptor.\n");
+        throw 1;
+    }
+    if(tcflush(fd, TCIFLUSH)) {
+        LOG("Failed to flush file descriptor.\n");
+        throw 1;
+    }
+}
+
+void Serial::ackno() {
+    std::string response = readString();
+#ifdef DEBUG
+    LOG("Arduino Message: " << response << "\n");
+#endif
+    writeByte('R');
+}
+
+
+
+
+std::string Serial::readString() {
+#ifdef DEBUG
+    return "Dummy String\0";
+#else
+    if(fd==0) return "";
+    std::stringstream ss;
+    char c[1];
+    
+    do{
+        read(fd, c, 1);
+        ss << c[0];
+    }while(c[0] != '\0');
+    return ss.str();
+#endif
+}
+
+unsigned char Serial::readByte() {
+    unsigned char result = 0;
+    readData((char*)&result, 1);
+    return result;
+}
+
+float Serial::readFloat() {
+    float result = 0;
+    readData((char*)&result, 4);
+    return result;
+}
+
+double Serial::readDouble() {
+    double result = 0;
+#ifdef DUE
+    readData((char*)&result, 8);
+#else
+    float data = 0;
+    readData((char*)&data, 4);
+    result = (double)data;
+#endif
+    return result;
+}
+
+int Serial::readInt() {
+    int result = 0;
+    readData((char*)&result, 4);
+    return result;
+}
+
+unsigned int Serial::readUInt() {
+    unsigned int result = 0;
+    readData((char*)&result, 4);
+    return result;
+}
+
+short Serial::readShort() {
+    short result = 0;
+    readData((char*)&result, 2);
+    return result;
+}
+
+unsigned short Serial::readUShort() {
+    unsigned short result = 0;
+    readData((char*)&result, 2);
+    return result;
+}
+
+void Serial::readData(char* ptr, size_t size) {
+    std::lock_guard<std::mutex> guard(serialLock_);
+    if(fd!=0) read(fd, ptr, size);
+    else for(unsigned int i = 0; i < size; i++) ptr[i] = 0;
+}
+
+
+
+
+void Serial::writeFloat(float value) {
+    writeData((char*)&value, 4);
+}
+
+void Serial::writeDouble(double value) {
+#ifdef DUE
+    writeData((char*)&value, 8);
+#else
+    float val2 = (float)value;
+    writeData((char*)&value, 4);
+#endif
+}
+
+void Serial::writeInt(int value) {
+    writeData((char*)&value, 4);
+}
+
+void Serial::writeUInt(unsigned int value) {
+    writeData((char*)&value, 4);
+}
+
+void Serial::writeShort(short value) {
+    writeData((char*)&value, 2);
+}
+
+void Serial::writeUShort(unsigned short value) {
+    writeData((char*)&value, 2);
+}
+
+void Serial::writeByte(unsigned char value) {
+    writeData((char*)&value, 1);
+}
+
+void Serial::writeData(char* ptr, size_t size) {
+#ifdef DEBUG
+    LOG("Serial Write: " << std::hex << std::setw(2));
+    for(size_t i = 0; i < size; i++) {
+        LOG((unsigned short)ptr[i]);
+    }
+    LOG(std::dec << std::endl);
+#else
+    std::lock_guard<std::mutex> guard(serialLock_);
+    if(fd == 0) return;
+    write(fd, ptr, size);
+#endif
 }
