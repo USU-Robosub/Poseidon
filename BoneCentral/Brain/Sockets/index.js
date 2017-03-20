@@ -7,19 +7,26 @@ var Net     = require('net');
 var $       = require('../Utilities').Promises
 
 module.exports.createSocket = function (port) {
-    var input  = new Streams.PassThrough();
-    var output = new Streams.PassThrough();
-    var onExit = $.Deferred();
+    var input     = new Streams.PassThrough();
+    var output    = new Streams.PassThrough();
+    var onExit    = $.Deferred();
+    var onConnect = $.Deferred();
+    
     Net.createServer(function (socket) {
         _handleClient(socket, input, output);
         socket.on("close", function() {
             onExit.resolve();
         });
+        onConnect.resolve();
     }).listen(port);
+    
     return {
         Input: input,
         Output: output,
-        OnExit: onExit.promise()
+        Events: {
+            OnConnect: onConnect.promise(),
+            OnExit: onExit.promise()
+        }
     };
 };
 
