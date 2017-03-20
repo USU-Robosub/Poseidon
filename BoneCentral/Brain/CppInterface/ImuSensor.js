@@ -24,16 +24,20 @@ module.exports = (function(){
 
     var _handleData = function(self){return function (data) {
         try {
-            var dataJson = JSON.parse(data.toString());
-            if      (dataJson.Type === "Acceleration")           self._accelRequest.resolve(dataJson);
-            else if (dataJson.Type === "AngularAcceleration")    self._angularAccelRequest.resolve(dataJson);
-            else if (dataJson.Type === "Heading")                self._headingRequest.resolve(dataJson);
-            else if (dataJson.Type === "InternalTemperature")    self._inTempRequest.resolve(dataJson);
-            else if (dataJson.Type === "InternalPressure")       self._inPressureRequest.resolve(dataJson);
-            else if (dataJson.Type === "ExternalTemperature")    self._exTempRequest.resolve(dataJson);
-            else if (dataJson.Type === "ExternalPressure")       self._exPressureRequest.resolve(dataJson);
+            var tokens = data.toString().split('\n');
+            for(i = 0; i < tokens.length-1; i++) {
+                var dataJson = JSON.parse(tokens[i]+"\n");
+                if      (dataJson.Type === "Acceleration")           self._accelRequest.resolve(dataJson);
+                else if (dataJson.Type === "AngularAcceleration")    self._angularAccelRequest.resolve(dataJson);
+                else if (dataJson.Type === "Heading")                self._headingRequest.resolve(dataJson);
+                else if (dataJson.Type === "InternalTemperature")    self._inTempRequest.resolve(dataJson);
+                else if (dataJson.Type === "InternalPressure")       self._inPressureRequest.resolve(dataJson);
+                else if (dataJson.Type === "ExternalTemperature")    self._exTempRequest.resolve(dataJson);
+                else if (dataJson.Type === "ExternalPressure")       self._exPressureRequest.resolve(dataJson);
+                else { console.log("Could not resolved type '"+dataJson.Type+"'"); }
+            }
         }
-        catch(e) {}
+        catch(e) { console.log("_handleData: "+e); }
     };};
 
     ImuSensor.prototype.getAcceleration = function () {
