@@ -1,13 +1,11 @@
 module.exports = function(app, msngr) {
     app.get("/goThroughGate", function (req, res) {
-        goThroughGate.execute().done(function () {
-    		thrustController.goDirection(0, 0, 0);
-    	});
+        msngr.goThroughGate();
         res.send("Going through gate");
     });
     
     app.get("/terminate", function (req, res) {
-        goThroughGate._shouldQuit = true;
+        msngr.terminate();
         res.send("Terminated");
     });
     
@@ -21,192 +19,150 @@ module.exports = function(app, msngr) {
     });
     
     app.get('/stdoutData', function(req, res) {
-    	res.send(webLogger.pull());
+    	res.send(msngr.pullWebLog());
     });
     
     // From IThrustController
     app.post('/move', function (req, res) {
-        var params = req.body;
-        thrustController.move(params.throttle);
+        msngr.move(req.body.throttle)
         res.send('');
     });
     
-    // From IThrustController
     app.post('/secondaryDive', function (req, res) {
-        var params = req.body;
-        thrustController.secondaryDive(params.throttle);
+        msngr.secondaryDive(req.body.throttle);
         res.send('');
     });
     
-    // From IThrustController
     app.post('/dive', function (req, res) {
-        var params = req.body;
-        thrustController.dive(params.throttle);
+        msngr.dive(req.body.throttle);
         res.send('');
     });
     
-    // From IThrustController
     app.post('/yaw', function (req, res) {
-        var params = req.body;
-        thrustController.yaw(params.throttle);
+        msngr.yaw(req.body.throttle);
         res.send('');
     });
     
-    // From IThrustController
     app.post('/pitch', function (req, res) {
-        var params = req.body;
-        thrustController.pitch(params.throttle);
+        msngr.pitch(req.body.throttle);
         res.send('');
     });
     
-    // From IThrustController
     app.post('/roll', function (req, res) {
-        var params = req.body;
-        thrustController.roll(params.throttle);
+        msngr.roll(req.body.throttle);
         res.send('');
     });
     
-    // From IThrustController
     app.post('/goDirection', function(req, res) {
     	var params = req.body;
-    	thrustController.goDirection(params.move, params.secondaryDive, params.dive);
+    	msngr.goDirection(params.move, params.secondaryDive, params.dive);
     	res.send('');
     });
     
-    // From IThrustController
     app.post('/rotate', function(req, res) {
     	var params = req.body;
-    	thrustController.rotate(params.yaw, params.pitch, params.roll);
+    	msngr.rotate(params.yaw, params.pitch, params.roll);
     	res.send('');
     });
     
-    // From IThrustController
     app.get('/killThrust', function(req, res) {
-    	thrustController.kill();
+    	msngr.killThrust();
     	res.send('killThrust');
     });
     
     // From Imu
     app.get('/turnOnImuSensor', function(req, res) {
-    	powerManager.turnOnImu();
+    	msngr.turnOnImu();
     	res.send('turnOnImuSensor');
     });
     
     app.get('/turnOffImuSensor', function(req, res) {
-        powerManager.turnOffImu();
+        msngr.turnOffImu();
     	res.send('turnOffImuSensor');
     });
     
     app.get('/getAcceleration', function(req, res) {
-        imuSensor.getAcceleration().done(function(accel) {
-            webLogger.info("Acceleration: " + JSON.stringify(accel));
-        });
+        msngr.accelerometer();
     	res.send('ran getAcceleration');
     });
     
     app.get('/getAngularAcceleration', function(req, res) {
-        imuSensor.getAngularAcceleration().done(function(accel) {
-            webLogger.info("Angular Acceleration: " + JSON.stringify(accel));
-        });
+        msngr.gyroscope();
         res.send('ran getAngularAcceleration');
     });
     
     app.get('/getHeading', function(req, res) {
-        imuSensor.getHeading().done(function(heading) {
-            webLogger.info("Heading: " + JSON.stringify(heading));
-        });
+        msngr.compass();
     	res.send('ran getHeading');
     });
     
     app.get('/getInternalTemperature', function(req, res) {
-        imuSensor.getInternalTemperature().done(function(temperature) {
-            webLogger.info("Internal Temperature: " + JSON.stringify(temperature));
-        });
+        msngr.getTemperature1();
     	res.send('getInternalTemperature');
     });
     
     app.get('/getInternalPressure', function(req, res) {
-        imuSensor.getInternalPressure().done(function(pressure) {
-            webLogger.info("Internal Pressure: " + JSON.stringify(pressure));
-        });
+        msngr.getPressure1();
     	res.send('getInternalPressure');
     });
     
     app.get('/getExternalTemperature', function(req, res) {
-        imuSensor.getExternalTemperature().done(function(temperature) {
-            webLogger.info("External Temperature: " + JSON.stringify(temperature));
-        });
+        msngr.getTemperature2();
         res.send('getExternalTemperature');
     });
     
     app.get('/getExternalPressure', function(req, res) {
-        imuSensor.getExternalPressure().done(function(pressure) {
-            webLogger.info("External Pressure: " + JSON.stringify(pressure));
-        });
+        msngr.getPressure2();
         res.send('getExternalPressure');
     });
     
+    // From Process
     app.get('/exit', function(req, res) {
     	res.send('exit');
-    	powerManager.exit();
-    	process.exit();
+    	msngr.exit();
     });
     
     
     // From IPowerController {
     app.get('/turnOnEscs', function(req, res) {
-    	powerManager.turnOnEscs();
+    	msngr.turnOnEscs();
     	res.send('turnOnEscs');
     });
     
     app.get('/turnOffEscs', function(req, res) {
-    	powerManager.turnOffEscs();
+    	msngr.turnOffEscs();
     	res.send('turnOffEscs');
     });
     
     
     // Headlight Control
     app.get('/headlight', function(req, res) {
-        headLights.toggleLights();
+        msngr.toggleLights();
     	res.send('toggled Headlights');
     });
     
     app.get('/startSearchingForPoles', function (req, res) {
-        gateDetector.startSearching();
+        msngr.startPoleSearch();
         res.send('startSearchingForPoles');
     });
     
     app.get('/getPoleCoordinates', function (req, res) {
-        gateDetector.getPoleCoordinates().done(function (poleCoords) {
-            webLogger.info("Pole Coordinates: " + JSON.stringify(poleCoords));
-        });
+        msngr.getPoleLocation();
         res.send('getPoleCoordinates');
     });
     
     app.get('/refreshHsv', function (req, res) {
-    	gateDetector.refreshHsv();
+    	msngr.refreshHSV();
     	res.send('refreshHsv');
     });
     
     app.get('/stopSearchingForPoles', function (req, res) {
-        gateDetector.stopSearching();
+        msngr.stopPoleSearch();
         res.send('stopSearchingForPoles');
     });
     
     // Script Run
     app.post('/runScript', function(req, res) {
-    	var scriptIndex = req.body.scriptId;
-    	fileSystem.readdir("./TestScripts", function (err, fileNames) {
-    		if(fileNames[scriptIndex]) {
-                var filePath = path.resolve("TestScripts", fileNames[scriptIndex]);
-                if(require.cache[filePath]) delete require.cache[filePath];
-    			var script = require(filePath);
-                script.execute(thrustController, imuSensor, webLogger, headLights, powerManager);
-    			res.send('ran ' + fileNames[scriptIndex]);
-    		}
-    		else {
-    			res.send('script not found');
-    		}
-    	})
+    	res.send(msngr.runScript(req.body.scriptId));
     });
 }
