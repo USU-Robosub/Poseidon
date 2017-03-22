@@ -2,23 +2,20 @@
 
 class LedController : public IController {
 private:
-  uint8_t green_;
-  uint8_t white_;
 public:
-  LedController(JsonObject& pins) : green_(pins["green"]), white_(pins["white"]) {
-    pinMode(white_, OUTPUT);
-    digitalWrite(white_, LOW);
+  LedController() {
+    pinMode(LED_CTRL_PIN, OUTPUT);
+    digitalWrite(LED_CTRL_PIN, LOW);
   }
   void execute() {
     for(int i = 0; i < 2; i++) {
-      digitalWrite(white_, HIGH);
+      digitalWrite(LED_CTRL_PIN, HIGH);
       delay(250);
-      digitalWrite(white_, LOW);
+      digitalWrite(LED_CTRL_PIN, LOW);
       delay(250);
     }
   }
   void kill() {
-    digitalWrite(green_, LOW);
-    digitalWrite(white_, LOW);
+    digitalWrite(LED_CTRL_PIN, LOW);
   }
 };
