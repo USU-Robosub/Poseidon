@@ -66,15 +66,15 @@ function update() {
     
     $.WhenAll(waitHeading, waitAccel)
     .done(function(cdata,adata) {
-        // console.log(cdata);
-        // console.log(adata);
-    //     var compass = vector.v3(cData.X,cData.Y,cData.Z);
-    //     var accel   = vector.v3(aData.X,aData.Y,aData.Z);
+        console.log(cdata);
+        console.log(adata);
+        var compass = vector.v3(cData.X,cData.Y,cData.Z);
+        var accel   = vector.v3(aData.X,aData.Y,aData.Z);
         
-    //     var pid_pv  = ctools.degrees(compass, accel);
-    //     var adj     = pid.update(pid_sp, pid_pv) / TRANSFORM;
-    //     console.log("Adjust: " + (adj*100).toFixed(2) + "%");
-    //     engine.yaw(adj);
+        var pid_pv  = ctools.degrees(compass, accel);
+        var adj     = pid.update(pid_sp, pid_pv) / TRANSFORM;
+        console.log("Adjust: " + (adj*100).toFixed(2) + "%");
+        engine.yaw(adj);
     });
 }
 
