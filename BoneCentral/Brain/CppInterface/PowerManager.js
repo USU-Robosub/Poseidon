@@ -1,7 +1,8 @@
 module.exports = (function(){
 
-    function PowerManager(cmdOut) {
+    function PowerManager(cmdOut, onExit) {
         this._cmdOut = cmdOut;
+        this._onExit = onExit;
     }
 
     PowerManager.prototype.turnOnEscs = function(){
@@ -22,6 +23,7 @@ module.exports = (function(){
 
     PowerManager.prototype.exit = function () {
         this._cmdOut.write("exit\n");
+        return this._onExit;
     };
 
     return PowerManager;

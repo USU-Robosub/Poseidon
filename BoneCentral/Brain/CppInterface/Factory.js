@@ -30,7 +30,7 @@ module.exports = (function() {
     };
 
     Factory.prototype.createPowerManager = function () {
-        return new PowerManager(dispatcherSocket.Input);
+        return new PowerManager(this.dispatcherSocket.Input, this.dispatcherSocket.OnExit);
     };
 
     Factory.prototype.createThrustController = function () {
