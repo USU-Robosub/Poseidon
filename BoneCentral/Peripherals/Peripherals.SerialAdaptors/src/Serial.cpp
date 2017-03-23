@@ -72,7 +72,8 @@ void Serial::acknowledge() {
 
 std::string Serial::readString() {
 #ifdef DEBUG
-    return "Dummy String\0";
+    std::string res("Dummy String");
+    return res;
 #else
     if(fd==0) return "";
     std::stringstream ss;
