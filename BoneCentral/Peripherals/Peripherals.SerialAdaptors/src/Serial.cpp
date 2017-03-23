@@ -21,7 +21,7 @@ Serial::Serial(std::string device) {
     
     configure();
 #endif
-    ackno();
+    acknowledge();
 }
 
 Serial::~Serial() {
@@ -59,7 +59,7 @@ void Serial::configure() {
     }
 }
 
-void Serial::ackno() {
+void Serial::acknowledge() {
     std::string response = readString();
 #ifdef DEBUG
     LOG("Arduino Message: " << response << "\n");
