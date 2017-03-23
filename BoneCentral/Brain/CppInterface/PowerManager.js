@@ -21,13 +21,13 @@ module.exports = (function(){
         this._cmdOut.write("turnOffImu\n");
     };
     
-    PowerManager.prototype.connect = function() {
-        return this._events.OnConnect;
-    }
+    PowerManager.prototype.connect = function(name,callback) {
+        this._events.OnConnect.addEventListener(name,callback);
+    };
 
-    PowerManager.prototype.exit = function () {
+    PowerManager.prototype.exit = function (name,callback) {
         this._cmdOut.write("exit\n");
-        return this._events.OnExit;
+        this._events.OnExit.addEventListener(name,callback);
     };
 
     return PowerManager;
