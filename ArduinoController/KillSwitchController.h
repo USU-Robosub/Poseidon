@@ -12,7 +12,7 @@ public:
   KillSwitchController(IController ** _list_, int _count_) {
     list = _list_;
     count = _count_;
-    pinMode(LED_STAT_PIN, OUTPUT);
+    pinMode(GPIO::LED_STAT_PIN, OUTPUT);
   }
 
   void execute() {
@@ -31,7 +31,7 @@ public:
     active = !digitalRead(interrupt);
     if(active)
       kill();
-    digitalWrite(LED_STAT_PIN, active);
+    digitalWrite(GPIO::LED_STAT_PIN, active);
     interrupts();
   }
 };

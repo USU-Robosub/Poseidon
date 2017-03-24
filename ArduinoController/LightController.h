@@ -3,11 +3,11 @@
 class LightController : public IController {
 public:
   LightController() {
-    pinMode(LIGHTS_PIN, OUTPUT);
-    digitalWrite(LIGHTS_PIN, HIGH);
+    pinMode(GPIO::LIGHTS_PIN, OUTPUT);
+    digitalWrite(GPIO::LIGHTS_PIN, HIGH);
   }
   void execute() {
-    digitalWrite(LIGHTS_PIN, !SerialTools::readByte());
+    digitalWrite(GPIO::LIGHTS_PIN, !SerialTools::readByte());
   }
   void kill() { }
 };

@@ -21,12 +21,12 @@ void setup() {
     [](){((KillSwitchController*)controllers[0])->isr(KILLSWITCH_PIN);},
     CHANGE
   );
-  controllers[1]  = new ThrustController(MOVE_PIN);
-  controllers[2]  = new ThrustController(STRAFE_PIN);
-  controllers[3]  = new ThrustController(DIVE_PIN);
-  controllers[4]  = new ThrustController(YAW_PIN);
-  controllers[5]  = new ThrustController(PITCH_PIN);
-  controllers[6]  = new ThrustController(ROLL_PIN);
+  controllers[1]  = new ThrustController(PWM::MOVE_PIN);
+  controllers[2]  = new ThrustController(PWM::STRAFE_PIN);
+  controllers[3]  = new ThrustController(PWM::DIVE_PIN);
+  controllers[4]  = new ThrustController(PWM::YAW_PIN);
+  controllers[5]  = new ThrustController(PWM::PITCH_PIN);
+  controllers[6]  = new ThrustController(PWM::ROLL_PIN);
   controllers[7]  = new EscController();
   controllers[8]  = new LedController();
   controllers[9]  = new PingController();
