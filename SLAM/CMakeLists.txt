@@ -6,7 +6,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic") # -
 set(CATCH_INCLUDE_DIR ../Libraries/Catch/include)
 
 get_filename_component(CATCH_INCLUDE_DIR ${CATCH_INCLUDE_DIR} ABSOLUTE)
-
 if(EXISTS ${CATCH_INCLUDE_DIR})
   message("Catch library found at ${CATCH_INCLUDE_DIR}")
   message("SLAM unit tests will be built.")
