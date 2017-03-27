@@ -11,6 +11,7 @@
 #include <thread>
 #include <mutex>
 #include <json.h>
+#include <ScriptLogger.h>
 
 using json = nlohmann::json;
 
@@ -18,12 +19,17 @@ class Serial {
 private:
     std::shared_ptr<std::ifstream> input_;
     std::shared_ptr<std::ofstream> output_;
+    std::shared_ptr<std::ScriptLogger> logger_;
     static std::mutex serialLock_;
+    bool arduinoInitialized_;
 public:
     Serial();
     void writeByte(unsigned short byteValue);
     void writeShort(unsigned short shortValue);
     json readJson();
+    char readChar();
+    void initializeArduino();
+    bool getArduinoInitialized();
     ~Serial();
 };
 
