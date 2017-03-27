@@ -218,3 +218,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/macos,windows,linux,jetbrains,cmake,c++,node
+
+Libraries/Catch
