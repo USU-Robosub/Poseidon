@@ -5,22 +5,28 @@
 
 #include "Serial.h"
 
+#ifdef DEBUG
+#define IFDEBUG if(true)
+#else
+#define IFDEBUG if(false)
+#endif
+
 std::mutex Serial::serialLock_;
 
 Serial::Serial(std::string device) {
-#ifdef DEBUG
-    LOG("\nReceived Device Name: " << device);
-    LOG("\nEntering Serial Debug Mode\n");
-    fd = 0;
-#else
-    if((fd = open(device.c_str(), O_RDWR)) < 0) {
-        LOG("Device failed to open... entering dummy mode.\n");
+    IFDEBUG {
+        LOG("\nReceived Device Name: " << device);
+        LOG("\nEntering Serial Debug Mode\n");
         fd = 0;
-        return;
+    } else {
+        if((fd = open(device.c_str(), O_RDWR)) < 0) {
+            LOG("Device failed to open... entering dummy mode.\n");
+            fd = 0;
+            return;
+        }
+        
+        configure();
     }
-    
-    configure();
-#endif
     acknowledge();
 }
 
@@ -61,9 +67,9 @@ void Serial::configure() {
 
 void Serial::acknowledge() {
     std::string response = readString();
-#ifdef DEBUG
-    LOG("Arduino Message: " << response << "\n");
-#endif
+    IFDEBUG {
+        LOG("Arduino Message: " << response << "\n");
+    }
     writeByte('R');
 }
 
@@ -71,10 +77,11 @@ void Serial::acknowledge() {
 
 
 std::string Serial::readString() {
-#ifdef DEBUG
-    std::string res("Dummy String");
-    return res;
-#else
+    IFDEBUG {
+        std::string res("Dummy String");
+        return res;
+    }
+    
     if(fd==0) return "";
     std::stringstream ss;
     char c[1];
@@ -84,7 +91,6 @@ std::string Serial::readString() {
         ss << c[0];
     }while(c[0] != '\0');
     return ss.str();
-#endif
 }
 
 unsigned char Serial::readByte() {
@@ -101,13 +107,7 @@ float Serial::readFloat() {
 
 double Serial::readDouble() {
     double result = 0;
-#ifdef DUE
     readData((char*)&result, 8);
-#else
-    float data = 0;
-    readData((char*)&data, 4);
-    result = (double)data;
-#endif
     return result;
 }
 
@@ -149,12 +149,7 @@ void Serial::writeFloat(float value) {
 }
 
 void Serial::writeDouble(double value) {
-#ifdef DUE
     writeData((char*)&value, 8);
-#else
-    float val2 = (float)value;
-    writeData((char*)&value, 4);
-#endif
 }
 
 void Serial::writeInt(int value) {
@@ -178,15 +173,19 @@ void Serial::writeByte(unsigned char value) {
 }
 
 void Serial::writeData(char* ptr, size_t size) {
-#ifdef DEBUG
-    LOG("Serial Write: " << std::hex << std::setw(2));
-    for(size_t i = 0; i < size; i++) {
-        LOG((unsigned short)ptr[i]);
+    IFDEBUG {
+        LOG("Serial Write: " << std::hex << std::setw(2));
+        for(size_t i = 0; i < size; i++) {
+            LOG((unsigned short)ptr[i]);
+        }
+        LOG(std::dec << std::endl);
+        return;
     }
-    LOG(std::dec << std::endl);
-#else
     std::lock_guard<std::mutex> guard(serialLock_);
     if(fd == 0) return;
     write(fd, ptr, size);
-#endif
 }
+
+#ifdef IFDEBUG
+#undef IFDEBUG
+#endif
