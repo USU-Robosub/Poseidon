@@ -1,5 +1,5 @@
-#ifndef ITHRUSTER_H
-#define ITHRUSTER_H
+#ifndef ICONTROLLER_H
+#define ICONTROLLER_H
 
 #include "Arduino.h"
 #include "SerialTools.h"

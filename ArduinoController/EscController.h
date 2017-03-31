@@ -6,12 +6,12 @@ class EscController : public IController {
   
 private:
   uint8_t GPIO_PINS[GPIO_CNT] = {
-    GPIO::ESC_S1_PIN,
-    GPIO::ESC_S2_PIN,
-    GPIO::ESC_S3_PIN,
-    GPIO::ESC_S4_PIN,
-    GPIO::ESC_S5_PIN,
-    GPIO::ESC_S6_PIN
+    GpioPin::ESC_S1_PIN,
+    GpioPin::ESC_S2_PIN,
+    GpioPin::ESC_S3_PIN,
+    GpioPin::ESC_S4_PIN,
+    GpioPin::ESC_S5_PIN,
+    GpioPin::ESC_S6_PIN
   };
 public:
   EscController() {
