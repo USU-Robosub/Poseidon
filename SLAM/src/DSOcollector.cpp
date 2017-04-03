@@ -1,61 +1,46 @@
-#pragma once
-//#include "boost/thread.hpp"
-#include "util/MinimalImage.h"
-#include "IOWrapper/Output3DWrapper.h"
-#include <iostream>
+#include "DSOcollector.h"
 
-#include "FullSystem/HessianBlocks.h"
-#include "util/FrameShell.h"
-
-namespace slam
+slam::DSOcollector::DSOcollector()
 {
-  class DSOcollector : public dso::IOWrap::Output3DWrapper
-  {
-  public:
+  printf("OUT: Web output wrapper started\n");
+}
 
-          inline DSOcollector()
-          {
-              printf("OUT: Web output wrapper started\n");
-          }
+slam::DSOcollector::~DSOcollector()
+{
+  printf("OUT: Web output wrapper closed\n");
+}
 
-          virtual ~DSOcollector()
-          {
-              printf("OUT: Web output wrapper closed\n");
-          }
-/*
-          virtual void publishGraph(const std::map<uint64_t,Eigen::Vector2i> &connectivity)
-          {
+void slam::DSOcollector::publishGraph(const std::map<uint64_t,Eigen::Vector2i> &connectivity)
+{
 
-          }
+}
 
-          virtual void publishKeyframes( std::vector<FrameHessian*> &frames, bool final, CalibHessian* HCalib)
-          {
+void slam::DSOcollector::publishKeyframes( std::vector<dso::FrameHessian*> &frames, bool final, dso::CalibHessian* HCalib)
+{
 
-          }
+}
 
-          virtual void publishCamPose(FrameShell* frame, CalibHessian* HCalib)
-          {
+void slam::DSOcollector::publishCamPose(dso::FrameShell* frame, dso::CalibHessian* HCalib)
+{
 
-          }
+}
 
-          virtual void pushLiveFrame(FrameHessian* image)
-          {
+void slam::DSOcollector::pushLiveFrame(dso::FrameHessian* image)
+{
 
-          }
+}
 
-          virtual void pushDepthImage(MinimalImageB3* image)
-          {
+void slam::DSOcollector::pushDepthImage(dso::MinimalImageB3* image)
+{
 
-          }
-          virtual bool needPushDepthImage()
-          {
-              return false;
-          }
+}
 
-          virtual void pushDepthImageFloat(MinimalImageF* image, FrameHessian* KF )
-          {
+bool slam::DSOcollector::needPushDepthImage()
+{
+  return false;
+}
 
-          }
-          */
-  };
+void slam::DSOcollector::pushDepthImageFloat(dso::MinimalImageF* image, dso::FrameHessian* KF )
+{
+
 }

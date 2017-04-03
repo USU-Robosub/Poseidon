@@ -82,7 +82,6 @@ if(NOT DEFINED Sophus_INCLUDE_DIR)
   get_filename_component(Sophus_INCLUDE_DIR ${DSO_DIR}/thirdparty/Sophus ABSOLUTE)
 endif()
 check_library("DSO" DSO_DIR DSO_LIBRARY DSO_INCLUDE_DIR Sophus_INCLUDE_DIR REQUIRED)
-include_directories(${DSO_INCLUDE_DIR} ${Sophus_INCLUDE_DIR})
 
 #Catch Library
 get_filename_component(CATCH_INCLUDE_DIR ../Libraries/Catch/include ABSOLUTE)
@@ -94,17 +93,21 @@ else()
   message("SLAM unit tests will not be built. To build SLAM unit tests, initialize submodule Catch.")
 endif()
 
-include_directories(
-  ${OpenCV_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
-)
+get_filename_component(PROJECT_INLUDE_DIR "include" ABSOLUTE)
 
-file(GLOB_RECURSE HEADER_FILES "include/*.h" "include/*.hpp")
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp" "src/*.h")
 file(GLOB_RECURSE TEST_SOURCE_FILES "test/*.cpp" "test/*.hpp" "test/*.h")
 
-add_library(slam STATIC ${HEADER_FILES} ${SOURCE_FILES})
-add_executable(slam_tests ${HEADER_FILES} ${SOURCE_FILES} ${TEST_SOURCE_FILES})
+include_directories(
+  ${OpenCV_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+  ${DSO_INCLUDE_DIR}
+  ${Sophus_INCLUDE_DIR}
+  ${PROJECT_INLUDE_DIR}
+)
+
+add_library(slam STATIC ${SOURCE_FILES})
+add_executable(slam_tests ${SOURCE_FILES} ${TEST_SOURCE_FILES})
 
 target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
 target_link_libraries(slam_tests ${DSO_LIBRARY} ${OpenCV_LIBS})
