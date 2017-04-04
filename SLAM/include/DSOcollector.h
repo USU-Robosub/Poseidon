@@ -1,5 +1,6 @@
 #pragma once
 #include "IOWrapper/Output3DWrapper.h"
+#include "util/FrameShell.h"
 #include "TelemetryPacket.h"
 #include <unordered_map>
 
@@ -22,6 +23,7 @@ namespace slam
     unsigned int numberOfFramesBeingProcessed();
   private:
     std::unordered_map<unsigned int, std::shared_ptr<CameraFrame>> framesBeingProcessed; // if some frames are skipped then this buffer my expand forever
+    std::unordered_map<unsigned int, TelemetryPacket> underConstructionTelemetryPackets; // if some frames are skipped then this buffer my expand forever
     TelemetryPacket currentTelemetry;
   };
 }

@@ -5,7 +5,7 @@
 
 using namespace slam;
 
-TEST_CASE("DSOcollector works as expected") {
+TEST_CASE("DSOcollector works as expected", "[DSOcollector]") {
   
   auto collector = DSOcollector();
   

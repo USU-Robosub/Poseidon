@@ -1,7 +1,8 @@
 #include "DSOcollector.h"
 
 slam::DSOcollector::DSOcollector() : 
-  framesBeingProcessed(std::unordered_map<unsigned int, std::shared_ptr<CameraFrame>>())
+  framesBeingProcessed(std::unordered_map<unsigned int, std::shared_ptr<CameraFrame>>()),
+  underConstructionTelemetryPackets(std::unordered_map<unsigned int, TelemetryPacket>())
 {
   
 }
@@ -23,12 +24,15 @@ void slam::DSOcollector::publishKeyframes( std::vector<dso::FrameHessian*> &fram
 
 void slam::DSOcollector::publishCamPose(dso::FrameShell* frame, dso::CalibHessian* HCalib)
 {
-
+  const double* rawProjectionMatrix = frame->camToWorld.matrix3x4().data();
+  std::shared_ptr<slam::Pose> poseFromMatrix = std::make_shared<slam::Pose>(slam::Pose(rawProjectionMatrix)); 
+  delete[] rawProjectionMatrix;
+  underConstructionTelemetryPackets[frame->incoming_id].pose = poseFromMatrix;
 }
 
 void slam::DSOcollector::pushLiveFrame(dso::FrameHessian* image)
 {
-
+  
 }
 
 void slam::DSOcollector::pushDepthImage(dso::MinimalImageB3* image)
