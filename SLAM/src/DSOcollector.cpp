@@ -1,7 +1,6 @@
 #include "DSOcollector.h"
 
 slam::DSOcollector::DSOcollector() : 
-  framesBeingProcessed(std::unordered_map<unsigned int, std::shared_ptr<CameraFrame>>()),
   underConstructionTelemetryPackets(std::unordered_map<unsigned int, TelemetryPacket>())
 {
   
@@ -57,12 +56,13 @@ slam::TelemetryPacket slam::DSOcollector::GetCurrentTelemetry()
 
 void slam::DSOcollector::frameWillBeProcessed(std::shared_ptr<CameraFrame> frame, unsigned int uniqueId)
 {
-  std::pair<unsigned int, std::shared_ptr<CameraFrame>> newFrame(uniqueId, frame);
-  framesBeingProcessed.insert(newFrame);
+  std::pair<unsigned int, TelemetryPacket> newTelemetryPacket(uniqueId, TelemetryPacket());
+  newTelemetryPacket.second.cameraFrame = frame;
+  underConstructionTelemetryPackets.insert(newTelemetryPacket);
 }
 
 unsigned int slam::DSOcollector::numberOfFramesBeingProcessed()
 {
-  return framesBeingProcessed.size();
+  return underConstructionTelemetryPackets.size();
 }
 
