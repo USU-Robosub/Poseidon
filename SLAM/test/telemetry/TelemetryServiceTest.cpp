@@ -30,6 +30,10 @@ TEST_CASE("TelemetryService works as expected") {
 
         REQUIRE(telemetryService.subscribers() == 1);
 
+        telemetryService.subscribe(listener);
+
+        REQUIRE(telemetryService.subscribers() == 1);
+
         telemetryService.subscribe(&doSomething);
 
         REQUIRE(telemetryService.subscribers() == 2);

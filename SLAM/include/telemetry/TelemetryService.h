@@ -5,6 +5,7 @@
 #ifndef SLAM_TELEMETRYSERVICE_H
 #define SLAM_TELEMETRYSERVICE_H
 
+#include <unordered_set>
 #include "TelemetryPacket.h"
 #include "../camera_frame_stream/IFrameStream.h"
 #include "TelemetryListener.h"
@@ -14,7 +15,7 @@ namespace slam {
     class TelemetryService {
 
     private:
-        std::vector<TelemetryListener> listeners = std::vector<TelemetryListener>();
+        std::unordered_set<TelemetryListener> listeners = std::unordered_set<TelemetryListener>();
 
     public:
         TelemetryPacket getCurrentTelemetry();

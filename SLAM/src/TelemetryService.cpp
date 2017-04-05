@@ -12,11 +12,11 @@ TelemetryPacket TelemetryService::getCurrentTelemetry() {
 }
 
 void TelemetryService::subscribe(TelemetryListener listener) {
-    listeners.push_back(listener);
+    listeners.insert(listener);
 }
 
 void TelemetryService::unsubscribe(TelemetryListener listener) {
-    listeners.erase(std::remove(listeners.begin(), listeners.end(), listener), listeners.end());
+    listeners.erase(listener);
 }
 
 int TelemetryService::subscribers() const {
