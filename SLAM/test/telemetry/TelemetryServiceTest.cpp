@@ -14,9 +14,9 @@ void doSomething(TelemetryPacket) {
 
 TEST_CASE("TelemetryService works as expected") {
 
-    auto telemetry = TelemetryService();
+    auto telemetryService = TelemetryService();
 
-    REQUIRE(telemetry.subscribers() == 0);
+    REQUIRE(telemetryService.subscribers() == 0);
 
     SECTION("The user is able to subscribe to and unsubscribe from telemetry updates") {
 
@@ -24,23 +24,23 @@ TEST_CASE("TelemetryService works as expected") {
             std::cout << "Received telemetry!" << std::endl;
         };
 
-        REQUIRE(telemetry.subscribers() == 0);
+        REQUIRE(telemetryService.subscribers() == 0);
 
-        telemetry.subscribe(listener);
+        telemetryService.subscribe(listener);
 
-        REQUIRE(telemetry.subscribers() == 1);
+        REQUIRE(telemetryService.subscribers() == 1);
 
-        telemetry.subscribe(&doSomething);
+        telemetryService.subscribe(&doSomething);
 
-        REQUIRE(telemetry.subscribers() == 2);
+        REQUIRE(telemetryService.subscribers() == 2);
 
-        telemetry.unsubscribe(listener);
+        telemetryService.unsubscribe(listener);
 
-        REQUIRE(telemetry.subscribers() == 1);
+        REQUIRE(telemetryService.subscribers() == 1);
 
-        telemetry.unsubscribe(&doSomething);
+        telemetryService.unsubscribe(&doSomething);
 
-        REQUIRE(telemetry.subscribers() == 0);
+        REQUIRE(telemetryService.subscribers() == 0);
 
     }
 

@@ -6,13 +6,11 @@
 #define SLAM_TELEMETRYLISTENER_H
 
 #include "TelemetryPacket.h"
-#include <functional>
 
 namespace slam {
 
-    typedef void (*TelemetryListener)(TelemetryPacket);
+    typedef void (*TelemetryListener)(slam::TelemetryPacket);
 
 }
-
 
 #endif //SLAM_TELEMETRYLISTENER_H
