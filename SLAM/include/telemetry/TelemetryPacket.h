@@ -13,9 +13,9 @@ namespace slam {
 
     struct TelemetryPacket {
 
-        ICameraFrame& cameraFrame;
-        DepthMap& depthMap;
-        Pose& pose;
+        const ICameraFrame& cameraFrame;
+        const DepthMap& depthMap;
+        const Pose& pose;
 
     };
 

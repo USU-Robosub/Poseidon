@@ -22,10 +22,10 @@ int ICameraFrameCVMatBased::getCols() const {
     return data.cols;
 }
 
-const cv::Mat &ICameraFrameCVMatBased::toMat() {
+const cv::Mat &ICameraFrameCVMatBased::toMat() const {
     return data;
 }
 
-ColorSpace ICameraFrameCVMatBased::getColorSpace() {
+ColorSpace ICameraFrameCVMatBased::getColorSpace() const {
     return (ColorSpace) data.channels();
 }
