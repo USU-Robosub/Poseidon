@@ -13,10 +13,7 @@ namespace slam {
     class IFrameStream {
 
     public:
-        const ICameraFrame getFrame() {
-            //TODO Implement this
-            throw std::runtime_error("Not implemented.");
-        };
+        virtual const ICameraFrame& getFrame() = 0;
 
     };
 
