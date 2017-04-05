@@ -10,9 +10,6 @@
 
 namespace slam {
 
-    typedef std::tuple<double, double, double> Vector3;
-    typedef std::tuple<double, double, double, double> Quaternion;
-
     using Chrono = std::chrono::steady_clock::time_point;
 
     class Output3DWrapper {}; //TODO: remove this and replace usages with the real dso::Output3DWrapper

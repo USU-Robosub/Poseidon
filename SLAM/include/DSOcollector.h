@@ -18,11 +18,11 @@ namespace slam
     virtual void pushDepthImage(dso::MinimalImageB3* image);
     virtual bool needPushDepthImage();
     virtual void pushDepthImageFloat(dso::MinimalImageF* image, dso::FrameHessian* KF );
-    
     TelemetryPacket GetCurrentTelemetry();
     void frameWillBeProcessed(std::shared_ptr<CameraFrame> frame, unsigned int uniqueId);
     unsigned int numberOfFramesBeingProcessed();
   private:
+    std::unordered_map<unsigned int, std::shared_ptr<CameraFrame>> framesBeingProcessed; // if some frames are skipped then this buffer my expand forever
     std::unordered_map<unsigned int, TelemetryPacket> underConstructionTelemetryPackets; // if some frames are skipped then this buffer my expand forever
     TelemetryPacket currentTelemetry;
   };
