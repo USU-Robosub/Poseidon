@@ -11,7 +11,7 @@ TEST_CASE("TelemetryPacket works as expected") {
 
     auto pose = std::make_shared<Pose>(Pose());
     auto frame = std::make_shared<CameraFrame>(CameraFrame(640, 480));
-    auto map = std::make_shared<DepthMap>(DepthMap());
+    auto map = std::make_shared<DepthMap>(DepthMap(0, 0));
     auto packet = TelemetryPacket();
 
     packet.cameraFrame = frame;
