@@ -2,6 +2,7 @@ Release/
 Debug/
 Build/
 Drivers/
+Catch/
 googletest/
 TestFootage
 
