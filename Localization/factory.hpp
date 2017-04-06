@@ -21,12 +21,15 @@ class place_holder_buey : public ITask
 		~place_holder_buey(){};
 		void task_function(Data_obj d)
 		{
-			(void)d;
-			std::cerr<<"Buey: test function\n";
+			std::cerr<<"Buey: test function with ping data: "<<d.ping_data<<std::endl;
 		}
 		bool should_execute()
 		{
 			return executable;
+		}
+		void set_status(bool in_status)
+		{
+			executable=in_status;
 		}
 };
 class place_holder_gate : public ITask 
@@ -45,14 +48,16 @@ class place_holder_gate : public ITask
 		~place_holder_gate(){};
 		void task_function(Data_obj d)
 		{
-			(void) d;
-			std::cerr<<"Gate: test function\n";
+			std::cerr<<"Gate: test function with ping data: "<<d.ping_data<<std::endl;
 		}
 		bool should_execute()
 		{
 			return executable;
 		}
-
+		void set_status(bool in_status)
+		{
+			executable=in_status;
+		}
 };
 class place_holder_pinger : public ITask 
 {
@@ -70,13 +75,16 @@ class place_holder_pinger : public ITask
 		void task_function(Data_obj d)
 		{
 			(void)d;
-			std::cerr<<"Pinger: test function\n";
+			std::cerr<<"Pinger: test function with ping data: "<<d.ping_data<<std::endl;
 		}
 		bool should_execute()
 		{
 			return executable;
 		}
-
+		void set_status(bool in_status)
+		{
+			executable=in_status;
+		}
 };
 
 //note, place_holder is a substitute task object.  This will be 
