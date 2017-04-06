@@ -1,4 +1,4 @@
-#include "../include/DepthMap.hpp"
+#include "../include/DepthMap.h"
 
 slam::DepthMap:: DepthMap(unsigned short x, unsigned short y)
 {

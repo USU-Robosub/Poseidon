@@ -5,7 +5,7 @@
 //  Created by Aubrey Parker on 2/8/17.
 
 
-#include "../include/DepthMap.hpp"
+#include "../include/DepthMap.h"
 #include "catch.hpp"
 
 using namespace slam;

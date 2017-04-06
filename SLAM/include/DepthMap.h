@@ -1,5 +1,5 @@
-#ifndef DepthMap_hpp
-#define DepthMap_hpp
+#ifndef DepthMap_h
+#define DepthMap_h
 #define UNKNOWN_DEPTH -1.0
 
 #include <stdio.h>
@@ -18,4 +18,4 @@ private:
     
 };
 }
-#endif /* DepthMap_hpp */
+#endif /* DepthMap_h */
