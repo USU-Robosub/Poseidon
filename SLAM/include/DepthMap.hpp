@@ -1,5 +1,5 @@
-#ifndef structDepthMap_hpp
-#define structDepthMap_hpp
+#ifndef DepthMap_hpp
+#define DepthMap_hpp
 #define UNKNOWN_DEPTH -1.0
 
 #include <stdio.h>
@@ -7,9 +7,9 @@
 #include <iostream>
 
 namespace slam {
-class StructDepthMap{
+class DepthMap{
 public:
-    StructDepthMap(unsigned short x, unsigned short y);
+    DepthMap(unsigned short x, unsigned short y);
     void setDepth(unsigned short x, unsigned short y, float depth);
     double getDepth(unsigned short x, unsigned short y);
     std::vector< std::vector <float> > m_depth; //vector of vector of floats
@@ -18,4 +18,4 @@ private:
     
 };
 }
-#endif /* structDepthMap_hpp */
+#endif /* DepthMap_hpp */

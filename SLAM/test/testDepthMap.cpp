@@ -5,13 +5,13 @@
 //  Created by Aubrey Parker on 2/8/17.
 
 
-#include "../include/structDepthMap.hpp"
+#include "../include/DepthMap.hpp"
 #include "catch.hpp"
 
 using namespace slam;
 
 TEST_CASE("Struct for depth Map test"){
-    auto test1 = StructDepthMap(2, 4);
+    auto test1 = DepthMap(2, 4);
     
     SECTION ("Construter Test"){
         REQUIRE(test1.getDepth(0, 0) == UNKNOWN_DEPTH);
