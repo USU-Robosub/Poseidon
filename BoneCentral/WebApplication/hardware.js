@@ -102,7 +102,6 @@ module.exports = {
     },
     
     exit: function() {
-        powerManager.exit();
     	powerManager.exit("end", process.exit);
     },
     
