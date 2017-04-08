@@ -103,7 +103,7 @@ module.exports = {
     
     exit: function() {
         powerManager.exit();
-    	process.exit();
+    	powerManager.exit("end", process.exit);
     },
     
     turnOnEscs: function() {
