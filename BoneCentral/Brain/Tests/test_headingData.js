@@ -4,9 +4,7 @@ var Poseidon    = require('../app.js');
 
 var power       = Poseidon.HardwareFactory.createPowerManager();
 var imu         = Poseidon.HardwareFactory.createImuSensor();
-
-
-var test = $.Deferred();
+var test        = $.Deferred();
 
 test
 .then(wait(5000))
@@ -32,8 +30,7 @@ test
 .done(function() {
     console.log("IMU Off");
     power.turnOffImu();
-    power.exit();
-    process.exit();
+    power.exit("exit", process.exit);
 });
 
-test.resolve();
+power.connect("run", test.resolve);
