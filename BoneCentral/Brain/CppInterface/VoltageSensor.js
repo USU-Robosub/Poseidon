@@ -25,7 +25,7 @@ module.exports = (function(){
         catch(e) { console.log("_handleData: "+e); }
     };};
 
-    ImuSensor.prototype.getVoltage = function () {
+    VoltageSensor.prototype.getVoltage = function () {
         if(this._voltRequest.state() !== "pending") {
             this._voltRequest = $.Deferred();
             this._oStream.write("measureVoltage\n");
