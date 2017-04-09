@@ -16,5 +16,7 @@
 #define LIGHT_IDX   10
 #define VOLTAGE_IDX 11
 #define START_IDX   12
+#define PRESS_IDX   13
+#define TEMPR_IDX   14
 
 #endif

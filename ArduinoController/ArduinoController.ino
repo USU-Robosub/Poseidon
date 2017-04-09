@@ -6,8 +6,10 @@
 #include "KillSwitchController.h"
 #include "VoltageController.h"
 #include "StartController.h"
+#include "PressureController.h"
+#include "TemperatureController.h"
 
-const uint32_t CONTROLLER_CNT = 13u;
+const uint32_t CONTROLLER_CNT = 15u;
 class IController* controllers[CONTROLLER_CNT];
 
 void setup() {
@@ -17,8 +19,8 @@ void setup() {
   
   controllers[0]= new KillSwitchController(controllers, CONTROLLER_CNT);
   attachInterrupt(
-    digitalPinToInterrupt(KILLSWITCH_PIN), 
-    [](){((KillSwitchController*)controllers[0])->isr(KILLSWITCH_PIN);},
+    digitalPinToInterrupt(GPIO::KILLSWITCH_PIN), 
+    [](){((KillSwitchController*)controllers[0])->isr(GPIO::KILLSWITCH_PIN);},
     CHANGE
   );
   controllers[1]  = new ThrustController(PWM::MOVE_PIN);
@@ -33,6 +35,8 @@ void setup() {
   controllers[10] = new LightController();
   controllers[11] = new VoltageController();
   controllers[12] = new StartController();
+  controllers[13] = new PressureController();
+  controllers[14] = new TemperatureController();
   
   while((!Serial.available())||(Serial.read()==0));
 }
