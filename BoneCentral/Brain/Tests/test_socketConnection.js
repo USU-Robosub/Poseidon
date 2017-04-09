@@ -4,7 +4,8 @@
 var Poseidon = require('../app.js');
 var power = Poseidon.HardwareFactory.createPowerManager();
 
-setTimeout(function() {
-    power.exit();
-    process.exit();
-}, 10000);
+power.connect("start", function() {
+    setTimeout(function() {
+        power.exit("exit", process.exit);
+    }, 10000);
+}
