@@ -6,11 +6,15 @@ var $ = require("jquery-deferred");
 
 module.exports = (function(){
 
-    function VoltageSensor(iStream, oStream) {
+    function AuxiliarySensors(iStream, oStream) {
         this._iStream = iStream;
         this._oStream = oStream;
-        this._voltRequest = $.Deferred().resolve();
+        _initializePromises.call(this);
         this._iStream.on("data", _handleData(this));
+    }
+    
+    var _initializePromises = function () {
+        this._voltRequest = $.Deferred().resolve();
     }
 
     var _handleData = function(self){return function (data) {
@@ -25,7 +29,7 @@ module.exports = (function(){
         catch(e) { console.log("_handleData: "+e); }
     };};
 
-    VoltageSensor.prototype.getVoltage = function () {
+    AuxiliarySensors.prototype.getVoltage = function () {
         if(this._voltRequest.state() !== "pending") {
             this._voltRequest = $.Deferred();
             this._oStream.write("measureVoltage\n");
@@ -33,6 +37,6 @@ module.exports = (function(){
         return this._voltRequest.promise();
     };
 
-    return VoltageSensor;
+    return AuxiliarySensors;
 
 })();

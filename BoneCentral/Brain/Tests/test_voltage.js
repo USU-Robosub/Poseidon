@@ -1,10 +1,10 @@
 var Poseidon    = require('../app.js');
 
 var power       = Poseidon.HardwareFactory.createPowerManager();
-var voltmeter   = Poseidon.HardwareFactory.createVoltageSensor();
+var sensors     = Poseidon.HardwareFactory.createAuxiliarySensors();
 
 power.connect("run", function() {
-    voltmeter.getVoltage().done(function(data){
+    sensors.getVoltage().done(function(data){
         console.log(data);
         power.exit("exit", process.exit);
     });

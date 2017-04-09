@@ -7,7 +7,7 @@ var PowerManager        = require("./PowerManager");
 var ThrustController    = require("./ThrustController");
 var ImuSensor           = require("./ImuSensor");
 var CppLogSource        = require("./CppLogSource");
-var VoltageSensor       = require("./VoltageSensor");
+var AuxiliarySensors    = require("./AuxiliarySensors");
 
 module.exports = (function() {
     function Factory(dispatcherSocket) {
@@ -18,8 +18,8 @@ module.exports = (function() {
         return new HeadLights(this.dispatcherSocket.Input);
     };
 
-    Factory.prototype.createVoltageSensor = function () {
-        return new VoltageSensor(this.dispatcherSocket.Output, this.dispatcherSocket.Input);
+    Factory.prototype.createAuxiliarySensors = function () {
+        return new AuxiliarySensors(this.dispatcherSocket.Output, this.dispatcherSocket.Input);
     };
 
     Factory.prototype.createImuSensor = function () {
