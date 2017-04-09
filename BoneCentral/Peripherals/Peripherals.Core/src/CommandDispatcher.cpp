@@ -13,7 +13,8 @@ using json = nlohmann::json;
 
 CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out,
     ImuSensor& imuSensor, ThrustController& thrustController,
-    PowerManager& powerManager, IHeadlights& lights, IVoltage& voltage)
+    PowerManager& powerManager, IHeadlights& lights, IVoltage& voltage,
+    IPressureSensor& pressure, ITemperatureSensor& temperature)
         : in_(in),
           out_(out),
           imuSensor_(imuSensor),
@@ -21,6 +22,8 @@ CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out,
           powerManager_(powerManager),
           lights_(lights),
           voltmeter_(voltage),
+          pressure_(pressure),
+          temperature_(temperature),
           shouldExit_(false) {}
 
 void CommandDispatcher::runLoop() {
@@ -203,12 +206,20 @@ void CommandDispatcher::_getInternalPressure() {
 
 void CommandDispatcher::_getExternalTemperature() {
     auto data = imuSensor_.getExtTemperature();
-    out_ << json{{"Type", "ExternalTemperature"},{"Value",data}} << std::endl;
+    auto temprJson = json{{"Type", "ExternalTemperature"},{"Value",data}};
+    IFDEBUG {
+        std::cerr << temprJson << std::endl;
+    }
+    out_ << temprJson << std::endl;
 }
 
 void CommandDispatcher::_getExternalPressure() {
     auto data = imuSensor_.getExtPressure();
-    out_ << json{{"Type", "ExternalPressure"},{"Value",data}} << std::endl;
+    auto pressJson = json{{"Type", "ExternalPressure"},{"Value",data}};
+    IFDEBUG {
+        std::cerr << pressJson << std::endl;
+    }
+    out_ << pressJson << std::endl;
 }
 
 void CommandDispatcher::_getVoltage() {

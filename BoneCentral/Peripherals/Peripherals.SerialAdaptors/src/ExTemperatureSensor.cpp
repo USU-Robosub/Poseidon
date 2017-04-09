@@ -1,10 +1,8 @@
 #include "ExTemperatureSensor.h"
 
-ExTemperatureSensor::ExTemperatureSensor()
-{
-}
+ExTemperatureSensor::ExTemperatureSensor(Serial& serial) : serial_(serial) {}
 
-float ExTemperatureSensor::getTemperature()
-{
-    return 0.0;
+double ExTemperatureSensor::getTemperature() {
+    serial_.writeByte(TEMPR_IDX);
+	return serial_.readDouble();
 }

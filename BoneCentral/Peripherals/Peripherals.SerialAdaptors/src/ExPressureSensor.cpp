@@ -1,10 +1,8 @@
 #include "ExPressureSensor.h"
 
-ExPressureSensor::ExPressureSensor()
-{
-}
+ExPressureSensor::ExPressureSensor(Serial& serial) : serial_(serial) {}
 
-int ExPressureSensor::getPressure()
-{
-    return 0;
+double ExPressureSensor::getPressure() {
+    serial_.writeByte(PRESS_IDX);
+	return serial_.readDouble();
 }

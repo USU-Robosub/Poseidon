@@ -9,6 +9,8 @@
 #include "PowerManager.h"
 #include "IHeadlights.h"
 #include "IVoltage.h"
+#include "IPressureSensor.h"
+#include "ITemperatureSensor.h"
 #include "ImuSensor.h"
 #include <iostream>
 #include <stdexcept>
@@ -28,6 +30,8 @@ private:
     PowerManager& powerManager_;
     IHeadlights& lights_;
     IVoltage& voltmeter_;
+    IPressureSensor& pressure_;
+    ITemperatureSensor& temperature_;
     bool shouldExit_;
 
     void dispatchCommand(std::stringstream& cmd);
@@ -55,7 +59,8 @@ public:
     CommandDispatcher(std::istream& in, std::ostream& out,
         ImuSensor& imuSensor, ThrustController& thrustController,
         PowerManager& powerManager, IHeadlights& lights,
-        IVoltage& voltage);
+        IVoltage& voltage, IPressureSensor& pressure,
+        ITemperatureSensor& temperature);
     void runLoop();
 
 };

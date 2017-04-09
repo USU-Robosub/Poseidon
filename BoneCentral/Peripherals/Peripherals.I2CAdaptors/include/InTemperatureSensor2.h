@@ -8,7 +8,7 @@
 class InTemperatureSensor2 : public ITemperatureSensor {
 public:
     InTemperatureSensor2(std::shared_ptr<BMP085> temperatureSensor);
-    float getTemperature();
+    double getTemperature();
 private:
     std::shared_ptr<BMP085> temperatureSensor_;
 };

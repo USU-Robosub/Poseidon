@@ -20,7 +20,7 @@ std::shared_ptr<ICompass> SensorFactoryAdaptor::createCompass() {
 }
 
 std::shared_ptr<ITemperatureSensor> SensorFactoryAdaptor::createExternalTemperatureSensor() {
-    return serialFactory_.createExternalTemperatureSensor();
+    return serialFactory_.createWaterTemperatureSensor();
 }
 
 std::shared_ptr<ITemperatureSensor> SensorFactoryAdaptor::createInternalTemperatureSensor1() {
@@ -32,7 +32,7 @@ std::shared_ptr<ITemperatureSensor> SensorFactoryAdaptor::createInternalTemperat
 }
 
 std::shared_ptr<IPressureSensor> SensorFactoryAdaptor::createExternalPressureSensor() {
-    return serialFactory_.createExternalPressureSensor();
+    return serialFactory_.createWaterPressureSensor();
 }
 
 std::shared_ptr<IPressureSensor> SensorFactoryAdaptor::createInternalPressureSensor() {

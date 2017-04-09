@@ -8,7 +8,7 @@
 class InPressureSensor : public IPressureSensor {
 public:
     InPressureSensor(std::shared_ptr<BMP085> pressure);
-    int getPressure();
+    double getPressure();
 private:
 	std::shared_ptr<BMP085> pressure_;
 };

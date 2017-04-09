@@ -20,11 +20,13 @@ void App_Start(int argCount, char **arguments) {
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
     auto volt = serialFactory.createVoltageSensor();
+    auto pressure = serialFactory.createWaterPressureSensor();
+    auto temperature = serialFactory.createWaterTemperatureSensor();
 
     auto dispatcherStream = _getSocketStream(portMap, "dispatcherPort");
     std::istream& inputStream = dispatcherStream ? *dispatcherStream : std::cin;
     std::ostream& outputStream = dispatcherStream ? *dispatcherStream : std::cout;
-    CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights, *volt);
+    CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights, *volt, *pressure, *temperature);
     scriptLogger->info("Ready!");
     cd.runLoop();
     if(dispatcherStream) dispatcherStream->disconnect();
