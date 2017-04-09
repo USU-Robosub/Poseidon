@@ -38,6 +38,10 @@ std::shared_ptr<IHeadlights> SerialFactory::createHeadlights() {
     return std::make_shared<Headlights>(serial_);
 }
 
+std::shared_ptr<IVoltage> SerialFactory::createVoltageSensor() {
+    return std::make_shared<VoltageSensor>(serial_);
+}
+
 std::shared_ptr<ITemperatureSensor> SerialFactory::createExternalTemperatureSensor() {
     return std::make_shared<ExTemperatureSensor>();
 }

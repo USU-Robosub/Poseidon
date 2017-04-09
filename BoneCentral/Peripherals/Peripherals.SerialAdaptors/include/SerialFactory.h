@@ -9,6 +9,7 @@
 #include "SerialThruster.h"
 #include "EscPower.h"
 #include "Headlights.h"
+#include "VoltageSensor.h"
 #include "ExTemperatureSensor.h"
 #include "ExPressureSensor.h"
 #include "Serial.h"
@@ -29,6 +30,7 @@ public:
     std::shared_ptr<IPressureSensor> createExternalPressureSensor();
     std::shared_ptr<IEscPower> createEscPower();
     std::shared_ptr<IHeadlights> createHeadlights();
+    std::shared_ptr<IVoltage> createVoltageSensor();
 };
 
 

@@ -13,13 +13,14 @@ using json = nlohmann::json;
 
 CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out,
     ImuSensor& imuSensor, ThrustController& thrustController,
-    PowerManager& powerManager, IHeadlights& lights)
+    PowerManager& powerManager, IHeadlights& lights, IVoltage& voltage)
         : in_(in),
           out_(out),
           imuSensor_(imuSensor),
           thrustController_(thrustController),
           powerManager_(powerManager),
           lights_(lights),
+          voltmeter_(voltage),
           shouldExit_(false) {}
 
 void CommandDispatcher::runLoop() {
@@ -55,6 +56,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "getInternalPressure")       _getInternalPressure();
     else if(cmd == "getExternalTemperature")    _getExternalTemperature();
     else if(cmd == "getExternalPressure")       _getExternalPressure();
+    else if(cmd == "measureVoltage")            _getVoltage();
     else if(cmd == "exit")                      shouldExit_ = true;
 }
 
@@ -207,6 +209,18 @@ void CommandDispatcher::_getExternalTemperature() {
 void CommandDispatcher::_getExternalPressure() {
     auto data = imuSensor_.getExtPressure();
     out_ << json{{"Type", "ExternalPressure"},{"Value",data}} << std::endl;
+}
+
+void CommandDispatcher::_getVoltage() {
+    auto data = voltmeter_.measureVoltage();
+    auto voltJson = json{
+        {"Type", "Voltage"},
+        {"Value", data}
+    };
+    IFDEBUG {
+        std::cerr << voltJson << std::endl;
+    }
+    out_ << voltJson << std::endl;
 }
 
 #ifdef IFDEBUG

@@ -8,6 +8,7 @@
 #include "ThrustController.h"
 #include "PowerManager.h"
 #include "IHeadlights.h"
+#include "IVoltage.h"
 #include "ImuSensor.h"
 #include <iostream>
 #include <stdexcept>
@@ -26,6 +27,7 @@ private:
     ThrustController& thrustController_;
     PowerManager& powerManager_;
     IHeadlights& lights_;
+    IVoltage& voltmeter_;
     bool shouldExit_;
 
     void dispatchCommand(std::stringstream& cmd);
@@ -47,9 +49,13 @@ private:
     void _getInternalPressure();
     void _getExternalTemperature();
     void _getExternalPressure();
+    void _getVoltage();
 
 public:
-    CommandDispatcher(std::istream& in, std::ostream& out, ImuSensor& imuSensor, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights);
+    CommandDispatcher(std::istream& in, std::ostream& out,
+        ImuSensor& imuSensor, ThrustController& thrustController,
+        PowerManager& powerManager, IHeadlights& lights,
+        IVoltage& voltage);
     void runLoop();
 
 };
