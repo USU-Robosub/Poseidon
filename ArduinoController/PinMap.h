@@ -1,7 +1,7 @@
 #ifndef PIN_MAP_H
 #define PIN_MAP_H
 
-enum GPIO {
+enum GpioPin {
     KILLSWITCH_PIN = 50,
     LED_STAT_PIN   = 22,
     LED_CTRL_PIN   = 52,
@@ -15,7 +15,7 @@ enum GPIO {
     VOLT_PIN       = 10,
 }
 
-enum PWM {
+enum PwmPin {
     MOVE_PIN       = 13,
     STRAFE_PIN     = 12,
     DIVE_PIN       = 11,
