@@ -19,16 +19,16 @@ void setup() {
   
   controllers[0]= new KillSwitchController(controllers, CONTROLLER_CNT);
   attachInterrupt(
-    digitalPinToInterrupt(GPIO::KILLSWITCH_PIN), 
-    [](){((KillSwitchController*)controllers[0])->isr(GPIO::KILLSWITCH_PIN);},
+    digitalPinToInterrupt(GpioPin::KILLSWITCH_PIN), 
+    [](){((KillSwitchController*)controllers[0])->isr(GpioPin::KILLSWITCH_PIN);},
     CHANGE
   );
-  controllers[1]  = new ThrustController(PWM::MOVE_PIN);
-  controllers[2]  = new ThrustController(PWM::STRAFE_PIN);
-  controllers[3]  = new ThrustController(PWM::DIVE_PIN);
-  controllers[4]  = new ThrustController(PWM::YAW_PIN);
-  controllers[5]  = new ThrustController(PWM::PITCH_PIN);
-  controllers[6]  = new ThrustController(PWM::ROLL_PIN);
+  controllers[1]  = new ThrustController(PwmPin::MOVE_PIN);
+  controllers[2]  = new ThrustController(PwmPin::STRAFE_PIN);
+  controllers[3]  = new ThrustController(PwmPin::DIVE_PIN);
+  controllers[4]  = new ThrustController(PwmPin::YAW_PIN);
+  controllers[5]  = new ThrustController(PwmPin::PITCH_PIN);
+  controllers[6]  = new ThrustController(PwmPin::ROLL_PIN);
   controllers[7]  = new EscController();
   controllers[8]  = new LedController();
   controllers[9]  = new PingController();
