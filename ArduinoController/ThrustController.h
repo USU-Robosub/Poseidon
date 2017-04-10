@@ -8,7 +8,7 @@ class ThrustController : public IController {
    const uint16_t REVERSE = 1000;
    Servo servo_;
  public:
-  ThrustController(PWM servoPin) {
+  ThrustController(PwmPin servoPin) {
     servo_.attach(servoPin);
     servo_.writeMicroseconds(IDLE);
   }
