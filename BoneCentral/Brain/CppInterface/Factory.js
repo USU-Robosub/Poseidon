@@ -7,7 +7,6 @@ var PowerManager        = require("./PowerManager");
 var ThrustController    = require("./ThrustController");
 var ImuSensor           = require("./ImuSensor");
 var CppLogSource        = require("./CppLogSource");
-var AuxiliarySensors    = require("./AuxiliarySensors");
 
 module.exports = (function() {
     function Factory(dispatcherSocket) {
