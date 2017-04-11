@@ -1,14 +1,23 @@
 #include "IController.h"
+#include <OneWire.h> 
+#include <DallasTemperature.h>
 
 class TemperatureController : public IController {
+private:
+    OneWire oneWire;
+    DallasTemperature sensors;
 public:
-    TemperatureController() {
-        // initialize one-wire interface
+    TemperatureController()
+      : oneWire(GpioPin::TEMPERATURE_PIN), sensors(&oneWire) {
+        sensors.begin();
     }
 
     void execute() {
-        // get data, convert to degrees C, and return
-        SerialTools::writeDouble(0);
+        sensors.requestTemperatures();
+        double res = sensors.getTempCByIndex(0);
+        DMSG("Temperature: ");
+        DMSGN(res);
+        SerialTools::writeDouble(res);
     }
     
     void kill() {}

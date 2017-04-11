@@ -13,6 +13,7 @@ enum GpioPin {
     ESC_S5_PIN     = 49,
     ESC_S6_PIN     = 53,
     VOLT_PIN       = 10,
+    TEMPERATURE_PIN= 37,
 };
 
 enum PwmPin {
@@ -22,6 +23,10 @@ enum PwmPin {
     YAW_PIN        = 9,
     PITCH_PIN      = 8,
     ROLL_PIN       = 7,
+};
+
+enum AdcPin {
+    PRESSURE_PIN   = A5,
 };
 
 #endif
