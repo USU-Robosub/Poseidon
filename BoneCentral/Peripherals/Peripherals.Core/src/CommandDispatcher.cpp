@@ -60,6 +60,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "getExternalTemperature")    _getExternalTemperature();
     else if(cmd == "getExternalPressure")       _getExternalPressure();
     else if(cmd == "measureVoltage")            _getVoltage();
+    else if(cmd == "calibrateWaterPressure")    _calibWaterPressure();
     else if(cmd == "exit")                      shouldExit_ = true;
 }
 
@@ -232,6 +233,10 @@ void CommandDispatcher::_getVoltage() {
         std::cerr << voltJson << std::endl;
     }
     out_ << voltJson << std::endl;
+}
+
+void CommandDispatcher::_calibWaterPressure() {
+    imuSensor_.calibWaterPressure();
 }
 
 #ifdef IFDEBUG

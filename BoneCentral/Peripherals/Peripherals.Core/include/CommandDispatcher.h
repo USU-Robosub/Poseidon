@@ -54,6 +54,7 @@ private:
     void _getExternalTemperature();
     void _getExternalPressure();
     void _getVoltage();
+    void _calibWaterPressure();
 
 public:
     CommandDispatcher(std::istream& in, std::ostream& out,

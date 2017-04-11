@@ -7,3 +7,5 @@ double InPressureSensor::getPressure()
 {
     return pressure_->readPressure();
 }
+
+void InPressureSensor::calibrate() {}
