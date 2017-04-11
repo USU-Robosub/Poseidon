@@ -105,6 +105,10 @@ module.exports = (function(){
         }
         return this._voltageRequest.promise();
     };
+    
+    ImuSensor.prototype.calibrateWaterPressure = function () {
+        this._oStream.write("calibrateWaterPressure\n");
+    };
 
     return ImuSensor;
 
