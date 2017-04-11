@@ -37,32 +37,38 @@ FloatTuple ImuSensor::getHeading()
 
 
 
-int ImuSensor::getExtPressure()
+double ImuSensor::getExtPressure()
 {
     return extPressureSensor_->getPressure();
 }
 
 
 
-int ImuSensor::getIntPressure()
+double ImuSensor::getIntPressure()
 {
     return intPressureSensor_->getPressure();
 }
 
 
 
-float ImuSensor::getExtTemperature()
+double ImuSensor::getExtTemperature()
 {
     return extTemperatureSensor_->getTemperature();
 }
 
 
 
-float ImuSensor::getIntTemperature()
+double ImuSensor::getIntTemperature()
 {
     auto temperatureResults = (intTemperatureSensor1_->getTemperature() + 
             intTemperatureSensor2_->getTemperature()) / 2.0;
     return temperatureResults;
+}
+
+
+
+void ImuSensor::calibWaterPressure() {
+    extPressureSensor_->calibrate();
 }
 
 

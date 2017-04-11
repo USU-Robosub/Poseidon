@@ -18,10 +18,11 @@ public:
     FloatTuple getAcceleration();
     FloatTuple getAngularAcceleration(); // gyroscope
     FloatTuple getHeading();
-    int getExtPressure();
-    int getIntPressure();
-    float getExtTemperature();
-    float getIntTemperature(); // sensor fusion
+    double getExtPressure();
+    double getIntPressure();
+    double getExtTemperature();
+    double getIntTemperature(); // sensor fusion
+    void calibWaterPressure();
     ~ImuSensor();
 
 private:
