@@ -17,10 +17,6 @@ module.exports = (function() {
         return new HeadLights(this.dispatcherSocket.Input);
     };
 
-    Factory.prototype.createAuxiliarySensors = function () {
-        return new AuxiliarySensors(this.dispatcherSocket.Output, this.dispatcherSocket.Input);
-    };
-
     Factory.prototype.createImuSensor = function () {
         return new ImuSensor(this.dispatcherSocket.Output, this.dispatcherSocket.Input);
     };
