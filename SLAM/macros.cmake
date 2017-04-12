@@ -20,6 +20,17 @@ if(NOT WIN32)
   set(MessageColors ${MessageColors} BoldRed BoldGreen BoldYellow BoldBlue BoldMagenta BoldCyan BoldWhite)
 endif()
 
+function(HEADER_DIRECTORIES return_list)
+  FILE(GLOB_RECURSE new_list *.h)
+  SET(dir_list "")
+  FOREACH(file_path ${new_list})
+    GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
+    SET(dir_list ${dir_list} ${dir_path})
+  ENDFOREACH()
+  LIST(REMOVE_DUPLICATES dir_list)
+  SET(${return_list} ${dir_list} PARENT_SCOPE)
+endfunction()
+
 set(MessageTypes STATUS AUTHOR_WARNING WARNING SEND_ERROR FATAL_ERROR)
 
 function(message)

@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "DSOcollector.h"
+#include "RGBCameraFrame.h"
 #include <iostream>
 #include <execinfo.h>
 
@@ -17,7 +18,7 @@ TEST_CASE("DSOcollector works as expected", "[DSOcollector]") {
   
   SECTION("All of DSOcollector's functions exist") {
     
-    auto frame = std::make_shared<CameraFrame>(CameraFrame(640, 480));
+    auto frame = std::make_shared<RGBCameraFrame>(640, 480, std::chrono::steady_clock::now());
     
     REQUIRE_NOTHROW(collector.GetCurrentTelemetry());
     
