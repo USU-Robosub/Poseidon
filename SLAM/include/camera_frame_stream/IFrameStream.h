@@ -5,14 +5,15 @@
 #ifndef SLAM_IFRAMESTREAM_H
 #define SLAM_IFRAMESTREAM_H
 
-#include "CameraFrame.h"
+#include "../camera_frame/TCameraFrame.h"
+#include "../camera_frame/GrayscaleCameraFrame.h"
 
 namespace slam {
 
     class IFrameStream {
 
     public:
-        virtual std::shared_ptr<CameraFrame> getNextFrame() = 0;
+        virtual const ICameraFrame& getFrame() = 0;
 
     };
 
