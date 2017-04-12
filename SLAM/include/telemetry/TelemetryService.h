@@ -8,20 +8,21 @@
 #include <unordered_set>
 #include "TelemetryPacket.h"
 #include "../camera_frame_stream/IFrameStream.h"
-#include "TelemetryListener.h"
+#include "../Observable.h"
 
 namespace slam {
 
-    class TelemetryService {
+    class TelemetryService : public Observable<TelemetryPacket> {
 
     private:
-        std::unordered_set<TelemetryListener> listeners = std::unordered_set<TelemetryListener>();
+        SmartPointer<IFrameStream> frameStream;
+        SmartPointer<std::thread> runner;
+        bool running = true;
+        void run();
 
     public:
-        TelemetryPacket getCurrentTelemetry();
-        void subscribe(TelemetryListener listener);
-        void unsubscribe(TelemetryListener listener);
-        int subscribers() const;
+        TelemetryService();
+        ~TelemetryService();
 
     };
 

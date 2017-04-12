@@ -13,6 +13,9 @@ namespace slam {
 
     class ICameraFrame {
 
+    private:
+
+
     protected:
         chrono timestamp;
 

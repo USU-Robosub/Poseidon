@@ -3,22 +3,27 @@
 //
 
 #include "../include/telemetry/TelemetryService.h"
+#include "../include/camera_frame_stream/CVFrameStream.h"
 
 using namespace slam;
 
-TelemetryPacket TelemetryService::getCurrentTelemetry() {
-    //TODO Implement this
-    throw std::runtime_error("Not implemented.");
+TelemetryService::TelemetryService() {
+    frameStream = make_smart<CVFrameStream>(0);
+    runner = make_smart<std::thread>([this](){ run(); }); // spawn new thread that calls run()
 }
 
-void TelemetryService::subscribe(TelemetryListener listener) {
-    listeners.insert(listener);
+TelemetryService::~TelemetryService() {
+    running = false;
+    runner->join();
 }
 
-void TelemetryService::unsubscribe(TelemetryListener listener) {
-    listeners.erase(listener);
-}
-
-int TelemetryService::subscribers() const {
-    return (int) listeners.size();
+void TelemetryService::run() {
+    while(running) {
+        auto frame = frameStream->getFrame();
+        auto map = DepthMap();
+        auto pose = Pose();
+        TelemetryPacket packet = { frame, map, pose };
+        publish(packet);
+        std::this_thread::sleep_for(std::chrono::milliseconds(33)); // pause execution (~30fps)
+    }
 }

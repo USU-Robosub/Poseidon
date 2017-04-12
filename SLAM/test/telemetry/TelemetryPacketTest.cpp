@@ -11,7 +11,7 @@ using namespace slam;
 TEST_CASE("TelemetryPacket works as expected") {
 
     auto now = std::chrono::steady_clock::now();
-    auto frame = GrayscaleCameraFrame(640, 480, now);
+    auto frame = make_smart<GrayscaleCameraFrame>(640, 480, now);
     auto map = DepthMap();
     auto pose = Pose();
 
@@ -19,20 +19,20 @@ TEST_CASE("TelemetryPacket works as expected") {
 
     SECTION("All of TelemetryPacket's members were initialized") {
 
-        REQUIRE(packet.cameraFrame.getRows() == 640);
-        REQUIRE(packet.cameraFrame.getCols() == 480);
-        REQUIRE(packet.cameraFrame.getColorSpace() == GRAYSCALE);
-        REQUIRE(packet.cameraFrame.getTimestamp() == now);
+        REQUIRE(packet.cameraFrame->getRows() == 640);
+        REQUIRE(packet.cameraFrame->getCols() == 480);
+        REQUIRE(packet.cameraFrame->getColorSpace() == GRAYSCALE);
+        REQUIRE(packet.cameraFrame->getTimestamp() == now);
 
     }
 
     SECTION("Chrono works as expected") {
 
-        std::chrono::time_point<std::chrono::steady_clock> ts = frame.getTimestamp();
+        std::chrono::time_point<std::chrono::steady_clock> ts = frame->getTimestamp();
 
-        REQUIRE(ts == frame.getTimestamp());
+        REQUIRE(ts == frame->getTimestamp());
 
-        REQUIRE(ts == packet.cameraFrame.getTimestamp());
+        REQUIRE(ts == packet.cameraFrame->getTimestamp());
 
     }
 

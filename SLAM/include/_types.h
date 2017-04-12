@@ -46,6 +46,14 @@ namespace slam {
         return os;
     }
 
+    template<typename T>
+    using SmartPointer = std::shared_ptr<T>;
+
+    template <typename T, typename... Args>
+    SmartPointer<T> make_smart(Args &&... args) {
+        return std::make_shared<T>(std::forward<Args>(args)...);
+    }
+
     class Output3DWrapper {}; //TODO: remove this and replace usages with the real dso::Output3DWrapper
 
 }

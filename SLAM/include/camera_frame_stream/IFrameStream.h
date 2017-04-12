@@ -13,7 +13,7 @@ namespace slam {
     class IFrameStream {
 
     public:
-        virtual const ICameraFrame& getFrame() = 0;
+        virtual const SmartPointer<ICameraFrame> getFrame() = 0;
 
     };
 
