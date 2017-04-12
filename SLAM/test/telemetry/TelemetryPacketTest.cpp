@@ -12,7 +12,7 @@ TEST_CASE("TelemetryPacket works as expected") {
 
     auto now = std::chrono::steady_clock::now();
     auto frame = GrayscaleCameraFrame(640, 480, now);
-    auto map = DepthMap();
+    auto map = DepthMap(0, 0);
     auto pose = Pose();
 
     TelemetryPacket packet = { frame, map, pose };
