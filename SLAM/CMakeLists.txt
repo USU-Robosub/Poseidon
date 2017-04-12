@@ -64,10 +64,10 @@ include_directories(
   ${PROJECT_INLUDE_DIR}
 )
 
-add_library(slam STATIC ${SOURCE_FILES})
+add_library(slam ${SOURCE_FILES})
 target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
 
 if(${CATCH_FOUND})
-  add_executable(slam_tests ${SOURCE_FILES} ${TEST_SOURCE_FILES})
-  target_link_libraries(slam_tests slam)
+  add_executable(slam_tests ${TEST_SOURCE_FILES})
+  target_link_libraries(slam_tests slam ${OpenCV_LIBS})
 endif()
