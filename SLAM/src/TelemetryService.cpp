@@ -20,7 +20,7 @@ TelemetryService::~TelemetryService() {
 void TelemetryService::run() {
     while(running) {
         auto frame = frameStream->getFrame();
-        auto map = DepthMap();
+        auto map = DepthMap((ushort) frame->getCols(), (ushort) frame->getRows());
         auto pose = Pose();
         TelemetryPacket packet = { frame, map, pose };
         publish(packet);

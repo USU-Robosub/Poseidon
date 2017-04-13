@@ -11,16 +11,16 @@ using namespace slam;
 TEST_CASE("TelemetryPacket works as expected") {
 
     auto now = std::chrono::steady_clock::now();
-    auto frame = make_smart<GrayscaleCameraFrame>(640, 480, now);
-    auto map = DepthMap(0, 0);
+    auto frame = make_smart<GrayscaleCameraFrame>(480, 640, now);
+    auto map = DepthMap(640, 480);
     auto pose = Pose();
 
     TelemetryPacket packet = { frame, map, pose };
 
     SECTION("All of TelemetryPacket's members were initialized") {
 
-        REQUIRE(packet.cameraFrame->getRows() == 640);
-        REQUIRE(packet.cameraFrame->getCols() == 480);
+        REQUIRE(packet.cameraFrame->getRows() == 480);
+        REQUIRE(packet.cameraFrame->getCols() == 640);
         REQUIRE(packet.cameraFrame->getColorSpace() == GRAYSCALE);
         REQUIRE(packet.cameraFrame->getTimestamp() == now);
 
