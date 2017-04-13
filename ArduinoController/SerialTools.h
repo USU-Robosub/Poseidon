@@ -127,18 +127,9 @@ private:
   SerialTools(){}
   static void printHexChar(uint8_t val) {
     char res = '0';
-    if(val < 10)
-      Serial.print(val);
-    else
-      switch(val-10) {
-        case 0: res = 'A'; break;
-        case 1: res = 'B'; break;
-        case 2: res = 'C'; break;
-        case 3: res = 'D'; break;
-        case 4: res = 'E'; break;
-        case 5: res = 'F'; break;
-      }
-      Serial.print(res);
+    if(val < 10)      Serial.print(val);
+    else if(val < 16) Serial.print((char)(val-10+'A'));
+    else              Serial.print('-');
   }
 };
 
