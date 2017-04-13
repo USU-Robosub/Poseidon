@@ -1,15 +1,19 @@
 #ifndef DRIVER_EX_PRESSURE_SENSOR
 #define DRIVER_EX_PRESSURE_SENSOR
 
-// Arduino Pressure Sensor
 #include <IPressureSensor.h>
-#include <memory>
+#include <ICalibratable.h>
+#include "Serial.h"
+#include "ArduinoConfig.h"
 
 class ExPressureSensor : public IPressureSensor {
-public:
-    ExPressureSensor();
-    int getPressure();
 private:
+    Serial& serial_;
+    double base_;
+public:
+    ExPressureSensor(Serial& serial);
+    double getPressure();
+    void calibrate();
 };
 
 #endif

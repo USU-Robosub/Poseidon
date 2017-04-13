@@ -1,15 +1,16 @@
 //
 // Created by Nathan Copier on 11/20/2015.
+// Updated by TekuConcept on 4/10/2015.
 //
 
 #ifndef PERIPHERALS_I_PRESSURE_SENSOR_H
 #define PERIPHERALS_I_PRESSURE_SENSOR_H
 
-#include <cstdint>
+#include "ICalibratable.h"
 
-class IPressureSensor {
+class IPressureSensor : public ICalibratable {
 public:
-    virtual int getPressure(void) = 0;
+    virtual double getPressure() = 0;
 };
 
 #endif //PERIPHERALS_I_PRESSURE_SENSOR_H

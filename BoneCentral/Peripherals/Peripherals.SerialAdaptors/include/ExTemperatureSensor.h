@@ -1,14 +1,16 @@
 #ifndef DRIVER_EX_TEMPERATURE_SENSOR
 #define DRIVER_EX_TEMPERATURE_SENSOR
 
-// Arduino Temperature Sensor
 #include <ITemperatureSensor.h>
-#include <memory>
+#include "Serial.h"
+#include "ArduinoConfig.h"
 
 class ExTemperatureSensor : public ITemperatureSensor {
+private:
+    Serial& serial_;
 public:
-    ExTemperatureSensor();
-    float getTemperature();
+    ExTemperatureSensor(Serial& serial);
+    double getTemperature();
 private:
 };
 

@@ -20,6 +20,7 @@ module.exports = (function(){
         this._inPressureRequest     = $.Deferred().resolve();
         this._exTempRequest         = $.Deferred().resolve();
         this._exPressureRequest     = $.Deferred().resolve();
+        this._voltageRequest        = $.Deferred().resolve();
     };
 
     var _handleData = function(self){return function (data) {
@@ -34,6 +35,7 @@ module.exports = (function(){
                 else if (dataJson.Type === "InternalPressure")       self._inPressureRequest.resolve(dataJson);
                 else if (dataJson.Type === "ExternalTemperature")    self._exTempRequest.resolve(dataJson);
                 else if (dataJson.Type === "ExternalPressure")       self._exPressureRequest.resolve(dataJson);
+                else if (dataJson.Type === "Voltage")                self._voltageRequest.resolve(dataJson);
                 else { console.log("Could not resolved type '"+dataJson.Type+"'"); }
             }
         }
@@ -94,6 +96,18 @@ module.exports = (function(){
             this._oStream.write("getExternalPressure\n");
         }
         return this._exPressureRequest.promise();
+    };
+
+    ImuSensor.prototype.getVoltage = function () {
+        if(this._voltageRequest.state() !== "pending") {
+            this._voltageRequest = $.Deferred();
+            this._oStream.write("measureVoltage\n");
+        }
+        return this._voltageRequest.promise();
+    };
+    
+    ImuSensor.prototype.calibrateWaterPressure = function () {
+        this._oStream.write("calibrateWaterPressure\n");
     };
 
     return ImuSensor;

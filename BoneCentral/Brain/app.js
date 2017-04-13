@@ -13,7 +13,7 @@ if(Config.appStartMode === "auto") {
     Peripherals.initialize();
 }
 else {
-    console.log("Entering manual mode: run './Periphers --dispatcherPort="+
+    console.log("Entering manual mode: run './Peripherals --dispatcherPort="+
         Ports.DispatcherPort+"'");
 }
 
