@@ -14,8 +14,8 @@ class IController* controllers[CONTROLLER_CNT];
 
 void setup() {
   delay(1);
-  Serial.begin(115200);
-  Serial1.begin(9600);
+  SerialTools::begin(USB,115200);
+  SerialTools::begin(DEBUG,9600);
   DMSGN("Due Ready!");
   SerialTools::writeString("Ready!", 6);
   
