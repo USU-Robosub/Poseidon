@@ -18,14 +18,6 @@ const TRANSFORM = 180.0;
 
 pid.setDelta(DELTA);
 pid.setBounds(-TRANSFORM, TRANSFORM);
-
-// - Calibrating the PID -
-// Step 1: Set Kp, Ki, and Kd = 0
-// Step 2: Set Kp = 0 -> u until oscillating consistently
-// Step 3: Set Ku = u and measure oscillation period
-// Step 4: Set Tu = period
-var Ku = 0.5, Tu = 4;
-// pid.calibrate(0.6*Ku, Tu/2, Tu/8);
 pid.calibrate(0.6, 0.2, 0);
 
 
