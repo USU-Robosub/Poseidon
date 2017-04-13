@@ -15,22 +15,6 @@
  */
 class SerialTools{
 public:
-  static void begin(int channelID, int baud) {
-    switch(channelID) {
-      case 1: Serial1.begin(baud); break;
-      case 2: Serial2.begin(baud); break;
-      default: Serial.begin(baud);
-    }
-  }
-  
-  static void end(int channelID) {
-    switch(channelID) {
-      case 1: Serial1.end(); break;
-      case 2: Serial2.end(); break;
-      default: Serial.end();
-    }
-  }
-
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - *\
    *                    READ FUNCTIONS                   *
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -142,6 +126,10 @@ public:
     locked = false;
   }
 
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - *\
+   *                  SYSTEM FUNCTIONS                   *
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
   static void printHex(uint8_t c) {
     printHexChar((uint8_t)((c&0xF0) >> 4));
     printHexChar((uint8_t)(c&0x0F));
@@ -152,8 +140,48 @@ public:
       channel = c;
   }
 
-  static int getChannel() {
+  static uint8_t getChannel() {
     return channel;
+  }
+
+  static void begin(int channelID, int baud) {
+    switch(channelID) {
+      case 1: Serial1.begin(baud); break;
+      case 2: Serial2.begin(baud); break;
+      default: Serial.begin(baud); break;
+    }
+  }
+  
+  static void end(int channelID) {
+    switch(channelID) {
+      case 1: Serial1.end(); break;
+      case 2: Serial2.end(); break;
+      default: Serial.end(); break;
+    }
+  }
+  
+  static char read() {
+    switch(channel) {
+      case 1: return Serial1.read();
+      case 2: return Serial2.read();
+      default: return Serial.read();
+    }
+  }
+  
+  static void print(char value) {
+    switch(channel) {
+      case 1: Serial1.print(value); break;
+      case 2: Serial2.print(value); break;
+      default: Serial.print(value); break;
+    }
+  }
+  
+  static int available() {
+    switch(channel) {
+      case 1: return Serial1.available();
+      case 2: return Serial2.available();
+      default: return Serial.available();
+    }
   }
 
 private:
@@ -163,27 +191,6 @@ private:
     if(val < 10)      print(val);
     else if(val < 16) print((char)(val-10+'A'));
     else              print('-');
-  }
-  static char read() {
-    switch(channel) {
-      case 1: return Serial1.read();
-      case 2: return Serial2.read();
-      default: return Serial.read();
-    }
-  }
-  static void print(char value) {
-    switch(channel) {
-      case 1: Serial1.print(value); break;
-      case 2: Serial2.print(value); break;
-      default: Serial.print(value); break;
-    }
-  }
-  static int available() {
-    switch(channel) {
-      case 1: return Serial1.available();
-      case 2: return Serial2.available();
-      default: return Serial.available();
-    }
   }
   static uint8_t channel;
   static bool locked;
