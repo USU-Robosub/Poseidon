@@ -5,6 +5,9 @@
 #define SERIAL_TOOLS_H
 
 #include "Debugger.h"
+#define USB 0
+#define DEBUG 1
+#define EVENT 2
 
 /**
  * Extend the functionality of the Serial object,
@@ -12,6 +15,21 @@
  */
 class SerialTools{
 public:
+  static void begin(int channelID, int baud) {
+    switch(channelID) {
+      case 1: Serial1.begin(baud); break;
+      case 2: Serial2.begin(baud); break;
+      default: Serial.begin(baud);
+    }
+  }
+  
+  static void end(int channelID) {
+    switch(channelID) {
+      case 1: Serial1.end(); break;
+      case 2: Serial2.end(); break;
+      default: Serial.end();
+    }
+  }
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - *\
    *                    READ FUNCTIONS                   *
@@ -61,12 +79,14 @@ public:
   }
 
   static void readData(char* ptr, int size) {
-    while(Serial.available() < size);
+    locked = true;
+    while(available() < size);
     for(int i = 0; i < size; i++) {
-      ptr[i] = Serial.read();
+      ptr[i] = read();
       DHEX((uint8_t)ptr[i]);
     }
     DMSGN();
+    locked = false;
   }
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - *\
@@ -78,10 +98,12 @@ public:
    * out buffer.
    */
   static void writeString(const char* data, int size) {
+    locked = true;
     for(int i = 0; i < size; i++) {
-      Serial.print(data[i]);
+      print(data[i]);
     }
-    Serial.print('\0');
+    print('\0');
+    locked = false;
   }
 
   static void writeByte(uint8_t out) {
@@ -113,9 +135,11 @@ public:
   }
 
   static void writeData(char* ptr, int size) {
+    locked = true;
     for(int i = 0; i < size; i++){
-        Serial.print(ptr[i]);
+        print(ptr[i]);
     }
+    locked = false;
   }
 
   static void printHex(uint8_t c) {
@@ -123,14 +147,49 @@ public:
     printHexChar((uint8_t)(c&0x0F));
   }
 
+  static void selectChannel(uint8_t c) {
+    if(!locked)
+      channel = c;
+  }
+
+  static int getChannel() {
+    return channel;
+  }
+
 private:
   SerialTools(){}
   static void printHexChar(uint8_t val) {
     char res = '0';
-    if(val < 10)      Serial.print(val);
-    else if(val < 16) Serial.print((char)(val-10+'A'));
-    else              Serial.print('-');
+    if(val < 10)      print(val);
+    else if(val < 16) print((char)(val-10+'A'));
+    else              print('-');
   }
+  static char read() {
+    switch(channel) {
+      case 1: return Serial1.read();
+      case 2: return Serial2.read();
+      default: return Serial.read();
+    }
+  }
+  static void print(char value) {
+    switch(channel) {
+      case 1: Serial1.print(value); break;
+      case 2: Serial2.print(value); break;
+      default: Serial.print(value); break;
+    }
+  }
+  static int available() {
+    switch(channel) {
+      case 1: return Serial1.available();
+      case 2: return Serial2.available();
+      default: return Serial.available();
+    }
+  }
+  static uint8_t channel;
+  static bool locked;
 };
+
+bool SerialTools::locked = false;
+uint8_t SerialTools::channel = 0;
 
 #endif
