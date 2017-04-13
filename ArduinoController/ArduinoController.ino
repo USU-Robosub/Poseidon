@@ -16,6 +16,7 @@ void setup() {
   delay(1);
   SerialTools::begin(USB,115200);
   SerialTools::begin(DEBUG,9600);
+  SerialTools::begin(EVENT,9600);
   DMSGN("Due Ready!");
   SerialTools::writeString("Ready!", 6);
   
@@ -44,10 +45,16 @@ void setup() {
 }
 
 void loop() {
-  uint8_t controllerIndex = SerialTools::readByte();
-  if(controllerIndex < CONTROLLER_CNT) {
-    // only execute if a command exists
-    DMSG("Controller: "); DMSGN(controllerIndex);
-    controllers[controllerIndex]->execute();
+  if(((StartController*)controllers[12])->isPending()) {
+    controllers[12]->execute();
+    DMSGN("Kill-Switch Fired");
+  }
+  if(SerialTools::available()) {
+    uint8_t controllerIndex = SerialTools::readByte();
+    if(controllerIndex < CONTROLLER_CNT) {
+      // only execute if a command exists
+      DMSG("Controller: "); DMSGN(controllerIndex);
+      controllers[controllerIndex]->execute();
+    }
   }
 }
