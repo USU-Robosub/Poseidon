@@ -22,8 +22,8 @@ Serial::Serial(std::string device) {
     }
     
     configure();
-    acknowledge();
 #endif
+    acknowledge();
 }
 
 Serial::~Serial() {
