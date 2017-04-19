@@ -18,6 +18,16 @@ the most recent stable release was `2.4.13.2`. Follow
 [these instructions](INSTALLING_OPENCV.md) to get OpenCV
 up and running on your machine.
 
+#### DSO
+DSO is required to build or use this library. The instructions for building the static library file can be found in the [USU fork of DSO's Github repository](https://github.com/USU-Robosub/dso). The Eigen3 headers are needed to build this library, and their installation instructions can be found in the DSO `README.md`. Once the DSO static library file has been built, and Eigen3 has been installed or built. Use the following cmake command.
+```
+Poseidon/SLAM/build$ cmake -DDSO_DIR={path to the DSO repository} ..
+```
+After using the above cmake command to set the path of the DSO repository, the normal cmake command can be used for future cmake rebuilds.
+```
+Poseidon/SLAM/build$ cmake ..
+```
+
 ---
 
 ## Contributing
@@ -48,16 +58,17 @@ existing tests to figure out how to write them.
 
 #### How to build
 ```bash
-mkdir out
-cd out
+mkdir build
+cd build
 cmake ..
 make slam # <-- libslam.a is created
 ```
+Some terminals do not support to the color codes used in the cmake output. To disable color output, replace `cmake ..` with `cmake -DDISABLE_COLOR=1 ..`.
 
 #### How to run tests
 ```bash
-mkdir out
-cd out
+mkdir build
+cd build
 cmake ..
 make slam_tests # <-- slam_tests is created
 ./slam_tests

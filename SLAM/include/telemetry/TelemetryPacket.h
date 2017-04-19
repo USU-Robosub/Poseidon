@@ -13,9 +13,9 @@ namespace slam {
 
     struct TelemetryPacket {
 
-        ICameraFrame& cameraFrame;
-        DepthMap& depthMap;
-        Pose& pose;
+        std::shared_ptr<ICameraFrame> cameraFrame;
+        std::shared_ptr<DepthMap> depthMap;
+        std::shared_ptr<Pose> pose;
 
     };
 

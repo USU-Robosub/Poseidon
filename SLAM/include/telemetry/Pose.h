@@ -8,6 +8,15 @@
 namespace slam {
 
     struct Pose {
+      
+      Pose(const double*&) {// from 3x4 projection matrix
+        
+      }
+      
+      Pose() {
+        
+      }
+      
         //TODO
     };
 
