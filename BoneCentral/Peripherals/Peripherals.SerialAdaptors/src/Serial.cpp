@@ -18,15 +18,10 @@ Serial::Serial(std::string device) {
     if((fd = open(device.c_str(), O_RDWR)) < 0) {
         DMSG("Device failed to open... entering dummy mode.\n");
         fd = 0;
-    } else {
-        if((fd = open(device.c_str(), O_RDWR)) < 0) {
-            DMSG("Device failed to open... entering dummy mode.\n");
-            fd = 0;
-            return;
-        }
-        
-        configure();
+        return;
     }
+    
+    configure();
     acknowledge();
 }
 
