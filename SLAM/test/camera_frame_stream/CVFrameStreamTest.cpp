@@ -15,6 +15,6 @@ TEST_CASE("CVFrameStream works as expected") {
 
     REQUIRE(frame->getRows() > 0);
 
-    REQUIRE(frame->toMat().size.p > 0);
+    REQUIRE(*frame->toMat().size.p > 0);
 
 }
