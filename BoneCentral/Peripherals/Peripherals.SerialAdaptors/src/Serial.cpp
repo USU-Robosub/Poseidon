@@ -5,24 +5,30 @@
 
 #include "Serial.h"
 
+#ifdef DEBUG
+#define IFDEBUG if(true)
+#else
+#define IFDEBUG if(false)
+#endif
+
 #define DMSG(x) std::cerr << x
 
 std::mutex Serial::serialLock_;
 
 Serial::Serial(std::string device) {
-#ifdef DEBUG
-    DMSG("\nReceived Device Name: " << device);
-    DMSG("\nEntering Serial Debug Mode\n");
-    fd = 0;
-#else
-    if((fd = open(device.c_str(), O_RDWR)) < 0) {
-        DMSG("Device failed to open... entering dummy mode.\n");
+    IFDEBUG {
+        DMSG("\nReceived Device Name: " << device);
+        DMSG("\nEntering Serial Debug Mode\n");
         fd = 0;
-        return;
     }
-    
-    configure();
-#endif
+    else {
+        if((fd = open(device.c_str(), O_RDWR)) < 0) {
+            DMSG("Device failed to open... entering dummy mode.\n");
+            fd = 0;
+            return;
+        }
+        configure();
+    }
     acknowledge();
 }
 
@@ -63,9 +69,9 @@ void Serial::configure() {
 
 void Serial::acknowledge() {
     std::string response = readString();
-#ifdef DEBUG
-    DMSG("Arduino Message: " << response << "\n");
-#endif
+    IFDEBUG{
+        DMSG("Arduino Message: " << response << "\n");
+    }
     writeByte('R');
 }
 
@@ -169,23 +175,21 @@ void Serial::writeByte(unsigned char value) {
 }
 
 void Serial::writeData(char* ptr, size_t size) {
-#ifdef DEBUG
-    DMSG("Serial Write: " << std::hex << std::setw(2));
-    for(size_t i = 0; i < size; i++) {
-        DMSG((unsigned short)ptr[i]);
+    IFDEBUG{
+        DMSG("Serial Write: " << std::hex << std::setw(2));
+        for(size_t i = 0; i < size; i++) {
+            DMSG((unsigned short)ptr[i]);
+        }
+        DMSG(std::dec << std::endl);
     }
-    DMSG(std::dec << std::endl);
-#else
-    std::lock_guard<std::mutex> guard(serialLock_);
-    if(fd == 0) return;
-    write(fd, ptr, size);
+    else {
+        std::lock_guard<std::mutex> guard(serialLock_);
+        if(fd == 0) return;
+        write(fd, ptr, size);
+    }
 }
 
 #ifdef IFDEBUG
 #undef IFDEBUG
-
-#undef DMSG
-#endif
-}
 
 #undef DMSG
