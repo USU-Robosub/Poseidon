@@ -4,10 +4,12 @@ EscPower::EscPower(Serial& serial) : serial_(serial) {}
 
 void EscPower::turnOnEscs()
 {
-        serial_.writeShort(0x0601);
+        serial_.writeByte(ESC_IDX);
+        serial_.writeByte(ENABLE);
 }
 
 void EscPower::turnOffEscs()
 {
-        serial_.writeShort(0x0600);
+        serial_.writeByte(ESC_IDX);
+        serial_.writeByte(DISABLE);
 }
