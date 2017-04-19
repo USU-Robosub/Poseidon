@@ -5,25 +5,22 @@
 
 #include "Serial.h"
 
-#define DMSG(x) std::cerr << x
-
 std::mutex Serial::serialLock_;
 
 Serial::Serial(std::string device) {
 #ifdef DEBUG
-    DMSG("\nReceived Device Name: " << device);
-    DMSG("\nEntering Serial Debug Mode\n");
+    LOG("\nReceived Device Name: " << device);
+    LOG("\nEntering Serial Debug Mode\n");
     fd = 0;
 #else
     if((fd = open(device.c_str(), O_RDWR)) < 0) {
-        DMSG("Device failed to open... entering dummy mode.\n");
+        LOG("Device failed to open... entering dummy mode.\n");
         fd = 0;
         return;
     }
     
     configure();
 #endif
-    ackno();
 }
 
 Serial::~Serial() {
@@ -33,15 +30,15 @@ Serial::~Serial() {
 void Serial::configure() {
     struct termios topts;
     if(tcgetattr(fd, &topts)) {
-        DMSG("Failed to get terminal ios options from file descriptor.\n");
+        LOG("Failed to get terminal ios options from file descriptor.\n");
         throw 1;
     }
     if(cfsetispeed(&topts, B115200)) {
-        DMSG("Failed to set input baud rate.\n");
+        LOG("Failed to set input baud rate.\n");
         throw 1;
     }
     if(cfsetospeed(&topts, B115200)) {
-        DMSG("Failed to set output baud rate.\n");
+        LOG("Failed to set output baud rate.\n");
         throw 1;
     }
     topts.c_cflag &= ~(PARENB|CSTOPB|CSIZE|CRTSCTS);
@@ -52,25 +49,14 @@ void Serial::configure() {
     topts.c_cc[VMIN] = 1;
     topts.c_cc[VTIME] = 0;
     if(tcsetattr(fd, TCSANOW, &topts)) {
-        DMSG("Failed to set terminal ios options for file descriptor.\n");
+        LOG("Failed to set terminal ios options for file descriptor.\n");
         throw 1;
     }
     if(tcflush(fd, TCIFLUSH)) {
-        DMSG("Failed to flush file descriptor.\n");
+        LOG("Failed to flush file descriptor.\n");
         throw 1;
     }
 }
-
-void Serial::ackno() {
-    std::string response = readString();
-#ifdef DEBUG
-    DMSG("Arduino Message: " << response << "\n");
-#endif
-    writeByte('R');
-}
-
-
-
 
 std::string Serial::readString() {
 #ifdef DEBUG
@@ -180,16 +166,14 @@ void Serial::writeByte(unsigned char value) {
 
 void Serial::writeData(char* ptr, size_t size) {
 #ifdef DEBUG
-    DMSG("Serial Write: " << std::hex << std::setw(2));
+    LOG("Serial Write: " << std::hex << std::setw(2));
     for(size_t i = 0; i < size; i++) {
-        DMSG((unsigned short)ptr[i]);
+        LOG((unsigned short)ptr[i]);
     }
-    DMSG(std::dec << std::endl);
+    LOG(std::dec << std::endl);
 #else
     std::lock_guard<std::mutex> guard(serialLock_);
     if(fd == 0) return;
     write(fd, ptr, size);
 #endif
 }
-
-#undef DMSG

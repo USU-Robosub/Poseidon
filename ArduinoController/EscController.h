@@ -13,6 +13,7 @@ private:
     ESC_S5_PIN,
     ESC_S6_PIN
   };
+  
 public:
   EscController() {
     for(uint32_t i = 0; i < GPIO_CNT; i++) {
@@ -20,22 +21,7 @@ public:
       digitalWrite(GPIO_PINS[i], HIGH);
     }
   }
-
-  void setupPins_() {
-    for(int i = 0; i < pinCount; i++) {
-      pinMode(pins_[i], OUTPUT);
-      digitalWrite(pins_[i], HIGH);
-    }
-  }
-  
-public:
-
-  EscController(JsonObject& pins) {
-    pinCount = pins["gpio"].size();
-    assignPins_(pins["gpio"]);
-    setupPins_();
-  }
-  
+    
   void execute() {
     uint8_t toggle = SerialTools::readByte();
     for(uint32_t i = 0; i < GPIO_CNT; i++) {

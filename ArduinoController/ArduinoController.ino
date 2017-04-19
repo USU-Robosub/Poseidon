@@ -1,5 +1,3 @@
-#include <ArduinoJson.h>
-
 #include "ThrustController.h"
 #include "EscController.h"
 #include "LedController.h"
@@ -8,7 +6,6 @@
 #include "KillSwitchController.h"
 #include "VoltageController.h"
 #include "StartController.h"
-#include "PinJSON.h"
 
 const uint32_t CONTROLLER_CNT = 13u;
 class IController* controllers[CONTROLLER_CNT];
