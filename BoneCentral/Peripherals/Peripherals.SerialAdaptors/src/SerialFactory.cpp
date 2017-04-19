@@ -4,6 +4,8 @@
 
 #include "SerialFactory.h"
 
+SerialFactory::SerialFactory() : serial_("/dev/ttyACM0") {}
+
 std::shared_ptr<IThruster> SerialFactory::createLeftForwardThruster() {
     return std::make_shared<SerialThruster>(serial_, LEFT_FORWARD);
 }
