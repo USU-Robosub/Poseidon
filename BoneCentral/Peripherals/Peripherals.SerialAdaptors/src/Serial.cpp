@@ -191,5 +191,6 @@ void Serial::writeData(char* ptr, size_t size) {
 
 #ifdef IFDEBUG
 #undef IFDEBUG
+#endif
 
 #undef DMSG
