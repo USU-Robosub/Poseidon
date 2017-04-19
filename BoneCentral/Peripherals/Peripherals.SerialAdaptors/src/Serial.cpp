@@ -20,10 +20,10 @@ Serial::Serial(std::string device) {
         fd = 0;
         return;
     }
-#endif
     
     configure();
     acknowledge();
+#endif
 }
 
 Serial::~Serial() {
