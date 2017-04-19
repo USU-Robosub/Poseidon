@@ -5,30 +5,35 @@
 #include "Assembler.h"
 
 void App_Start(int argCount, char **arguments) {
-    auto portMap = _createPortMap(argCount, arguments);
+    auto portMap       = _createPortMap(argCount, arguments);
 
-    auto i2CFactory = I2CFactory();
+    auto i2CFactory    = I2CFactory();
     auto serialFactory = SerialFactory();
-    auto powerFactory = PowerFactoryAdaptor(i2CFactory, serialFactory);
+    auto powerFactory  = PowerFactoryAdaptor(i2CFactory, serialFactory);
     auto sensorFactory = SensorFactoryAdaptor(i2CFactory, serialFactory);
 
-    auto loggerStream = _getSocketStream(portMap, "loggerPort");
-    auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream ? *loggerStream : std::cout);
+    auto loggerStream  = _getSocketStream(portMap, "loggerPort");
+    auto scriptLogger  = std::make_shared<ScriptLogger>(loggerStream ? *loggerStream : std::cout);
 
     ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
-    auto pm = PowerManager(powerFactory);
-    auto lights = serialFactory.createHeadlights();
-    auto volt = serialFactory.createVoltageSensor();
-    auto pressure = serialFactory.createWaterPressureSensor();
-    auto temperature = serialFactory.createWaterTemperatureSensor();
+    auto pm            = PowerManager(powerFactory);
+    auto lights        = serialFactory.createHeadlights();
+    auto volt          = serialFactory.createVoltageSensor();
+    auto pressure      = serialFactory.createWaterPressureSensor();
+    auto temperature   = serialFactory.createWaterTemperatureSensor();
+    auto arduinoAction = serialFactory.createArduinoAction();
 
-    auto dispatcherStream = _getSocketStream(portMap, "dispatcherPort");
-    std::istream& inputStream = dispatcherStream ? *dispatcherStream : std::cin;
+    auto dispatcherStream      = _getSocketStream(portMap, "dispatcherPort");
+    std::istream& inputStream  = dispatcherStream ? *dispatcherStream : std::cin;
     std::ostream& outputStream = dispatcherStream ? *dispatcherStream : std::cout;
+    
+    arduinoAction->begin();
     CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights, *volt, *pressure, *temperature);
     scriptLogger->info("Ready!");
     cd.runLoop();
+    
+    if(arduinoAction->isLive()) arduinoAction->end();
     if(dispatcherStream) dispatcherStream->disconnect();
     std::cout << "\n- End of Line -\n";
 }

@@ -13,12 +13,14 @@
 #include "VoltageSensor.h"
 #include "ExTemperatureSensor.h"
 #include "ExPressureSensor.h"
-#include "Serial.h"
 
+#include "ActionThread.h"
+
+#include "Serial.h"
 
 class SerialFactory : public IThrusterFactory {
 private:
-    Serial serial_;
+    Serial serial_, event_;
 public:
     SerialFactory();
     std::shared_ptr<IThruster> createMoveThruster();
@@ -32,6 +34,8 @@ public:
     std::shared_ptr<IEscPower> createEscPower();
     std::shared_ptr<IHeadlights> createHeadlights();
     std::shared_ptr<IVoltage> createVoltageSensor();
+    
+    std::shared_ptr<ActionThread> createArduinoAction();
 };
 
 

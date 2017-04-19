@@ -13,7 +13,7 @@
 
 std::mutex Serial::serialLock_;
 
-Serial::Serial(std::string device) {
+Serial::Serial(std::string device, bool shouldAcknowledge, Speed speed) {
     IFDEBUG {
         LOG("\nReceived Device Name: " << device);
         LOG("\nEntering Serial Debug Mode\n");
@@ -25,26 +25,26 @@ Serial::Serial(std::string device) {
             return;
         }
         
-        configure();
+        configure(speed);
     }
-    acknowledge();
+    if(shouldAcknowledge) acknowledge();
 }
 
 Serial::~Serial() {
     if(fd != 0) close(fd);
 }
 
-void Serial::configure() {
+void Serial::configure(Speed speed) {
     struct termios topts;
     if(tcgetattr(fd, &topts)) {
         LOG("Failed to get terminal ios options from file descriptor.\n");
         throw 1;
     }
-    if(cfsetispeed(&topts, B115200)) {
+    if(cfsetispeed(&topts, speed)) {
         LOG("Failed to set input baud rate.\n");
         throw 1;
     }
-    if(cfsetospeed(&topts, B115200)) {
+    if(cfsetospeed(&topts, speed)) {
         LOG("Failed to set output baud rate.\n");
         throw 1;
     }

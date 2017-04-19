@@ -24,15 +24,13 @@
 #define LOG(x) std::cerr << x
 
 class Serial {
-private:
-    static std::mutex serialLock_;
-    int fd;
-    
-    void configure();
-    void acknowledge();
-    
 public:
-    Serial(std::string device);
+    enum Speed {
+        HIGH = B115200,
+        NORMAL = B9600
+    };
+    
+    Serial(std::string device, bool shouldAcknowledge=true, Speed speed=Speed::HIGH);
     ~Serial();
     
     std::string     readString();
@@ -53,6 +51,13 @@ public:
     void writeUShort(unsigned short value);
     void writeByte(unsigned char value);
     void writeData(char* ptr, size_t size);
+
+private:
+    static std::mutex serialLock_;
+    int fd;
+    
+    void configure(Speed speed);
+    void acknowledge();
 };
 
 
