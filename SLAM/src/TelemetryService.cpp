@@ -20,8 +20,8 @@ TelemetryService::~TelemetryService() {
 void TelemetryService::run() {
     while(running) {
         auto frame = frameStream->getFrame();
-        auto map = DepthMap((ushort) frame->getCols(), (ushort) frame->getRows());
-        auto pose = Pose();
+        auto map = make_smart<DepthMap>((ushort) frame->getCols(), (ushort) frame->getRows());
+        auto pose = make_smart<Pose>();
         TelemetryPacket packet = { frame, map, pose };
         publish(packet);
         std::this_thread::sleep_for(std::chrono::milliseconds(33)); // pause execution (~30fps)
