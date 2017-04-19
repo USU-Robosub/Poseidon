@@ -1,46 +1,39 @@
 #include "IController.h"
 
+#define GPIO_CNT 6u
+
 class EscController : public IController {
   
 private:
-
-  uint8_t pinCount;
-
-  uint8_t* pins_;
-
-  void assignPins_(JsonArray& gpioPins) {
-    pins_ = new uint8_t[pinCount];
-    for(int i = 0; i < pinCount; i++) {
-      pins_[i] = gpioPins[1].as<uint8_t>();
-    }
-  }
-
-  void setupPins_() {
-    for(int i = 0; i < pinCount; i++) {
-      pinMode(pins_[i], OUTPUT);
-      digitalWrite(pins_[i], HIGH);
-    }
-  }
+  uint8_t GPIO_PINS[GPIO_CNT] = {
+    ESC_S1_PIN,
+    ESC_S2_PIN,
+    ESC_S3_PIN,
+    ESC_S4_PIN,
+    ESC_S5_PIN,
+    ESC_S6_PIN
+  };
   
 public:
-
-  EscController(JsonObject& pins) {
-    pinCount = pins["gpio"].size();
-    assignPins_(pins["gpio"]);
-    setupPins_();
+  EscController() {
+    for(uint32_t i = 0; i < GPIO_CNT; i++) {
+      pinMode(GPIO_PINS[i], OUTPUT);
+      digitalWrite(GPIO_PINS[i], HIGH);
+    }
   }
-  
+    
   void execute() {
-    while(!Serial.available());
-    uint8_t toggle = Serial.read();
-    for(int i = 0; i < pinCount; i++) {
-      digitalWrite(pins_[i], !toggle);
+    uint8_t toggle = SerialTools::readByte();
+    for(uint32_t i = 0; i < GPIO_CNT; i++) {
+      digitalWrite(GPIO_PINS[i], !toggle);
     }
   }
   
   void kill() {
-    for(int i = 0; i < pinCount; i++) {
-      digitalWrite(pins_[i], HIGH);
+    for(uint32_t i = 0; i < GPIO_CNT; i++) {
+      digitalWrite(GPIO_PINS[i], HIGH);
     }
   }
 };
+
+#undef GPIO_CNT
