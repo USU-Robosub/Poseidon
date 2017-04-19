@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(SLAM)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic") # -Werror
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic -pthread") # -Werror
 set(TEST_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/test_resources")
 
 configure_file(test/_config.h.in ${PROJECT_SOURCE_DIR}/test/_config.h )

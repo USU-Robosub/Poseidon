@@ -15,6 +15,14 @@ TEST_CASE("CVFrameStream works as expected") {
 
     REQUIRE(frame->getRows() > 0);
 
-    REQUIRE(frame->toMat().size.p > 0);
+    REQUIRE(*frame->toMat().size.p > 0);
+
+    SECTION("Bogus device or file throws an error") {
+
+        auto bogusFrameStream = CVFrameStream(212);
+
+        REQUIRE_THROWS(bogusFrameStream.getFrame());
+
+    }
 
 }

@@ -13,6 +13,9 @@ CVFrameStream::CVFrameStream(int device) : videoCapture(device) {
 
 const SmartPointer<ICameraFrame> slam::CVFrameStream::getFrame() {
     cv::Mat frame;
+    if (!videoCapture.isOpened()) {
+        throw std::runtime_error("OpenCV could not open the specified video capture device or file.");
+    }
     videoCapture >> frame;
     return make_smart<RGBCameraFrame>(frame, std::chrono::steady_clock::now());
 }
