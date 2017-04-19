@@ -1,4 +1,4 @@
-var $           = require('../Utilities').Promises
+var $           = require('../Utilities').Promises;
 var wait        = require('../Utilities').Wait;
 var vector      = require('../Utilities/vector.js');
 var ctools      = require('../Utilities/compassTools.js');

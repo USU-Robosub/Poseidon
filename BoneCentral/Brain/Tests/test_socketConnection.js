@@ -7,5 +7,5 @@ var power = Poseidon.HardwareFactory.createPowerManager();
 power.connect("start", function() {
     setTimeout(function() {
         power.exit("exit", process.exit);
-    }, 10000);
-}
+    }, 1000);
+});
