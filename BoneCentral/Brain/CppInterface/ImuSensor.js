@@ -13,25 +13,25 @@ module.exports = (function(){
     }
 
     var _initializePromises = function () {
-        this._accelRequest = $.Deferred().resolve();
-        this._angularAccelRequest = $.Deferred().resolve();
-        this._headingRequest = $.Deferred().resolve();
-        this._inTempRequest = $.Deferred().resolve();
-        this._inPressureRequest = $.Deferred().resolve();
-        this._exTempRequest = $.Deferred().resolve();
-        this._exPressureRequest = $.Deferred().resolve();
+        this._accelRequest          = $.Deferred().resolve();
+        this._angularAccelRequest   = $.Deferred().resolve();
+        this._headingRequest        = $.Deferred().resolve();
+        this._inTempRequest         = $.Deferred().resolve();
+        this._inPressureRequest     = $.Deferred().resolve();
+        this._exTempRequest         = $.Deferred().resolve();
+        this._exPressureRequest     = $.Deferred().resolve();
     };
 
     var _handleData = function(self){return function (data) {
         try {
             var dataJson = JSON.parse(data.toString());
-            if (dataJson.Type == "Acceleration") self._accelRequest.resolve(dataJson);
-            else if (dataJson.Type == "AngularAcceleration") self._angularAccelRequest.resolve(dataJson);
-            else if (dataJson.Type == "Heading") self._headingRequest.resolve(dataJson);
-            else if (dataJson.Type == "InternalTemperature") self._inTempRequest.resolve(dataJson);
-            else if (dataJson.Type == "InternalPressure") self._inPressureRequest.resolve(dataJson);
-            else if (dataJson.Type == "ExternalTemperature") self._exTempRequest.resolve(dataJson);
-            else if (dataJson.Type == "ExternalPressure") self._exPressureRequest.resolve(dataJson);
+            if      (dataJson.Type === "Acceleration")           self._accelRequest.resolve(dataJson);
+            else if (dataJson.Type === "AngularAcceleration")    self._angularAccelRequest.resolve(dataJson);
+            else if (dataJson.Type === "Heading")                self._headingRequest.resolve(dataJson);
+            else if (dataJson.Type === "InternalTemperature")    self._inTempRequest.resolve(dataJson);
+            else if (dataJson.Type === "InternalPressure")       self._inPressureRequest.resolve(dataJson);
+            else if (dataJson.Type === "ExternalTemperature")    self._exTempRequest.resolve(dataJson);
+            else if (dataJson.Type === "ExternalPressure")       self._exPressureRequest.resolve(dataJson);
         }
         catch(e) {}
     };};
