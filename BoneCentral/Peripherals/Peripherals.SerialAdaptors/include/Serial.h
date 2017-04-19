@@ -21,8 +21,6 @@
 #include <iostream>
 #include <iomanip>
 
-#define LOG(x) std::cerr << x
-
 class Serial {
 private:
     static std::mutex serialLock_;

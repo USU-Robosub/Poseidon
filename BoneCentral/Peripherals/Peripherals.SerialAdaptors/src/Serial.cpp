@@ -11,16 +11,18 @@
 #define IFDEBUG if(false)
 #endif
 
+#define DMSG(x) std::cerr << x
+
 std::mutex Serial::serialLock_;
 
 Serial::Serial(std::string device) {
     IFDEBUG {
-        LOG("\nReceived Device Name: " << device);
-        LOG("\nEntering Serial Debug Mode\n");
+        DMSG("\nReceived Device Name: " << device);
+        DMSG("\nEntering Serial Debug Mode\n");
         fd = 0;
     } else {
         if((fd = open(device.c_str(), O_RDWR)) < 0) {
-            LOG("Device failed to open... entering dummy mode.\n");
+            DMSG("Device failed to open... entering dummy mode.\n");
             fd = 0;
             return;
         }
@@ -37,15 +39,15 @@ Serial::~Serial() {
 void Serial::configure() {
     struct termios topts;
     if(tcgetattr(fd, &topts)) {
-        LOG("Failed to get terminal ios options from file descriptor.\n");
+        DMSG("Failed to get terminal ios options from file descriptor.\n");
         throw 1;
     }
     if(cfsetispeed(&topts, B115200)) {
-        LOG("Failed to set input baud rate.\n");
+        DMSG("Failed to set input baud rate.\n");
         throw 1;
     }
     if(cfsetospeed(&topts, B115200)) {
-        LOG("Failed to set output baud rate.\n");
+        DMSG("Failed to set output baud rate.\n");
         throw 1;
     }
     topts.c_cflag &= ~(PARENB|CSTOPB|CSIZE|CRTSCTS);
@@ -56,11 +58,11 @@ void Serial::configure() {
     topts.c_cc[VMIN] = 1;
     topts.c_cc[VTIME] = 0;
     if(tcsetattr(fd, TCSANOW, &topts)) {
-        LOG("Failed to set terminal ios options for file descriptor.\n");
+        DMSG("Failed to set terminal ios options for file descriptor.\n");
         throw 1;
     }
     if(tcflush(fd, TCIFLUSH)) {
-        LOG("Failed to flush file descriptor.\n");
+        DMSG("Failed to flush file descriptor.\n");
         throw 1;
     }
 }
@@ -68,7 +70,7 @@ void Serial::configure() {
 void Serial::acknowledge() {
     std::string response = readString();
     IFDEBUG {
-        LOG("Arduino Message: " << response << "\n");
+        DMSG("Arduino Message: " << response << "\n");
     }
     writeByte('R');
 }
@@ -174,11 +176,11 @@ void Serial::writeByte(unsigned char value) {
 
 void Serial::writeData(char* ptr, size_t size) {
     IFDEBUG {
-        LOG("Serial Write: " << std::hex << std::setw(2));
+        DMSG("Serial Write: " << std::hex << std::setw(2));
         for(size_t i = 0; i < size; i++) {
-            LOG((unsigned short)ptr[i]);
+            DMSG((unsigned short)ptr[i]);
         }
-        LOG(std::dec << std::endl);
+        DMSG(std::dec << std::endl);
         return;
     }
     std::lock_guard<std::mutex> guard(serialLock_);
@@ -188,4 +190,6 @@ void Serial::writeData(char* ptr, size_t size) {
 
 #ifdef IFDEBUG
 #undef IFDEBUG
+
+#undef DMSG
 #endif
