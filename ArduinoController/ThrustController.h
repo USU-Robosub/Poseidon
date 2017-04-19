@@ -1,3 +1,6 @@
+#ifndef ITHRUSTER_H
+#define ITHRUSTER_H
+
 #include <Servo.h>
 #include "IController.h"
 
@@ -8,7 +11,7 @@ class ThrustController : public IController {
    const uint16_t REVERSE = 1000;
    Servo servo_;
  public:
-  ThrustController(uint8_t servoPin) {
+  ThrustController(PwmPin servoPin) {
     servo_.attach(servoPin);
     servo_.writeMicroseconds(IDLE);
   }
@@ -28,3 +31,5 @@ class ThrustController : public IController {
     else return value;
   }
 };
+
+#endif
