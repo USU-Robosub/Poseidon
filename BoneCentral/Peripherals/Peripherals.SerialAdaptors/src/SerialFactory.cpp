@@ -4,29 +4,29 @@
 
 #include "SerialFactory.h"
 
-SerialFactory::SerialFactory() : serial_("/dev/ttyACM0") {}
+SerialFactory::SerialFactory() : serial_("/dev/ttyACM0") { }
 
-std::shared_ptr<IThruster> SerialFactory::createLeftForwardThruster() {
+std::shared_ptr<IThruster> SerialFactory::createMoveThruster() {
     return std::make_shared<SerialThruster>(serial_, MOVE_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createRightForwardThruster() {
+std::shared_ptr<IThruster> SerialFactory::createStrafeThruster() {
     return std::make_shared<SerialThruster>(serial_, STRAFE_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createLeftStrafeThruster() {
+std::shared_ptr<IThruster> SerialFactory::createDiveThruster() {
     return std::make_shared<SerialThruster>(serial_, DIVE_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createRightStrafeThruster() {
+std::shared_ptr<IThruster> SerialFactory::createYawThruster() {
     return std::make_shared<SerialThruster>(serial_, YAW_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createForwardDiveThruster() {
+std::shared_ptr<IThruster> SerialFactory::createPitchThruster() {
     return std::make_shared<SerialThruster>(serial_, PITCH_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createRearDiveThruster() {
+std::shared_ptr<IThruster> SerialFactory::createRollThruster() {
     return std::make_shared<SerialThruster>(serial_, ROLL_IDX);
 }
 

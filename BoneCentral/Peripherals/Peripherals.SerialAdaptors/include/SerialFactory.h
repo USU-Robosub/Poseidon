@@ -19,12 +19,12 @@ private:
     Serial serial_;
 public:
     SerialFactory();
-    std::shared_ptr<IThruster> createLeftForwardThruster();
-    std::shared_ptr<IThruster> createRightForwardThruster();
-    std::shared_ptr<IThruster> createLeftStrafeThruster();
-    std::shared_ptr<IThruster> createRightStrafeThruster();
-    std::shared_ptr<IThruster> createForwardDiveThruster();
-    std::shared_ptr<IThruster> createRearDiveThruster();
+    std::shared_ptr<IThruster> createMoveThruster();
+    std::shared_ptr<IThruster> createStrafeThruster();
+    std::shared_ptr<IThruster> createDiveThruster();
+    std::shared_ptr<IThruster> createYawThruster();
+    std::shared_ptr<IThruster> createPitchThruster();
+    std::shared_ptr<IThruster> createRollThruster();
     std::shared_ptr<ITemperatureSensor> createExternalTemperatureSensor();
     std::shared_ptr<IPressureSensor> createExternalPressureSensor();
     std::shared_ptr<IEscPower> createEscPower();

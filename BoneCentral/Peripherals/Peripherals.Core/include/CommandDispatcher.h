@@ -29,15 +29,16 @@ private:
     bool shouldExit_;
 
     void dispatchCommand(std::stringstream& cmd);
+    
     void goDirection(std::stringstream& cmdString);
-    void faceDirection(std::stringstream& cmdString);
-    void thrustForward(std::stringstream& cmdString);
+    void rotate(std::stringstream& cmdString);
+    void move(std::stringstream& cmdString);
+    void strafe(std::stringstream& cmdString);
     void dive(std::stringstream& cmdString);
-
-    void setForwardTrim(std::stringstream& cmdString);
-    void setStrafeTrim(std::stringstream& cmdString);
-    void setDiveTrim(std::stringstream& cmdString);
-    void setDiveOffset(std::stringstream& cmdString);
+    void yaw(std::stringstream& cmdString);
+    void pitch(std::stringstream& cmdString);
+    void roll(std::stringstream& cmdString);
+    void kill();
 
     void _getAcceleration();
     void _getAngularAcceleration();
