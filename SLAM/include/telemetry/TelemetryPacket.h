@@ -14,8 +14,8 @@ namespace slam {
     struct TelemetryPacket {
 
         SmartPointer<ICameraFrame> cameraFrame;
-        DepthMap depthMap;
-        Pose pose;
+        SmartPointer<DepthMap> depthMap;
+        SmartPointer<Pose> pose;
 
     };
 

@@ -5,7 +5,15 @@
 #include "CommandDispatcher.h"
 using json = nlohmann::json;
 
-CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out, ImuSensor& imuSensor, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights)
+#ifdef DEBUG
+#define IFDEBUG if(true)
+#else
+#define IFDEBUG if(false)
+#endif
+
+CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out,
+    ImuSensor& imuSensor, ThrustController& thrustController,
+    PowerManager& powerManager, IHeadlights& lights)
         : in_(in),
           out_(out),
           imuSensor_(imuSensor),
@@ -26,76 +34,118 @@ void CommandDispatcher::runLoop() {
 void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     std::string cmd;
     cmdString >> cmd;
-    if(cmd == "goDirection") goDirection(cmdString);
-    else if(cmd == "faceDirection") faceDirection(cmdString);
-    else if(cmd == "thrustForward") thrustForward(cmdString);
-    else if(cmd == "dive") dive(cmdString);
-    else if(cmd == "turnOnEscs") powerManager_.turnOnEscs();
-    else if(cmd == "turnOffEscs") powerManager_.turnOffEscs();
-    else if(cmd == "switchLights") lights_.switchLights();
-    else if(cmd == "turnOnImu") powerManager_.turnOnImuSensor();
-    else if(cmd == "turnOffImu") powerManager_.turnOffImuSensor();
-    else if(cmd == "setForwardTrim") setForwardTrim(cmdString);
-    else if(cmd == "setStrafeTrim") setStrafeTrim(cmdString);
-    else if(cmd == "setDiveTrim") setDiveTrim(cmdString);
-    else if(cmd == "setDiveOffset") setDiveOffset(cmdString);
-    else if(cmd == "getAcceleration") _getAcceleration();
-    else if(cmd == "getAngularAcceleration") _getAngularAcceleration();
-    else if(cmd == "getHeading") _getHeading();
-    else if(cmd == "getInternalTemperature") _getInternalTemperature();
-    else if(cmd == "getInternalPressure") _getInternalPressure();
-    else if(cmd == "getExternalTemperature") _getExternalTemperature();
-    else if(cmd == "getExternalPressure") _getExternalPressure();
-    else if(cmd == "exit") shouldExit_ = true;
+    if(cmd == "goDirection")                    goDirection(cmdString);
+    else if(cmd == "rotate")                    rotate(cmdString);
+    else if(cmd == "move")                      move(cmdString);
+    else if(cmd == "secondaryDive")             strafe(cmdString);
+    else if(cmd == "primaryDive")               dive(cmdString);
+    else if(cmd == "yaw")                       yaw(cmdString);
+    else if(cmd == "pitch")                     pitch(cmdString);
+    else if(cmd == "roll")                      roll(cmdString);
+    else if(cmd == "killThrust")                kill();
+    else if(cmd == "turnOnEscs")                powerManager_.turnOnEscs();
+    else if(cmd == "turnOffEscs")               powerManager_.turnOffEscs();
+    else if(cmd == "switchLights")              lights_.switchLights();
+    else if(cmd == "turnOnImu")                 powerManager_.turnOnImuSensor();
+    else if(cmd == "turnOffImu")                powerManager_.turnOffImuSensor();
+    else if(cmd == "getAcceleration")           _getAcceleration();
+    else if(cmd == "getAngularAcceleration")    _getAngularAcceleration();
+    else if(cmd == "getHeading")                _getHeading();
+    else if(cmd == "getInternalTemperature")    _getInternalTemperature();
+    else if(cmd == "getInternalPressure")       _getInternalPressure();
+    else if(cmd == "getExternalTemperature")    _getExternalTemperature();
+    else if(cmd == "getExternalPressure")       _getExternalPressure();
+    else if(cmd == "exit")                      shouldExit_ = true;
 }
+
+
+
 
 void CommandDispatcher::goDirection(std::stringstream& cmdString) {
-    float forward, strafe, dive;
-    cmdString >> forward >> strafe >> dive;
-    thrustController_.goDirection(forward, strafe, dive);
+    float move, strafe, dive;
+    cmdString >> move >> strafe >> dive;
+    IFDEBUG {
+        std::cout << "Move: " << move;
+        std::cout << " Strafe: " << strafe;
+        std::cout << " Dive: " << dive << std::endl;
+    }
+    thrustController_.goDirection(move, strafe, dive);
 }
 
-void CommandDispatcher::faceDirection(std::stringstream& cmdString) {
-    float yaw, dive;
-    cmdString >> yaw >> dive;
-    thrustController_.faceDirection(yaw, dive);
+void CommandDispatcher::rotate(std::stringstream& cmdString) {
+    float yaw, pitch, roll;
+    cmdString >> yaw >> pitch >> roll;
+    IFDEBUG {
+        std::cout << "Yaw: " << yaw;
+        std::cout << " Pitch: " << pitch;
+        std::cout << " Roll: " << roll << std::endl;
+    }
+    thrustController_.rotate(yaw, pitch, roll);
 }
 
-void CommandDispatcher::thrustForward(std::stringstream &cmdString) {
-    float left, right;
-    cmdString >> left >> right;
-    thrustController_.thrustForward(left, right);
+void CommandDispatcher::move(std::stringstream &cmdString) {
+    float throttle;
+    cmdString >> throttle;
+    IFDEBUG {
+        std::cout << "Move: " << throttle << std::endl;
+    }
+    thrustController_.move(throttle);
+}
+
+void CommandDispatcher::strafe(std::stringstream &cmdString) {
+    float throttle;
+    cmdString >> throttle;
+    IFDEBUG {
+        std::cout << "Strafe: " << throttle << std::endl;
+    }
+    thrustController_.strafe(throttle);
 }
 
 void CommandDispatcher::dive(std::stringstream &cmdString) {
-    float front, rear;
-    cmdString >> front >> rear;
-    thrustController_.dive(front, rear);
+    float throttle;
+    cmdString >> throttle;
+    IFDEBUG {
+        std::cout << "Dive: " << throttle << std::endl;
+    }
+    thrustController_.dive(throttle);
 }
 
-void CommandDispatcher::setForwardTrim(std::stringstream& cmdString) {
-    float a, b;
-    cmdString >> a >> b;
-    thrustController_.setForwardTrim(a, b);
+void CommandDispatcher::yaw(std::stringstream &cmdString) {
+    float throttle;
+    cmdString >> throttle;
+    IFDEBUG {
+        std::cout << "Yaw: " << throttle << std::endl;
+    }
+    thrustController_.yaw(throttle);
 }
 
-void CommandDispatcher::setStrafeTrim(std::stringstream& cmdString) {
-    float a, b;
-    cmdString >> a >> b;
-    thrustController_.setStrafeTrim(a, b);
+void CommandDispatcher::pitch(std::stringstream &cmdString) {
+    float throttle;
+    cmdString >> throttle;
+    IFDEBUG {
+        std::cout << "Pitch: " << throttle << std::endl;
+    }
+    thrustController_.pitch(throttle);
 }
 
-void CommandDispatcher::setDiveTrim(std::stringstream& cmdString) {
-    float a, b;
-    cmdString >> a >> b;
-    thrustController_.setDiveTrim(a, b);
+void CommandDispatcher::roll(std::stringstream &cmdString) {
+    float throttle;
+    cmdString >> throttle;
+    IFDEBUG {
+        std::cout << "Roll: " << throttle << std::endl;
+    }
+    thrustController_.roll(throttle);
 }
 
-void CommandDispatcher::setDiveOffset(std::stringstream& cmdString) {
-    float a, b;
-    cmdString >> a >> b;
-    thrustController_.setDiveOffset(a, b);
+void CommandDispatcher::kill() {
+    IFDEBUG {
+        std::cout << "Killed Thrusters" << std::endl;
+    }
+    thrustController_.killAllThrusters();
 }
+
+
+
 
 void CommandDispatcher::_getAcceleration() {
     auto data = imuSensor_.getAcceleration();
@@ -105,11 +155,13 @@ void CommandDispatcher::_getAcceleration() {
             {"Y", std::get<1>(data)},
             {"Z", std::get<2>(data)}
     };
+    IFDEBUG {
+        std::cerr << accelJson << std::endl;
+    }
     out_ << accelJson << std::endl;
 }
 
 void CommandDispatcher::_getAngularAcceleration() {
-    std::cout << "Fetching angular acceleration" << std::endl;
     auto data = imuSensor_.getAngularAcceleration();
     auto accelJson = json{
             {"Type", "AngularAcceleration"},
@@ -117,6 +169,9 @@ void CommandDispatcher::_getAngularAcceleration() {
             {"Y", std::get<1>(data)},
             {"Z", std::get<2>(data)}
     };
+    IFDEBUG {
+        std::cerr << accelJson << std::endl;
+    }
     out_ << accelJson << std::endl;
 }
 
@@ -128,6 +183,9 @@ void CommandDispatcher::_getHeading() {
             {"Y", std::get<1>(data)}//,
             //{"Z", std::get<2>(data)}
     };
+    IFDEBUG {
+        std::cerr << headingJson << std::endl;
+    }
     out_ << headingJson << std::endl;
 }
 
@@ -150,3 +208,7 @@ void CommandDispatcher::_getExternalPressure() {
     auto data = imuSensor_.getExtPressure();
     out_ << json{{"Type", "ExternalPressure"},{"Value",data}} << std::endl;
 }
+
+#ifdef IFDEBUG
+#undef IFDEBUG
+#endif
