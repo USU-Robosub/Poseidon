@@ -4,8 +4,8 @@
 
 #include "SerialFactory.h"
 
-SerialFactory::SerialFactory()
-    : serial_("/dev/ttyACM0"), event_("/dev/ttyO2", false, Serial::Speed::NORMAL) { }
+SerialFactory::SerialFactory(std::ostream& out)
+    : out_(out), serial_("/dev/ttyACM0"), event_("/dev/ttyO2", false, Serial::Speed::NORMAL) { }
 
 std::shared_ptr<IThruster> SerialFactory::createMoveThruster() {
     return std::make_shared<SerialThruster>(serial_, MOVE_IDX);
@@ -52,5 +52,5 @@ std::shared_ptr<IPressureSensor> SerialFactory::createWaterPressureSensor() {
 }
 
 std::shared_ptr<ActionThread> SerialFactory::createArduinoAction() {
-    return std::make_shared<ActionThread>(event_);
+    return std::make_shared<ActionThread>(event_, out_);
 }

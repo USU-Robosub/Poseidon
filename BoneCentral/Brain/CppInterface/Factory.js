@@ -22,7 +22,8 @@ module.exports = (function() {
     };
 
     Factory.prototype.createPowerManager = function () {
-        return new PowerManager(this.dispatcherSocket.Input, this.dispatcherSocket.Events);
+        return new PowerManager(this.dispatcherSocket.Input, this.dispatcherSocket.Output,
+            this.dispatcherSocket.Events);
     };
 
     Factory.prototype.createThrustController = function () {

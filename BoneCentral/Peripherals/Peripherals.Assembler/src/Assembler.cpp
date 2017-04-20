@@ -7,8 +7,12 @@
 void App_Start(int argCount, char **arguments) {
     auto portMap       = _createPortMap(argCount, arguments);
 
+    auto dispatcherStream      = _getSocketStream(portMap, "dispatcherPort");
+    std::istream& inputStream  = dispatcherStream ? *dispatcherStream : std::cin;
+    std::ostream& outputStream = dispatcherStream ? *dispatcherStream : std::cout;
+
     auto i2CFactory    = I2CFactory();
-    auto serialFactory = SerialFactory();
+    auto serialFactory = SerialFactory(outputStream);
     auto powerFactory  = PowerFactoryAdaptor(i2CFactory, serialFactory);
     auto sensorFactory = SensorFactoryAdaptor(i2CFactory, serialFactory);
 
@@ -23,10 +27,6 @@ void App_Start(int argCount, char **arguments) {
     auto pressure      = serialFactory.createWaterPressureSensor();
     auto temperature   = serialFactory.createWaterTemperatureSensor();
     auto arduinoAction = serialFactory.createArduinoAction();
-
-    auto dispatcherStream      = _getSocketStream(portMap, "dispatcherPort");
-    std::istream& inputStream  = dispatcherStream ? *dispatcherStream : std::cin;
-    std::ostream& outputStream = dispatcherStream ? *dispatcherStream : std::cout;
     
     arduinoAction->begin();
     CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights, *volt, *pressure, *temperature);

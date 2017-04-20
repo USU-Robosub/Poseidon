@@ -1,16 +1,16 @@
 #include "ActionThread.h"
 
-ActionThread::ActionThread(Serial& serial)
-    : serial_(serial), liveStatus(false) {
+ActionThread::ActionThread(Serial& serial, std::ostream& out)
+    : serial_(serial), out_(out), liveStatus(false) {
 }
 
-void* actionThread_callback(void* data) {
-    Serial serial = *((Serial*)data);
+void* actionThread_callback(void*data) {
+    ActionThread thread = *((ActionThread*)data);
     for(;;) {
         // read indefinitely
-        unsigned char res = serial.readByte();
-        std::cout << "Event value: " << (int)res << std::endl;
+        thread._read();
     }
+    return NULL;
 }
 
 void ActionThread::begin() {
@@ -19,7 +19,9 @@ void ActionThread::begin() {
     pthread_attr_t attributes;
     pthread_attr_init(&attributes);
     pthread_attr_setdetachstate(&attributes, PTHREAD_CREATE_JOINABLE);
-    int res = pthread_create(&thread_, &attributes, actionThread_callback, (void*)&serial_);
+    
+    int res = pthread_create(&thread_, &attributes, actionThread_callback, (void*)this);
+    
     liveStatus = true;
     if(res) {
         liveStatus = false;
@@ -38,4 +40,19 @@ void ActionThread::end() {
 
 bool ActionThread::isLive() {
     return liveStatus;
+}
+
+void ActionThread::_read() {
+    unsigned char res = serial_.readByte();
+    std::cout << "Event value: " << (int)res << std::endl;
+    auto outJson = json{
+            {"Type", "ActionEvent"},
+            {"Value", res}
+    };
+    
+#ifdef DEBUG
+    std::cerr << outJson << std::endl;
+#endif
+
+    out_ << outJson << std::endl;
 }

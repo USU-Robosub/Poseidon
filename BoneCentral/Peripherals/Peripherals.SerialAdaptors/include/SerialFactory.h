@@ -7,6 +7,7 @@
 
 #include <IThrusterFactory.h>
 #include <memory>
+#include <ostream>
 #include "SerialThruster.h"
 #include "EscPower.h"
 #include "Headlights.h"
@@ -20,9 +21,11 @@
 
 class SerialFactory : public IThrusterFactory {
 private:
+    std::ostream& out_;
     Serial serial_, event_;
+    
 public:
-    SerialFactory();
+    SerialFactory(std::ostream& out);
     std::shared_ptr<IThruster> createMoveThruster();
     std::shared_ptr<IThruster> createStrafeThruster();
     std::shared_ptr<IThruster> createDiveThruster();
