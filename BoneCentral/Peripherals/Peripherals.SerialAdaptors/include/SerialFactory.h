@@ -22,7 +22,7 @@
 class SerialFactory : public IThrusterFactory {
 private:
     std::ostream& out_;
-    Serial serial_, event_;
+    Serial serial_;
     
 public:
     SerialFactory(std::ostream& out);

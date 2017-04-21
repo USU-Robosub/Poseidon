@@ -28,6 +28,7 @@ void App_Start(int argCount, char **arguments) {
     auto temperature   = serialFactory.createWaterTemperatureSensor();
     auto arduinoAction = serialFactory.createArduinoAction();
     
+    arduinoAction->setEdge(ActionThread::EdgeMode::BOTH);
     arduinoAction->begin();
     CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights, *volt, *pressure, *temperature);
     scriptLogger->info("Ready!");

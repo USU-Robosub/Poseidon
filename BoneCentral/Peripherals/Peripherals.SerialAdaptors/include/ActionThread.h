@@ -1,12 +1,9 @@
 #ifndef ACTION_THREAD_H
 #define ACTION_THREAD_H
 
-#include <pthread.h>
 #include <ostream>
-#include <json.h>
-#include "Serial.h"
-
-using json = nlohmann::json;
+#include <string>
+#include <poll.h>
 
 class ActionThread {
 private:
@@ -15,18 +12,31 @@ private:
         void* data2;
     } Object;
 
-    Serial& serial_;
+    struct pollfd gpio_[1];
+    
+    std::string edgefd_;
+    std::string valuefd_;
     pthread_t thread_;
     std::ostream& out_;
     
-    bool liveStatus;
+    volatile bool endOfThread;
+    
+    void sendJS(char value);
 
 public:
-    ActionThread(Serial& serial, std::ostream& out);
+    enum EdgeMode {
+        NONE,
+        RISING,
+        FALLING,
+        BOTH
+    };
+    
+    ActionThread(unsigned int gpio, std::ostream& out);
     
     void begin();
     void end();
     bool isLive();
+    void setEdge(EdgeMode mode);
     
     void _read();
 };

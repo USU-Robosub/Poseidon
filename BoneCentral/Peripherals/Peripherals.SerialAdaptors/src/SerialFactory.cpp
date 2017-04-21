@@ -4,8 +4,10 @@
 
 #include "SerialFactory.h"
 
+#define P9_15 48
+
 SerialFactory::SerialFactory(std::ostream& out)
-    : out_(out), serial_("/dev/ttyACM0"), event_("/dev/ttyO2", false, Serial::Speed::NORMAL) { }
+    : out_(out), serial_("/dev/ttyACM0") { }
 
 std::shared_ptr<IThruster> SerialFactory::createMoveThruster() {
     return std::make_shared<SerialThruster>(serial_, MOVE_IDX);
@@ -52,5 +54,7 @@ std::shared_ptr<IPressureSensor> SerialFactory::createWaterPressureSensor() {
 }
 
 std::shared_ptr<ActionThread> SerialFactory::createArduinoAction() {
-    return std::make_shared<ActionThread>(event_, out_);
+    return std::make_shared<ActionThread>(P9_15, out_);
 }
+
+#undef P9_15
