@@ -23,7 +23,6 @@ check_package(Eigen3 REQUIRED)
 ExternalProject_Add(DSO
         GIT_REPOSITORY https://github.com/USU-Robosub/dso
         GIT_TAG master
-        CONFIGURE_COMMAND ""
         INSTALL_COMMAND "")
 
 ExternalProject_Get_Property(DSO SOURCE_DIR)
