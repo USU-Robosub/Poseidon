@@ -1,27 +1,11 @@
 #pragma once
 
 #include <string>
-#include "DSOcollector.h"
-#include "IFrameStream.h"
-
-#include <locale.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-//#include <thread>
-#include <iostream>
-#include <sstream>
-
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-
 #include "util/settings.h"
 #include "FullSystem/FullSystem.h"
 #include "util/Undistort.h"
-
-using namespace cv;
-using namespace dso;
+#include "DSOcollector.h"
+#include "IFrameStream.h"
 
 namespace slam
 {
@@ -30,8 +14,8 @@ namespace slam
     IFrameStream* frameStream;
     bool lockProcessingThread;
     DSOcollector* collector;
-    FullSystem* fullSystem = 0;
-    Undistort* undistorter = 0;
+    dso::FullSystem* fullSystem = 0;
+    dso::Undistort* undistorter = 0;
     unsigned int frameCount;
   public:
     DSOtelemetryProvider(IFrameStream* frameStream, std::string cameraCalibrationFile);

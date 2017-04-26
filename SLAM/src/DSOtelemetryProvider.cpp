@@ -24,8 +24,8 @@ void DSOtelemetryProvider::useThreadToProcessData(){
     std::shared_ptr<ICameraFrame> frame = frameStream->getFrame();
     collector->frameWillBeProcessed(frame, frameCount);
     //convert frame to gray scale for DSO
-    MinimalImageB minImg(frame->getCols(), frame->getRows(), frame->getData());
-  	ImageAndExposure* undistImg = undistorter->undistort<unsigned char>(&minImg, 1,0, 1.0f);
+    dso::MinimalImageB minImg(frame->getCols(), frame->getRows(), frame->getData());
+  	dso::ImageAndExposure* undistImg = undistorter->undistort<unsigned char>(&minImg, 1,0, 1.0f);
   	fullSystem->addActiveFrame(undistImg, frameCount);
   	frameCount++;
   	delete undistImg;
@@ -41,34 +41,34 @@ DSOtelemetryProvider::~DSOtelemetryProvider(){
 
 DSOtelemetryProvider::DSOtelemetryProvider(IFrameStream* frameStream, std::string cameraCalibrationFile){
   //DSO settings
-  multiThreading = false;
-  disableAllDisplay = true;
-  setting_logStuff = false;
-  setting_debugout_runquiet = true;
-  setting_render_displayVideo = false;
-  setting_desiredImmatureDensity = 1000;
-  setting_desiredPointDensity = 1200;
-  setting_minFrames = 5;
-  setting_maxFrames = 7;
-  setting_maxOptIterations=4;
-  setting_minOptIterations=1;
-  setting_kfGlobalWeight = 1.3;
-  setting_photometricCalibration = 0;
-  setting_affineOptModeA = 0;
-  setting_affineOptModeB = 0;
+  dso::multiThreading = false;
+  dso::disableAllDisplay = true;
+  dso::setting_logStuff = false;
+  dso::setting_debugout_runquiet = true;
+  dso::setting_render_displayVideo = false;
+  dso::setting_desiredImmatureDensity = 1000;
+  dso::setting_desiredPointDensity = 1200;
+  dso::setting_minFrames = 5;
+  dso::setting_maxFrames = 7;
+  dso::setting_maxOptIterations=4;
+  dso::setting_minOptIterations=1;
+  dso::setting_kfGlobalWeight = 1.3;
+  dso::setting_photometricCalibration = 0;
+  dso::setting_affineOptModeA = 0;
+  dso::setting_affineOptModeB = 0;
   //====
   
   this->frameStream = frameStream;
   lockProcessingThread = false;
   frameCount = 0;
 
-  undistorter = Undistort::getUndistorterForFile(cameraCalibrationFile, "", "");
-  setGlobalCalib(
+  undistorter = dso::Undistort::getUndistorterForFile(cameraCalibrationFile, "", "");
+  dso::setGlobalCalib(
             (int)undistorter->getSize()[0],
             (int)undistorter->getSize()[1],
             undistorter->getK().cast<float>());
             
-  fullSystem = new FullSystem();
+  fullSystem = new dso::FullSystem();
   fullSystem->linearizeOperation=false;
 
   collector = new DSOcollector();

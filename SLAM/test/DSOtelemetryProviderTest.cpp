@@ -24,25 +24,27 @@ TEST_CASE("DSOtelemetryProvider works as expected", "[DSOtelemetryProvider]") {
   
   auto dsoTelemetry = DSOtelemetryProvider(new testFrameStream(), TestConfig::testResourcesDirectory() + "/testCameraCalib.txt");
   
-  SECTION("DSOtelemetryProvider can be created") {
+  SECTION("DSOtelemetryProvider can be used to process images") {
     
     REQUIRE(!dsoTelemetry.isEnabled());
     
-  }
-  
-  SECTION("DSOtelemetryProvider can be used to process images") {
-  
     REQUIRE_NOTHROW(dsoTelemetry.GetCurrentTelemetry());
     
     REQUIRE(dsoTelemetry.getFrameCount() == 0);
   
     std::thread frameThread ([&dsoTelemetry](){dsoTelemetry.useThreadToProcessData();});
     
+    REQUIRE(dsoTelemetry.isEnabled());
+    
+    REQUIRE_NOTHROW(dsoTelemetry.GetCurrentTelemetry());
+    
     while(dsoTelemetry.getFrameCount() < 5) {}
     
     dsoTelemetry.releaseProcessingThread();
     
     frameThread.join();
+    
+    REQUIRE(!dsoTelemetry.isEnabled());
     
     REQUIRE(dsoTelemetry.getFrameCount() >= 5);
   }
