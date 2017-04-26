@@ -67,6 +67,9 @@ include_directories(
 add_library(slam ${SOURCE_FILES})
 target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
 
+add_executable(camera_calibration "src/camera_calibration.cpp")
+target_link_libraries(camera_calibration ${OpenCV_LIBS})
+
 if(${CATCH_FOUND})
   add_executable(slam_tests ${TEST_SOURCE_FILES})
   target_link_libraries(slam_tests slam ${OpenCV_LIBS})
