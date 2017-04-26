@@ -70,6 +70,6 @@ add_library(slam ${SOURCE_FILES})
 target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS} boost_system boost_thread)
 
 if(${CATCH_FOUND})
-  add_executable(slam_tests ${TEST_SOURCE_FILES} -lssl)
-  target_link_libraries(slam_tests slam ${OpenCV_LIBS} boost_system boost_thread)
+  add_executable(slam_tests ${TEST_SOURCE_FILES})
+  target_link_libraries(slam_tests slam ${OpenCV_LIBS} boost_system boost_thread -lssl)
 endif()
