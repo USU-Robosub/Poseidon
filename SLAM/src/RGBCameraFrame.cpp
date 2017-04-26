@@ -29,3 +29,7 @@ RGBColor RGBCameraFrame::getPixel(int row, int col) const {
     auto b = pixel[0];
     return { r, g, b };
 }
+
+unsigned char* RGBCameraFrame::getData(){
+  return data.data;
+}

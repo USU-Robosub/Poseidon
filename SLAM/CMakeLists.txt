@@ -18,6 +18,8 @@ endif()
 check_package(OpenCV REQUIRED)
 check_package(Eigen3 REQUIRED)
 
+find_package(Boost COMPONENTS system thread REQUIRED)
+
 #DSO Library
 find_library(DSO_LIBRARY libdso.a ${DSO_DIR}/build/lib)
 if(NOT DEFINED DSO_INCLUDE_DIR)
@@ -65,9 +67,9 @@ include_directories(
 )
 
 add_library(slam ${SOURCE_FILES})
-target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
+target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS} boost_system boost_thread)
 
 if(${CATCH_FOUND})
   add_executable(slam_tests ${TEST_SOURCE_FILES})
-  target_link_libraries(slam_tests slam ${OpenCV_LIBS})
+  target_link_libraries(slam_tests slam ${OpenCV_LIBS} boost_system boost_thread)
 endif()

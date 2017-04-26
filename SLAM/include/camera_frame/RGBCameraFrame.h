@@ -25,6 +25,8 @@ namespace slam {
 
         RGBColor getPixel(int row, int col) const override;
 
+        unsigned char* getData();
+
     };
 
 }

@@ -28,6 +28,8 @@ namespace slam {
         virtual const cv::Mat& toMat() const = 0;
 
         virtual ColorSpace getColorSpace() const = 0;
+        
+        virtual unsigned char* getData() = 0;
 
     };
 

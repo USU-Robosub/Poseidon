@@ -13,7 +13,7 @@ namespace slam {
     class IFrameStream {
 
     public:
-        virtual const ICameraFrame& getFrame() = 0;
+        virtual const std::shared_ptr<ICameraFrame> getFrame() = 0;
 
     };
 

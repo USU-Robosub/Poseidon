@@ -24,6 +24,8 @@ namespace slam {
         void setPixel(int row, int col, const uchar& value) override;
 
         uchar getPixel(int row, int col) const override;
+        
+        unsigned char* getData();
 
     };
 

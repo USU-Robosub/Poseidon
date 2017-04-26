@@ -23,4 +23,8 @@ uchar GrayscaleCameraFrame::getPixel(int row, int col) const {
     return data.at<uchar>(row, col);
 }
 
+unsigned char* GrayscaleCameraFrame::getData(){
+  return data.data;
+}
+
 

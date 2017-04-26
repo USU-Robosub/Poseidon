@@ -28,6 +28,8 @@ namespace slam {
 
         ColorSpace getColorSpace() const override;
 
+        virtual unsigned char* getData() = 0;
+
     };
 
 }
