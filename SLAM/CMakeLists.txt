@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.9)
 project(SLAM)
 
 include(macros.cmake)
-include(ExternalProject)
 
 set(BUILD_TYPE Release)
 if(NOT DEFINED SHOW_WARNINGS)
@@ -19,9 +18,15 @@ endif()
 check_package(OpenCV REQUIRED)
 check_package(Eigen3 REQUIRED)
 
+
 # DSO Library
 # Download and unpack DSO at configure time
 configure_file(dso.cmake dso-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/dso-download)
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/dso-download)
+
 set(DSO_DIR ${CMAKE_BINARY_DIR}/dso-src)
 set(DSO_INCLUDE_DIR ${DSO_DIR}/src)
 set(DSO_BINARY_DIR ${CMAKE_BINARY_DIR}/dso-bin)
@@ -36,6 +41,11 @@ check_library("DSO" DSO_DIR DSO_LIBRARY DSO_INCLUDE_DIR Sophus_INCLUDE_DIR REQUI
 # Catch Library
 # Download and unpack Catch at configure time
 configure_file(catch.cmake catch-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/catch-download)
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/catch-download)
+
 set(Catch_INCLUDE_DIR ${CMAKE_BINARY_DIR}/catch-src/single_include)
 check_library("Catch" Catch_INCLUDE_DIR)
 

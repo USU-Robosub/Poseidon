@@ -9,8 +9,3 @@ ExternalProject_Add(DSO
         SOURCE_DIR "${CMAKE_BINARY_DIR}/dso-src"
         BINARY_DIR "${CMAKE_BINARY_DIR}/dso-bin"
         INSTALL_COMMAND "")
-
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/dso-download)
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/dso-download)
