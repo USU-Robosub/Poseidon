@@ -19,44 +19,33 @@ endif()
 check_package(OpenCV REQUIRED)
 check_package(Eigen3 REQUIRED)
 
-#DSO Library
-ExternalProject_Add(DSO
-        GIT_REPOSITORY https://github.com/USU-Robosub/dso
-        GIT_TAG master
-        INSTALL_COMMAND "")
-
-ExternalProject_Get_Property(DSO SOURCE_DIR)
-set(DSO_DIR ${SOURCE_DIR})
+# DSO Library
+# Download and unpack DSO at configure time
+configure_file(dso.cmake dso-download/CMakeLists.txt)
+set(DSO_DIR ${CMAKE_BINARY_DIR}/dso-src)
 set(DSO_INCLUDE_DIR ${DSO_DIR}/src)
-ExternalProject_Get_Property(DSO BINARY_DIR)
-set(DSO_BINARY_DIR ${BINARY_DIR})
-
+set(DSO_BINARY_DIR ${CMAKE_BINARY_DIR}/dso-bin)
 find_library(DSO_LIBRARY libdso.a ${DSO_BINARY_DIR}/lib)
 
 if(NOT DEFINED Sophus_INCLUDE_DIR)
   get_filename_component(Sophus_INCLUDE_DIR ${DSO_DIR}/thirdparty/Sophus ABSOLUTE)
 endif()
-check_library("DSO" DSO_DIR DSO_LIBRARY DSO_INCLUDE_DIR Sophus_INCLUDE_DIR)
+check_library("DSO" DSO_DIR DSO_LIBRARY DSO_INCLUDE_DIR Sophus_INCLUDE_DIR REQUIRED)
 
-#Catch Library
-ExternalProject_Add(Catch
-        GIT_REPOSITORY https://github.com/philsquared/Catch
-        GIT_TAG v1.9.1
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND "")
 
-ExternalProject_Get_Property(Catch SOURCE_DIR)
-set(Catch_INCLUDE_DIR ${SOURCE_DIR}/single_include)
+# Catch Library
+# Download and unpack Catch at configure time
+configure_file(catch.cmake catch-download/CMakeLists.txt)
+set(Catch_INCLUDE_DIR ${CMAKE_BINARY_DIR}/catch-src/single_include)
 check_library("Catch" Catch_INCLUDE_DIR)
 
 message(" ")
 message(BoldYellow "--- USU Robosub SLAM module ---")
 message(BoldCyan "Show compiler warnings: [${showWarningsMessage}]")
 message(BoldCyan "SLAM static library status: [Will Build]")
-if(${CATCH_FOUND})
+if(${Catch_FOUND})
   message(BoldCyan "Unit test status: [Will Build]")
-  include_directories(${CATCH_INCLUDE_DIR})
+  include_directories(${Catch_INCLUDE_DIR})
 else()
   message(BoldMagenta "Unit test status: [Missing Library]")
   message(BoldMagenta "To build SLAM unit tests, initialize submodule Catch.")
@@ -77,15 +66,11 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR}
   ${DSO_INCLUDE_DIR}
   ${Sophus_INCLUDE_DIR}
-  ${Catch_INCLUDE_DIR}
   ${PROJECT_INLUDE_DIR}
 )
 
 add_library(slam ${SOURCE_FILES})
 add_executable(slam_tests ${TEST_SOURCE_FILES})
-
-add_dependencies(slam DSO)
-add_dependencies(slam_tests DSO Catch)
 
 target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
 target_link_libraries(slam_tests slam ${OpenCV_LIBS})
