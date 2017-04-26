@@ -20,14 +20,24 @@ check_package(OpenCV REQUIRED)
 check_package(Eigen3 REQUIRED)
 
 #DSO Library
-find_library(DSO_LIBRARY libdso.a ${DSO_DIR}/build/lib)
-if(NOT DEFINED DSO_INCLUDE_DIR)
-  get_filename_component(DSO_INCLUDE_DIR ${DSO_DIR}/src ABSOLUTE)
-endif()
+ExternalProject_Add(DSO
+        GIT_REPOSITORY https://github.com/USU-Robosub/dso
+        GIT_TAG master
+        CONFIGURE_COMMAND ""
+        INSTALL_COMMAND "")
+
+ExternalProject_Get_Property(DSO SOURCE_DIR)
+set(DSO_DIR ${SOURCE_DIR})
+set(DSO_INCLUDE_DIR ${DSO_DIR}/src)
+ExternalProject_Get_Property(DSO BINARY_DIR)
+set(DSO_BINARY_DIR ${BINARY_DIR})
+
+find_library(DSO_LIBRARY libdso.a ${DSO_BINARY_DIR}/lib)
+
 if(NOT DEFINED Sophus_INCLUDE_DIR)
   get_filename_component(Sophus_INCLUDE_DIR ${DSO_DIR}/thirdparty/Sophus ABSOLUTE)
 endif()
-check_library("DSO" DSO_DIR DSO_LIBRARY DSO_INCLUDE_DIR Sophus_INCLUDE_DIR REQUIRED)
+check_library("DSO" DSO_DIR DSO_LIBRARY DSO_INCLUDE_DIR Sophus_INCLUDE_DIR)
 
 #Catch Library
 ExternalProject_Add(Catch
@@ -71,10 +81,13 @@ include_directories(
   ${PROJECT_INLUDE_DIR}
 )
 
-add_library(slam ${SOURCE_FILES})
-target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
+if(${DSO_FOUND})
+  add_library(slam ${SOURCE_FILES})
+  add_dependencies(slam DSO)
+  target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
+endif()
 
-if(${CATCH_FOUND})
+if(${Catch_FOUND})
   include_directories(${Catch_INCLUDE_DIR})
   add_executable(slam_tests ${TEST_SOURCE_FILES})
   add_dependencies(slam_tests Catch)
