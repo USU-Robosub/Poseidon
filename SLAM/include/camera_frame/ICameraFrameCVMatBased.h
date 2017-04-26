@@ -24,7 +24,7 @@ namespace slam {
 
         int getCols() const override;
 
-        const cv::Mat &toMat() const override;
+        virtual const uchar* getData() const override;
 
         ColorSpace getColorSpace() const override;
 

@@ -28,7 +28,7 @@ namespace slam {
 
         virtual int getCols() const = 0;
 
-        virtual const cv::Mat& toMat() const = 0;
+        virtual const uchar* getData() const = 0;
 
         virtual ColorSpace getColorSpace() const = 0;
 

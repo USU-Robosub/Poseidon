@@ -6,14 +6,15 @@ Simultaneous Location and Mapping for the USU Autonomous RoboSub.
 
 ## Dependencies
 
-| Library                                              | Scope   | Version   | Windows                                                  | macOS                                                   | Linux                                             |
-| :--------------------------------------------------: | :-----: | :-------: | :------------------------------------------------------: | :-----------------------------------------------------: | :-----------------------------------------------: |
-| **CMake**                                            | Compile | 3.5+      | Follow [these instructions](https://tinyurl.com/lmtdwax) | Comes installed with Xcode.                             | `sudo apt-get install build-essential cmake`      |
-| **OpenCV**                                           | Compile | 2.4.x.x   | Follow [these instructions](https://tinyurl.com/kyeab9u) | `brew tap homebrew/science && brew install opencv`      | `sudo apt-get install libopencv-dev`              |
-| **Eigen3**                                           | Compile | latest    | Follow [these instructions](https://tinyurl.com/lo3m36b) | `brew install eigen`                                    | `sudo apt-get install libeigen3-dev`              |
-| **SuiteSparse**                                      | Compile | latest    | Follow [these instructions](https://tinyurl.com/lx7d82c) | `brew tap homebrew/science && brew install suitesparse` | `sudo apt-get install libsuitesparse-dev`         |
-| **[USU's fork of DSO](https://tinyurl.com/k8r7sod)** | Compile | latest    | Installed automatically when `cmake` is executed         | Installed automatically when `cmake` is executed        | Installed automatically when `cmake` is executed  |
-| **Catch**                                            | Test    | 1.9.1     | Installed automatically when `cmake` is executed         | Installed automatically when `cmake` is executed        | Installed automatically when `cmake` is executed  |
+| Library                                              | Scope   | Version   | Windows                                                  | macOS                                                        | Linux                                             |
+| :--------------------------------------------------: | :-----: | :-------: | :------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------------------: |
+| **CMake**                                            | Compile | 3.5+      | Follow [these instructions](https://tinyurl.com/lmtdwax) | Comes installed with Xcode.                                  | `sudo apt-get install build-essential cmake`      |
+| **Homebrew (macOS Only)**                            | Install | latest    | --                                                       | /usr/bin/ruby -e "$(curl -fsSL https://tinyurl.com/oe9dlto)" | --                                                |
+| **OpenCV**                                           | Compile | 2.4.x.x   | Follow [these instructions](https://tinyurl.com/kyeab9u) | `brew tap homebrew/science && brew install opencv`           | `sudo apt-get install libopencv-dev`              |
+| **Eigen3**                                           | Compile | latest    | Follow [these instructions](https://tinyurl.com/lo3m36b) | `brew install eigen`                                         | `sudo apt-get install libeigen3-dev`              |
+| **SuiteSparse**                                      | Compile | latest    | Follow [these instructions](https://tinyurl.com/lx7d82c) | `brew tap homebrew/science && brew install suitesparse`      | `sudo apt-get install libsuitesparse-dev`         |
+| **[USU's fork of DSO](https://tinyurl.com/k8r7sod)** | Compile | latest    | Installed automatically when `cmake` is executed         | Installed automatically when `cmake` is executed             | Installed automatically when `cmake` is executed  |
+| **Catch**                                            | Test    | 1.9.1     | Installed automatically when `cmake` is executed         | Installed automatically when `cmake` is executed             | Installed automatically when `cmake` is executed  |
     
 
 ---

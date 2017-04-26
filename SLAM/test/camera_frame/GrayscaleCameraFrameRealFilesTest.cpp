@@ -27,8 +27,6 @@ void test_exact_match_gs(std::string filename) {
     auto frame = GrayscaleCameraFrame(img, std::chrono::steady_clock::now());
     REQUIRE(frame.getRows() == 10);
     REQUIRE(frame.getCols() == 10);
-    REQUIRE(frame.toMat().rows == frame.getRows());
-    REQUIRE(frame.toMat().cols == frame.getCols());
     REQUIRE(frame.getColorSpace() == GRAYSCALE);
     for (auto row = 0; row < frame.getRows(); row++) {
         for (auto col = 0; col < frame.getCols(); col++) {
@@ -44,8 +42,6 @@ void test_near_match_gs(std::string filename) {
     auto frame = GrayscaleCameraFrame(img, std::chrono::steady_clock::now());
     REQUIRE(frame.getRows() == 10);
     REQUIRE(frame.getCols() == 10);
-    REQUIRE(frame.toMat().rows == frame.getRows());
-    REQUIRE(frame.toMat().cols == frame.getCols());
     REQUIRE(frame.getColorSpace() == GRAYSCALE);
     for (auto row = 0; row < frame.getRows(); row++) {
         for (auto col = 0; col < frame.getCols(); col++) {
