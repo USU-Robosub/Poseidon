@@ -6,27 +6,15 @@ Simultaneous Location and Mapping for the USU Autonomous RoboSub.
 
 ## Dependencies
 
-#### CMake
-CMake is required to compile and build the library. Follow 
-[these instructions](INSTALLING_CMAKE.md) to get CMake up and
-running on your machine.
-
-#### OpenCV 2.4
-OpenCV is required to build or use this library. Any version 
-in the `2.4.x.x` range should work. At the ime of this writing, 
-the most recent stable release was `2.4.13.2`. Follow 
-[these instructions](INSTALLING_OPENCV.md) to get OpenCV
-up and running on your machine.
-
-#### DSO
-DSO is required to build or use this library. The instructions for building the static library file can be found in the [USU fork of DSO's Github repository](https://github.com/USU-Robosub/dso). The Eigen3 headers are needed to build this library, and their installation instructions can be found in the DSO `README.md`. Once the DSO static library file has been built, and Eigen3 has been installed or built. Use the following cmake command.
-```
-Poseidon/SLAM/build$ cmake -DDSO_DIR={path to the DSO repository} ..
-```
-After using the above cmake command to set the path of the DSO repository, the normal cmake command can be used for future cmake rebuilds.
-```
-Poseidon/SLAM/build$ cmake ..
-```
+| Library                                          | Scope   | Version   | Windows                                                  | macOS                                                   | Linux                                             |
+| :----------------------------------------------: | :-----: | :-------: | :------------------------------------------------------: | :-----------------------------------------------------: | :-----------------------------------------------: |
+| CMake                                            | Compile | 3.5+      | Follow [these instructions](https://tinyurl.com/lmtdwax) | Comes installed with Xcode.                             | `sudo apt-get install build-essential cmake`      |
+| OpenCV                                           | Compile | 2.4.x.x   | Follow [these instructions](https://tinyurl.com/kyeab9u) | `brew tap homebrew/science && brew install opencv`      | `sudo apt-get install libopencv-dev`              |
+| Eigen3                                           | Compile | latest    | Follow [these instructions](https://tinyurl.com/lo3m36b) | `brew install eigen`                                    | `sudo apt-get install libeigen3-dev`              |
+| SuiteSparse                                      | Compile | latest    | Follow [these instructions](https://tinyurl.com/lx7d82c) | `brew tap homebrew/science && brew install suitesparse` | `sudo apt-get install libsuitesparse-dev`         |
+| [USU's fork of DSO](https://tinyurl.com/k8r7sod) | Compile | latest    | Installed automatically when `cmake` is executed         | Installed automatically when `cmake` is executed        | Installed automatically when `cmake` is executed  |
+| Catch                                            | Test    | 1.9.1     | Installed automatically when `cmake` is executed         | Installed automatically when `cmake` is executed        | Installed automatically when `cmake` is executed  |
+    
 
 ---
 
