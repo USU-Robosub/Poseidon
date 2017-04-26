@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.9)
 project(SLAM)
 
 include(macros.cmake)
+include(ExternalProject)
 
 set(BUILD_TYPE Release)
 if(NOT DEFINED SHOW_WARNINGS)
@@ -29,10 +30,16 @@ endif()
 check_library("DSO" DSO_DIR DSO_LIBRARY DSO_INCLUDE_DIR Sophus_INCLUDE_DIR REQUIRED)
 
 #Catch Library
-if(NOT DEFINED CATCH_INCLUDE_DIR)
-  get_filename_component(CATCH_INCLUDE_DIR ../Libraries/Catch/include ABSOLUTE)
-endif()
-check_library("CATCH" CATCH_INCLUDE_DIR)
+ExternalProject_Add(Catch
+        GIT_REPOSITORY https://github.com/philsquared/Catch
+        GIT_TAG v1.9.1
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ""
+        INSTALL_COMMAND "")
+
+ExternalProject_Get_Property(Catch SOURCE_DIR)
+set(Catch_INCLUDE_DIR ${SOURCE_DIR}/single_include)
+check_library("Catch" Catch_INCLUDE_DIR)
 
 message(" ")
 message(BoldYellow "--- USU Robosub SLAM module ---")
@@ -53,8 +60,8 @@ configure_file(test/_config.h.in ${PROJECT_SOURCE_DIR}/test/_config.h )
 get_filename_component(PROJECT_INLUDE_DIR "include" ABSOLUTE)
 HEADER_DIRECTORIES(PROJECT_INLUDE_DIR) # allows the include folder to have sub-folders
 
-file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
-file(GLOB_RECURSE TEST_SOURCE_FILES "test/*.cpp")
+file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "include/*.h")
+file(GLOB_RECURSE TEST_SOURCE_FILES "test/*.cpp" "test/*.h")
 
 include_directories(
   ${OpenCV_INCLUDE_DIRS}
@@ -68,6 +75,8 @@ add_library(slam ${SOURCE_FILES})
 target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
 
 if(${CATCH_FOUND})
+  include_directories(${Catch_INCLUDE_DIR})
   add_executable(slam_tests ${TEST_SOURCE_FILES})
+  add_dependencies(slam_tests Catch)
   target_link_libraries(slam_tests slam ${OpenCV_LIBS})
 endif()

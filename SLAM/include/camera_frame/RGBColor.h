@@ -6,7 +6,7 @@
 #define SLAM_RGBCOLOR_H
 
 #include <iostream>
-#include "../_types.h"
+#include "types.h"
 
 namespace slam {
 

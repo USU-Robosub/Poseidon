@@ -7,7 +7,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "ColorSpace.h"
-#include "../_types.h"
+#include "types.h"
 
 namespace slam {
 

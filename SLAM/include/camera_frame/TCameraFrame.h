@@ -5,7 +5,7 @@
 #ifndef SLAM_TCAMERAFRAME_H
 #define SLAM_TCAMERAFRAME_H
 
-#include "../_types.h"
+#include "types.h"
 #include "ColorSpace.h"
 #include "ICameraFrame.h"
 #include <vector>

@@ -6,7 +6,7 @@
 #define SLAM_GRAYSCALECAMERAFRAME_H
 
 
-#include "../_types.h"
+#include "types.h"
 #include "ICameraFrameCVMatBased.h"
 
 namespace slam {
