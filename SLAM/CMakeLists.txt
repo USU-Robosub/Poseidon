@@ -77,18 +77,15 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR}
   ${DSO_INCLUDE_DIR}
   ${Sophus_INCLUDE_DIR}
+  ${Catch_INCLUDE_DIR}
   ${PROJECT_INLUDE_DIR}
 )
 
-if(${DSO_FOUND})
-  add_library(slam ${SOURCE_FILES})
-  add_dependencies(slam DSO)
-  target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
-endif()
+add_library(slam ${SOURCE_FILES})
+add_executable(slam_tests ${TEST_SOURCE_FILES})
 
-if(${Catch_FOUND})
-  include_directories(${Catch_INCLUDE_DIR})
-  add_executable(slam_tests ${TEST_SOURCE_FILES})
-  add_dependencies(slam_tests Catch)
-  target_link_libraries(slam_tests slam ${OpenCV_LIBS})
-endif()
+add_dependencies(slam DSO)
+add_dependencies(slam_tests DSO Catch)
+
+target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS})
+target_link_libraries(slam_tests slam ${OpenCV_LIBS})
