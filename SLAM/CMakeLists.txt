@@ -9,16 +9,17 @@ if(NOT DEFINED SHOW_WARNINGS)
 endif()
 if(${SHOW_WARNINGS})
   set(showWarningsMessage "Enabled")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Wextra -pedantic") # -Werror
+  set(CMAKE_CXX_FLAGS "${SSE_FLAGS} -O3 -g -std=c++11 -pthread -Wall -Wextra -pedantic") # -Werror
 else()
   set(showWarningsMessage "Disabled")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -w") # -Wall -Wextra -pedantic -Werror
+  set(CMAKE_CXX_FLAGS "${SSE_FLAGS} -O3 -g -std=c++11 -pthread -w") # -Wall -Wextra -pedantic -Werror
 endif()
 
 check_package(OpenCV REQUIRED)
 check_package(Eigen3 REQUIRED)
+check_package(Boost REQUIRED)
 
-find_package(Boost COMPONENTS system thread REQUIRED)
+#find_package(Boost COMPONENTS system REQUIRED)
 
 #DSO Library
 find_library(DSO_LIBRARY libdso.a ${DSO_DIR}/build/lib)
@@ -71,5 +72,5 @@ target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS} boost_system boost_thre
 
 if(${CATCH_FOUND})
   add_executable(slam_tests ${TEST_SOURCE_FILES})
-  target_link_libraries(slam_tests slam ${OpenCV_LIBS} boost_system boost_thread -lssl)
+  target_link_libraries(slam_tests slam ${OpenCV_LIBS}) # boost_system boost_thread -lssl)
 endif()
