@@ -9,10 +9,10 @@ if(NOT DEFINED SHOW_WARNINGS)
 endif()
 if(${SHOW_WARNINGS})
   set(showWarningsMessage "Enabled")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic") # -Werror
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Wextra -pedantic") # -Werror
 else()
   set(showWarningsMessage "Disabled")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -w") # -Wall -Wextra -pedantic -Werror
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -w") # -Wall -Wextra -pedantic -Werror
 endif()
 
 check_package(OpenCV REQUIRED)
@@ -70,6 +70,6 @@ add_library(slam ${SOURCE_FILES})
 target_link_libraries(slam ${DSO_LIBRARY} ${OpenCV_LIBS} boost_system boost_thread)
 
 if(${CATCH_FOUND})
-  add_executable(slam_tests ${TEST_SOURCE_FILES})
+  add_executable(slam_tests ${TEST_SOURCE_FILES} -lssl)
   target_link_libraries(slam_tests slam ${OpenCV_LIBS} boost_system boost_thread)
 endif()

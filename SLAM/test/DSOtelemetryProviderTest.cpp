@@ -34,11 +34,11 @@ TEST_CASE("DSOtelemetryProvider works as expected", "[DSOtelemetryProvider]") {
   
     std::thread frameThread ([&dsoTelemetry](){dsoTelemetry.useThreadToProcessData();});
     
+    while(dsoTelemetry.getFrameCount() < 5) {}
+    
     REQUIRE(dsoTelemetry.isEnabled());
     
     REQUIRE_NOTHROW(dsoTelemetry.GetCurrentTelemetry());
-    
-    while(dsoTelemetry.getFrameCount() < 5) {}
     
     dsoTelemetry.releaseProcessingThread();
     
