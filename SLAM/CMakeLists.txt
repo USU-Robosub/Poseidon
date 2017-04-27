@@ -7,12 +7,13 @@ set(BUILD_TYPE Release)
 if(NOT DEFINED SHOW_WARNINGS)
   set(SHOW_WARNINGS FALSE)
 endif()
+set(CMAKE_CXX_FLAGS "${SSE_FLAGS} -O3 -g -std=c++11 -march=native -pthread")
 if(${SHOW_WARNINGS})
   set(showWarningsMessage "Enabled")
-  set(CMAKE_CXX_FLAGS "${SSE_FLAGS} -O3 -g -std=c++11 -pthread -Wall -Wextra -pedantic") # -Werror
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic") # -Werror
 else()
   set(showWarningsMessage "Disabled")
-  set(CMAKE_CXX_FLAGS "${SSE_FLAGS} -O3 -g -std=c++11 -pthread -w") # -Wall -Wextra -pedantic -Werror
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") # -Wall -Wextra -pedantic -Werror
 endif()
 
 check_package(OpenCV REQUIRED)
