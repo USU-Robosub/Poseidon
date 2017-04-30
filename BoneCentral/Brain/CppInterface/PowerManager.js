@@ -1,7 +1,8 @@
 module.exports = (function(){
 
-    function PowerManager(cmdOut) {
+    function PowerManager(cmdOut, events) {
         this._cmdOut = cmdOut;
+        this._events = events;
     }
 
     PowerManager.prototype.turnOnEscs = function(){
@@ -19,9 +20,14 @@ module.exports = (function(){
     PowerManager.prototype.turnOffImu = function () {
         this._cmdOut.write("turnOffImuSensor\n");
     };
+    
+    PowerManager.prototype.connect = function() {
+        return this._events.OnConnect;
+    }
 
     PowerManager.prototype.exit = function () {
         this._cmdOut.write("exit\n");
+        return this._events.OnExit;
     };
 
     return PowerManager;
