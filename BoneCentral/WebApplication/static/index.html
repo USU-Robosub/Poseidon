@@ -11,7 +11,7 @@
 		<script type="riot/tag">
 			<get-tag>
 				<div>
-					<button class="button button1" onclick={ toggle }>{ url }</button>
+					<button class="button" onclick={ toggle }>{ url }</button>
 					<p>Result:</p><textarea type="textarea" value="{ result }" style="min-width: 30em; min-height: 40em;">
 				</div>
 
@@ -45,7 +45,7 @@
 			</get-tag>
 			<single-get-tag>
 				<div>
-					<button class="button button1" onclick={ get }>{ url }</button>
+					<button class="button" onclick={ get }>{ url }</button>
 					<p>Result: { result }</p>
 				</div>
 
@@ -65,7 +65,7 @@
 			</single-get-tag>
 			<post-tag>
 				<div>
-					<button class="button button1" onclick={ post }>{ url }</button><button class="button button1" onclick={ toggleAbsolute }>Toggle Slider</button>
+					<button class="button" onclick={ post }>{ url }</button><button class="button" onclick={ toggleAbsolute }>Toggle Slider</button>
 					<div each={ argument, i in arguments }>
 						<span>{ argument }</span>
 						<input type={ inputType } onchange={ update } oninput={ update } id={ argument } min={ min } max={ max } step={ step } value="0"/>
