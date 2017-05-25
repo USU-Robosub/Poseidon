@@ -1,18 +1,13 @@
 #include "IController.h"
 
 class LightController : public IController {
-private:
-  const uint8_t LIGHTS = 45;
 public:
   LightController() {
-    pinMode(LIGHTS, OUTPUT);
-    digitalWrite(LIGHTS, HIGH);
+    pinMode(GpioPin::LIGHTS_PIN, OUTPUT);
+    digitalWrite(GpioPin::LIGHTS_PIN, HIGH);
   }
   void execute() {
-    while(!Serial.available());
-    digitalWrite(LIGHTS, !Serial.read());
+    digitalWrite(GpioPin::LIGHTS_PIN, !SerialTools::readByte());
   }
-  void kill() {
-    //digitalWrite(LIGHTS, HIGH);
-  }
+  void kill() { }
 };

@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>USUb</title>
+		<script type="text/javascript" src="/riot/riot+compiler.min.js"></script>
+		<script type="text/javascript" src="/axios/axios.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+
+		<script type="riot/tag">
+			<get-tag>
+				<div>
+					<button class="button" onclick={ toggle }>{ url }</button>
+					<p>Result:</p><textarea type="textarea" value="{ result }" style="min-width: 30em; min-height: 40em;">
+				</div>
+
+				var self = this;
+				self.url = self.opts.url;
+				self.timer;
+				self.running = false;
+
+				self.get = function() {
+					axios.get(self.opts.url).then(function (response) {
+						if (response.data) {
+							self.result = response.data + '\n' + self.result;
+						}
+						self.update();
+					});
+				};
+
+				self.toggle = function() {
+					if (!self.running) {
+						self.running = true;
+						self.get(); // Run immediately
+						self.timer = setInterval(self.get, 1000);
+					}
+					else {
+						self.running = false;
+						clearInterval(self.timer);
+						self.result = '';
+						self.update();
+					}
+				};
+			</get-tag>
+			<single-get-tag>
+				<div>
+					<button class="button" onclick={ get }>{ url }</button>
+					<p>Result: { result }</p>
+				</div>
+
+				var self = this;
+				self.url = self.opts.url;
+
+				self.get = function() {
+					axios.get(self.opts.url).then(function (response) {
+						self.result = response.data;
+						self.update();
+						setTimeout(function() {
+							self.result = '';
+							self.update();
+						}, 500);
+					});
+				};
+			</single-get-tag>
+			<post-tag>
+				<div>
+					<button class="button" onclick={ post }>{ url }</button><button class="button" onclick={ toggleAbsolute }>Toggle Slider</button>
+					<div each={ argument, i in arguments }>
+						<span>{ argument }</span>
+						<input type={ inputType } onchange={ update } oninput={ update } id={ argument } min={ min } max={ max } step={ step } value="0"/>
+						<span if={ !absolute }>{ self[argument].value }</span>
+					</div>
+					<p>Result: { result }</p>
+				</div>
+
+				var self = this;
+				self.url = self.opts.url;
+				self.arguments = JSON.parse(self.opts.arguments);
+				self.absolute = true;
+				self.min = '';
+				self.max = '';
+				self.step = self.opts.step;
+				self.inputType = 'number'
+
+				self.toggleAbsolute = function() {
+					self.absolute = !self.absolute;
+					if (self.absolute) {
+						self.inputType = 'number';
+						self.min = '';
+						self.max = '';
+					}
+					else {
+						self.inputType = 'range'
+						self.min = self.opts.min;
+						self.max = self.opts.max;
+					}
+					self.update();
+				}
+
+				self.post = function() {
+					var a = {}
+					for (var aIndex in self.arguments) {
+						a[self.arguments[aIndex]] = self[self.arguments[aIndex]].value;
+					}
+					console.log(self);
+					console.log(a);
+					axios.post(self.opts.url, a).then(function (response) {
+						self.result = response.data;
+						self.update();
+					});
+				};
+			</post-tag>
+		</script>
+	</head>
+
+	<body>
+		<div>
+			<div style="width: 22%; float: left;">
+				<single-get-tag url='/goThroughGate'></single-get-tag>
+				<single-get-tag url='/terminate'></single-get-tag>
+				<single-get-tag url='/turnOnEscs'></single-get-tag>
+				<single-get-tag url='/turnOffEscs'></single-get-tag>
+				<single-get-tag url='/turnOnImuSensor'></single-get-tag>
+				<single-get-tag url='/turnOffImuSensor'></single-get-tag>
+				<single-get-tag url='/headlight'></single-get-tag>
+				<post-tag url='/runScript' arguments='["scriptId"]' min="0" max="6" step="1"></post-tag>
+				<single-get-tag url='/exit'></single-get-tag>
+			</div>
+			<div style="width: 22%; float: left;">
+				<post-tag url='/move'          arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/secondaryDive' arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/dive'          arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/yaw'           arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/pitch'         arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/roll'          arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/goDirection'   arguments='["move", "secondaryDive", "dive"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/rotate'        arguments='["yaw", "pitch", "roll"]' min="-1" max="1" step="0.01"></post-tag>
+				<single-get-tag url='/killThrust'></single-get-tag>
+			</div>
+			<div style="width: 22%; float: left;">
+				<single-get-tag url='/getAcceleration'></single-get-tag>
+				<single-get-tag url='/getAngularAcceleration'></single-get-tag>
+				<single-get-tag url='/getHeading'></single-get-tag>
+				<single-get-tag url='/getInternalTemperature'></single-get-tag>
+				<single-get-tag url='/getInternalPressure'></single-get-tag>
+				<single-get-tag url='/getExternalTemperature'></single-get-tag>
+				<single-get-tag url='/getExternalPressure'></single-get-tag>
+				<single-get-tag url='/startSearchingForPoles'></single-get-tag>
+				<single-get-tag url='/getPoleCoordinates'></single-get-tag>
+				<single-get-tag url='/refreshHsv'></single-get-tag>
+				<single-get-tag url='/stopSearchingForPoles'></single-get-tag>
+			</div>
+			<div style="width: 33%; float: left;">
+				<get-tag url='/stdoutData'></get-tag>
+			</div>
+		</div>
+		<script type="text/javascript">
+			riot.mount('*');
+		</script>
+	</body>
+</html>

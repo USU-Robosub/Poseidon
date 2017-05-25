@@ -1,0 +1,21 @@
+//
+// Created by Kyler Jensen on 3/27/17.
+//
+
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#include <string>
+
+class TestConfig {
+
+public:
+    static std::string testResourcesDirectory() {
+        // This gets filled in automatically with the appropriate directory by CMake.
+        return "@TEST_RESOURCES_DIR@";
+    }
+
+};
+
+
+#endif

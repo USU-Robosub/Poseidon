@@ -4,26 +4,26 @@ class KillSwitchController : public IController {
 private:
   volatile int active;
   IController ** list;
+  const int ACTIVE   = 0x1;
+  const int INACTIVE = 0x0;
   int count;
-  const int STAT_LED = 22;
   
 public:
   KillSwitchController(IController ** _list_, int _count_) {
     list = _list_;
     count = _count_;
-    pinMode(STAT_LED, OUTPUT);
+    pinMode(GpioPin::LED_STAT_PIN, OUTPUT);
   }
-    
+
   void execute() {
-    Serial.println(active?'1':'0');
+    SerialTools::writeByte(active ? ACTIVE : INACTIVE);
   }
-    
+
   void kill() {
-    for(int i = 0; i<count; i++) {
+    for(int i = 1; i < count; i++)
       list[i]->kill();
-    }
   }
-    
+
   void isr(int interrupt) {
     noInterrupts();
     // when not active, interrupt pin read a '1'
@@ -31,7 +31,7 @@ public:
     active = !digitalRead(interrupt);
     if(active)
       kill();
-    digitalWrite(STAT_LED, active);
+    digitalWrite(GpioPin::LED_STAT_PIN, active);
     interrupts();
   }
 };
