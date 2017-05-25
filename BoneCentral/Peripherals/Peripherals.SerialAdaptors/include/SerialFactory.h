@@ -6,6 +6,8 @@
 #define PERIPHERALS_SERIAL_FACTORY_H
 
 #include <IThrusterFactory.h>
+#include <ostream>
+#include "ActionThread.h"
 #include "SerialThruster.h"
 #include "EscPower.h"
 #include "Headlights.h"
@@ -16,9 +18,11 @@
 
 class SerialFactory : public IThrusterFactory {
 private:
-    Serial serial_;
+    std::ostream& out_;
+    Serial serial_, event_;
+    
 public:
-    SerialFactory();
+    SerialFactory(std::ostream& out);
     std::shared_ptr<IThruster> createMoveThruster();
     std::shared_ptr<IThruster> createStrafeThruster();
     std::shared_ptr<IThruster> createDiveThruster();
@@ -29,6 +33,7 @@ public:
     std::shared_ptr<IPressureSensor> createExternalPressureSensor();
     std::shared_ptr<IEscPower> createEscPower();
     std::shared_ptr<IHeadlights> createHeadlights();
+    std::shared_ptr<ActionThread> createArduinoAction();
 };
 
 

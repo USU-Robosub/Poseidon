@@ -24,6 +24,9 @@ void App_Start(int argCount, char **arguments) {
     std::istream& inputStream = dispatcherStream ? *dispatcherStream : std::cin;
     std::ostream& outputStream = dispatcherStream ? *dispatcherStream : std::cout;
     CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights);
+    auto arduinoAction = serialFactory.createArduinoAction();
+    
+    arduinoAction->begin();
     scriptLogger->info("Ready!");
     cd.runLoop();
     if(dispatcherStream) dispatcherStream->disconnect();
