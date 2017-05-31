@@ -9,8 +9,13 @@ module.exports = (function() {
         this.kd = 0.01;
     }
     
-    PID.prototype.update = function(sp, pv) {
-        var err = sp-pv;
+    /**
+     * Calculates the amount of correction you need to reach the set point.
+     * @param {number} setPoint The measurement you want to see from the sensors.
+     * @param {number} processValue The last sensor measurement.
+     */ 
+    PID.prototype.update = function(setPoint, processValue) {
+        var err = setPoint-processValue;
         var op  = this.kp*err;
         var oi  = this.ki*err*this.dt;
         var od  = this.kd*(err-this.perr)/this.dt;
