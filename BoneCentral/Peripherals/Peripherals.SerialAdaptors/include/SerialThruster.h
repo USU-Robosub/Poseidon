@@ -7,22 +7,14 @@
 
 #include <IThruster.h>
 #include "Serial.h"
-
-enum ThrusterIndex {
-    LEFT_FORWARD = 0,
-    RIGHT_FORWARD,
-    LEFT_STRAFE,
-    RIGHT_STRAFE,
-    FRONT_DIVE,
-    BACK_DIVE
-};
+#include "ArduinoConfig.h"
 
 class SerialThruster : public IThruster {
 private:
     Serial& serial_;
-    ThrusterIndex thrusterIndex_;
+    int thrusterIndex_;
 public:
-    SerialThruster(Serial& serial, ThrusterIndex thrusterIndex);
+    SerialThruster(Serial& serial, int thrusterIndex);
     void Thrust(float powerLevel);
 
 };

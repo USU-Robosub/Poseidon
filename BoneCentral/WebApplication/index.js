@@ -1,34 +1,31 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var fileSystem = require('fs');
-var path = require("path");
-var CppInterface = require('../Brain/CppInterface');
-var VisionInterface = require("../Brain/VisionInterface");
-var WebLogger = require('./WebLogger');
-var FileLogger = require('./FileLogger');
-var app = express();
-var GoThroughGate = require("../Brain/GoThroughGate");
+var express         	= require('express');
+var bodyParser      	= require('body-parser');
+var fileSystem      	= require('fs');
+var path        		= require("path");
+var WebLogger       	= require('./WebLogger');
+var FileLogger      	= require('./FileLogger');
+var CppInterface		= require('../Brain/CppInterface');
+var VisionInterface		= require("../Brain/VisionInterface");
+var GoThroughGate   	= require("../Brain/GoThroughGate");
+var ThrustManager   	= require("../Brain/ThrustManager");
 
-var peripheralsFactory = new CppInterface.Factory();
-var ThrustManager = require("../Brain/ThrustManager");
-var thrustManager = new ThrustManager(peripheralsFactory);
+var fileLogger 		  	= new FileLogger("./test.log");
+var webLogger 			= new WebLogger(fileLogger);
+var peripheralsFactory	= new CppInterface.Factory();
+var visionFactoy 	  	= new VisionInterface.Factory();
+var thrustManager    	= new ThrustManager(peripheralsFactory);
+var goThroughGate 		= new GoThroughGate(visionFactoy, thrustManager, webLogger);
 
-var thrustController = peripheralsFactory.createThrustController();
-var headLights = peripheralsFactory.createHeadlights();
-var powerManager = peripheralsFactory.createPowerManager();
-var imuSensor = peripheralsFactory.createImuSensor();
+var thrustController    = peripheralsFactory.createThrustController();
+var powerManager 		= peripheralsFactory.createPowerManager();
+var imuSensor 			= peripheralsFactory.createImuSensor();
+var headLights 			= peripheralsFactory.createHeadlights();
+var gateDetector 		= visionFactoy.createGateDetector(webLogger);
 
-var fileLogger = new FileLogger("./test.log");
-var webLogger = new WebLogger(fileLogger);
 peripheralsFactory.createCppLogSource(webLogger);
-
 CppInterface.Peripherals.initialize();
 
-var visionFactoy = new VisionInterface.Factory();
-var gateDetector = visionFactoy.createGateDetector(webLogger);
-
-var goThroughGate = new GoThroughGate(visionFactoy, thrustManager, webLogger);
-
+app             	= express();
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
 
@@ -53,65 +50,70 @@ app.post('/thrust', function(req, res) {
 	res.send('thrust ' + req.body.powerLevel);
 });
 
-
 app.get('/stdoutData', function(req, res) {
 	res.send(webLogger.pull());
 });
 
-app.post('/thrustForward', function (req, res) {
-	var params = req.body;
-	thrustController.thrustForward(params.left, params.right);
-	res.send('');
+// From IThrustController
+app.post('/move', function (req, res) {
+    var params = req.body;
+    thrustController.move(params.throttle);
+    res.send('');
 });
 
+// From IThrustController
+app.post('/secondaryDive', function (req, res) {
+    var params = req.body;
+    thrustController.secondaryDive(params.throttle);
+    res.send('');
+});
+
+// From IThrustController
 app.post('/dive', function (req, res) {
     var params = req.body;
-    thrustController.dive(params.forward, params.rear);
+    thrustController.dive(params.throttle);
+    res.send('');
+});
+
+// From IThrustController
+app.post('/yaw', function (req, res) {
+    var params = req.body;
+    thrustController.yaw(params.throttle);
+    res.send('');
+});
+
+// From IThrustController
+app.post('/pitch', function (req, res) {
+    var params = req.body;
+    thrustController.pitch(params.throttle);
+    res.send('');
+});
+
+// From IThrustController
+app.post('/roll', function (req, res) {
+    var params = req.body;
+    thrustController.roll(params.throttle);
     res.send('');
 });
 
 // From IThrustController
 app.post('/goDirection', function(req, res) {
 	var params = req.body;
-	thrustController.goDirection(params.forward, params.strafe, params.dive);
+	thrustController.goDirection(params.move, params.secondaryDive, params.dive);
 	res.send('');
 });
 
-app.post('/faceDirection', function(req, res) {
-	thrustController.faceDirection(req.body.yaw, req.body.dive);
-	res.send('');
-});
-
-// From setForwardTrim
-
-app.post('/setForwardTrim', function(req, res) {
+// From IThrustController
+app.post('/rotate', function(req, res) {
 	var params = req.body;
-	thrustController.setForwardTrim(params.left, params.right);
+	thrustController.rotate(params.yaw, params.pitch, params.roll);
 	res.send('');
 });
 
-// From setStrafeTrim
-
-app.post('/setStrafeTrim', function(req, res) {
-	var params = req.body;
-	thrustController.setStrafeTrim(params.left, params.right);
-	res.send('');
-});
-
-// From setDiveTrim
-
-app.post('/setDiveTrim', function(req, res) {
-	var params = req.body;
-	thrustController.setDiveTrim(params.front, params.back);
-	res.send('');
-});
-
-// From diveOffset
-
-app.post('/setDiveOffset', function(req, res) {
-	var params = req.body;
-	thrustController.setDiveOffset(params.front, params.back);
-	res.send('');
+// From IThrustController
+app.get('/killThrust', function(req, res) {
+	thrustController.kill();
+	res.send('killThrust');
 });
 
 // From Imu
@@ -238,7 +240,6 @@ app.post('/runScript', function(req, res) {
 	})
 });
 
-
 app.listen(80, function () {
-  console.log('Example app listening on port 80!');
+  console.log('Web app listening on port 80!');
 });

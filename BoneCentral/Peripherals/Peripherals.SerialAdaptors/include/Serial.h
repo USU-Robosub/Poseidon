@@ -1,36 +1,56 @@
 //
 // Created by Nathan Copier on 1/28/2016.
+// Refactored by TekuConcept on 8/3/2016.
 //
 
 #ifndef PERIPHERALS_SERIAL_H
 #define PERIPHERALS_SERIAL_H
 
-#include <fstream>
+#define DUE
+
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 #include <memory>
 #include <cstdlib>
 #include <thread>
 #include <mutex>
-#include <json.h>
-#include <ScriptLogger.h>
-
-using json = nlohmann::json;
+#include <sstream>
+#include <string>
+#include <iostream>
+#include <iomanip>
 
 class Serial {
 private:
-    std::shared_ptr<std::ifstream> input_;
-    std::shared_ptr<std::ofstream> output_;
-    std::shared_ptr<std::ScriptLogger> logger_;
     static std::mutex serialLock_;
-    bool arduinoInitialized_;
+    int fd;
+    
+    void configure();
+    void acknowledge();
+    
 public:
-    Serial();
-    void writeByte(unsigned short byteValue);
-    void writeShort(unsigned short shortValue);
-    json readJson();
-    char readChar();
-    void initializeArduino();
-    bool getArduinoInitialized();
+    Serial(std::string device);
     ~Serial();
+    
+    std::string     readString();
+    unsigned char   readByte();
+    float           readFloat();
+    double          readDouble();
+    int             readInt();
+    unsigned int    readUInt();
+    short           readShort();
+    unsigned short  readUShort();
+    void            readData(char* ptr, size_t size);
+    
+    void writeFloat(float value);
+    void writeDouble(double value);
+    void writeInt(int value);
+    void writeUInt(unsigned int value);
+    void writeShort(short value);
+    void writeUShort(unsigned short value);
+    void writeByte(unsigned char value);
+    void writeData(char* ptr, size_t size);
 };
 
 
