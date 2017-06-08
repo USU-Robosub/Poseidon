@@ -1,0 +1,5 @@
+appStartMode:
+    manual  - The js app is started seperately from the c++ app. (The user must
+            manualy start the c++ app after starting the js app.)
+    auto    - The js app starts concurrently with the c++ app as if they were
+            one.
