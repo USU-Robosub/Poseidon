@@ -9,5 +9,5 @@ module.exports = {
     CppLogSource: require("./CppLogSource"),
     ImuSensor: require("./ImuSensor"),
     Factory: require("./Factory"),
-    Peripherals: require("./PeripheralsProcess")
+    Process: require("./PeripheralsProcess")
 };
