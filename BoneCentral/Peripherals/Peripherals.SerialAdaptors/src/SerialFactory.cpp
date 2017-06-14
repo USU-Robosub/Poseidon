@@ -5,7 +5,7 @@
 #include "SerialFactory.h"
 
 SerialFactory::SerialFactory(std::ostream& out)
-    : out_(out), serial_("/dev/ttyACM0"), event_("/dev/ttyO2", false, Serial::Speed::NORMAL) { }
+    : out_(out), serial_("/dev/ttyACM0"), event_("/dev/ttyO2") { }
 
 std::shared_ptr<IThruster> SerialFactory::createMoveThruster() {
     return std::make_shared<SerialThruster>(serial_, MOVE_IDX);

@@ -1,12 +1,12 @@
 #include "ActionThread.h"
 
 ActionThread::ActionThread(Serial& serial, std::ostream& out)
-    : serial_(serial), out_(out), liveStatus(false) {
+    : serial_(serial), out_(out), isLive_(false) {
 }
 
-void* actionThread_callback(void*data) {
+void* actionThread_callback(void* data) {
     ActionThread thread = *((ActionThread*)data);
-    for(;;) {
+    while(true) {
         // read indefinitely
         thread._read();
     }
@@ -14,17 +14,17 @@ void* actionThread_callback(void*data) {
 }
 
 void ActionThread::begin() {
-    std::cerr << "Begining Action Thread\n";
+    std::cerr << "Beginning Action Thread\n";
     
     pthread_attr_t attributes;
     pthread_attr_init(&attributes);
     pthread_attr_setdetachstate(&attributes, PTHREAD_CREATE_JOINABLE);
     
-    int res = pthread_create(&thread_, &attributes, actionThread_callback, (void*)this);
-    
-    liveStatus = true;
+    auto res = pthread_create(&thread_, &attributes, actionThread_callback, (void*)this);
+
+    isLive_ = true;
     if(res) {
-        liveStatus = false;
+        isLive_ = false;
         std::cerr << "Failed to create event thread\n";
     }
 }
@@ -35,19 +35,19 @@ void ActionThread::end() {
     void* exitStatus;
     pthread_cancel(thread_);
     pthread_join(thread_, &exitStatus);
-    liveStatus = false;
+    isLive_ = false;
 }
 
 bool ActionThread::isLive() {
-    return liveStatus;
+    return isLive_;
 }
 
 void ActionThread::_read() {
-    unsigned char res = serial_.readByte();
-    std::cout << "Event value: " << (int)res << std::endl;
+    unsigned char response = serial_.readByte();
+    std::cout << "Event value: " << (int)response << std::endl;
     auto outJson = json{
             {"Type", "ActionEvent"},
-            {"Value", res}
+            {"Value", response}
     };
     
 #ifdef DEBUG

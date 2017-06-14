@@ -19,7 +19,7 @@ private:
     pthread_t thread_;
     std::ostream& out_;
     
-    bool liveStatus;
+    bool isLive_;
 
 public:
     ActionThread(Serial& serial, std::ostream& out);
