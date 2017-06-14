@@ -28,6 +28,8 @@ void* actionThread_callback(void* data) {
 
 void ActionThread::begin() {
     std::cerr << "Beginning Action Thread\n";
+    system("config-pin P9.21 uart");
+    system("config-pin P9.22 uart");
 
     gpio_[0].fd = open(valueFd_.c_str(), O_RDONLY);
     gpio_[0].events = POLLPRI;
