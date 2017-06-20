@@ -29,7 +29,7 @@ void* actionThread_callback(void* data) {
 void ActionThread::begin() {
     std::cerr << "Beginning Action Thread\n";
 
-    gpio_[0].fd = open(valuefd_.c_str(), O_RDONLY);
+    gpio_[0].fd = open(valueFd_.c_str(), O_RDONLY);
     gpio_[0].events = POLLPRI;
 
     if(gpio_[0].fd <= 0) {
@@ -84,7 +84,7 @@ void ActionThread::_read() {
         lseek(gpio_[0].fd, 0, SEEK_SET);
         read(gpio_[0].fd, res, 1);
         std::cerr << "Interrupt: " << res[0] << "\n";
-        sendJS(res[0]);
+        sendJS(res[0]-'0');
     }
 }
 

@@ -25,7 +25,8 @@ void App_Start(int argCount, char **arguments) {
     auto lights = serialFactory.createHeadlights();
     CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights);
     auto arduinoAction = serialFactory.createArduinoAction();
-    
+
+    arduinoAction->setEdge(ActionThread::EdgeMode::BOTH);
     arduinoAction->begin();
     scriptLogger->info("Ready!");
     cd.runLoop();

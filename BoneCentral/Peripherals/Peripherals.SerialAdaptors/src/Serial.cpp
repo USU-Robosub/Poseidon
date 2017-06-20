@@ -3,7 +3,6 @@
 // Refactored by TekuConcept on 2/13/2017.
 //
 
-#include <bh.h>
 #include "Serial.h"
 
 #ifdef DEBUG
