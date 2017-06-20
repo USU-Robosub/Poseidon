@@ -7,6 +7,7 @@ var PowerManager = require("./PowerManager");
 var ThrustController = require("./ThrustController");
 var CppLogSource = require("./CppLogSource");
 var ImuSensor = require("./ImuSensor");
+var ActionSwitch = require("../Peripherals/ActionSwitch");
 var Sockets = require('../Sockets');
 var Ports = require('../Sockets/Ports.json');
 
@@ -30,11 +31,15 @@ module.exports = (function() {
     };
 
     Factory.prototype.createPowerManager = function () {
-        return new PowerManager(dispatcherSocket.Input);
+        return new PowerManager(dispatcherSocket.Input, dispatcherSocket.Output);
     };
 
     Factory.prototype.createThrustController = function () {
         return new ThrustController(dispatcherSocket.Input);
+    };
+
+    Factory.prototype.createActionSwitch = function () {
+        return new ActionSwitch(dispatcherSocket.Output);
     };
 
     return Factory;
