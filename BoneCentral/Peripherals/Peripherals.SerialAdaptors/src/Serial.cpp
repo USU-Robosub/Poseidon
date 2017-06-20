@@ -6,9 +6,9 @@
 #include "Serial.h"
 
 #ifdef DEBUG
-#define IFDEBUG if(true)
+#define IF_DEBUG if(true)
 #else
-#define IFDEBUG if(false)
+#define IF_DEBUG if(false)
 #endif
 
 #define DMSG(x) std::cerr << x
@@ -16,7 +16,7 @@
 std::mutex Serial::serialLock_;
 
 Serial::Serial(std::string device) {
-    IFDEBUG {
+    IF_DEBUG {
         DMSG("\nReceived Device Name: " << device);
         DMSG("\nEntering Serial Debug Mode\n");
         fd = 0;
@@ -37,16 +37,17 @@ Serial::~Serial() {
 }
 
 void Serial::configure() {
+    auto baudRate = B115200;
     struct termios topts;
     if(tcgetattr(fd, &topts)) {
         DMSG("Failed to get terminal ios options from file descriptor.\n");
         throw 1;
     }
-    if(cfsetispeed(&topts, B115200)) {
+    if(cfsetispeed(&topts, baudRate)) {
         DMSG("Failed to set input baud rate.\n");
         throw 1;
     }
-    if(cfsetospeed(&topts, B115200)) {
+    if(cfsetospeed(&topts, baudRate)) {
         DMSG("Failed to set output baud rate.\n");
         throw 1;
     }
@@ -69,7 +70,7 @@ void Serial::configure() {
 
 void Serial::acknowledge() {
     std::string response = readString();
-    IFDEBUG{
+    IF_DEBUG{
         DMSG("Arduino Message: " << response << "\n");
     }
     writeByte('R');
@@ -79,7 +80,7 @@ void Serial::acknowledge() {
 
 
 std::string Serial::readString() {
-    IFDEBUG {
+    IF_DEBUG {
         std::string res("Dummy String");
         return res;
     }
@@ -175,7 +176,7 @@ void Serial::writeByte(unsigned char value) {
 }
 
 void Serial::writeData(char* ptr, size_t size) {
-    IFDEBUG{
+    IF_DEBUG{
         DMSG("Serial Write: " << std::hex << std::setw(2));
         for(size_t i = 0; i < size; i++) {
             DMSG((unsigned short)ptr[i]);
@@ -189,8 +190,8 @@ void Serial::writeData(char* ptr, size_t size) {
     }
 }
 
-#ifdef IFDEBUG
-#undef IFDEBUG
+#ifdef IF_DEBUG
+#undef IF_DEBUG
 #endif
 
 #undef DMSG
