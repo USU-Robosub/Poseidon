@@ -20,7 +20,7 @@ module.exports = {init: function (GoThroughGate, BumpBuoy, SurfaceAtPinger) {
     };
 
     Run.prototype.execute = function () {
-        utilities.Wait(500).then(function () {
+        utilities.Wait(50).then(function () {
             return this._goThroughGate.execute();
         }.bind(this)).then(function () {
             return this._bumpBuoy.execute();

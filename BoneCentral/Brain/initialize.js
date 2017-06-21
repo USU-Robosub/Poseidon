@@ -28,21 +28,26 @@ var Run = runModule.init(
 var run = null;
 
 var _killSub = function () {
-    console.log("Killing...");
-    run.kill();
-    run = null;
+    try {
+        console.log("Killing...");
+        run.kill();
+        run = null;
+    } catch(exception) {
+        thrustController.kill();
+        throw exception;
+    }
 };
 
 var _runSub = function() {
-    console.log("Starting...");
-    run = new Run(thrustController);
-    run.execute();
+    try {
+        console.log("Starting...");
+        run = new Run(thrustController);
+        run.execute();
+    } catch(exception) {
+        thrustController.kill();
+        throw exception;
+    }
 };
 
-try {
-    actionSwitch.on("start", _runSub);
-    actionSwitch.on("kill", _killSub);
-} catch(exception) {
-    thrustController.kill();
-    throw exception;
-}
+actionSwitch.on("start", _runSub);
+actionSwitch.on("kill", _killSub);
