@@ -6,7 +6,7 @@ module.exports = (function () {
 
     function ActionSwitch(iStream) {
         EventEmitter.call(this);
-        iStream.on("data", this._handleData);
+        iStream.on("data", this._handleData.bind(this));
         this._initializeFsm();
     }
 
@@ -15,7 +15,9 @@ module.exports = (function () {
     ActionSwitch.prototype._handleData = function (data) {
         try {
             var tokens = data.toString().split('\n');
-            tokens.forEach(this._parse);
+            for(var i = 0; i < tokens.length; i++) {
+                this._parse(tokens[i]);
+            }
         }
         catch(e) { console.log("_handleData: " + e); }
     };
