@@ -119,8 +119,8 @@
 			<div style="width: 22%; float: left;">
 				<single-get-tag url='/goThroughGate'></single-get-tag>
 				<single-get-tag url='/terminate'></single-get-tag>
-				<single-get-tag url='/turnOnEscs'></single-get-tag>
-				<single-get-tag url='/turnOffEscs'></single-get-tag>
+				<single-get-tag url='/startThrusters'></single-get-tag>
+				<single-get-tag url='/killThrusters'></single-get-tag>
 				<single-get-tag url='/turnOnImuSensor'></single-get-tag>
 				<single-get-tag url='/turnOffImuSensor'></single-get-tag>
 				<single-get-tag url='/headlight'></single-get-tag>
@@ -136,7 +136,6 @@
 				<post-tag url='/roll'          arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
 				<post-tag url='/goDirection'   arguments='["move", "secondaryDive", "dive"]' min="-1" max="1" step="0.01"></post-tag>
 				<post-tag url='/rotate'        arguments='["yaw", "pitch", "roll"]' min="-1" max="1" step="0.01"></post-tag>
-				<single-get-tag url='/killThrust'></single-get-tag>
 			</div>
 			<div style="width: 22%; float: left;">
 				<single-get-tag url='/getAcceleration'></single-get-tag>
