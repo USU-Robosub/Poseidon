@@ -6,9 +6,9 @@
 using json = nlohmann::json;
 
 #ifdef DEBUG
-#define IFDEBUG if(true)
+#define IF_DEBUG if(true)
 #else
-#define IFDEBUG if(false)
+#define IF_DEBUG if(false)
 #endif
 
 CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out,
@@ -64,7 +64,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
 void CommandDispatcher::goDirection(std::stringstream& cmdString) {
     float move, strafe, dive;
     cmdString >> move >> strafe >> dive;
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Move: " << move;
         std::cout << " Strafe: " << strafe;
         std::cout << " Dive: " << dive << std::endl;
@@ -75,7 +75,7 @@ void CommandDispatcher::goDirection(std::stringstream& cmdString) {
 void CommandDispatcher::rotate(std::stringstream& cmdString) {
     float yaw, pitch, roll;
     cmdString >> yaw >> pitch >> roll;
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Yaw: " << yaw;
         std::cout << " Pitch: " << pitch;
         std::cout << " Roll: " << roll << std::endl;
@@ -86,7 +86,7 @@ void CommandDispatcher::rotate(std::stringstream& cmdString) {
 void CommandDispatcher::move(std::stringstream &cmdString) {
     float throttle;
     cmdString >> throttle;
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Move: " << throttle << std::endl;
     }
     thrustController_.move(throttle);
@@ -95,7 +95,7 @@ void CommandDispatcher::move(std::stringstream &cmdString) {
 void CommandDispatcher::strafe(std::stringstream &cmdString) {
     float throttle;
     cmdString >> throttle;
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Strafe: " << throttle << std::endl;
     }
     thrustController_.strafe(throttle);
@@ -104,7 +104,7 @@ void CommandDispatcher::strafe(std::stringstream &cmdString) {
 void CommandDispatcher::dive(std::stringstream &cmdString) {
     float throttle;
     cmdString >> throttle;
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Dive: " << throttle << std::endl;
     }
     thrustController_.dive(throttle);
@@ -113,7 +113,7 @@ void CommandDispatcher::dive(std::stringstream &cmdString) {
 void CommandDispatcher::yaw(std::stringstream &cmdString) {
     float throttle;
     cmdString >> throttle;
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Yaw: " << throttle << std::endl;
     }
     thrustController_.yaw(throttle);
@@ -122,7 +122,7 @@ void CommandDispatcher::yaw(std::stringstream &cmdString) {
 void CommandDispatcher::pitch(std::stringstream &cmdString) {
     float throttle;
     cmdString >> throttle;
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Pitch: " << throttle << std::endl;
     }
     thrustController_.pitch(throttle);
@@ -131,14 +131,14 @@ void CommandDispatcher::pitch(std::stringstream &cmdString) {
 void CommandDispatcher::roll(std::stringstream &cmdString) {
     float throttle;
     cmdString >> throttle;
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Roll: " << throttle << std::endl;
     }
     thrustController_.roll(throttle);
 }
 
 void CommandDispatcher::kill() {
-    IFDEBUG {
+    IF_DEBUG {
         std::cout << "Killed Thrusters" << std::endl;
     }
     thrustController_.killAllThrusters();
@@ -155,7 +155,7 @@ void CommandDispatcher::_getAcceleration() {
             {"Y", std::get<1>(data)},
             {"Z", std::get<2>(data)}
     };
-    IFDEBUG {
+    IF_DEBUG {
         std::cerr << accelJson << std::endl;
     }
     out_ << accelJson << std::endl;
@@ -169,7 +169,7 @@ void CommandDispatcher::_getAngularAcceleration() {
             {"Y", std::get<1>(data)},
             {"Z", std::get<2>(data)}
     };
-    IFDEBUG {
+    IF_DEBUG {
         std::cerr << accelJson << std::endl;
     }
     out_ << accelJson << std::endl;
@@ -183,7 +183,7 @@ void CommandDispatcher::_getHeading() {
             {"Y", std::get<1>(data)}//,
             //{"Z", std::get<2>(data)}
     };
-    IFDEBUG {
+    IF_DEBUG {
         std::cerr << headingJson << std::endl;
     }
     out_ << headingJson << std::endl;
@@ -209,6 +209,6 @@ void CommandDispatcher::_getExternalPressure() {
     out_ << json{{"Type", "ExternalPressure"},{"Value",data}} << std::endl;
 }
 
-#ifdef IFDEBUG
-#undef IFDEBUG
+#ifdef IF_DEBUG
+#undef IF_DEBUG
 #endif

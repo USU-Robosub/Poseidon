@@ -4,14 +4,6 @@ module.exports = (function(){
         this._cmdOut = cmdOut;
     }
 
-    PowerManager.prototype.turnOnEscs = function(){
-        this._cmdOut.write("turnOnEscs\n");
-    };
-
-    PowerManager.prototype.turnOffEscs = function(){
-        this._cmdOut.write("turnOffEscs\n");
-    };
-
     PowerManager.prototype.turnOnImu = function () {
         this._cmdOut.write("turnOnImuSensor\n");
     };

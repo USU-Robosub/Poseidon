@@ -4,7 +4,9 @@
 
 #include "SerialFactory.h"
 
-SerialFactory::SerialFactory() : serial_("/dev/ttyACM0") { }
+#define Pin_9_15 48
+
+SerialFactory::SerialFactory(std::ostream& out) : out_(out), serial_("/dev/ttyACM0") { }
 
 std::shared_ptr<IThruster> SerialFactory::createMoveThruster() {
     return std::make_shared<SerialThruster>(serial_, MOVE_IDX);
@@ -45,3 +47,9 @@ std::shared_ptr<ITemperatureSensor> SerialFactory::createExternalTemperatureSens
 std::shared_ptr<IPressureSensor> SerialFactory::createExternalPressureSensor() {
     return std::make_shared<ExPressureSensor>();
 }
+
+std::shared_ptr<ActionThread> SerialFactory::createArduinoAction() {
+    return std::make_shared<ActionThread>(Pin_9_15, out_);
+}
+
+#undef Pin_9_15

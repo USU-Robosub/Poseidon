@@ -6,7 +6,7 @@ var WebLogger       	= require('./WebLogger');
 var FileLogger      	= require('./FileLogger');
 var CppInterface		= require('../Brain/CppInterface');
 var VisionInterface		= require("../Brain/VisionInterface");
-var GoThroughGate   	= require("../Brain/GoThroughGate");
+var GoThroughGate   	= require("../Brain/GoThroughGate").init();
 var ThrustManager   	= require("../Brain/ThrustManager");
 
 var fileLogger 		  	= new FileLogger("./test.log");
@@ -14,7 +14,6 @@ var webLogger 			= new WebLogger(fileLogger);
 var peripheralsFactory	= new CppInterface.Factory();
 var visionFactoy 	  	= new VisionInterface.Factory();
 var thrustManager    	= new ThrustManager(peripheralsFactory);
-var goThroughGate 		= new GoThroughGate(visionFactoy, thrustManager, webLogger);
 
 var thrustController    = peripheralsFactory.createThrustController();
 var powerManager 		= peripheralsFactory.createPowerManager();
@@ -30,7 +29,7 @@ app.use('/', express.static('static'));
 app.use(bodyParser.json());
 
 app.get("/goThroughGate", function (req, res) {
-    goThroughGate.execute().done(function () {
+    new GoThroughGate(thrustController).execute().done(function () {
 		thrustController.goDirection(0, 0, 0);
 	});
     res.send("Going through gate");
@@ -110,12 +109,6 @@ app.post('/rotate', function(req, res) {
 	res.send('');
 });
 
-// From IThrustController
-app.get('/killThrust', function(req, res) {
-	thrustController.kill();
-	res.send('killThrust');
-});
-
 // From Imu
 app.get('/turnOnImuSensor', function(req, res) {
 	powerManager.turnOnImu();
@@ -184,14 +177,14 @@ app.get('/exit', function(req, res) {
 
 
 // From IPowerController {
-app.get('/turnOnEscs', function(req, res) {
-	powerManager.turnOnEscs();
-	res.send('turnOnEscs');
+app.get('/startThrusters', function(req, res) {
+    thrustController.start();
+	res.send('startThrusters');
 });
 
-app.get('/turnOffEscs', function(req, res) {
-	powerManager.turnOffEscs();
-	res.send('turnOffEscs');
+app.get('/killThrusters', function(req, res) {
+    thrustController.kill();
+	res.send('killThrusters');
 });
 
 

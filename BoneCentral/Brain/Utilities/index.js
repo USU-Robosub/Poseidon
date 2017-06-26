@@ -3,8 +3,11 @@
  */
 
 var $ = require("jquery-deferred");
+var nodeUtils = require("util");
 
 module.exports = {
+
+    inherits: nodeUtils.inherits,
 
     Wait: function (milliseconds) {
         var waitDeferred = $.Deferred();
