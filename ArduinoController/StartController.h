@@ -3,14 +3,12 @@
 class StartController : public IController {
 private:
   bool activated = false;
+  const int ACTIVE   = 0x1;
+  const int INACTIVE = 0x0;
+  
 public:
   void execute() {
-    if(activated) {
-      Serial.println("{\"R\":\"1\"}");
-    }
-    else {
-      Serial.println("{\"R\":\"0\"}");
-    }
+    SerialTools::writeByte(activated?ACTIVE:INACTIVE);
     activated = false;
   }
   void kill() {

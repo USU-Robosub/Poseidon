@@ -6,11 +6,12 @@
 		<title>USUb</title>
 		<script type="text/javascript" src="/riot/riot+compiler.min.js"></script>
 		<script type="text/javascript" src="/axios/axios.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
 
 		<script type="riot/tag">
 			<get-tag>
 				<div>
-					<button onclick={ toggle }>{ url }</button>
+					<button class="button" onclick={ toggle }>{ url }</button>
 					<p>Result:</p><textarea type="textarea" value="{ result }" style="min-width: 30em; min-height: 40em;">
 				</div>
 
@@ -44,7 +45,7 @@
 			</get-tag>
 			<single-get-tag>
 				<div>
-					<button onclick={ get }>{ url }</button>
+					<button class="button" onclick={ get }>{ url }</button>
 					<p>Result: { result }</p>
 				</div>
 
@@ -64,10 +65,10 @@
 			</single-get-tag>
 			<post-tag>
 				<div>
-					<button onclick={ post }>{ url }</button><button onclick={ toggleAbsolute }>Toggle Slider</button>
+					<button class="button" onclick={ post }>{ url }</button><button class="button" onclick={ toggleAbsolute }>Toggle Slider</button>
 					<div each={ argument, i in arguments }>
 						<span>{ argument }</span>
-						<input type={ inputType } onchange={ update } oninput={ update } id={ argument } min={ min } max={ max } step={ step }/>
+						<input type={ inputType } onchange={ update } oninput={ update } id={ argument } min={ min } max={ max } step={ step } value="0"/>
 						<span if={ !absolute }>{ self[argument].value }</span>
 					</div>
 					<p>Result: { result }</p>
@@ -118,8 +119,8 @@
 			<div style="width: 22%; float: left;">
 				<single-get-tag url='/goThroughGate'></single-get-tag>
 				<single-get-tag url='/terminate'></single-get-tag>
-				<single-get-tag url='/turnOnEscs'></single-get-tag>
-				<single-get-tag url='/turnOffEscs'></single-get-tag>
+				<single-get-tag url='/startThrusters'></single-get-tag>
+				<single-get-tag url='/killThrusters'></single-get-tag>
 				<single-get-tag url='/turnOnImuSensor'></single-get-tag>
 				<single-get-tag url='/turnOffImuSensor'></single-get-tag>
 				<single-get-tag url='/headlight'></single-get-tag>
@@ -127,14 +128,14 @@
 				<single-get-tag url='/exit'></single-get-tag>
 			</div>
 			<div style="width: 22%; float: left;">
-				<post-tag url='/thrustForward' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/dive' arguments='["forward", "rear"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/goDirection' arguments='["forward", "strafe", "dive"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/faceDirection' arguments='["yaw", "dive"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/setForwardTrim' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/setStrafeTrim' arguments='["left", "right"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/setDiveTrim' arguments='["front", "back"]' min="-1" max="1" step="0.01"></post-tag>
-				<post-tag url='/setDiveOffset' arguments='["front", "back"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/move'          arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/secondaryDive' arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/dive'          arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/yaw'           arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/pitch'         arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/roll'          arguments='["throttle"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/goDirection'   arguments='["move", "secondaryDive", "dive"]' min="-1" max="1" step="0.01"></post-tag>
+				<post-tag url='/rotate'        arguments='["yaw", "pitch", "roll"]' min="-1" max="1" step="0.01"></post-tag>
 			</div>
 			<div style="width: 22%; float: left;">
 				<single-get-tag url='/getAcceleration'></single-get-tag>

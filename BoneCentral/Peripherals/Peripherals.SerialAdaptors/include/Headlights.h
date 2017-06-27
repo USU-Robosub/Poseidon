@@ -7,6 +7,7 @@
 
 #include <IHeadlights.h>
 #include "Serial.h"
+#include "ArduinoConfig.h"
 
 class Headlights : public IHeadlights {
 private:

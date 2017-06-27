@@ -4,124 +4,78 @@
 
 var StateMachine = require("./StateMachine");
 var Gate = require("./Gate");
+var utilities = require("../Utilities/index");
 
-module.exports = (function(){
+const States = {
+    INITIAL: 0,
+    DIVING: 1,
+    MOVING: 2,
+    FINAL: 3
+};
 
-    var utilities = require("../Utilities/index");
-    var wait = utilities.Wait;
-    var $ = utilities.Promises;
+const DIVE_TIME = 5000; //milliseconds
+const MOVE_TIME = 15000; //milliseconds
 
-    const COAST_TIME = 1000; // in ms
-    const TICK = 30; // in ms
-    const States = StateMachine.States;
+const DIVE_POWER = 0.8;
+const MOVE_POWER = 0.15;
 
-    const TargetBox = {
-        LEFT: -25,
-        RIGHT: 25,
-        TOP: 25,
-        BOTTOM: -25
-    };
+module.exports = {init: function(){
 
-    function GoThroughGate(visionFactory, thrustManager, logger) {
-        this._gateDetector = visionFactory.createGateDetector(logger);
-        this._thrustManager = thrustManager;
-        this._thrustManager.setTargetBox(TargetBox);
+    function GoThroughGate(thrustController, logger) {
+        this._thrustController = thrustController;
         this._logger = logger;
+        this._state = States.INITIAL;
     }
 
     GoThroughGate.prototype.execute = function () {
-        this._stateMachine = new StateMachine(this._logger);
-        this._deferred = $.Deferred();
-        this._shouldQuit = false;
-        this._thrustManager.dive();
-        wait(500).done(function () {
-            _runTick.call(this);
-        }.bind(this));
+        console.log("Starting Gate Task...");
+        this._deferred = utilities.Promises.Deferred();
+        this._ticker = setInterval(this._doTick.bind(this), 10);
         return this._deferred.promise();
     };
 
-    var _runTick = function() {
-        if (this._shouldQuit) {
-            _reset.call(this);
-            return;
-        }
-        wait(TICK).done(function () {
-            this._gateDetector.getPoleCoordinates().done(function (poles) {
-                var gate = new Gate(poles);
-                this._stateMachine.doTransition(gate);
-                _performActionFromState.call(this, gate);
-                _runTick.call(this);
-            }.bind(this));
-        }.bind(this));
+    GoThroughGate.prototype._doTick = function () {
+        if (this._state === States.INITIAL) this._transitionFromInitial();
+        if (this._state === States.DIVING) this._transitionFromDiving();
+        else if (this._state === States.MOVING) this._transitionFromMoving();
     };
 
-    var _reset = function () {
-        this._stateMachine = null;
-        this._thrustManager.killThrusters();
-        this._deferred.fail();
+    GoThroughGate.prototype._transitionFromInitial = function () {
+        console.log("Diving...");
+        this._startTime = new Date();
+        this._state = States.DIVING;
+        this._thrustController.dive(-DIVE_POWER);
     };
 
-    var _performActionFromState = function(gate) {
-        var state = this._stateMachine.getState();
-        if (state === States.FAIL) {
-            this._logger.info("Can no longer detect gate. Stopping...");
-            this._shouldQuit = true;
-            return;
-        }
-        if (state === States.THRUST_FORWARD) _thrustForward.call(this);
-        if (state === States.DIVE) _continueDive.call(this, gate);
-        if (state === States.SEARCH_LEFT) _searchLeft.call(this, gate);
-        if (state === States.SEARCH_RIGHT) _searchRight.call(this, gate);
-        if (state === States.THRUST_TOWARDS_GATE) _travelToGate.call(this, gate);
-        if (state === States.PASSING_GATE) _coastThroughGate.call(this);
+    GoThroughGate.prototype._transitionFromDiving = function () {
+        if (this._shouldContinueDiving()) return;
+        console.log("Moving...");
+        this._startTime = new Date();
+        this._state = States.MOVING;
+        this._thrustController.move(MOVE_POWER);
     };
 
-    var _thrustForward = function () {
-        this._thrustManager.thrustForward();
+    GoThroughGate.prototype._shouldContinueDiving = function () {
+        return new Date()-this._startTime < DIVE_TIME;
     };
 
-    var _travelToGate = function (gate) {
-        if (!this._finishedDiving) {
-            this._finishedDiving = true;
-            this._thrustManager.maintainDepth();
-            this._thrustManager.thrustForward();
-        }
-        var gateCenter = null;
-        var poleCount = gate.getPoleCount();
-        if (poleCount === 2) {
-            this._lastGate = gate;
-            gateCenter = gate.getGateCenter();
-        }
-        else if (poleCount === 1) {
-            var offset = gate.getOffsetFrom(this._lastGate);
-            gateCenter = this._lastGate.getGateCenter();
-            gateCenter.X += offset;
-        }
-        this._thrustManager.alignX(gateCenter);
-        this._thrustManager.alignY(gateCenter);
+    GoThroughGate.prototype._transitionFromMoving = function () {
+        if (this._shouldContinueMoving()) return;
+        console.log("Gate Task Completed.");
+        this._state = States.FINAL;
+        this._deferred.resolve();
     };
 
-    var _coastThroughGate = function () {
-        this._thrustManager.thrustForward();
-        wait(COAST_TIME).done(function () {
-            this._stateMachine = null;
-            this._deferred.resolve();
-        }.bind(this));
+    GoThroughGate.prototype._shouldContinueMoving = function () {
+        return new Date()-this._startTime < MOVE_TIME;
     };
 
-    var _searchLeft = function (gate) {
-        this._thrustManager.yawLeft();
-        if (gate.getPoleCount() !== 0) this._thrustManager.alignY(gate.getGateCenter());
-    };
-
-    var _searchRight = function (gate) {
-        this._thrustManager.yawRight();
-        if (gate.getPoleCount !== 0) this._thrustManager.alignY(gate.getGateCenter());
-    };
-
-    var _continueDive = function (gateCenter) {
+    GoThroughGate.prototype.kill = function () {
+        console.log("Gate Task Interrupted.");
+        clearInterval(this._ticker);
+        this._deferred.reject();
     };
 
     return GoThroughGate;
 
-})();
+}};

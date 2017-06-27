@@ -4,28 +4,32 @@
 
 #include "SerialFactory.h"
 
-std::shared_ptr<IThruster> SerialFactory::createLeftForwardThruster() {
-    return std::make_shared<SerialThruster>(serial_, LEFT_FORWARD);
+#define Pin_9_15 48
+
+SerialFactory::SerialFactory(std::ostream& out) : out_(out), serial_("/dev/ttyACM0") { }
+
+std::shared_ptr<IThruster> SerialFactory::createMoveThruster() {
+    return std::make_shared<SerialThruster>(serial_, MOVE_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createRightForwardThruster() {
-    return std::make_shared<SerialThruster>(serial_, RIGHT_FORWARD);
+std::shared_ptr<IThruster> SerialFactory::createStrafeThruster() {
+    return std::make_shared<SerialThruster>(serial_, STRAFE_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createLeftStrafeThruster() {
-    return std::make_shared<SerialThruster>(serial_, LEFT_STRAFE);
+std::shared_ptr<IThruster> SerialFactory::createDiveThruster() {
+    return std::make_shared<SerialThruster>(serial_, DIVE_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createRightStrafeThruster() {
-    return std::make_shared<SerialThruster>(serial_, RIGHT_STRAFE);
+std::shared_ptr<IThruster> SerialFactory::createYawThruster() {
+    return std::make_shared<SerialThruster>(serial_, YAW_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createForwardDiveThruster() {
-    return std::make_shared<SerialThruster>(serial_, FRONT_DIVE);
+std::shared_ptr<IThruster> SerialFactory::createPitchThruster() {
+    return std::make_shared<SerialThruster>(serial_, PITCH_IDX);
 }
 
-std::shared_ptr<IThruster> SerialFactory::createRearDiveThruster() {
-    return std::make_shared<SerialThruster>(serial_, BACK_DIVE);
+std::shared_ptr<IThruster> SerialFactory::createRollThruster() {
+    return std::make_shared<SerialThruster>(serial_, ROLL_IDX);
 }
 
 std::shared_ptr<IEscPower> SerialFactory::createEscPower() {
@@ -43,3 +47,9 @@ std::shared_ptr<ITemperatureSensor> SerialFactory::createExternalTemperatureSens
 std::shared_ptr<IPressureSensor> SerialFactory::createExternalPressureSensor() {
     return std::make_shared<ExPressureSensor>();
 }
+
+std::shared_ptr<ActionThread> SerialFactory::createArduinoAction() {
+    return std::make_shared<ActionThread>(Pin_9_15, out_);
+}
+
+#undef Pin_9_15

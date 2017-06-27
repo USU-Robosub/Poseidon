@@ -5,49 +5,68 @@
 module.exports = (function(){
 
     function ThrustController(cmdOut){
+        this._isDead = true;
         this._cmdOut = cmdOut;
     }
 
-    ThrustController.prototype.goDirection = function(forward, strafe, dive) {
+    ThrustController.prototype.goDirection = function(move, secondDive, dive) {
+        if (this._isDead) return;
         var cmdString =
-            "goDirection " + forward + " " + strafe + " " + " " + dive + "\n";
+            "goDirection " + move + " " + secondDive + " " + " " + dive + "\n";
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.faceDirection = function(yaw, dive){
+    ThrustController.prototype.rotate = function(yaw, pitch, roll){
+        if (this._isDead) return;
         var cmdString =
-            "faceDirection " + yaw + " " + dive + "\n";
+            "rotate " + yaw + " " + pitch + " " + roll + "\n";
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.setDiveOffset = function(front, back) {
-        var cmdString = "setDiveOffset " + front + " " + back + "\n";
+    ThrustController.prototype.move = function (throttle) {
+        if (this._isDead) return;
+        var cmdString = "move " + throttle + "\n";
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.setForwardTrim = function(left, right) {
-        var cmdString = "setForwardTrim " + left + " " + right + "\n";
+    ThrustController.prototype.secondaryDive = function (throttle) {
+        if (this._isDead) return;
+        var cmdString = "secondaryDive " + throttle + "\n";
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.setStrafeTrim = function(left, right) {
-        var cmdString = "setStrafeTrim " + left + " " + right + "\n";
+    ThrustController.prototype.dive = function (throttle) {
+        if (this._isDead) return;
+        var cmdString = "primaryDive " + throttle + "\n";
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.setDiveTrim = function(front, back) {
-        var cmdString = "setDiveTrim " + front + " " + back + "\n";
+    ThrustController.prototype.yaw = function (throttle) {
+        if (this._isDead) return;
+        var cmdString = "yaw " + throttle + "\n";
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.thrustForward = function (left, right) {
-        var cmdString = "thrustForward " + left + " " + right + "\n";
+    ThrustController.prototype.pitch = function (throttle) {
+        if (this._isDead) return;
+        var cmdString = "pitch " + throttle + "\n";
         this._cmdOut.write(cmdString);
     };
 
-    ThrustController.prototype.dive = function (forward, rear) {
-        var cmdString = "dive " + forward + " " + rear + "\n";
+    ThrustController.prototype.roll = function (throttle) {
+        if (this._isDead) return;
+        var cmdString = "roll " + throttle + "\n";
         this._cmdOut.write(cmdString);
+    };
+
+    ThrustController.prototype.kill = function () {
+        this._isDead = true;
+        var cmdString = "killThrust\n";
+        this._cmdOut.write(cmdString);
+    };
+
+    ThrustController.prototype.start = function () {
+        this._isDead = false;
     };
 
     return ThrustController;
