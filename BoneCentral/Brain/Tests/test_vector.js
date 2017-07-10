@@ -84,4 +84,4 @@ VectorEqualityTest( "rot(v,ax,theta):\t", rotatedVector, new Vector(-1, 1, 0), e
 // between the two vectors.
 v = Vector.look.rotateAbout( Vector.right ).by( -Math.PI/4);
 console.log(v.toString());
-ValueEqualityTest( "angle(u,v):\n", Vector.up.angle(v), Math.PI/4, error=0.0001 );
+ValueEqualityTest( "angle(u,v):\n", Vector.up.angleFrom(v), Math.PI/4, error=0.0001 );

@@ -180,8 +180,8 @@ void CommandDispatcher::_getHeading() {
     auto headingJson = json{
             {"Type", "Heading"},
             {"X", std::get<0>(data)},
-            {"Y", std::get<1>(data)}//,
-            //{"Z", std::get<2>(data)}
+            {"Y", std::get<1>(data)},
+            {"Z", std::get<2>(data)}
     };
     IF_DEBUG {
         std::cerr << headingJson << std::endl;

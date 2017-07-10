@@ -88,7 +88,7 @@ module.exports = (function () {
         return scaledAxis.add(scaledVector).add(scaledCross);
     };
 
-    Vector.prototype.angle = function(other) {
+    Vector.prototype.angleFrom = function(other) {
         var thisMag = this.mag();
         var otherMag = other.mag();
         if(thisMag === 0 || otherMag === 0)
