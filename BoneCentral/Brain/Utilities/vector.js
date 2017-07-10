@@ -1,121 +1,122 @@
-var mag = function(v) {
-    return Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
-};
-var cross = function(u, v) {
-    var res = v3(0,0,0);
-    res.x = (u.y*v.z - u.z*v.y);
-    res.y = (u.z*v.x - u.x*v.z);
-    res.z = (u.x*v.y - u.y*v.x);
-    return res;
-};
-var unit = function(v) {
-    var res     = v3(0,0,0);
-    var vmag    = mag(v);
-    res.x       = v.x/vmag;
-    res.y       = v.y/vmag;
-    res.z       = v.z/vmag;
-    return res;
-};
-var negate = function(v) {
-    var res = v3(0,0,0);
-    res.x = -v.x;
-    res.y = -v.y;
-    res.z = -v.z
-    return res;
-};
-var add = function(u, v) {
-    var res = v3(0,0,0);
-    res.x = u.x + v.x;
-    res.y = u.y + v.y;
-    res.z = u.z + v.z;
-    return res;
-};
-var scale = function(v,s) {
-    var res = v3(0,0,0);
-    res.x = s*v.x;
-    res.y = s*v.y;
-    res.z = s*v.z;
-    return res;
-};
-var dot = function(u,v) {
-    return u.x*v.x + u.y*v.y + u.z*v.z;
-};
-var angle = function(u, v) {
-    var mu = mag(u);
-    var mv = mag(v);
-    if(mu === 0 || mv === 0)
-        return 180;
-    var q = dot(u,v) / (mu * mv);
-    return Math.acos(q);
-};
+module.exports = (function () {
 
-var rotatex = function(v, theta) {
-    var res = v3(0,0,0);
-    res.x = v.x;
-    res.y = v.y*Math.cos(theta) - v.z*Math.sin(theta);
-    res.z = v.y*Math.sin(theta) + v.z*Math.cos(theta);
-    return res;
-};
-var rotatey = function(v, theta) {
-    var res = v3(0,0,0);
-    res.x =  v.x*Math.cos(theta) + v.z*Math.sin(theta);
-    res.y =  v.y;
-    res.z = -v.x*Math.sin(theta) + v.z*Math.cos(theta);
-    return res;
-};
-var rotatez = function(v, theta) {
-    var res = v3(0,0,0);
-    res.x = v.x*Math.cos(theta) - v.y*Math.sin(theta);
-    res.y = v.x*Math.sin(theta) + v.y*Math.cos(theta);
-    res.z = v.z;
-    return res;
-};
-var rotate  = function(v, axis, theta) {
-    var res = v3(0,0,0);
-    a = unit(axis);
-    
-    var _c = Math.cos(theta);
-    var _s = Math.sin(theta);
-    var _u = dot(a,v)*(1 - _c);
-    
-    res.x = a.x*_u + v.x*_c + (-a.z*v.y + a.y*a.z)*_s;
-    res.y = a.y*_u + v.y*_c + ( a.z*v.x - a.x*v.z)*_s;
-    res.z = a.z*_u + v.z*_c + (-a.y*v.x + a.x*v.y)*_s;
-    
-    return res;
-};
+    function Vector(x, y, z) {
+        this._x = x;
+        this._y = y;
+        this._z = z;
+    }
 
-var v3 = function(x,y,z) {
-    return {x:x,y:y,z:z};
-}
-var print = function(v,f,m) {
-    if(typeof f == 'undefined')
-        f = 3;
-    if(typeof m == 'undefined')
-        m = "";
-    console.log(m+"{x: "+v.x.toFixed(f)+",\ty: "+v.y.toFixed(f)+",\tz: "+v.z.toFixed(f)+"}");
-}
+    Vector.prototype.mag = function () {
+        return Math.sqrt(
+            this._x * this._x +
+            this._y * this._y +
+            this._z * this._z
+        );
+    };
 
-module.exports = {
-    mag: mag,
-    cross: cross,
-    unit: unit,
-    dot: dot,
-    negate: negate,
-    add: add,
-    scale: scale,
-    rotx: rotatex,
-    roty: rotatey,
-    rotz: rotatez,
-    rot:  rotate,
-    angle: angle,
-    
-    v3: v3,
-    zero: v3(0,0,0),
-    one: v3(1,1,1),
-    look: v3(0,0,1),
-    right: v3(1,0,0),
-    up: v3(0,1,0),
-    
-    print: print
-};
+    Vector.prototype.cross = function(other) {
+        return new Vector(
+            this._y * other._z - this._z * other._y,
+            this._z * other._x - this._x * other._z,
+            this._x * other._y - this._y * other._x
+        );
+    };
+
+    Vector.prototype.dot = function(other) {
+        return  this._x * other._x +
+                this._y * other._y +
+                this._z * other._z;
+    };
+
+    Vector.prototype.unitize = function() {
+        var magnitude = this.mag();
+        return new Vector(
+            this._x / magnitude,
+            this._y / magnitude,
+            this._z / magnitude
+        );
+    };
+
+    Vector.prototype.negate = function() {
+        return new Vector( -this._x, -this._y, -this._z );
+    };
+
+    Vector.prototype.add = function(other) {
+        return new Vector(
+            this._x + other._x,
+            this._y + other._y,
+            this._z + other._z
+        );
+    };
+
+    Vector.prototype.scaleBy = function(scalar) {
+        return new Vector(
+            scalar * this._x,
+            scalar * this._y,
+            scalar * this._z
+        );
+    };
+
+    Vector.prototype.equals = function (other, error) {
+        return  _within(this._x - other._x, error) &&
+                _within(this._y - other._y, error) &&
+                _within(this._z - other._z, error);
+    };
+
+    var _within = function(difference, error) {
+        error = error || 0;
+        return -error <= difference && difference <= error
+    };
+
+    Vector.prototype.rotateAbout = function (axis) {
+        var _this = this;
+        return { by: function (angle) {
+            return _this._rotate(axis, angle);
+        }};
+    };
+
+    Vector.prototype._rotate  = function(axis, angle) {
+
+        var c = Math.cos(angle);
+        var s = Math.sin(angle);
+        var u = axis.dot(this)*(1 - c);
+
+        var scaledAxis = axis.scaleBy(u);
+        var scaledVector = this.scaleBy(c);
+        var scaledCross = axis.cross(this).scaleBy(s);
+
+        return scaledAxis.add(scaledVector).add(scaledCross);
+    };
+
+    Vector.prototype.angle = function(other) {
+        var thisMag = this.mag();
+        var otherMag = other.mag();
+        if(thisMag === 0 || otherMag === 0)
+            return 180;
+        var q = this.dot(other) / (thisMag * otherMag);
+        return Math.acos(q);
+    };
+
+    Vector.prototype.toString = function () {
+        return  "" +
+            "<" +
+            _sign(this._x) + this._x.toFixed(3) + "," +
+            _sign(this._y) + this._y.toFixed(3) + "," +
+            _sign(this._z) + this._z.toFixed(3) +
+            ">";
+    };
+
+    var _sign = function (value) {
+        if (value < 0) return '';
+        return '+';
+    };
+
+    Vector.zero = new Vector(0, 0, 0);
+    Vector.one = new Vector(1, 1, 1);
+    Vector.look = new Vector(0, 0, 1);
+    Vector.right = new Vector(1, 0, 0);
+    Vector.up = new Vector(0, 1, 0);
+
+    return Vector;
+
+})();
