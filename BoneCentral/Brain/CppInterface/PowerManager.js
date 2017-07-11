@@ -5,11 +5,11 @@ module.exports = (function(){
     }
 
     PowerManager.prototype.turnOnImu = function () {
-        this._cmdOut.write("turnOnImuSensor\n");
+        this._cmdOut.write("turnOnImu\n");
     };
 
     PowerManager.prototype.turnOffImu = function () {
-        this._cmdOut.write("turnOffImuSensor\n");
+        this._cmdOut.write("turnOffImu\n");
     };
 
     PowerManager.prototype.exit = function () {

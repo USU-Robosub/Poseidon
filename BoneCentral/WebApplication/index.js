@@ -137,6 +137,7 @@ app.get('/getAngularAcceleration', function(req, res) {
 app.get('/getHeading', function(req, res) {
     imuSensor.getHeading().done(function(heading) {
         webLogger.info("Heading: " + JSON.stringify(heading));
+        webLogger.info("Angles: " + JSON.stringify(heading.angles()));
     });
 	res.send('ran getHeading');
 });

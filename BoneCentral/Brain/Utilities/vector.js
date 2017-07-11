@@ -97,6 +97,14 @@ module.exports = (function () {
         return Math.acos(q);
     };
 
+    Vector.prototype.angles = function () {
+        var xzProjection = new Vector(this._x, 0, this._z);
+        return {
+            azimuth: xzProjection.angleFrom(Vector.look),
+            inclination: this.angleFrom(xzProjection)
+        };
+    };
+
     Vector.prototype.toString = function () {
         return  "" +
             "<" +
