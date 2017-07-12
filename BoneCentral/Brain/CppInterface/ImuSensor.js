@@ -33,14 +33,16 @@ module.exports = (function(){
     };
 
     var resolveAccel = function (self, dataJson) {
-        var accel = new Vector(dataJson.X, dataJson.Y, dataJson.Z);
+        var accel = new Vector(dataJson.Z, -dataJson.X, -dataJson.Y);
         self._accelRequest.resolve(accel);
     };
 
     var resolveHeading = function (self, dataJson) {
-        var heading = new Vector(dataJson.X, dataJson.Y, dataJson.Z);
+        var rawCompass = new Vector(dataJson.Z, dataJson.X, dataJson.Y);
+        var heading = rawCompass.unitize();
         self._headingRequest.resolve(heading);
     };
+
     var _handleData = function(self){return function (data) {
         try {
             var dataJson = JSON.parse(data.toString());

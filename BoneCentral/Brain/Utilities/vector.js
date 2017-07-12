@@ -6,6 +6,13 @@ module.exports = (function () {
         this._z = z;
     }
 
+    Vector.FromAngles = function (angles) {
+        var x = Math.sin(angles.azimuth) * Math.cos(angles.inclination);
+        var y = Math.cos(angles.azimuth) * Math.sin(angles.inclination);
+        var z = Math.sin(angles.inclination);
+        return new Vector(x, y, z);
+    };
+
     Vector.prototype.mag = function () {
         return Math.sqrt(
             this._x * this._x +
@@ -99,9 +106,11 @@ module.exports = (function () {
 
     Vector.prototype.angles = function () {
         var xzProjection = new Vector(this._x, 0, this._z);
+        var azimuth = xzProjection.angleFrom(Vector.look);
+        var inclination = this.angleFrom(xzProjection);
         return {
-            azimuth: xzProjection.angleFrom(Vector.look),
-            inclination: this.angleFrom(xzProjection)
+            azimuth: this._z < 0 ? -azimuth : azimuth,
+            inclination: this._y < 0 ? -inclination : inclination
         };
     };
 
@@ -121,8 +130,8 @@ module.exports = (function () {
 
     Vector.zero = new Vector(0, 0, 0);
     Vector.one = new Vector(1, 1, 1);
-    Vector.look = new Vector(0, 0, 1);
-    Vector.right = new Vector(1, 0, 0);
+    Vector.look = new Vector(1, 0, 0);
+    Vector.right = new Vector(0, 0, 1);
     Vector.up = new Vector(0, 1, 0);
 
     return Vector;

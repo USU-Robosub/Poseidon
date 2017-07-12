@@ -38,11 +38,11 @@ VectorEqualityTest( "zero:\t\t", Vector.zero, new Vector(0, 0, 0) );
 // Test to verify that vector.one is a JSON representing <1,1,1>.
 VectorEqualityTest( "one:\t\t", Vector.one, new Vector(1, 1, 1) );
 
-// Test to verify that vector.look is a JSON representing <0,0,1>.
-VectorEqualityTest( "look:\t\t", Vector.look, new Vector(0, 0, 1) );
+// Test to verify that vector.look is a JSON representing <1,0,0>.
+VectorEqualityTest( "look:\t\t", Vector.look, new Vector(1, 0, 0) );
 
-// Test to verify that vector.right is a JSON representing <1,0,0>.
-VectorEqualityTest( "right:\t\t", Vector.right, new Vector(1, 0, 0) );
+// Test to verify that vector.right is a JSON representing <0,0,1>.
+VectorEqualityTest( "right:\t\t", Vector.right, new Vector(0, 0, 1) );
 
 // Test to verify that vector.up is a JSON representing <0,1,0>.
 VectorEqualityTest( "up: \t\t", Vector.up, new Vector(0, 1, 0) );
@@ -82,6 +82,6 @@ VectorEqualityTest( "rot(v,ax,theta):\t", rotatedVector, new Vector(-1, 1, 0), e
 
 // Verify that vector.angle(<0,1,0>,vector.rotx(<0,0,1>, -pi/4)) returns the angle
 // between the two vectors.
-v = Vector.look.rotateAbout( Vector.right ).by( -Math.PI/4);
+v = Vector.right.rotateAbout( Vector.look ).by( -Math.PI/4);
 console.log(v.toString());
 ValueEqualityTest( "angle(u,v):\n", Vector.up.angleFrom(v), Math.PI/4, error=0.0001 );
