@@ -2,11 +2,16 @@
  * Created by Nathan Copier on 2/12/2016.
  */
 
+var PidController = require("./pid_controller");
+var factory = new require("./factory")();
+
 module.exports = (function(){
 
     function ThrustController(cmdOut){
+        this._yawInterval = null;
         this._isDead = true;
         this._cmdOut = cmdOut;
+        this._imu = factory.createImuSensor();
     }
 
     ThrustController.prototype.goDirection = function(move, secondDive, dive) {
@@ -43,8 +48,17 @@ module.exports = (function(){
 
     ThrustController.prototype.yaw = function (throttle) {
         if (this._isDead) return;
-        var cmdString = "yaw " + throttle + "\n";
-        this._cmdOut.write(cmdString);
+        const timeDelta = 0.1;
+        var yawPid = new PidController().withTimeDelta(timeDelta);
+        this._yawInterval = setInterval(function () {
+            this._imu.getHeading().then(function (heading) {
+                if (this._isDead) return;
+                var azimuth = heading.angles().azimuth;
+                var adjustment = yawPid.calculateAdjustment(throttle, azimuth);
+                var cmdString = "yaw " + adjustment + "\n";
+                this._cmdOut.write(cmdString);
+            }.bind(this));
+        }.bind(this), timeDelta);
     };
 
     ThrustController.prototype.pitch = function (throttle) {
@@ -60,6 +74,7 @@ module.exports = (function(){
     };
 
     ThrustController.prototype.kill = function () {
+        clearInterval(this._yawInterval);
         this._isDead = true;
         var cmdString = "killThrust\n";
         this._cmdOut.write(cmdString);
