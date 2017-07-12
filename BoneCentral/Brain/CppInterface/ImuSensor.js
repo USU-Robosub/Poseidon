@@ -32,6 +32,8 @@ module.exports = (function(){
         this._exPressureRequest = $.Deferred().resolve();
     };
 
+    // The rearrangement of these vectors account for the IMU orientation on our sub
+    // and the coordinate plane moving relative to true north rather than vice-versa
     var resolveAccel = function (self, dataJson) {
         var accel = new Vector(dataJson.Z, -dataJson.X, -dataJson.Y);
         self._accelRequest.resolve(accel);
