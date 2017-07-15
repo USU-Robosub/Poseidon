@@ -9,19 +9,20 @@
 #include <string>
 #include <sstream>
 #include <tuple>
+#include <mutex>
 
 typedef std::tuple<float, float, float> FloatTuple;
 
 class ImuSensor {
 public:
     ImuSensor(ISensorFactory& sensorFactory, std::shared_ptr<ILogger> logger);
-    FloatTuple getAcceleration();
-    FloatTuple getAngularAcceleration(); // gyroscope
-    FloatTuple getHeading();
-    int getExtPressure();
-    int getIntPressure();
-    float getExtTemperature();
-    float getIntTemperature(); // sensor fusion
+    FloatTuple getAcceleration() const;
+    FloatTuple getAngularAcceleration() const; // gyroscope
+    Vector getHeading() const;
+    int getExtPressure() const;
+    int getIntPressure() const;
+    float getExtTemperature() const;
+    float getIntTemperature() const; // sensor fusion
     ~ImuSensor();
 
 private:
@@ -34,6 +35,10 @@ private:
     std::shared_ptr<ITemperatureSensor> intTemperatureSensor1_;
     std::shared_ptr<ITemperatureSensor> intTemperatureSensor2_;
     std::shared_ptr<ILogger> logger_;
+
+    std::mutex imuMutex_;
+
+    Vector normalize(const Vector& vector) const;
 };
 
 

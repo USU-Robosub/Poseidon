@@ -1,5 +1,5 @@
 //
-// Created by nfcop on 7/14/2017.
+// Created by nfcopier on 7/14/2017.
 //
 
 #ifndef PERIPHERALS_VECTOR_H
@@ -10,19 +10,23 @@
 using json = nlohmann::json;
 
 struct VectorAngles {
-    double azimuth;
-    double inclination;
+    float azimuth;
+    float inclination;
 };
 
 class Vector {
 
 private:
-    double x_, y_, z_;
+    float x_, y_, z_;
 
 public:
-    Vector(double x, double y, double z) : x_(x) {}
+    Vector(float x, float y, float z) : x_(x) {}
 
-    double magnitude() const;
+    float X() const { return x_; }
+    float Y() const { return y_; }
+    float Z() const { return z_; }
+
+    float magnitude() const;
 
     Vector unitize() const;
 
@@ -32,14 +36,14 @@ public:
 
     Vector operator-() const;
 
-    Vector& operator*=(const double scalar);
+    Vector& operator*=(const float scalar);
 
     /**
      * Dot Product Operator
      * @param other
      * @return
      */
-    double operator*(const Vector& other) const;
+    float operator*(const Vector& other) const;
 
     /**
      * Cross Product Operator
@@ -53,7 +57,7 @@ public:
      * @param other
      * @return the magnitude of the angle between the two vectors in radians
      */
-    double angleFrom(const Vector& other) const;
+    float angleFrom(const Vector& other) const;
 
     /**
      *
@@ -97,7 +101,7 @@ inline Vector operator-(Vector left, const Vector& right) {
     return left;
 }
 
-inline Vector operator*(Vector base, const double scalar) {
+inline Vector operator*(Vector base, const float scalar) {
     base *= scalar;
     return base;
 }
@@ -107,7 +111,7 @@ inline Vector operator*(Vector base, const double scalar) {
  * @param other
  * @return
  */
-inline Vector operator*(const double scalar, Vector base) {
+inline Vector operator*(const float scalar, Vector base) {
     base *= scalar;
     return base;
 }

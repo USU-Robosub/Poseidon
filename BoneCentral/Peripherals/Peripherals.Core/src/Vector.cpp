@@ -7,9 +7,9 @@
 #define _USE_MATH_DEFINES
 
 
-Vector::Vector(double x, double y, double z) : x_(x) {}
+Vector::Vector(float x, float y, float z) : x_(x), y_(y), z_(z) {}
 
-double Vector::magnitude() const {
+float Vector::magnitude() const {
     return std::sqrt(x_*x_ + y_*y_ + z_*z_);
 }
 
@@ -35,14 +35,14 @@ Vector Vector::operator-() const {
     return Vector( -x_, -y_, -z_ );
 };
 
-Vector& Vector::operator*=(const double scalar) {
+Vector& Vector::operator*=(const float scalar) {
     x_ *= scalar;
     y_ *= scalar;
     z_ *= scalar;
     return *this;
 }
 
-double Vector::operator*(const Vector& other) const {
+float Vector::operator*(const Vector& other) const {
     return x_*other.x_ + y_*other.y_ + z_*other.z_;
 };
 
@@ -53,7 +53,7 @@ Vector& Vector::operator^=(const Vector& other) {
     return *this;
 }
 
-double Vector::angleFrom(const Vector &other) const {
+float Vector::angleFrom(const Vector &other) const {
     auto thisMag = magnitude();
     auto otherMag = other.magnitude();
     if (thisMag == 0.0 or otherMag == 0.0) return M_PI;
@@ -72,9 +72,12 @@ VectorAngles Vector::angles() const {
 }
 
 json Vector::toJson() const {
+    auto angles = angles();
     return {
             {"x", x_},
             {"y", y_},
-            {"z", z_}
+            {"z", z_},
+            {"azimuth", angles.azimuth},
+            {"inclination", angles.inclination}
     };
 }

@@ -5,7 +5,11 @@ Compass::Compass(std::shared_ptr<HMC5883L> compass) :
 
 
 
-FloatTuple Compass::getHeading()
+Vector Compass::getHeading()
 {
-	return std::make_tuple(compass_->X(), compass_->Y(), compass_->Z());;
+	return Vector(
+            compass_->X(),
+            compass_->Y(),
+            compass_->Z()
+	);
 }
