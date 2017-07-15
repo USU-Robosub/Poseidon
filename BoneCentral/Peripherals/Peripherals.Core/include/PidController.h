@@ -6,29 +6,34 @@
 #define PERIPHERALS_PID_CONTROLLER_H
 
 
+
 class PidController {
 
 private:
-    double previousError_;
-    double min_;
-    double max_;
-    double p_;
-    double i_;
-    double d_;
-    double timeDelta_;
+    float previousError_;
+    float min_;
+    float max_;
+    float p_;
+    float i_;
+    float d_;
+    float timeDelta_;
 
 public:
+
+    struct Configuration {
+        float P;
+        float I;
+        float D;
+    };
 
     PidController() : previousError_(0.0) {}
 
     /**
      * Configures constants.
-     * @param p the Proportion constant
-     * @param i the Integral constant
-     * @param d the Derivative constant
+     * @param configuration
      * @return `this` for chaining
      */
-    PidController& withConstants(double p, double i, double d);
+    PidController& withConstants(Configuration configuration);
 
     /**
      * Configures bounds. The adjustment returned will always be within these bounds
@@ -36,7 +41,7 @@ public:
      * @param maximum
      * @return `this` for chaining
      */
-    PidController& withBounds(double minimum, double maximum);
+    PidController& withBounds(float minimum, float maximum);
 
     /**
      * Configure the time delta between updates.
@@ -52,7 +57,7 @@ public:
      * @param processValue the current sensor reading
      * @return the adjustment to send to the motors, servo, etc.
      */
-    double calculateAdjustmentFor(double setPoint, double processValue);
+    float calculateAdjustmentFor(float setPoint, float processValue);
 
 };
 

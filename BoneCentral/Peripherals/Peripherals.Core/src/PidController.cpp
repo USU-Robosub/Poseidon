@@ -4,12 +4,14 @@
 
 #include "PidController.h"
 
-PidController& PidController::withConstants(double p, double i, double d) {
-    p_ = p; i_ = i; d_ = d;
+PidController& PidController::withConstants(Configuration configuration) {
+    p_ = configuration.P;
+    i_ = configuration.I;
+    d_ = configuration.D;
     return *this;
 }
 
-PidController& PidController::withBounds(double minimum, double maximum) {
+PidController& PidController::withBounds(float minimum, float maximum) {
     min_ = minimum; max_ = maximum;
     return *this;
 }
@@ -19,7 +21,7 @@ PidController& PidController::withTimeDelta(unsigned int timeDelta) {
     return *this;
 }
 
-double PidController::calculateAdjustmentFor(double setPoint, double processValue) {
+float PidController::calculateAdjustmentFor(float setPoint, float processValue) {
     auto currentError = setPoint - processValue;
     auto errorDifference = currentError - previousError_;
     previousError_ = currentError;
