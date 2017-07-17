@@ -20,7 +20,7 @@ private:
     float x_, y_, z_;
 
 public:
-    Vector(float x, float y, float z) : x_(x) {}
+    Vector(float x, float y, float z);
 
     float X() const { return x_; }
     float Y() const { return y_; }
