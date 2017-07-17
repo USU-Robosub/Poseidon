@@ -144,11 +144,12 @@ void CommandDispatcher::_getAngularAcceleration() {
 }
 
 void CommandDispatcher::_getHeading() {
-    auto heading = imuSensor_.getHeading();
+    auto headingJson = imuSensor_.getHeading().toJson();
+    headingJson["Type"] = "Heading";
     IF_DEBUG {
-        std::cerr << heading.toJson() << std::endl;
+        std::cerr << headingJson << std::endl;
     }
-    out_ << heading.toJson() << std::endl;
+    out_ << headingJson << std::endl;
 }
 
 void CommandDispatcher::_getInternalTemperature() {
