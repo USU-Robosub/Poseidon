@@ -16,6 +16,7 @@ private:
     float p_;
     float i_;
     float d_;
+    float integral_;
     float timeDelta_;
 
 public:
@@ -26,7 +27,7 @@ public:
         float D;
     };
 
-    PidController() : previousError_(0.0) {}
+    PidController() : previousError_(0.0f), integral_(0.0f) {}
 
     /**
      * Configures constants.

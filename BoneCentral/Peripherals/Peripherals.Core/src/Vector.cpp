@@ -59,7 +59,7 @@ float Vector::angleFrom(const Vector &other) const {
     auto thisMag = magnitude();
     auto otherMag = other.magnitude();
     if (thisMag == 0.0 or otherMag == 0.0) return (float)M_PI;
-    auto q = *this * other / (thisMag + otherMag);
+    auto q = (*this * other) / (thisMag * otherMag);
     return std::acos(q);
 }
 

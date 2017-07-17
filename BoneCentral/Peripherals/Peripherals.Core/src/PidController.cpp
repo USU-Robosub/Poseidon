@@ -25,10 +25,9 @@ float PidController::calculateAdjustmentFor(float setPoint, float processValue) 
     auto currentError = setPoint - processValue;
     auto errorDifference = currentError - previousError_;
     previousError_ = currentError;
-    auto proportion  = p_ * currentError;
-    auto integral  = i_ * currentError * timeDelta_;
-    auto derivative  = d_ * errorDifference / timeDelta_;
-    auto adjustment = proportion + integral + derivative;
+    integral_  = integral_ + currentError * timeDelta_;
+    auto derivative  = errorDifference / timeDelta_;
+    auto adjustment = p_ * currentError + i_ * integral_ + d_ * derivative;
     if(adjustment > max_) return max_;
     if(adjustment < min_) return min_;
     return adjustment;

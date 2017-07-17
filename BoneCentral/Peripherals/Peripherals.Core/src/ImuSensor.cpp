@@ -46,7 +46,7 @@ Vector ImuSensor::getHeading()
  * @return
  */
 Vector ImuSensor::normalize(const Vector& rawVector) const {
-    return Vector( rawVector.Z(), -rawVector.X(), -rawVector.Y() );
+    return Vector( rawVector.Z(), rawVector.X(), rawVector.Y() );
 }
 
 
