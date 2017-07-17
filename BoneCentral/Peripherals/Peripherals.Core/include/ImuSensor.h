@@ -16,13 +16,13 @@ typedef std::tuple<float, float, float> FloatTuple;
 class ImuSensor {
 public:
     ImuSensor(ISensorFactory& sensorFactory, std::shared_ptr<ILogger> logger);
-    FloatTuple getAcceleration() const;
-    FloatTuple getAngularAcceleration() const; // gyroscope
-    Vector getHeading() const;
-    int getExtPressure() const;
-    int getIntPressure() const;
-    float getExtTemperature() const;
-    float getIntTemperature() const; // sensor fusion
+    FloatTuple getAcceleration();
+    FloatTuple getAngularAcceleration(); // gyroscope
+    Vector getHeading();
+    int getExtPressure();
+    int getIntPressure();
+    float getExtTemperature();
+    float getIntTemperature(); // sensor fusion
     ~ImuSensor();
 
 private:

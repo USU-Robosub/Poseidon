@@ -30,9 +30,7 @@ private:
     std::shared_ptr<IThruster> moveThruster_;
     std::shared_ptr<IThruster> diveThruster_;
     std::shared_ptr<IThruster> yawThruster_;
-
     ImuSensor& imuSensor_;
-    std::shared_ptr<ILogger> logger_;
 
     float yawSetPoint_;
     PidController yawController_;
@@ -47,6 +45,8 @@ private:
     std::thread* pidThread_;
     bool shouldDie_;
 
+    std::shared_ptr<ILogger> logger_;
+
     void setNeutral();
     void runPidLoop();
     void updateMoveThruster();
@@ -55,7 +55,7 @@ private:
 
     void setShouldDie();
     void unsetShouldDie();
-    bool shouldDie() const;
+    bool shouldDie();
     void endPidThread();
 };
 

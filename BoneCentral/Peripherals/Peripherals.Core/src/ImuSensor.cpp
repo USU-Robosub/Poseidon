@@ -16,25 +16,25 @@ ImuSensor::ImuSensor(ISensorFactory& sensorFactory, std::shared_ptr<ILogger> log
 
 
 
-FloatTuple ImuSensor::getAcceleration() const
+FloatTuple ImuSensor::getAcceleration()
 {
-    std::lock_guard lock(imuMutex_);
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return accelerometer_->getAcceleration();
 }
 
 
 
-FloatTuple ImuSensor::getAngularAcceleration() const
+FloatTuple ImuSensor::getAngularAcceleration()
 {
-    std::lock_guard lock(imuMutex_);
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return gyroscope_->getAngularAcceleration();
 }
 
 
 
-Vector ImuSensor::getHeading() const
+Vector ImuSensor::getHeading()
 {
-    std::lock_guard lock(imuMutex_);
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return normalize( compass_->getHeading() );
 }
 
@@ -50,33 +50,33 @@ Vector ImuSensor::normalize(const Vector& rawVector) const {
 }
 
 
-int ImuSensor::getExtPressure() const
+int ImuSensor::getExtPressure()
 {
-    std::lock_guard lock(imuMutex_);
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return extPressureSensor_->getPressure();
 }
 
 
 
-int ImuSensor::getIntPressure() const
+int ImuSensor::getIntPressure()
 {
-    std::lock_guard lock(imuMutex_);
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return intPressureSensor_->getPressure();
 }
 
 
 
-float ImuSensor::getExtTemperature() const
+float ImuSensor::getExtTemperature()
 {
-    std::lock_guard lock(imuMutex_);
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return extTemperatureSensor_->getTemperature();
 }
 
 
 
-float ImuSensor::getIntTemperature() const
+float ImuSensor::getIntTemperature()
 {
-    std::lock_guard lock(imuMutex_);
+    std::lock_guard<std::mutex> lock(imuMutex_);
     auto temperatureResults = (intTemperatureSensor1_->getTemperature() + 
             intTemperatureSensor2_->getTemperature()) / 2.0;
     return (float)temperatureResults;

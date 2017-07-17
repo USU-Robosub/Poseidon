@@ -23,7 +23,7 @@ void ThrustController::start() {
 }
 
 void ThrustController::unsetShouldDie() {
-    std::lock_guard lock(setPointMutex_);
+    std::lock_guard<std::mutex> lock(setPointMutex_);
     shouldDie_ = false;
 }
 
@@ -37,29 +37,29 @@ void ThrustController::runPidLoop() {
 }
 
 void ThrustController::updateYawThruster() {
-    std::lock_guard lock(setPointMutex_);
+    std::lock_guard<std::mutex> lock(setPointMutex_);
     float azimuth = imuSensor_.getHeading().angles().azimuth;
     auto throttle = yawController_.calculateAdjustmentFor(0, yawSetPoint_ - azimuth);
     yawThruster_->Thrust( throttle );
 }
 
-bool ThrustController::shouldDie() const {
-    std::lock_guard lock(setPointMutex_);
+bool ThrustController::shouldDie() {
+    std::lock_guard<std::mutex> lock(setPointMutex_);
     return shouldDie_;
 }
 
 void ThrustController::move(float throttle) {
-    std::lock_guard lock(setPointMutex_);
+    std::lock_guard<std::mutex> lock(setPointMutex_);
     moveThruster_->Thrust( throttle );
 }
 
 void ThrustController::dive(float throttle) {
-    std::lock_guard lock(setPointMutex_);
+    std::lock_guard<std::mutex> lock(setPointMutex_);
     diveThruster_->Thrust( throttle );
 }
 
 void ThrustController::yaw(float angle) {
-    std::lock_guard lock(setPointMutex_);
+    std::lock_guard<std::mutex> lock(setPointMutex_);
     yawController_ = PidController()
             .withBounds(MIN_THROTTLE, MAX_THROTTLE)
             .withTimeDelta(timeDelta_)
@@ -80,7 +80,7 @@ void ThrustController::endPidThread() {
 }
 
 void ThrustController::setShouldDie() {
-    std::lock_guard lock(setPointMutex_);
+    std::lock_guard<std::mutex> lock(setPointMutex_);
     shouldDie_ = true;
 }
 
