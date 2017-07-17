@@ -19,8 +19,8 @@ void App_Start(int argCount, char **arguments) {
     auto loggerStream = _getSocketStream(portMap, "loggerPort");
     auto scriptLogger = std::make_shared<ScriptLogger>(loggerStream ? *loggerStream : std::cout);
 
-    ThrustController tc(serialFactory, scriptLogger);
     ImuSensor subSensors(sensorFactory, scriptLogger);
+    ThrustController tc(serialFactory, subSensors, scriptLogger);
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
     CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights);
