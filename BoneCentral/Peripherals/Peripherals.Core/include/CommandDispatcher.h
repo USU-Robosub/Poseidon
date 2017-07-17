@@ -26,6 +26,7 @@ private:
     ThrustController& thrustController_;
     PowerManager& powerManager_;
     IHeadlights& lights_;
+    ILogger& logger_;
     bool shouldExit_;
 
     void dispatchCommand(std::stringstream& cmd);
@@ -53,7 +54,8 @@ public:
             ImuSensor& imuSensor,
             ThrustController& thrustController,
             PowerManager& powerManager,
-            IHeadlights& lights
+            IHeadlights& lights,
+            ILogger& logger
     );
     void runLoop();
 

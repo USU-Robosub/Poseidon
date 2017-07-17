@@ -13,13 +13,14 @@ using json = nlohmann::json;
 
 CommandDispatcher::CommandDispatcher(std::istream& in, std::ostream& out,
     ImuSensor& imuSensor, ThrustController& thrustController,
-    PowerManager& powerManager, IHeadlights& lights)
+    PowerManager& powerManager, IHeadlights& lights, ILogger& logger)
         : in_(in),
           out_(out),
           imuSensor_(imuSensor),
           thrustController_(thrustController),
           powerManager_(powerManager),
           lights_(lights),
+          logger_(logger),
           shouldExit_(false) {}
 
 void CommandDispatcher::runLoop() {
@@ -54,6 +55,7 @@ void CommandDispatcher::dispatchCommand(std::stringstream& cmdString) {
     else if(cmd == "getExternalTemperature")    _getExternalTemperature();
     else if(cmd == "getExternalPressure")       _getExternalPressure();
     else if(cmd == "exit")                      shouldExit_ = true;
+    else                                        logger_.warning( "Invalid command" );
 }
 
 

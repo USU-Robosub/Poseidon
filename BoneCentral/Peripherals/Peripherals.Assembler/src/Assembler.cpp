@@ -23,7 +23,7 @@ void App_Start(int argCount, char **arguments) {
     ThrustController tc(serialFactory, subSensors, scriptLogger);
     auto pm = PowerManager(powerFactory);
     auto lights = serialFactory.createHeadlights();
-    CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights);
+    CommandDispatcher cd(inputStream, outputStream, subSensors, tc, pm, *lights, *scriptLogger);
     auto arduinoAction = serialFactory.createArduinoAction();
 
     arduinoAction->setEdge(ActionThread::EdgeMode::BOTH);
