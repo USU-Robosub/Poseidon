@@ -71,23 +71,23 @@ public:
     /**
      * <0, 0, 0>
      */
-    static Vector ZERO = Vector(0, 0, 0);
+    static Vector ZERO;
     /**
      * <1, 1, 1>
      */
-    static Vector ONE = Vector(1, 1, 1);
+    static Vector ONE;
     /**
      * <1, 0, 0>
      */
-    static Vector LOOK = Vector(1, 0, 0);
+    static Vector LOOK;
     /**
      * <0, 0, 1>
      */
-    static Vector RIGHT = Vector(0, 0, 1);
+    static Vector RIGHT;
     /**
      * <0, 1, 0>
      */
-    static Vector LEFT = Vector(0, 1, 0);
+    static Vector UP;
 
 };
 

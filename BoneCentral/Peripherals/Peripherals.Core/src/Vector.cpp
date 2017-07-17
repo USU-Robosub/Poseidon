@@ -56,7 +56,7 @@ Vector& Vector::operator^=(const Vector& other) {
 float Vector::angleFrom(const Vector &other) const {
     auto thisMag = magnitude();
     auto otherMag = other.magnitude();
-    if (thisMag == 0.0 or otherMag == 0.0) return M_PI;
+    if (thisMag == 0.0 or otherMag == 0.0) return (float)M_PI;
     auto q = *this * other / (thisMag + otherMag);
     return std::acos(q);
 }
@@ -81,3 +81,13 @@ json Vector::toJson() const {
             {"inclination", angles.inclination}
     };
 }
+
+
+Vector Vector::ZERO = Vector(0, 0, 0);
+Vector Vector::ONE = Vector(1, 1, 1);
+
+Vector Vector::LOOK = Vector(1, 0, 0);
+
+Vector Vector::RIGHT = Vector(0, 0, 1);
+
+Vector Vector::UP = Vector(0, 1, 0);
