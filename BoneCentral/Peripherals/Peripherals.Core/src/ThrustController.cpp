@@ -98,6 +98,14 @@ void ThrustController::configureYaw(PidController::Configuration configuration) 
     yaw( angle );
 }
 
+void ThrustController::configureTimeDelta(unsigned int timeDelta) {
+    setPointMutex_.lock();
+    timeDelta_ = timeDelta;
+    auto angle = yawSetPoint_;
+    setPointMutex_.unlock();
+    yaw( angle );
+}
+
 ThrustController::~ThrustController() {
     logger_->info("Stopping Thrusters...");
 }

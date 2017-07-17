@@ -29,16 +29,14 @@ private:
     bool shouldExit_;
 
     void dispatchCommand(std::stringstream& cmd);
-    
-    void goDirection(std::stringstream& cmdString);
-    void rotate(std::stringstream& cmdString);
+
+    void start();
     void move(std::stringstream& cmdString);
-    void strafe(std::stringstream& cmdString);
     void dive(std::stringstream& cmdString);
     void yaw(std::stringstream& cmdString);
-    void pitch(std::stringstream& cmdString);
-    void roll(std::stringstream& cmdString);
     void kill();
+    void configureYaw(std::stringstream& cmdString);
+    void configureTimeDelta(std::stringstream& cmdString);
 
     void _getAcceleration();
     void _getAngularAcceleration();
@@ -49,7 +47,14 @@ private:
     void _getExternalPressure();
 
 public:
-    CommandDispatcher(std::istream& in, std::ostream& out, ImuSensor& imuSensor, ThrustController& thrustController, PowerManager& powerManager, IHeadlights& lights);
+    CommandDispatcher(
+            std::istream& in,
+            std::ostream& out,
+            ImuSensor& imuSensor,
+            ThrustController& thrustController,
+            PowerManager& powerManager,
+            IHeadlights& lights
+    );
     void runLoop();
 
 };

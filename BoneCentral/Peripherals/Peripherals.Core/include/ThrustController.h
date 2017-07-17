@@ -23,6 +23,7 @@ public:
     void yaw(float angle);
     void kill();
     void configureYaw(PidController::Configuration configuration);
+    void configureTimeDelta(unsigned int timeDelta);
     ~ThrustController();
 
 private:
@@ -39,7 +40,7 @@ private:
 
     const float MAX_THROTTLE = 1.0f;
     const float MIN_THROTTLE = -1.0f;
-    const unsigned int timeDelta_ = 100; //ms
+    unsigned int timeDelta_ = 100; //ms
 
     bool isDead_;
     std::mutex setPointMutex_;
