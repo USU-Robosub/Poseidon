@@ -36,12 +36,16 @@ void ThrustController::runPidLoop() {
     }
 }
 
+void ThrustController::updateMoveThruster() {}
+
 void ThrustController::updateYawThruster() {
     std::lock_guard<std::mutex> lock(setPointMutex_);
     float azimuth = imuSensor_.getHeading().angles().azimuth;
     auto throttle = yawController_.calculateAdjustmentFor(0, yawSetPoint_ - azimuth);
     yawThruster_->Thrust( throttle );
 }
+
+void ThrustController::updateDiveThruster() {}
 
 bool ThrustController::shouldDie() {
     std::lock_guard<std::mutex> lock(setPointMutex_);
