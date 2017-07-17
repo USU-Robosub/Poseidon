@@ -48,6 +48,7 @@ float Vector::operator*(const Vector& other) const {
 }
 
 Vector& Vector::operator^=(const Vector& other) {
+    //TODO: this is incorrect
     x_ += other.x_;
     y_ += other.y_;
     z_ += other.z_;

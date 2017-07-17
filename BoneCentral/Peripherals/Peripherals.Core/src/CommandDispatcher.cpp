@@ -101,7 +101,7 @@ void CommandDispatcher::kill() {
 
 void CommandDispatcher::configureYaw(std::stringstream &cmdString) {
     PidController::Configuration config;
-    cmdString >> config.D >> config.I >> config.P;
+    cmdString >> config.P >> config.I >> config.D;
     thrustController_.configureYaw( config );
 }
 
