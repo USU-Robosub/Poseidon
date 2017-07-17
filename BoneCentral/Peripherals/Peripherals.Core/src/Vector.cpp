@@ -5,6 +5,7 @@
 #include "Vector.h"
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
+#endif
 
 
 Vector::Vector(float x, float y, float z) : x_(x), y_(y), z_(z) {}
@@ -15,7 +16,7 @@ float Vector::magnitude() const {
 
 Vector Vector::unitize() const {
     return 1/ magnitude() * *this;
-};
+}
 
 Vector& Vector::operator+=(const Vector& other) {
     x_ += other.x_;
@@ -33,7 +34,7 @@ Vector& Vector::operator-=(const Vector& other) {
 
 Vector Vector::operator-() const {
     return Vector( -x_, -y_, -z_ );
-};
+}
 
 Vector& Vector::operator*=(const float scalar) {
     x_ *= scalar;
@@ -44,7 +45,7 @@ Vector& Vector::operator*=(const float scalar) {
 
 float Vector::operator*(const Vector& other) const {
     return x_*other.x_ + y_*other.y_ + z_*other.z_;
-};
+}
 
 Vector& Vector::operator^=(const Vector& other) {
     x_ += other.x_;
@@ -66,19 +67,19 @@ VectorAngles Vector::angles() const {
     auto azimuth = xzProjection.angleFrom( Vector::LOOK );
     auto inclination = angleFrom( xzProjection );
     return {
-            azimuth: z_ < 0 ? -azimuth : azimuth,
-            inclination: y_ < 0 ? -inclination : inclination
+            z_ < 0 ? -azimuth : azimuth,
+            y_ < 0 ? -inclination : inclination
     };
 }
 
 json Vector::toJson() const {
-    auto angles = angles();
+    auto a = angles();
     return {
             {"x", x_},
             {"y", y_},
             {"z", z_},
-            {"azimuth", angles.azimuth},
-            {"inclination", angles.inclination}
+            {"azimuth", a.azimuth},
+            {"inclination", a.inclination}
     };
 }
 
