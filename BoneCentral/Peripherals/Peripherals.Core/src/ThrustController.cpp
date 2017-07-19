@@ -32,7 +32,8 @@ void ThrustController::runPidLoop() {
         updateMoveThruster();
         updateYawThruster();
         updateDiveThruster();
-        usleep( timeDelta_ );
+        auto deltaInMicroseconds = timeDelta_ * 1000;
+        usleep( deltaInMicroseconds );
     }
 }
 
