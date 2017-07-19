@@ -32,10 +32,11 @@ FloatTuple ImuSensor::getAngularAcceleration()
 
 
 
-Vector ImuSensor::getHeading()
+VectorAngles ImuSensor::getHeading()
 {
     std::lock_guard<std::mutex> lock(imuMutex_);
-    return normalize( compass_->getHeading() );
+    auto vectorHeading = normalize( compass_->getHeading() );
+    return vectorHeading.angles();
 }
 
 /**

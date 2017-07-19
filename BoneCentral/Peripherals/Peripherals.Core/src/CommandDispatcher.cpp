@@ -146,8 +146,12 @@ void CommandDispatcher::_getAngularAcceleration() {
 }
 
 void CommandDispatcher::_getHeading() {
-    auto headingJson = imuSensor_.getHeading().toJson();
-    headingJson["Type"] = "Heading";
+    auto heading = imuSensor_.getHeading();
+    json headingJson = {
+            {"Type", "Heading"},
+            {"azimuth", heading.azimuth},
+            {"inclination", heading.inclination}
+    };
     IF_DEBUG {
         std::cerr << headingJson << std::endl;
     }

@@ -18,7 +18,7 @@ public:
     ImuSensor(ISensorFactory& sensorFactory, std::shared_ptr<ILogger> logger);
     FloatTuple getAcceleration();
     FloatTuple getAngularAcceleration(); // gyroscope
-    Vector getHeading();
+    VectorAngles getHeading();
     int getExtPressure();
     int getIntPressure();
     float getExtTemperature();
