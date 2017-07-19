@@ -74,7 +74,9 @@ void ThrustController::yaw(float angle) {
 
 void ThrustController::kill() {
     endPidThread();
-    setNeutral();
+    moveThruster_->Thrust(0);
+    yawThruster_->Thrust(0);
+    diveThruster_->Thrust(0);
 }
 
 void ThrustController::endPidThread() {
