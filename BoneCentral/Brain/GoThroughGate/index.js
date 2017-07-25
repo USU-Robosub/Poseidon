@@ -18,6 +18,7 @@ const MOVE_TIME = 15000; //milliseconds
 
 const DIVE_POWER = 0.8;
 const MOVE_POWER = 0.15;
+const heading = 90 * Math.PI/180;
 
 module.exports = {init: function(){
 
@@ -45,6 +46,7 @@ module.exports = {init: function(){
         this._startTime = new Date();
         this._state = States.DIVING;
         this._thrustController.dive(-DIVE_POWER);
+        this._thrustController.yaw(heading);
     };
 
     GoThroughGate.prototype._transitionFromDiving = function () {
