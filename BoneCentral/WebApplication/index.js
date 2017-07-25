@@ -18,9 +18,21 @@ var powerManager 		= peripheralsFactory.createPowerManager();
 var imuSensor 			= peripheralsFactory.createImuSensor();
 var headLights 			= peripheralsFactory.createHeadlights();
 var gateDetector 		= visionFactory.createGateDetector(webLogger);
+var utils               = require("../Brain/Utilities");
 
 peripheralsFactory.createCppLogSource(webLogger);
 CppInterface.Peripherals.initialize();
+
+var actionSwitch = peripheralsFactory.createActionFactory();
+actionSwitch.on("start", function () {
+    powerManager.turnOnEscs();
+    utils.Wait( 100 ).then(function () {
+        thrustController.start();
+    });
+});
+actionSwitch.on("kill", function () {
+    thrustController.kill();
+});
 
 app             	= express();
 app.use('/', express.static('static'));
