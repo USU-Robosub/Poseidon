@@ -49,6 +49,7 @@ private:
 
     void setNeutral();
     void runPidLoop();
+    void createYawController();
     void updateMoveThruster();
     void updateYawThruster();
     void updateDiveThruster();

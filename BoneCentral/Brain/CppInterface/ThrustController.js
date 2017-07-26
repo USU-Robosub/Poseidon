@@ -2,11 +2,12 @@
  * Created by Nathan Copier on 2/12/2016.
  */
 
-fs = require("fs");
+const fs = require("fs");
+const path = require("path");
 
 module.exports = (function(){
 
-    const configFileName = "thrusterConfig.json";
+    const configFileName = path.resolve(__dirname) + "thrusterConfig.json";
 
     function ThrustController(cmdOut){
         this._cmdOut = cmdOut;
@@ -33,7 +34,7 @@ module.exports = (function(){
     };
 
     ThrustController.prototype.start = function () {
-        this._cmdOut.write( "startThrusters" );
+        this._cmdOut.write( "startThrusters\n" );
     };
 
     ThrustController.prototype.move = function (throttle) {
@@ -69,7 +70,7 @@ module.exports = (function(){
     };
 
     ThrustController.prototype.configureTimeDelta = function (timeDelta) {
-        this.config.timeDelta = timeDelta;
+        this._config.timeDelta = timeDelta;
         _save(this._config);
         this._sendDeltaConfig(timeDelta);
     };
@@ -80,7 +81,7 @@ module.exports = (function(){
     };
 
     var _save = function (config) {
-        fs.writeFile(configFileName, JSON.stringify(config));
+        fs.writeFileSync(configFileName, JSON.stringify(config));
     };
 
     return ThrustController;

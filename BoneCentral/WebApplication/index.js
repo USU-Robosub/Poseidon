@@ -23,9 +23,9 @@ var utils               = require("../Brain/Utilities");
 peripheralsFactory.createCppLogSource(webLogger);
 CppInterface.Peripherals.initialize();
 
-var actionSwitch = peripheralsFactory.createActionFactory();
+var actionSwitch = peripheralsFactory.createActionSwitch();
 actionSwitch.on("start", function () {
-    powerManager.turnOnEscs();
+    powerManager.turnOnImu();
     utils.Wait( 100 ).then(function () {
         thrustController.start();
     });
@@ -90,7 +90,7 @@ app.get('/killThrusters', function(req, res) {
     res.send('killThrusters');
 });
 
-app.get('/configureYaw', function (req, res) {
+app.post('/configureYaw', function (req, res) {
     var params = req.body;
     thrustController.configureYaw({
         p: params.p,
@@ -100,7 +100,7 @@ app.get('/configureYaw', function (req, res) {
     res.send('');
 });
 
-app.get('configureTimeDelta', function (req, res) {
+app.post('configureTimeDelta', function (req, res) {
     var params = req.body;
     thrustController.configureTimeDelta( params.timeDelta );
     res.send('');

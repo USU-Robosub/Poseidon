@@ -15,7 +15,7 @@ ThrustController::ThrustController(
 
 void ThrustController::start() {
     if (pidThread_ != nullptr) return;
-    setNeutral();
+    //setNeutral();
     unsetShouldDie();
     pidThread_ = new std::thread([&](){
         runPidLoop();
@@ -35,6 +35,14 @@ void ThrustController::runPidLoop() {
         auto deltaInMicroseconds = timeDelta_ * 1000;
         usleep( deltaInMicroseconds );
     }
+}
+
+void ThrustController::createYawController() {
+    if (yawController_) delete yawController_;
+    yawController_ = PidController()
+            .withBounds(MIN_THROTTLE, MAX_THROTTLE)
+            .withTimeDelta(timeDelta_)
+            .withConstants(yawConfiguration_);
 }
 
 void ThrustController::updateMoveThruster() {}
@@ -65,10 +73,6 @@ void ThrustController::dive(float throttle) {
 
 void ThrustController::yaw(float angle) {
     std::lock_guard<std::mutex> lock(setPointMutex_);
-    yawController_ = PidController()
-            .withBounds(MIN_THROTTLE, MAX_THROTTLE)
-            .withTimeDelta(timeDelta_)
-            .withConstants(yawConfiguration_);
     yawSetPoint_ = angle;
 }
 
