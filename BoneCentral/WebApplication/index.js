@@ -7,13 +7,11 @@ var FileLogger      	= require('./FileLogger');
 var CppInterface		= require('../Brain/CppInterface');
 var VisionInterface		= require("../Brain/VisionInterface");
 var GoThroughGate   	= require("../Brain/GoThroughGate").init();
-var ThrustManager   	= require("../Brain/ThrustManager");
 
 var fileLogger 		  	= new FileLogger("./test.log");
 var webLogger 			= new WebLogger(fileLogger);
 var peripheralsFactory	= new CppInterface.Factory();
-var visionFactoy 	  	= new VisionInterface.Factory();
-var thrustManager    	= new ThrustManager(peripheralsFactory);
+var visionFactory 	  	= new VisionInterface.Factory();
 
 var thrustController    = peripheralsFactory.createThrustController();
 var powerManager 		= peripheralsFactory.createPowerManager();
@@ -25,9 +23,9 @@ var utils               = require("../Brain/Utilities");
 peripheralsFactory.createCppLogSource(webLogger);
 CppInterface.Peripherals.initialize();
 
-var actionSwitch = peripheralsFactory.createActionFactory();
+var actionSwitch = peripheralsFactory.createActionSwitch();
 actionSwitch.on("start", function () {
-    powerManager.turnOnEscs();
+    powerManager.turnOnImu();
     utils.Wait( 100 ).then(function () {
         thrustController.start();
     });
@@ -57,12 +55,13 @@ app.get('/initialize', function(req, res) {
 	res.send('initialize');
 });
 
-app.post('/thrust', function(req, res) {
-	res.send('thrust ' + req.body.powerLevel);
-});
-
 app.get('/stdoutData', function(req, res) {
 	res.send(webLogger.pull());
+});
+
+app.get('/startThrusters', function(req, res) {
+    thrustController.start();
+    res.send('startThrusters');
 });
 
 // From IThrustController
@@ -73,9 +72,9 @@ app.post('/move', function (req, res) {
 });
 
 // From IThrustController
-app.post('/secondaryDive', function (req, res) {
+app.post('/yaw', function (req, res) {
     var params = req.body;
-    thrustController.secondaryDive(params.throttle);
+    thrustController.yaw(params.angle);
     res.send('');
 });
 
@@ -86,39 +85,25 @@ app.post('/dive', function (req, res) {
     res.send('');
 });
 
-// From IThrustController
-app.post('/yaw', function (req, res) {
+app.get('/killThrusters', function(req, res) {
+    thrustController.kill();
+    res.send('killThrusters');
+});
+
+app.post('/configureYaw', function (req, res) {
     var params = req.body;
-    thrustController.yaw(params.throttle);
+    thrustController.configureYaw({
+        p: params.p,
+        i: params.i,
+        d: params.d
+    });
     res.send('');
 });
 
-// From IThrustController
-app.post('/pitch', function (req, res) {
+app.post('configureTimeDelta', function (req, res) {
     var params = req.body;
-    thrustController.pitch(params.throttle);
+    thrustController.configureTimeDelta( params.timeDelta );
     res.send('');
-});
-
-// From IThrustController
-app.post('/roll', function (req, res) {
-    var params = req.body;
-    thrustController.roll(params.throttle);
-    res.send('');
-});
-
-// From IThrustController
-app.post('/goDirection', function(req, res) {
-	var params = req.body;
-	thrustController.goDirection(params.move, params.secondaryDive, params.dive);
-	res.send('');
-});
-
-// From IThrustController
-app.post('/rotate', function(req, res) {
-	var params = req.body;
-	thrustController.rotate(params.yaw, params.pitch, params.roll);
-	res.send('');
 });
 
 // From Imu
@@ -149,6 +134,7 @@ app.get('/getAngularAcceleration', function(req, res) {
 app.get('/getHeading', function(req, res) {
     imuSensor.getHeading().done(function(heading) {
         webLogger.info("Heading: " + JSON.stringify(heading));
+        webLogger.info("Angles: " + JSON.stringify(heading.angles()));
     });
 	res.send('ran getHeading');
 });
@@ -185,18 +171,6 @@ app.get('/exit', function(req, res) {
 	res.send('exit');
 	powerManager.exit();
 	process.exit();
-});
-
-
-// From IPowerController {
-app.get('/startThrusters', function(req, res) {
-    thrustController.start();
-	res.send('startThrusters');
-});
-
-app.get('/killThrusters', function(req, res) {
-    thrustController.kill();
-	res.send('killThrusters');
 });
 
 

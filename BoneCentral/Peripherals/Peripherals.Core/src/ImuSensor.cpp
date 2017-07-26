@@ -18,27 +18,41 @@ ImuSensor::ImuSensor(ISensorFactory& sensorFactory, std::shared_ptr<ILogger> log
 
 FloatTuple ImuSensor::getAcceleration()
 {
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return accelerometer_->getAcceleration();
 }
 
 
 
-FloatTuple ImuSensor::getAngularAcceleration() 
+FloatTuple ImuSensor::getAngularAcceleration()
 {
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return gyroscope_->getAngularAcceleration();
 }
 
 
 
-FloatTuple ImuSensor::getHeading()
+Vector ImuSensor::getHeading()
 {
-    return compass_->getHeading();
+    std::lock_guard<std::mutex> lock(imuMutex_);
+    return normalize( compass_->getHeading() );
 }
 
+/**
+ * Transforms the vector based on the Compass' orientation on the sub
+ * also inverts so the return value is the sub's orientation relative to
+ * magnetic north rather than north's orientation relative to the sub.
+ * @param rawVector
+ * @return
+ */
+Vector ImuSensor::normalize(const Vector& rawVector) const {
+    return Vector( rawVector.Z(), rawVector.X(), rawVector.Y() );
+}
 
 
 int ImuSensor::getExtPressure()
 {
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return extPressureSensor_->getPressure();
 }
 
@@ -46,6 +60,7 @@ int ImuSensor::getExtPressure()
 
 int ImuSensor::getIntPressure()
 {
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return intPressureSensor_->getPressure();
 }
 
@@ -53,6 +68,7 @@ int ImuSensor::getIntPressure()
 
 float ImuSensor::getExtTemperature()
 {
+    std::lock_guard<std::mutex> lock(imuMutex_);
     return extTemperatureSensor_->getTemperature();
 }
 
@@ -60,9 +76,10 @@ float ImuSensor::getExtTemperature()
 
 float ImuSensor::getIntTemperature()
 {
+    std::lock_guard<std::mutex> lock(imuMutex_);
     auto temperatureResults = (intTemperatureSensor1_->getTemperature() + 
             intTemperatureSensor2_->getTemperature()) / 2.0;
-    return temperatureResults;
+    return (float)temperatureResults;
 }
 
 

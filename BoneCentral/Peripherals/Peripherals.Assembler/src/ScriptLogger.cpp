@@ -13,7 +13,7 @@ void ScriptLogger::info(const char *const message) {
 
 void ScriptLogger::warning(const char *const message) {
     std::lock_guard<std::mutex> guard(loggerLock_);
-    out_ << "warning " << message << std::endl;
+    out_ << "warn " << message << std::endl;
 }
 
 void ScriptLogger::error(const char *const message) {
