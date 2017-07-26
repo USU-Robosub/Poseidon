@@ -9,7 +9,6 @@ ThrustController::ThrustController(
         diveThruster_(thrusterFactory.createDiveThruster()),
         yawThruster_(thrusterFactory.createYawThruster()),
         imuSensor_(imuSensor),
-        isDead_(true),
         pidThread_(nullptr),
         logger_(logger) { }
 

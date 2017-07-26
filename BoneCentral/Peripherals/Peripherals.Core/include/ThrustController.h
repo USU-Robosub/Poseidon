@@ -40,7 +40,6 @@ private:
     const float MIN_THROTTLE = -1.0f;
     unsigned int timeDelta_ = 100; //ms
 
-    bool isDead_;
     std::mutex setPointMutex_;
     std::thread* pidThread_;
     bool shouldDie_;
