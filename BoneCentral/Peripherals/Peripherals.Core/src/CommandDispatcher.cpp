@@ -88,6 +88,7 @@ void CommandDispatcher::dive(std::stringstream &cmdString) {
 void CommandDispatcher::yaw(std::stringstream &cmdString) {
     float angle;
     cmdString >> angle;
+    std::cout << "CD Recieved angle: " << angle << std::endl;
     IF_DEBUG {
         std::cout << "Yaw: " << angle << std::endl;
     }

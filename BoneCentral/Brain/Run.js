@@ -20,18 +20,25 @@ module.exports = {init: function (GoThroughGate, BumpBuoy, SurfaceAtPinger) {
     };
 
     Run.prototype.execute = function () {
+        this._thrustController.configureTimeDelta( 100 );
         utilities.Wait(50).then(function () {
+            console.log("Going through gate");
             return this._goThroughGate.execute();
         }.bind(this)).then(function () {
+            console.log("Bumping a buoy");
             return this._bumpBuoy.execute();
         }.bind(this)).then(function () {
+            console.log("Surfacing at pinger");
             return this._surfaceAtPinger.execute();
         }.bind(this)).then(function () {
+            console.log("Run cleared!")
+            this._isDead = true;
             return this._thrustController.kill();
         }.bind(this));
     };
 
     Run.prototype.kill = function () {
+        if (this._isDead) return;
         this._killTasks();
         this._thrustController.kill();
     };

@@ -12,6 +12,7 @@ module.exports = {init: function () {
     SurfaceAtPinger.prototype.execute = function () {
         this._deferred = utilities.Promises.Deferred();
         this._deferred.resolve();
+        return this._deferred;
     };
 
     SurfaceAtPinger.prototype.kill = function () { };

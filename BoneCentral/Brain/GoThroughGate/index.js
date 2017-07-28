@@ -13,12 +13,13 @@ const States = {
     FINAL: 3
 };
 
-const DIVE_TIME = 5000; //milliseconds
-const MOVE_TIME = 15000; //milliseconds
+const DIVE_TIME = 1000; //milliseconds
+const MOVE_TIME = 60000; //milliseconds
 
 const DIVE_POWER = 0.8;
+const MAINTAIN_DIVE = 0.31;
 const MOVE_POWER = 0.15;
-const heading = 90 * Math.PI/180;
+const heading = -1.65;
 
 module.exports = {init: function(){
 
@@ -29,7 +30,6 @@ module.exports = {init: function(){
     }
 
     GoThroughGate.prototype.execute = function () {
-        console.log("Starting Gate Task...");
         this._deferred = utilities.Promises.Deferred();
         this._ticker = setInterval(this._doTick.bind(this), 10);
         return this._deferred.promise();
@@ -42,19 +42,18 @@ module.exports = {init: function(){
     };
 
     GoThroughGate.prototype._transitionFromInitial = function () {
-        console.log("Diving...");
         this._startTime = new Date();
         this._state = States.DIVING;
-        this._thrustController.dive(-DIVE_POWER);
-        this._thrustController.yaw(heading);
+        this._thrustController.dive( -DIVE_POWER );
+        this._thrustController.yaw( heading );
     };
 
     GoThroughGate.prototype._transitionFromDiving = function () {
         if (this._shouldContinueDiving()) return;
-        console.log("Moving...");
         this._startTime = new Date();
         this._state = States.MOVING;
-        this._thrustController.move(MOVE_POWER);
+        this._thrustController.dive( -MAINTAIN_DIVE )
+        this._thrustController.move( MOVE_POWER );
     };
 
     GoThroughGate.prototype._shouldContinueDiving = function () {
@@ -63,8 +62,8 @@ module.exports = {init: function(){
 
     GoThroughGate.prototype._transitionFromMoving = function () {
         if (this._shouldContinueMoving()) return;
-        console.log("Gate Task Completed.");
         this._state = States.FINAL;
+        clearInterval(this._ticker);
         this._deferred.resolve();
     };
 

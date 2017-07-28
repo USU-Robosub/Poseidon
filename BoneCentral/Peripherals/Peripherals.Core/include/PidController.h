@@ -5,8 +5,6 @@
 #ifndef PERIPHERALS_PID_CONTROLLER_H
 #define PERIPHERALS_PID_CONTROLLER_H
 
-
-
 class PidController {
 
 private:
