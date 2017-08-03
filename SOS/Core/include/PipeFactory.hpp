@@ -2,6 +2,7 @@
 #define PIPE_FACTORY_H
 
 #include "PipeGroup.hpp"
+#include "ClusterConfig.hpp"
 
 class PipeFactory{
 public:
