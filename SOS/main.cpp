@@ -1,30 +1,30 @@
-//#include "Assembler.hpp"
-#include "NetworkNode.hpp"
-#include "ClusterConfig.hpp"
-#include "ClusterConfigFactory.hpp"
-#include "PipeGroup.hpp"
-#include "AllHubFactories.hpp"
-#include "AllPipeFactories.hpp"
-#include "HubFactory.hpp"
-#include "PipeFactory.hpp"
+#include <string>
+#include "Hub.hpp"
+#include "ActuatorLock.hpp"
+#include "Loopback.hpp"
 
 int main(int argCount, char** arguments) {
-  ClusterConfig clusterConfig = ClusterConfigFactory().generateConfig(argCount, arguments);
-  NetworkNode networkNode(clusterConfig);
+  std::string name = "Peripherals";
+  Hub app(name);
 
-  // InboundPipe -> allows receiving data from another node
-  // OutboundPipe -> allows sending data to another node
-  std::queue<PipeFactory_ptr> pipeFactories = getAllPipeFactories();
-  PipeGroup pipes = createAllPipes(pipeFactories, clusterConfig);
-  networkNode.listenTo(pipes.inboundPipes);
-  networkNode.relayTo(pipes.outboundPipes);
+  app.address("Arduino", "LeftThrustMotor"); // <- if LeftThrustMotor is needed ask Arduino
+  app.address("Arduino", "RightThrustMotor");
+  app.address("Arduino", "FrontDiveMotor");
+  app.address("Arduino", "BackDiveMotor");
 
-  // Hub -> takes in data from pipes (command), and outputs data to other pipes
-  std::queue<HubFactory_ptr> hubFactories = getAllHubFactories();
-  std::vector<Hub_ptr> hubs = createAllHubs(hubFactories, clusterConfig);
-  networkNode.processWith(hubs);
+  app.use("ACTUATOR_LOCK", new ActuatorLock()); // <- only on one hub in network, must be named ACTUATOR_LOCK
+  //app.use("ActionSwitch", new DebouncedButton(12)); // ([pin on beaglebone])
+  //app.use("Heading", new CompassNode(32)); // ([pin on beaglebone])
+  //app.use("Move", new SpeedAndHeadingNode("Heading", "TankMove", 1, 0.2, 2)); // ([polled heading sensor's node name], [driven tank drive node name], [P], [I], [D])
+  //app.use("TankMove", new TankDriveNode("LeftThrustMotor", "RightThrustMotor", -1, -0.1, 0.1, 1)); // ([left motor], [right motor], [max negative thrust], [min negative thrust], [min positive thrust], [max positive thrust])
+  //app.use("Dive", new DualDiveNode("FrontDiveMotor", "BackDiveMotor", -1, -0.1, 0.1, 1)); // ([dive motor1], [dive motor2], [max negative thrust], [min negative thrust], [min positive thrust], [max positive thrust])
 
-  // starts loop that will read from inbound pipes
-  networkNode.listen();
+  app.connect(name, new Loopback()); // <- allows for nodes on this hub to talk to other nodes on this hub
+  //app.connect("Arduino", new SerialConnection("/dev/ttyACM0"));
+  //app.connect("WebApp", new WebSocketConnection(1234)); // ([port number]) the web app could also connect to the brain, and then get its commands routed to this hub
+  //app.connect("Brain", new SocketConnection(2345)); // ([port number])
+
+  app.listen(); // will hang until exit command is sent
+  app.close();
   return 0;
 }

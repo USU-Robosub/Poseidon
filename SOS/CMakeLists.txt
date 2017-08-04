@@ -7,10 +7,8 @@ option(tests "Build tests" OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -pthread")
 
 include_directories(${SOS_SOURCE_DIR}/Core/include)
-include_directories(${SOS_SOURCE_DIR}/HubFactories/include)
-include_directories(${SOS_SOURCE_DIR}/Hubs/include)
-include_directories(${SOS_SOURCE_DIR}/PipeFactories/include)
-include_directories(${SOS_SOURCE_DIR}/Pipes/include)
+include_directories(${SOS_SOURCE_DIR}/Connections/include)
+include_directories(${SOS_SOURCE_DIR}/Nodes/include)
 
 file(GLOB_RECURSE SOURCE_FILES "*.cpp")
 file(GLOB_RECURSE TEST_FILES "*.spec.cpp")
