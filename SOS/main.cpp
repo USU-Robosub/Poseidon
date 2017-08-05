@@ -2,6 +2,7 @@
 #include "Hub.hpp"
 #include "ActuatorLock.hpp"
 #include "Loopback.hpp"
+#include "PseudoGUID.hpp"
 
 int main(int argCount, char** arguments) {
   std::string name = "Peripherals";
@@ -12,7 +13,7 @@ int main(int argCount, char** arguments) {
   app.address("Arduino", "FrontDiveMotor");
   app.address("Arduino", "BackDiveMotor");
 
-  app.use("ACTUATOR_LOCK", new ActuatorLock()); // <- only on one hub in network, must be named ACTUATOR_LOCK
+  app.use("ACTUATOR_LOCK", new ActuatorLock(generateUUID)); // <- only on one hub in network, must be named ACTUATOR_LOCK
   //app.use("ActionSwitch", new DebouncedButton(12)); // ([pin on beaglebone])
   //app.use("Heading", new CompassNode(32)); // ([pin on beaglebone])
   //app.use("Move", new SpeedAndHeadingNode("Heading", "TankMove", 1, 0.2, 2)); // ([polled heading sensor's node name], [driven tank drive node name], [P], [I], [D])

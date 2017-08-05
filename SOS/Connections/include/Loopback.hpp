@@ -7,6 +7,8 @@ class Loopback : public Connection{
 public:
   void send(std::string message);
   std::queue<std::string> read();
+private:
+  std::queue<std::string> messages;
 };
 
 #endif

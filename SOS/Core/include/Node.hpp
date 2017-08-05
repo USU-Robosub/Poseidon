@@ -2,12 +2,14 @@
 #define NODE_H
 
 #include "json.hpp"
-#include "Hub.hpp"
+#include "IHub.hpp"
+
+using json = nlohmann::json;
 
 class Node{
 public:
-  virtual void update(Hub* hub) = 0;
-  virtual void process(Hub* hub, json request) = 0;
+  virtual void update(IHub* hub) = 0;
+  virtual void process(IHub* hub, json message) = 0;
 };
 
 #endif

@@ -10,6 +10,8 @@ include_directories(${SOS_SOURCE_DIR}/Core/include)
 include_directories(${SOS_SOURCE_DIR}/Connections/include)
 include_directories(${SOS_SOURCE_DIR}/Nodes/include)
 
+include_directories(${SOS_SOURCE_DIR}/../Libraries/json/src)
+
 file(GLOB_RECURSE SOURCE_FILES "*.cpp")
 file(GLOB_RECURSE TEST_FILES "*.spec.cpp")
 
