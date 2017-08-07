@@ -1,15 +1,15 @@
-#include "ActuatorLock.hpp"
+#include "Locker.hpp"
 #include <iostream>
 
-void ActuatorLock::setName(std::string name){
+void Locker::setName(std::string name){
   this->name = name;
 }
 
-void ActuatorLock::update(IHub* hub){
+void Locker::update(IHub* hub){
   // do nothing
 }
 
-void ActuatorLock::process(IHub* hub, json message){
+void Locker::process(IHub* hub, json message){
   auto from = message["from"];
   auto to = message["to"];
   auto request = message["request"];
@@ -35,14 +35,14 @@ void ActuatorLock::process(IHub* hub, json message){
   }
 }
 
-std::string ActuatorLock::generateAPPLY_LOCK(std::string key) {
+std::string Locker::generateAPPLY_LOCK(std::string key) {
   return json({
     {"type", "APPLY_LOCK"},
     {"lock", key}
   }).dump();
 }
 
-std::string ActuatorLock::generateGRANT_LOCK(std::string hub, std::string lockedNode, std::string key){
+std::string Locker::generateGRANT_LOCK(std::string hub, std::string lockedNode, std::string key){
   return json({
     {"type", "GRANT_LOCK"},
     {"hub", hub},
@@ -51,7 +51,7 @@ std::string ActuatorLock::generateGRANT_LOCK(std::string hub, std::string locked
   }).dump();
 }
 
-std::string ActuatorLock::generateREJECT_LOCK(std::string hub, std::string triedNode){
+std::string Locker::generateREJECT_LOCK(std::string hub, std::string triedNode){
   return json({
     {"type", "REJECT_LOCK"},
     {"hub", hub},
@@ -60,7 +60,7 @@ std::string ActuatorLock::generateREJECT_LOCK(std::string hub, std::string tried
 }
 
 
-std::string ActuatorLock::generateREMOVE_LOCK(std::string key){
+std::string Locker::generateREMOVE_LOCK(std::string key){
   return json({
     {"type", "REMOVE_LOCK"},
     {"lock", key},

@@ -16,7 +16,7 @@ public:
   void send(std::string fromNode, std::string toHub, std::string toNode, std::string data);
   void send(std::string fromNode, std::string toNode, std::string data);
 
-  void address(std::string hubName, std::string nodeName);
+  //void address(std::string hubName, std::string nodeName);
   void use(std::string nodeName, Node* node);
   void connect(std::string hubName, Connection* connection);
   void listen(); // returns when a SOS exit command is sent

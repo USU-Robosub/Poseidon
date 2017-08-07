@@ -7,9 +7,9 @@
 
 typedef std::string (*UUIDgenerator)(void);
 
-class ActuatorLock : public Node{
+class Locker : public Node{
 public:
-  ActuatorLock(UUIDgenerator generateUUID) : generateUUID(generateUUID) {}
+  Locker(UUIDgenerator generateUUID) : generateUUID(generateUUID) {}
   void setName(std::string name);
   void update(IHub* hub);
   void process(IHub* hub, json message);
