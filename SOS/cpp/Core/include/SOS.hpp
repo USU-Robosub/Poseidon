@@ -11,7 +11,7 @@
 class SOS{
 public:
   SOS(bool isMaster) : locker(generateUUID), isMaster(isMaster) {}
-  void mountTo(Hub* hub);
+  void runOn(Hub* hub);
 private:
   bool isMaster;
   Router router;

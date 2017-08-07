@@ -19,7 +19,7 @@ int main(int argCount, char** arguments) {
   //app.connect("Brain", new SocketConnection(2345)); // ([port number])
 
   SOS sos(true);
-  sos.mountTo(app);
+  sos.runOn(app);
 
   app.listen(); // will hang until exit command is sent
 
