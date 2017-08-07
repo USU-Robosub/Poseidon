@@ -26,6 +26,6 @@ int main(int argCount, char** arguments) {
   //app.connect("Brain", new SocketConnection(2345)); // ([port number])
 
   app.listen(); // will hang until exit command is sent
-  app.close();
+  
   return 0;
 }
