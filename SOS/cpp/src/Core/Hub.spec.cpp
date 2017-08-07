@@ -2,11 +2,20 @@
 #include "gmock/gmock.h"
 #include "Hub.hpp"
 
+using ::testing::Return;
+using ::testing::_;
+
 class MockNode : public Node{
 public:
   MOCK_METHOD1(setName, void(std::string));
   MOCK_METHOD1(update, void(IHub*));
   MOCK_METHOD3(process, void(IHub*, std::string, json));
+};
+
+class AutoExitNode : public Node{
+public:
+  void update(IHub* hub) { hub->exit(); }
+  void process(IHub* hub, std::string connection, json message) { }
 };
 
 class MockConnection : public Connection{
@@ -42,4 +51,20 @@ TEST(Hub, send){
   EXPECT_CALL(connection, send("test data"));
   hub.send("connection_name", "test data");
   EXPECT_ANY_THROW(hub.send("other_connection", "test data"));
+}
+
+TEST(Hub, listen){
+  MockConnection connection;
+  MockNode node;
+  AutoExitNode exitNode;
+  std::queue<std::string> json;
+  std::string message = nlohmann::json({{"target", "bob"}}).dump();
+  json.push(message);
+  EXPECT_CALL(node, process(_,_,_));
+  ON_CALL(connection, read()).WillByDefault(Return(json));
+  Hub hub("test");
+  hub.use("node", &node);
+  hub.use("exit", &exitNode);
+  hub.connect("connection", &connection);
+  hub.listen();
 }

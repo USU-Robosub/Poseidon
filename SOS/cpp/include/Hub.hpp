@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <thread>
 #include "IHub.hpp"
 #include "Node.hpp"
 #include "Connection.hpp"

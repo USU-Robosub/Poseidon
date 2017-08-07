@@ -29,8 +29,22 @@ void Hub::connect(std::string connectionName, Connection* connection){
 
 void Hub::listen(){
   shouldListen = true;
+  std::chrono::milliseconds interval(10);
   while(shouldListen){
-    // TODO: stuff
+    std::this_thread::sleep_for(interval);
+    for(unsigned int i = 0; i < nodeNames.size(); i++){
+      nodes[nodeNames[i]]->update(this);
+    }
+    for(unsigned int i = 0; i < connectionNames.size(); i++){
+      std::queue<std::string> messages = connections[connectionNames[i]]->read();
+      while(!messages.empty()){
+        json message = json::parse(messages.front());
+        for(unsigned int j = 0; j < nodeNames.size(); j++){
+          nodes[nodeNames[j]]->process(this, connectionNames[i], message);
+        }
+        messages.pop();
+      }
+    }
   }
 }
 

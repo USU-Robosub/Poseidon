@@ -3,20 +3,25 @@
 
 #include "Hub.hpp"
 #include "PseudoGUID.hpp"
+#include "Node.hpp"
 
 #include "Router.hpp"
 #include "Loopback.hpp"
 #include "Locker.hpp"
+#include "Exit.hpp"
 
 class SOS{
 public:
-  SOS(bool isMaster) : locker(generateUUID), isMaster(isMaster) {}
+  SOS() : locker(generateUUID) {}
+  void becomeMaster(Node* node);
   void runOn(Hub* hub);
 private:
   bool isMaster;
   Router router;
   Loopback loopback;
   Locker locker;
+  Exit exitNode;
+  Node* logger;
 };
 
 #endif
