@@ -5,10 +5,10 @@
 
 class Node{
 public:
-  void setName(std::string name) { nodeName = name; }
+  virtual void setName(std::string name) { nodeName = name; }
   virtual void update(IHub* hub) = 0;
   virtual void process(IHub* hub, std::string connection, json message) = 0;
-private:
+protected:
   std::string nodeName;
 };
 

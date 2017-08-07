@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include "Node.hpp"
 
 class Router : public Node{
