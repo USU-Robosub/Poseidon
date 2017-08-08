@@ -1,6 +1,5 @@
 #include <regex>
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include "PseudoGUID.hpp"
 
 TEST(PseudoGUID, toHex){

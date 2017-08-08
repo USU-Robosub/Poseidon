@@ -16,7 +16,7 @@ public:
   void becomeMaster(Node* node);
   void runOn(Hub* hub);
 private:
-  bool isMaster;
+  bool isMaster = false;
   Router router;
   Loopback loopback;
   Locker locker;

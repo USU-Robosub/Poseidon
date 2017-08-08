@@ -1,17 +1,8 @@
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include "Locker.hpp"
+#include "Hub.mock.hpp"
 
 using ::testing::_;
-
-class MockHub : public IHub{
-public:
-  MOCK_METHOD2(send, void(std::string, std::string));
-  MOCK_METHOD0(getName, std::string(void));
-  MOCK_METHOD0(getNodeNames, std::vector<std::string>(void));
-  MOCK_METHOD0(getConnectionNames, std::vector<std::string>(void));
-  MOCK_METHOD0(exit, void(void));
-};
 
 TEST(ActuatorLock, process_lock){
   MockHub hub;
@@ -96,29 +87,6 @@ TEST(ActuatorLock, process_unlock){
     {"data", {
       {"node", "locked_node"},
       {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
-    }}
-  }));
-}
-
-TEST(ActuatorLock, process_invalid){
-  MockHub hub;
-  Locker locker([]() -> std::string { return "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; });
-
-  //EXPECT_CALL(hub, error(_)).Times(1);
-
-  locker.process(&hub, "connection_name", json({
-    {"from", {
-      {"hub", "test_hub"},
-      {"node", "test_node"}
-    }},
-    {"to", {
-      {"hub", "master"},
-      {"node", "ACTUATOR_LOCK"}
-    }},
-    {"request", {
-      {"type", "LOCK_invalid"},
-      {"hub", "target_hub"},
-      {"node", "target_node"}
     }}
   }));
 }

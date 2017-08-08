@@ -11,14 +11,14 @@
 class Hub : public IHub{
 public:
   Hub(std::string name) : hubName(name) {}
-  void send(std::string connection, std::string data);
-  void use(std::string nodeName, Node* node);
-  void connect(std::string hubName, Connection* connection);
-  void listen();
-  std::string getName();
-  std::vector<std::string> getNodeNames();
-  std::vector<std::string> getConnectionNames();
-  void exit();
+  virtual void send(std::string connection, std::string data);
+  virtual void use(std::string nodeName, Node* node);
+  virtual void connect(std::string hubName, Connection* connection);
+  virtual void listen();
+  virtual std::string getName();
+  virtual std::vector<std::string> getNodeNames();
+  virtual std::vector<std::string> getConnectionNames();
+  virtual void exit();
 private:
   bool shouldListen = false;
   std::string hubName;

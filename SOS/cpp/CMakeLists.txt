@@ -20,6 +20,8 @@ endforeach()
 add_library(SOS ${SOURCE_FILES})
 
 if(${tests})
+  include_directories(${SOS_SOURCE_DIR}/mocks)
+
   file(GLOB_RECURSE TEST_FILES "*.spec.cpp")
 
   set(GTEST_ROOT ${SOS_SOURCE_DIR}/../../Libraries/googletest/googletest)

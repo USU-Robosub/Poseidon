@@ -15,7 +15,7 @@ void Router::process(IHub* hub, std::string connection, json message){
   if(std::find(hubNodes.begin(), hubNodes.end(), message["target"]) != hubNodes.end()){ // target exists on this hub
     auto data = message["data"];
     if(message["target"] == nodeName){
-      if(message["type"] == "I_EXSIST"){
+      if(message["type"] == "I_EXIST"){
         if(allHubs.find(data["hub"]) == allHubs.end()){
           allHubs[data["hub"]] = connection;
           std::vector<std::string> nodes = data["nodes"];
@@ -28,7 +28,7 @@ void Router::process(IHub* hub, std::string connection, json message){
               hub->send(connections[i], message.dump());
             }
           }
-          hub->send(connection, generate_I_EXSIST(hub->getName(), hub->getNodeNames()));
+          hub->send(connection, generate_I_EXSIST(hub->getName(), hubNodes));
         }
       }else if(message["type"] == "GET_ADDRESSES"){
         hub->send(connection, generate_GET_ADRESSES(message["from"]));
@@ -41,7 +41,7 @@ void Router::process(IHub* hub, std::string connection, json message){
 
 std::string Router::generate_I_EXSIST(std::string hub, std::vector<std::string> nodes){
   return json({
-    {"type", "I_EXSIST"},
+    {"type", "I_EXIST"},
     {"target", nodeName},
     {"from", nodeName},
     {"data", {
