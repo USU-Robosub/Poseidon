@@ -36,6 +36,7 @@ actionSwitch.on("kill", function () {
 
 app             	= express();
 app.use('/', express.static('static'));
+app.use("/gamepad", express.static('gamepad'));
 app.use(bodyParser.json());
 
 app.get("/goThroughGate", function (req, res) {
