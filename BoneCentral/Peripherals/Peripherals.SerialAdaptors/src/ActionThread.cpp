@@ -5,7 +5,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include <json.h>
+#include <iostream>
+
+#include <json.hpp>
 using json = nlohmann::json;
 
 #include "ActionThread.h"
@@ -95,7 +97,7 @@ void ActionThread::sendJS(char value) {
             {"Type", "ActionEvent"},
             {"Value", value}
     };
-    
+
     #ifdef DEBUG
         std::cerr << outJson << std::endl;
     #endif

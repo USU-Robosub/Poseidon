@@ -1,9 +1,14 @@
 cmake_minimum_required (VERSION 2.8.12)
 project (SOS)
 
+option(for_shared "Build for linking to shared library" OFF)
 option(tests "Build tests" OFF)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -pthread")
+
+if(${for_shared})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+endif()
 
 include_directories(${SOS_SOURCE_DIR}/include)
 include_directories(${SOS_SOURCE_DIR}/../../Libraries/json/src)

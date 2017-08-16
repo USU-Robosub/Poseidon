@@ -2,7 +2,10 @@
 #define ARDUINO_USB_H
 
 #include <string>
+#include "Serial.h"
 #include "Node.hpp"
+
+using json = nlohmann::json;
 
 class ArduinoUSB : public Node{
 public:

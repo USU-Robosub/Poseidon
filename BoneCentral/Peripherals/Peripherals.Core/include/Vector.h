@@ -6,7 +6,7 @@
 #define PERIPHERALS_VECTOR_H
 
 #include <math.h>
-#include <json.h>
+#include <json.hpp>
 using json = nlohmann::json;
 
 struct VectorAngles {

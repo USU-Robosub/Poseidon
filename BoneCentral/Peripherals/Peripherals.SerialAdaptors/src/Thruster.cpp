@@ -1,10 +1,10 @@
 #include "Thruster.h"
 
-void update(IHub* hub){
+void Thruster::update(IHub*){
 
 }
 
-void process(IHub* hub, std::string connection, json message){
+void Thruster::process(IHub* hub, std::string connection, json message){
   if(message["target"] == nodeName){
     if(message["type"] == "SET_POWER"){
       float power = message["data"]["power"];

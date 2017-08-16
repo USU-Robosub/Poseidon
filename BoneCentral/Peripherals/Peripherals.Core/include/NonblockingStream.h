@@ -7,11 +7,12 @@
 #include <string>
 #include <atomic>
 #include <mutex>
+#include <sstream>
 
 class NonblockingStream {
 public:
-  AsyncStreamReader(std::istream* stream) : stream(stream) {
-    _thread = std::thread([&] { threadEntry(); });
+  NonblockingStream(std::istream* stream) : stream(stream) {
+    thread = new std::thread([&] { threadEntry(); });
   }
   bool hasLine();
   bool canRead();
@@ -23,7 +24,7 @@ private:
   std::istream* stream = nullptr;
   std::mutex mutex;
   std::queue<std::string> lines;
-  std::thread thread;
+  std::thread* thread;
 };
 
 #endif

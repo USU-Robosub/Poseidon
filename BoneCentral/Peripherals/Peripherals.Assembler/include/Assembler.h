@@ -13,6 +13,10 @@
 #include "SensorFactoryAdaptor.h"
 #include <TcpClient.h>
 #include <map>
+#include "Hub.hpp"
+#include "SOS.hpp"
+#include "ArduinoUSB.h"
+#include "Thruster.h"
 
 TcpClient* _getSocketStream(std::map<std::string, int>& portMap, string portName);
 std::map<std::string, int> _createPortMap(int argCount, char** arguments);

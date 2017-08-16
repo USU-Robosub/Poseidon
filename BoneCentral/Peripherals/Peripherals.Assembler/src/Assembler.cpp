@@ -10,14 +10,14 @@ void App_Start(int argCount, char **arguments) {
 
     Hub app("Peripherals");
     SOS sos;
-    sos.becomeMaster(/*logger*/);
-    sos.runOn(app);
-
-    app.use(/**/);
-    app.use(/*old command dispatcher converter has tcp*/);
-    app.use(/*i2c converter*/);
+    //sos.becomeMaster(/*logger*/);
+    sos.runOn(&app);
+    
+    //app.use(/**/);
+    //app.use(/*old command dispatcher converter has tcp*/);
+    //app.use(/*i2c converter*/);
     ArduinoUSB arduinoUSB("/dev/ttyACM0");
-    app.use("Arduino", &arduinoUSB);
+    //app.use("Arduino", &arduinoUSB);
 
     // Arduino thrusters
     Thruster moveThruster("Arduino", MOVE_IDX);
@@ -27,13 +27,14 @@ void App_Start(int argCount, char **arguments) {
     app.use("DiveThruster", &diveThruster);
     app.use("YawThruster", &yawThruster);
 
+    app.listen();
     /*
     Pid yawPid(target, P, I, D, [](IHub* hub){get value}, [](IHub* hub){set value});
     */
 
     /*
     CommandDispatcherConverter commandConverter(inputStream, outputStream,
-      "MoveThruster", "DiveThruster", "YawThruster", 
+      "MoveThruster", "DiveThruster", "YawThruster",
     );
     */
 
@@ -41,6 +42,7 @@ void App_Start(int argCount, char **arguments) {
     //app.connect(/*beaglebone i2c*/);
     //app.connect(/*arduino usb serial*/);
 
+    /*
     // connection : dispatcher(TCP) or terminal(CIN|COUT)
     auto dispatcherStream = _getSocketStream(portMap, "dispatcherPort");
     std::istream& inputStream = dispatcherStream ? *dispatcherStream : std::cin;
@@ -68,9 +70,9 @@ void App_Start(int argCount, char **arguments) {
     arduinoAction->begin();
     scriptLogger->info("Ready!");
     //cd.runLoop();
-    app.listen();
     if(dispatcherStream) dispatcherStream->disconnect();
     std::cout << "\n- End of Line -\n";
+    */
 }
 
 TcpClient* _getSocketStream(std::map<std::string, int>& portMap, string portName) {

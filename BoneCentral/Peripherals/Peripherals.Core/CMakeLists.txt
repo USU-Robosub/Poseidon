@@ -4,6 +4,13 @@ project(Peripherals.Core)
 set(Core_Includes "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include/Interfaces")
 include_directories(${Core_Includes})
 file(GLOB_RECURSE CORE_FILES "src/*.cpp")
+
+# remove CMakeCXXCompilerId.cpp and test files
+foreach(CORE_FILE ${CORE_FILES})
+  if(CORE_FILE MATCHES "CMakeCXXCompilerId|spec.cpp")
+    LIST(REMOVE_ITEM CORE_FILES ${CORE_FILE})
+  endif()
+endforeach()
+
 add_library(Peripherals.Core SHARED ${CORE_FILES})
 set(Core_Includes ${Core_Includes} PARENT_SCOPE)
-

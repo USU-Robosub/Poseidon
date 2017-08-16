@@ -17,33 +17,32 @@ public:
     std::string diveThrusterName,
     std::string escSwitchName,
     std::string lightSwitchName,
-    std::string accelerometerName;
-    std::string gyroscopeName;
-    std::string compassName;
-    std::string internalTemperatureName;
-    std::string internalPressureName;
-    std::string externalTemperatureName;
-    std::string externalPressureName;
+    std::string accelerometerName,
+    std::string gyroscopeName,
+    std::string compassName,
+    std::string internalTemperatureName,
+    std::string internalPressureName,
+    std::string externalTemperatureName,
+    std::string externalPressureName
   ) :
     inStream(&inStream),
     outStream(outStream),
     moveThrusterName(moveThrusterName),
     yawPIDname(yawPIDname),
+    diveThrusterName(diveThrusterName),
     escSwitchName(escSwitchName),
     lightSwitchName(lightSwitchName),
-    accelerometerName(accelerometerName);
-    gyroscopeName(gyroscopeName);
-    compassName(compassName);
-    internalTemperatureName(internalTemperatureName);
-    internalPressureName(internalPressureName);
-    externalTemperatureName(externalTemperatureName);
-    externalPressureName(externalPressureName);
-    diveThrusterName(diveThrusterName), {}
+    accelerometerName(accelerometerName),
+    gyroscopeName(gyroscopeName),
+    compassName(compassName),
+    internalTemperatureName(internalTemperatureName),
+    internalPressureName(internalPressureName),
+    externalTemperatureName(externalTemperatureName),
+    externalPressureName(externalPressureName) {}
 
   void update(IHub* hub);
   void process(IHub* hub, std::string connection, json message);
 private:
-  void CommandDispatcher::dispatchCommand(IHub* hub, std::stringstream& command);
   NonblockingStream inStream;
   std::ostream& outStream;
   std::string moveThrusterName;
@@ -58,6 +57,7 @@ private:
   std::string internalPressureName;
   std::string externalTemperatureName;
   std::string externalPressureName;
+  void dispatchCommand(IHub* hub, std::stringstream& command);
   void move(IHub* hub, std::stringstream& command);
   void yaw(IHub* hub, std::stringstream& command);
   void dive(IHub* hub, std::stringstream& command);

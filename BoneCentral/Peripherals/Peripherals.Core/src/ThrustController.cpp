@@ -37,7 +37,6 @@ void ThrustController::runPidLoop() {
 }
 
 void ThrustController::createYawController() {
-    if (yawController_) delete yawController_;
     yawController_ = PidController()
             .withBounds(MIN_THROTTLE, MAX_THROTTLE)
             .withTimeDelta(timeDelta_)

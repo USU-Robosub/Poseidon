@@ -14,7 +14,7 @@
 #include <string>
 #include <sstream>
 #include <tuple>
-#include <json.h>
+#include <json.hpp>
 #include "ILogger.h"
 
 class CommandDispatcher {
