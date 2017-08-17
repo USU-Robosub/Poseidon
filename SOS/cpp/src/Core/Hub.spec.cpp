@@ -9,13 +9,14 @@ using ::testing::_;
 class AutoExitNode : public Node{
 public:
   void update(IHub* hub) { hub->exit(); }
-  void process(IHub* hub, std::string connection, json message) { }
+  void process(IHub* hub, std::string* connection, Message* message) { }
 };
 
 TEST(Hub, use){
   MockNode node;
   MockNode node2;
   Hub hub("test");
+
   EXPECT_CALL(node, setName("node"));
   hub.use("node", &node);
   auto nodeNames = hub.getNodeNames();
@@ -28,39 +29,64 @@ TEST(Hub, connect){
   MockConnection connection;
   MockConnection connection2;
   Hub hub("test");
+
   hub.connect("master", &connection);
   EXPECT_ANY_THROW(hub.connect("master", &connection2));
 }
 
 TEST(Hub, send){
   MockConnection connection;
+  Message message("target", "type", "sender", json("data"));
   Hub hub("test");
+
   hub.connect("connection_name", &connection);
-  EXPECT_CALL(connection, send("test data"));
-  hub.send("connection_name", "test data");
-  EXPECT_ANY_THROW(hub.send("other_connection", "test data"));
+  EXPECT_CALL(connection, send(message.toJsonString()));
+  hub.send("connection_name", message);
+  EXPECT_ANY_THROW(hub.send("other_connection", message));
 }
 
 TEST(Hub, exit){
   Hub hub("test");
   AutoExitNode exitNode;
+
   hub.use("exit", &exitNode);
   hub.listen();
   EXPECT_TRUE(true);
 }
 
 TEST(Hub, listen){
+  Message message("target", "type", "sender", json("data"));
   MockConnection connection;
   MockNode node;
+  Hub hub("test");
   AutoExitNode exitNode;
   std::queue<std::string> json;
-  json.push(nlohmann::json({{"target", "bob"}}).dump());
+  json.push(message.toJsonString());
+  ON_CALL(connection, read()).WillByDefault(Return(json));
+
   EXPECT_CALL(node, setName("node"));
   EXPECT_CALL(node, update(_));
   EXPECT_CALL(node, process(_,_,_));
-  ON_CALL(connection, read()).WillByDefault(Return(json));
   EXPECT_CALL(connection, read()).Times(1);
+  hub.use("node", &node);
+  hub.use("exit", &exitNode);
+  hub.connect("connection", &connection);
+  hub.listen();
+}
+
+TEST(Hub, listen_malformedMessage){
+  MockConnection connection;
+  MockNode node;
   Hub hub("test");
+  AutoExitNode exitNode;
+  std::queue<std::string> json;
+  json.push(nlohmann::json({{"target", "bob"}}).dump());
+  ON_CALL(connection, read()).WillByDefault(Return(json));
+
+  EXPECT_CALL(node, setName("node"));
+  EXPECT_CALL(node, update(_));
+  //EXPECT_CALL(node, process(_,_,_));
+  EXPECT_CALL(connection, read()).Times(1);
   hub.use("node", &node);
   hub.use("exit", &exitNode);
   hub.connect("connection", &connection);
@@ -75,6 +101,7 @@ TEST(Hub, getName){
 TEST(Hub, getNodeNames){
   Hub hub("test");
   MockNode node, node2, node3;
+
   EXPECT_CALL(node, setName("node"));
   EXPECT_CALL(node2, setName("node2"));
   EXPECT_CALL(node3, setName("node3"));
@@ -91,6 +118,7 @@ TEST(Hub, getNodeNames){
 TEST(Hub, getConnectionNames){
   Hub hub("test");
   MockConnection connection, connection2, connection3;
+
   hub.connect("connection", &connection);
   hub.connect("connection2", &connection2);
   hub.connect("connection3", &connection3);

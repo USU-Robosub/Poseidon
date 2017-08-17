@@ -12,12 +12,11 @@ class Locker : public Node{
 public:
   Locker(UUIDgenerator generateUUID) : generateUUID(generateUUID) {}
   void update(IHub* hub);
-  void process(IHub* hub, std::string connection, json message);
+  void process(IHub* hub, std::string* connection, Message* message);
 private:
-  std::string generateAPPLY_LOCK(std::string target, std::string key);
-  std::string generateGRANT_LOCK(std::string target, std::string node, std::string key);
-  std::string generateREJECT_LOCK(std::string target, std::string node);
-  std::string generateREMOVE_LOCK(std::string target, std::string key);
+  void lock(IHub* hub, std::string* connection, Message* message);
+  void unlock(IHub* hub, std::string* connection, Message* message);
+  void forceUnlockAll(IHub* hub, std::string* connection, Message* message);
   std::map<std::string, std::string> locks;
   UUIDgenerator generateUUID;
 };

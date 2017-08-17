@@ -5,88 +5,56 @@
 using ::testing::_;
 
 TEST(ActuatorLock, process_lock){
+  Message requestLock("locker", "LOCK", "locking_node", json({
+    {"node", "locked_node"}
+  }));
+  Message secondRequestLock("locker", "LOCK", "locking_node_2", json({
+    {"node", "locked_node"}
+  }));
+  Message applyLock("locked_node", "APPLY_LOCK", "locker", json({
+    {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}
+  }));
+  Message grantLock("locking_node", "GRANT_LOCK", "locker", json({
+    {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
+    {"node", "locked_node"}
+  }));
+  Message rejectLock("locking_node_2", "REJECT_LOCK", "locker", json({
+    {"node", "locked_node"}
+  }));
+
+  std::string connectionName = "connection_name";
   MockHub hub;
   Locker locker([]() -> std::string { return "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; });
   locker.setName("locker");
 
-  EXPECT_CALL(hub, send("LOCAL", json({
-    {"type", "APPLY_LOCK"},
-    {"target", "locked_node"},
-    {"from", "locker"},
-    {"data", {
-      {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}
-    }}
-  }).dump()));
-  EXPECT_CALL(hub, send("connection_name", json({
-    {"type", "GRANT_LOCK"},
-    {"target", "locking_node"},
-    {"from", "locker"},
-    {"data", {
-      {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
-      {"node", "locked_node"}
-    }}
-  }).dump()));
+  EXPECT_CALL(hub, send("LOCAL", applyLock));
+  EXPECT_CALL(hub, send("connection_name", grantLock));
+  locker.process(&hub, &connectionName, &requestLock);
 
-  locker.process(&hub, "connection_name", json({
-    {"target", "locker"},
-    {"type", "LOCK"},
-    {"from", "locking_node"},
-    {"data", {
-      {"node", "locked_node"}
-    }}
-  }));
-
-  EXPECT_CALL(hub, send("connection_name", json({
-    {"type", "REJECT_LOCK"},
-    {"target", "locking_node_2"},
-    {"from", "locker"},
-    {"data", {
-      {"node", "locked_node"}
-    }}
-  }).dump()));
-
-  locker.process(&hub, "connection_name", json({
-    {"target", "locker"},
-    {"type", "LOCK"},
-    {"from", "locking_node_2"},
-    {"data", {
-      {"node", "locked_node"}
-    }}
-  }));
+  EXPECT_CALL(hub, send("connection_name", rejectLock));
+  locker.process(&hub, &connectionName, &secondRequestLock);
 }
 
 TEST(ActuatorLock, process_unlock){
+  Message requestLock("locker", "LOCK", "locking_node", json({
+    {"node", "locked_node"}
+  }));
+  Message removeLock("locked_node", "REMOVE_LOCK", "locker", json({
+    {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}
+  }));
+  Message requestUnlock("locker", "UNLOCK", "locking_node", json({
+    {"node", "locked_node"},
+    {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
+  }));
+
+  std::string connectionName = "connection_name";
   MockHub hub;
   Locker locker([]() -> std::string { return "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; });
   locker.setName("locker");
 
   EXPECT_CALL(hub, send(_, _)).Times(2);
+  locker.process(&hub, &connectionName, &requestLock);
 
-  locker.process(&hub, "connection_name", json({
-    {"target", "locker"},
-    {"type", "LOCK"},
-    {"from", "locking_node"},
-    {"data", {
-      {"node", "locked_node"}
-    }}
-  }));
-
-  EXPECT_CALL(hub, send("LOCAL", json({
-    {"type", "REMOVE_LOCK"},
-    {"target", "locked_node"},
-    {"from", "locker"},
-    {"data", {
-      {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}
-    }}
-  }).dump()));
-
-  locker.process(&hub, "connection_name", json({
-    {"target", "locker"},
-    {"type", "UNLOCK"},
-    {"from", "locking_node"},
-    {"data", {
-      {"node", "locked_node"},
-      {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
-    }}
-  }));
+  EXPECT_CALL(hub, send("LOCAL", removeLock));
+  locker.process(&hub, &connectionName, &requestUnlock);
 }

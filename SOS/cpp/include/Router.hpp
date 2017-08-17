@@ -10,10 +10,11 @@
 class Router : public Node{
 public:
   void update(IHub* hub);
-  void process(IHub* hub, std::string connection, json message);
+  void process(IHub* hub, std::string* connection, Message* message);
 private:
-  std::string generate_I_EXSIST(std::string hub, std::vector<std::string> nodes);
-  std::string generate_GET_ADRESSES(std::string target);
+  void iExist(IHub* hub, std::string* connection, Message* message);
+  void getAddresses(IHub* hub, std::string* connection, Message* message);
+  void forward(IHub* hub, std::string* connection, Message* message);
   bool firstUpdate = true;
   std::map<std::string, std::string> allHubs;
   std::map<std::string, std::string> allNodes;

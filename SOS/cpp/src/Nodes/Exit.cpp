@@ -1,11 +1,11 @@
 #include "Exit.hpp"
 
-void Exit::update(IHub* hub){
+void Exit::update(IHub*){
 
 }
 
-void Exit::process(IHub* hub, std::string connection, json message){
-  if(message["target"] == nodeName && message["type"] == "EXIT"){
+void Exit::process(IHub* hub, std::string* connection, Message* message){
+  if(message->isAddressedTo(nodeName) && message->matchesType("EXIT")){
     hub->exit();
   }
 }

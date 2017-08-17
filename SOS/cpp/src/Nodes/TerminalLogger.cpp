@@ -4,14 +4,14 @@ void TerminalLogger::update(IHub* hub){
 
 }
 
-void TerminalLogger::process(IHub* hub, std::string connection, json message){
-  if(message["target"] == nodeName){
-    if(message["type"] == "LOG"){
-      std::cout << "[LOG] " << message["data"] << std::endl;
-    }else if(message["type"] == "WARNING"){
-      std::cout << "[WARNING] " << message["data"] << std::endl;
-    }else if(message["type"] == "ERROR"){
-      std::cout << "[ERROR] " << message["data"] << std::endl;
+void TerminalLogger::process(IHub* hub, std::string* connection, Message* message){
+  if(message->isAddressedTo(nodeName)){
+    if(message->matchesType("LOG")){
+      std::cout << "[LOG] " << message->getData() << std::endl;
+    }else if(message->matchesType("WARNING")){
+      std::cout << "[WARNING] " << message->getData() << std::endl;
+    }else if(message->matchesType("ERROR")){
+      std::cout << "[ERROR] " << message->getData() << std::endl;
     }
   }else{
     std::cout << "[MESSAGE] " << message << std::endl;

@@ -1,10 +1,10 @@
 #include "Hub.hpp"
 
-void Hub::send(std::string connection, std::string data){
-  if(connections.find(connection) != connections.end()){
-    connections[connection]->send(data);
+void Hub::send(std::string connectionName, Message message){
+  if(connections.find(connectionName) != connections.end()){
+    connections[connectionName]->send(message.toJsonString());
   }else{
-    throw "The connection " + connection + " could not be found";
+    throw "The connection " + connectionName + " could not be found";
   }
 }
 
@@ -32,21 +32,39 @@ void Hub::listen(){
   std::chrono::milliseconds interval(10);
   while(shouldListen){
     std::this_thread::sleep_for(interval);
-    for(unsigned int i = 0; i < nodeNames.size(); i++){
-      nodes[nodeNames[i]]->update(this);
-    }
-    for(unsigned int i = 0; i < connectionNames.size(); i++){
-      std::queue<std::string> messages = connections[connectionNames[i]]->read();
-      while(!messages.empty()){
-        json message = json::parse(messages.front());
+    updateNodes();
+    passMessagesToNodes(readAllMessages());
+  }
+}
+
+void Hub::updateNodes(){
+  for(unsigned int i = 0; i < nodeNames.size(); i++){
+    nodes[nodeNames[i]]->update(this);
+  }
+}
+
+std::vector<std::queue<std::string>> Hub::readAllMessages(){
+  std::vector<std::queue<std::string>> messages;
+  for(unsigned int i = 0; i < connectionNames.size(); i++){
+    messages.push_back(connections[connectionNames[i]]->read());
+  }
+  return messages;
+}
+
+void Hub::passMessagesToNodes(std::vector<std::queue<std::string>> messages){
+  for(unsigned int i = 0; i < messages.size(); i++){
+    while(!messages[i].empty()){
+      Message message(messages[i].front());
+      if(!message.isMalformed()){
         for(unsigned int j = 0; j < nodeNames.size(); j++){
-          nodes[nodeNames[j]]->process(this, connectionNames[i], message);
+          nodes[nodeNames[j]]->process(this, &connectionNames[i], &message);
         }
-        messages.pop();
       }
+      messages[i].pop();
     }
   }
 }
+
 
 std::string Hub::getName(){
   return hubName;
