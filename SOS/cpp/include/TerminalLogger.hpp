@@ -6,7 +6,7 @@
 
 class TerminalLogger : public Node{
   void update(IHub* hub);
-  void process(IHub* hub, std::string connection, json message);
+  void process(IHub* hub, std::string* connection, Message* message);
 };
 
 #endif

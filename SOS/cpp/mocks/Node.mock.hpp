@@ -8,7 +8,7 @@ class MockNode : public Node{
 public:
   MOCK_METHOD1(setName, void(std::string));
   MOCK_METHOD1(update, void(IHub*));
-  MOCK_METHOD3(process, void(IHub*, std::string, json));
+  MOCK_METHOD3(process, void(IHub*, std::string*, Message*));
 };
 
 #endif

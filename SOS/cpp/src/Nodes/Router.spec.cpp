@@ -6,6 +6,11 @@ using ::testing::Return;
 using ::testing::StrictMock;
 
 TEST(Router, update){
+  Message Iexist("router", "I_EXIST", "router", json({
+    {"hub", "MockHub"},
+    {"nodes", {"node"}}
+  }));
+
   MockHub hub;
   Router router;
   std::vector<std::string> connectionNames, nodeNames;
@@ -14,23 +19,26 @@ TEST(Router, update){
   ON_CALL(hub, getConnectionNames()).WillByDefault(Return(connectionNames));
   ON_CALL(hub, getNodeNames()).WillByDefault(Return(nodeNames));
   ON_CALL(hub, getName()).WillByDefault(Return("MockHub"));
+
   EXPECT_CALL(hub, getConnectionNames());
   EXPECT_CALL(hub, getNodeNames());
   EXPECT_CALL(hub, getName());
-  EXPECT_CALL(hub, send("connection", json({
-    {"target", "router"},
-    {"type", "I_EXIST"},
-    {"from", "router"},
-    {"data", {
-      {"hub", "MockHub"},
-      {"nodes", {"node"}}
-    }}
-  }).dump()));
+  EXPECT_CALL(hub, send("connection", Iexist));
   router.setName("router");
   router.update(&hub);
 }
 
 TEST(Router, process_I_EXSIST){
+  Message Iexist("router", "I_EXIST", "router", json({
+    {"hub", "MockHub"},
+    {"nodes", {"router", "node"}}
+  }));
+  Message IexistOther("router", "I_EXIST", "router", json({
+    {"hub", "otherHub"},
+    {"nodes", {"otherNode"}}
+  }));
+
+  std::string connectionName = "connection";
   MockHub hub;
   Router router;
   std::vector<std::string> connectionNames, nodeNames;
@@ -38,57 +46,42 @@ TEST(Router, process_I_EXSIST){
   connectionNames.push_back("otherConnection");
   nodeNames.push_back("router");
   nodeNames.push_back("node");
-  auto iExist = json({
-    {"target", "router"},
-    {"type", "I_EXIST"},
-    {"from", "router"},
-    {"data", {
-      {"hub", "otherHub"},
-      {"nodes", {"otherNode"}}
-    }}
-  });
   ON_CALL(hub, getConnectionNames()).WillByDefault(Return(connectionNames));
   ON_CALL(hub, getNodeNames()).WillByDefault(Return(nodeNames));
   ON_CALL(hub, getName()).WillByDefault(Return("MockHub"));
+
   EXPECT_CALL(hub, getConnectionNames());
-  EXPECT_CALL(hub, getNodeNames());
+  EXPECT_CALL(hub, getNodeNames()).Times(2);
   EXPECT_CALL(hub, getName());
-  EXPECT_CALL(hub, send("connection", json({
-    {"target", "router"},
-    {"type", "I_EXIST"},
-    {"from", "router"},
-    {"data", {
-      {"hub", "MockHub"},
-      {"nodes", {"router", "node"}}
-    }}
-  }).dump()));
-  EXPECT_CALL(hub, send("otherConnection", iExist.dump()));
+  EXPECT_CALL(hub, send("connection", Iexist));
+  EXPECT_CALL(hub, send("otherConnection", IexistOther));
   router.setName("router");
-  router.process(&hub, "connection", iExist);
+  router.process(&hub, &connectionName, &IexistOther);
 }
 
 TEST(Router, process_other){
+  std::string connectionName = "connection";
+  Message messageForNode("node", "something", "someone", json("data"));
   StrictMock<MockHub> hub;
   Router router;
   std::vector<std::string> nodeNames;
   nodeNames.push_back("node");
   ON_CALL(hub, getNodeNames()).WillByDefault(Return(nodeNames));
+
   EXPECT_CALL(hub, getNodeNames());
-  router.process(&hub, "connection", json({
-    {"target", "node"},
-  }));
+  router.process(&hub, &connectionName, &messageForNode);
 }
 
 TEST(Router, process_anotherHub){
+  std::string connectionName = "connection";
+  Message randomMessage("someone", "something", "someone_else", json("data"));
   MockHub hub;
   Router router;
   std::vector<std::string> nodeNames;
   nodeNames.push_back("node");
-  auto message = json({
-    {"target", "anotherHub"}
-  });
   ON_CALL(hub, getNodeNames()).WillByDefault(Return(nodeNames));
+
   EXPECT_CALL(hub, getNodeNames());
-  EXPECT_CALL(hub, send("", message.dump()));
-  router.process(&hub, "connection", message);
+  EXPECT_CALL(hub, send("", randomMessage));
+  router.process(&hub, &connectionName, &randomMessage);
 }
