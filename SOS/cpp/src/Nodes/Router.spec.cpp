@@ -28,7 +28,7 @@ TEST(Router, update){
   router.update(&hub);
 }
 
-TEST(Router, process_I_EXSIST){
+TEST(Router, iExist){
   Message Iexist("router", "I_EXIST", "router", json({
     {"hub", "MockHub"},
     {"nodes", {"router", "node"}}
@@ -59,7 +59,7 @@ TEST(Router, process_I_EXSIST){
   router.process(&hub, &connectionName, &IexistOther);
 }
 
-TEST(Router, process_other){
+TEST(Router, process_localNode){
   std::string connectionName = "connection";
   Message messageForNode("node", "something", "someone", json("data"));
   StrictMock<MockHub> hub;
@@ -72,16 +72,38 @@ TEST(Router, process_other){
   router.process(&hub, &connectionName, &messageForNode);
 }
 
-TEST(Router, process_anotherHub){
+TEST(Router, forward){
   std::string connectionName = "connection";
   Message randomMessage("someone", "something", "someone_else", json("data"));
   MockHub hub;
-  Router router;
+  std::map<std::string, std::string> allHubs, allNodes;
+  allHubs["otherHub"] = "other_connection";
+  allNodes["someone"] = "otherHub";
+  Router router(allHubs, allNodes);
   std::vector<std::string> nodeNames;
   nodeNames.push_back("node");
   ON_CALL(hub, getNodeNames()).WillByDefault(Return(nodeNames));
 
   EXPECT_CALL(hub, getNodeNames());
-  EXPECT_CALL(hub, send("", randomMessage));
+  EXPECT_CALL(hub, send("other_connection", randomMessage));
+  router.process(&hub, &connectionName, &randomMessage);
+}
+
+TEST(Router, forward_unkown){
+  std::string connectionName = "connection";
+  Message randomMessage("someone", "something", "someone_else", json("data"));
+  Message routeError("someone_else", "ROUTE_NOT_FOUND", "router", json({{"target", "someone"}}));
+  MockHub hub;
+  Router router;
+  router.setName("router");
+  std::vector<std::string> nodeNames;
+  nodeNames.push_back("node");
+  ON_CALL(hub, getNodeNames()).WillByDefault(Return(nodeNames));
+  ON_CALL(hub, getName()).WillByDefault(Return("MockHub"));
+
+  EXPECT_CALL(hub, getNodeNames());
+  EXPECT_CALL(hub, getName());
+  EXPECT_CALL(hub, send("connection", routeError));
+  EXPECT_CALL(hub, logError("Route not found to \"someone\" from \"MockHub\""));
   router.process(&hub, &connectionName, &randomMessage);
 }

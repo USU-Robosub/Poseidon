@@ -8,12 +8,12 @@ void TerminalLogger::process(IHub* hub, std::string* connection, Message* messag
   if(message->isAddressedTo(nodeName)){
     if(message->matchesType("LOG")){
       std::cout << "[LOG] " << message->getData() << std::endl;
-    }else if(message->matchesType("WARNING")){
+    }else if(message->matchesType("LOG_WARNING")){
       std::cout << "[WARNING] " << message->getData() << std::endl;
-    }else if(message->matchesType("ERROR")){
+    }else if(message->matchesType("LOG_ERROR")){
       std::cout << "[ERROR] " << message->getData() << std::endl;
     }
   }else{
-    std::cout << "[MESSAGE] " << message << std::endl;
+    std::cout << "[MESSAGE] " << *message << std::endl;
   }
 }

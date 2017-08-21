@@ -15,6 +15,8 @@ public:
   virtual void use(std::string nodeName, Node* node);
   virtual void connect(std::string connectionName, Connection* connection);
   virtual void listen();
+  virtual void setLogger(std::string connectionName, std::string nodeName);
+  virtual void logError(std::string error);
   virtual std::string getName();
   virtual std::vector<std::string> getNodeNames();
   virtual std::vector<std::string> getConnectionNames();
@@ -25,6 +27,7 @@ private:
   void passMessagesToNodes(std::vector<std::queue<std::string>> messages);
   bool shouldListen = false;
   std::string hubName;
+  std::string loggerName = "", loggerConnectionName = "";
   std::map<std::string, Connection*> connections;
   std::vector<std::string> connectionNames;
   std::map<std::string, Node*> nodes;

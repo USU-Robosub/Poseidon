@@ -10,6 +10,8 @@ public:
   MOCK_METHOD2(send, void(std::string, Message));
   MOCK_METHOD2(use, void(std::string, Node*));
   MOCK_METHOD2(connect, void(std::string, Connection*));
+  MOCK_METHOD2(setLogger, void(std::string, std::string));
+  MOCK_METHOD1(logError, void(std::string));
   MOCK_METHOD0(listen, void());
   MOCK_METHOD0(getName, std::string());
   MOCK_METHOD0(getNodeNames, std::vector<std::string>());

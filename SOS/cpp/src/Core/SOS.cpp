@@ -8,6 +8,7 @@ void SOS::runOn(Hub* hub){
     hub->use("LOCKER", &locker);
     hub->use("LOGGER", logger);
   }
+  hub->setLogger("LOCAL", "LOGGER");
   // mount system connections
   hub->connect("LOCAL", &loopback);
 }

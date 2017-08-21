@@ -128,3 +128,18 @@ TEST(Hub, getConnectionNames){
   EXPECT_EQ(connectionNames[1], "connection2");
   EXPECT_EQ(connectionNames[2], "connection3");
 }
+
+TEST(Hub, logError){
+  Message message("logger", "LOG_ERROR", "test", json("error message"));
+  Hub hub("test");
+  MockConnection connection;
+  hub.connect("connection", &connection);
+  hub.setLogger("connection", "logger");
+  EXPECT_CALL(connection, send(message.toJsonString()));
+  hub.logError("error message");
+}
+
+TEST(Hub, logError_notSet){
+  Hub hub("test");
+  EXPECT_NO_THROW(hub.logError("error message"));
+}

@@ -49,5 +49,13 @@ void Router::getAddresses(IHub* hub, std::string* connection, Message* message){
 }
 
 void Router::forward(IHub* hub, std::string* connection, Message* message){
-  hub->send(allHubs[allNodes[message->getTarget()]], *message);
+  if(allNodes.find(message->getTarget()) != allNodes.end() &&
+      allHubs.find(allNodes[message->getTarget()]) != allHubs.end()){
+    hub->send(allHubs[allNodes[message->getTarget()]], *message);
+  }else{
+    hub->send(*connection, Message(message->getSender(), "ROUTE_NOT_FOUND", nodeName, json({
+      {"target", message->getTarget()}
+    })));
+    hub->logError("Route not found to \"" + message->getTarget() + "\" from \"" + hub->getName() + "\"");
+  }
 }

@@ -9,6 +9,8 @@
 
 class Router : public Node{
 public:
+  Router() {};
+  Router(std::map<std::string, std::string> allHubs, std::map<std::string, std::string> allNodes) : allHubs(allHubs), allNodes(allNodes) {};
   void update(IHub* hub);
   void process(IHub* hub, std::string* connection, Message* message);
 private:

@@ -15,6 +15,7 @@ TEST(SOS, runOn){
   EXPECT_CALL(hub, use("ROUTER", _));
   EXPECT_CALL(hub, use("MockHub_EXIT", _));
   EXPECT_CALL(hub, connect("LOCAL", _));
+  EXPECT_CALL(hub, setLogger("LOCAL", "LOGGER"));
   sos.runOn(&hub);
 }
 
@@ -29,6 +30,7 @@ TEST(SOS, runOn_master){
   EXPECT_CALL(hub, use("LOCKER", _));
   EXPECT_CALL(hub, use("LOGGER", _));
   EXPECT_CALL(hub, connect("LOCAL", _));
+  EXPECT_CALL(hub, setLogger("LOCAL", "LOGGER"));
   sos.becomeMaster(&node);
   sos.runOn(&hub);
 }
