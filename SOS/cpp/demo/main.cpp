@@ -1,6 +1,7 @@
 #include "Hub.hpp"
 #include "SOS.hpp"
 #include "TerminalLogger.hpp"
+#include "TCPserver.hpp"
 #include <iostream>
 
 class Terminal : public Connection {
@@ -52,8 +53,8 @@ int main(int argCount, char** arguments) {
   //app.connect("Brain", new SocketConnection(2345)); // ([port number])
 
   //
-  app.send("LOCAL", "{\"target\": \"LOGGER\", \"type\": \"LOG\", \"data\": \"hellow world!!\"}");
-  app.connect("Terminal", new Terminal);
+  //app.send("LOCAL", "{\"target\": \"LOGGER\", \"type\": \"LOG\", \"data\": \"hellow world!!\"}");
+  app.connect("Terminal", new TCPserver("127.0.0.1", 3001));
 
   app.listen(); // will hang until exit command is sent
 

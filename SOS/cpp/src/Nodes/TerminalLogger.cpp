@@ -14,6 +14,6 @@ void TerminalLogger::process(IHub* hub, std::string* connection, Message* messag
       std::cout << "[ERROR] " << message->getData() << std::endl;
     }
   }else{
-    std::cout << "[MESSAGE] " << message << std::endl;
+    std::cout << "[MESSAGE] " << *message << std::endl;
   }
 }

@@ -4,11 +4,11 @@ void Thruster::update(IHub*){
 
 }
 
-void Thruster::process(IHub* hub, std::string connection, json message){
-  if(message["target"] == nodeName){
-    if(message["type"] == "SET_POWER"){
-      float power = message["data"]["power"];
-      hub->send(connection, json({
+void Thruster::process(IHub* hub, std::string* connection, Message* message){
+  if(message->isAddressedTo(nodeName)){
+    if(message->matchesType("SET_POWER")){
+      float power = message->getData()["power"];
+      hub->send(*connection, json({
         {"target", arduinoName},
         {"type", "WRITE_BYTE"},
         {"from", nodeName},
@@ -16,7 +16,7 @@ void Thruster::process(IHub* hub, std::string connection, json message){
           {"byte", arduinoIndex}
         }}
       }).dump());
-      hub->send(connection, json({
+      hub->send(*connection, json({
         {"target", arduinoName},
         {"type", "WRITE_SHORT"},
         {"from", nodeName},

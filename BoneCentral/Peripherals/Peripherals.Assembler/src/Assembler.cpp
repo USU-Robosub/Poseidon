@@ -12,7 +12,7 @@ void App_Start(int argCount, char **arguments) {
     SOS sos;
     //sos.becomeMaster(/*logger*/);
     sos.runOn(&app);
-    
+
     //app.use(/**/);
     //app.use(/*old command dispatcher converter has tcp*/);
     //app.use(/*i2c converter*/);
@@ -26,6 +26,9 @@ void App_Start(int argCount, char **arguments) {
     app.use("MoveThruster", &moveThruster);
     app.use("DiveThruster", &diveThruster);
     app.use("YawThruster", &yawThruster);
+
+    TCPserver brain("127.0.0.1", portMap["dispatcherPort"]);
+    app.connect("Brain", &brain);
 
     app.listen();
     /*

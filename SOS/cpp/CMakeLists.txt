@@ -13,6 +13,10 @@ endif()
 include_directories(${SOS_SOURCE_DIR}/include)
 include_directories(${SOS_SOURCE_DIR}/../../Libraries/json/src)
 
+set(TACOPIE_ROOT ${SOS_SOURCE_DIR}/../../Libraries/tacopie)
+find_library(TACOPIE NAMES libtacopie.a PATHS ${TACOPIE_ROOT}/build/lib)
+include_directories(${TACOPIE_ROOT}/includes)
+
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 
 # remove CMakeCXXCompilerId.cpp and test files
@@ -23,6 +27,7 @@ foreach(SOURCE_FILE ${SOURCE_FILES})
 endforeach()
 
 add_library(SOS ${SOURCE_FILES})
+target_link_libraries(SOS ${TACOPIE})
 
 if(${tests})
   include_directories(${SOS_SOURCE_DIR}/mocks)

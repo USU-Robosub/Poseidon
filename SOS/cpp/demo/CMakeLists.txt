@@ -10,6 +10,10 @@ find_library(SOS NAMES libSOS.a PATHS ${SOS_ROOT}/build)
 include_directories(${SOS_ROOT}/include)
 include_directories(${SOSdemo_SOURCE_DIR}/../../../Libraries/json/src)
 
+set(TACOPIE_ROOT ${SOSdemo_SOURCE_DIR}/../../../Libraries/tacopie)
+find_library(TACOPIE NAMES libtacopie.a PATHS ${TACOPIE_ROOT}/build/lib)
+include_directories(${TACOPIE_ROOT}/includes)
+
 file(GLOB_RECURSE SOURCE_FILES "*.cpp")
 
 # remove CMakeCXXCompilerId.cpp and test files
@@ -20,4 +24,4 @@ foreach(SOURCE_FILE ${SOURCE_FILES})
 endforeach()
 
 add_executable(SOSdemo ${SOURCE_FILES})
-target_link_libraries(SOSdemo ${SOS})
+target_link_libraries(SOSdemo ${SOS} ${TACOPIE})

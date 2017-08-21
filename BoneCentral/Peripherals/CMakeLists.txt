@@ -20,6 +20,10 @@ set(SOS_ROOT ${Peripherals_SOURCE_DIR}/../../SOS/cpp)
 find_library(SOS NAMES libSOS.a PATHS ${SOS_ROOT}/build)
 include_directories(${SOS_ROOT}/include)
 
+set(TACOPIE_ROOT ${Peripherals_SOURCE_DIR}/../../Libraries/tacopie)
+find_library(TACOPIE NAMES libtacopie.a PATHS ${TACOPIE_ROOT}/build/lib)
+include_directories(${TACOPIE_ROOT}/includes)
+
 add_subdirectory(Peripherals.Core)
 include_directories(${Core_Includes})
 
@@ -33,7 +37,7 @@ add_subdirectory(Peripherals.Assembler)
 include_directories(${Assembler_Includes})
 
 add_executable(Peripherals main.cpp)
-target_link_libraries(Peripherals ${SOS} Sockets Peripherals.Assembler)
+target_link_libraries(Peripherals ${SOS} ${TACOPIE} Sockets Peripherals.Assembler)
 
 if(${tests})
   file(GLOB_RECURSE TEST_FILES "*.spec.cpp")

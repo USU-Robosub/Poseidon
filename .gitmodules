@@ -10,3 +10,6 @@
 [submodule "Libraries/json"]
 	path = Libraries/json
 	url = https://github.com/nlohmann/json.git
+[submodule "Libraries/tacopie"]
+	path = Libraries/tacopie
+	url = https://github.com/Cylix/tacopie.git

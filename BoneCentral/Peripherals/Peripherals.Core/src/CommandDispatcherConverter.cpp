@@ -1,58 +1,58 @@
 #include "CommandDispatcherConverter.h"
 
-void CommandDispatcherConverter::update(IHub* hub){
-  while(inStream.hasLine()){
+void CommandDispatcherConverter::update(IHub*){
+  /*while(inStream.hasLine()){
     std::string commandString = inStream.readLine();
     std::stringstream command(commandString);
     dispatchCommand(hub, command);
-  }
+  }*/
 }
 
-void CommandDispatcherConverter::process(IHub*, std::string, json message){
-  if(message["target"] == nodeName){
-    if(message["type"] == "GOT"){
-      if(message["from"] == accelerometerName){
+void CommandDispatcherConverter::process(IHub*, std::string*, Message* message){
+  if(message->isAddressedTo(nodeName)){
+    if(message->matchesType("GOT")){
+      if(message->isFrom(accelerometerName)){
         outStream << json({
           {"Type", "Acceleration"},
-          {"X", message["data"]["x"]},
-          {"Y", message["data"]["y"]},
-          {"Z", message["data"]["z"]}
+          {"X", message->getData()["x"]},
+          {"Y", message->getData()["y"]},
+          {"Z", message->getData()["z"]}
         });
-      }else if(message["from"] == gyroscopeName){
+      }else if(message->isFrom(gyroscopeName)){
         outStream << json({
           {"Type", "AngularAcceleration"},
-          {"X", message["data"]["x"]},
-          {"Y", message["data"]["y"]},
-          {"Z", message["data"]["z"]}
+          {"X", message->getData()["x"]},
+          {"Y", message->getData()["y"]},
+          {"Z", message->getData()["z"]}
         });
-      }else if(message["from"] == compassName){
+      }else if(message->isFrom(compassName)){
         outStream << json({
           {"Type", "Heading"},
-          {"x", message["data"]["x"]},
-          {"y", message["data"]["y"]},
-          {"z", message["data"]["z"]},
-          {"azimuth", message["data"]["azimuth"]},
-          {"inclination", message["data"]["inclination"]}
+          {"x", message->getData()["x"]},
+          {"y", message->getData()["y"]},
+          {"z", message->getData()["z"]},
+          {"azimuth", message->getData()["azimuth"]},
+          {"inclination", message->getData()["inclination"]}
         });
-      }else if(message["from"] == internalTemperatureName){
+      }else if(message->isFrom(internalTemperatureName)){
         outStream << json({
           {"Type", "InternalPressure"},
-          {"Value", message["data"]["value"]}
+          {"Value", message->getData()["value"]}
         });
-      }else if(message["from"] == internalPressureName){
+      }else if(message->isFrom(internalPressureName)){
         outStream << json({
           {"Type", "InternalPressure"},
-          {"Value", message["data"]["value"]}
+          {"Value", message->getData()["value"]}
         });
-      }else if(message["from"] == externalTemperatureName){
+      }else if(message->isFrom(externalTemperatureName)){
         outStream << json({
           {"Type", "ExternalTemperature"},
-          {"Value", message["data"]["value"]}
+          {"Value", message->getData()["value"]}
         });
-      }else if(message["from"] == externalPressureName){
+      }else if(message->isFrom(externalPressureName)){
         outStream << json({
           {"Type", "ExternalPressure"},
-          {"Value", message["data"]["value"]}
+          {"Value", message->getData()["value"]}
         });
       }
     }

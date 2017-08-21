@@ -9,5 +9,5 @@ set(Assembler_Includes
 include_directories(${Assembler_Includes})
 file(GLOB_RECURSE ASSEMBLER_FILES "src/*.cpp")
 add_library(Peripherals.Assembler SHARED ${ASSEMBLER_FILES})
-target_link_libraries(Peripherals.Assembler Peripherals.I2CAdaptors Peripherals.SerialAdaptors Peripherals.Core Sockets ${SOS})
+target_link_libraries(Peripherals.Assembler Peripherals.I2CAdaptors Peripherals.SerialAdaptors Peripherals.Core Sockets ${SOS}  ${TACOPIE})
 set(Assembler_Includes ${Assembler_Includes} PARENT_SCOPE)

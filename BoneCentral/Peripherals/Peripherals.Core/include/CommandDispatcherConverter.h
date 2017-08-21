@@ -3,7 +3,6 @@
 
 #include <string>
 #include <iostream>
-#include "NonblockingStream.h"
 #include "Node.hpp"
 
 class CommandDispatcherConverter : public Node{
@@ -25,7 +24,7 @@ public:
     std::string externalTemperatureName,
     std::string externalPressureName
   ) :
-    inStream(&inStream),
+    inStream(inStream),
     outStream(outStream),
     moveThrusterName(moveThrusterName),
     yawPIDname(yawPIDname),
@@ -41,9 +40,9 @@ public:
     externalPressureName(externalPressureName) {}
 
   void update(IHub* hub);
-  void process(IHub* hub, std::string connection, json message);
+  void process(IHub* hub, std::string* connection, Message* message);
 private:
-  NonblockingStream inStream;
+  std::istream& inStream;
   std::ostream& outStream;
   std::string moveThrusterName;
   std::string yawPIDname;

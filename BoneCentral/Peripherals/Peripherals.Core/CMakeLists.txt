@@ -13,4 +13,5 @@ foreach(CORE_FILE ${CORE_FILES})
 endforeach()
 
 add_library(Peripherals.Core SHARED ${CORE_FILES})
+target_link_libraries(Peripherals.Core ${SOS})
 set(Core_Includes ${Core_Includes} PARENT_SCOPE)

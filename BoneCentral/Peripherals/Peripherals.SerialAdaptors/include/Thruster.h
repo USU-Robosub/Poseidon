@@ -7,9 +7,8 @@ class Thruster : public Node{
 public:
   Thruster(std::string arduinoName, int arduinoIndex) : arduinoName(arduinoName), arduinoIndex(arduinoIndex) {}
   void update(IHub* hub);
-  void process(IHub* hub, std::string connection, json message);
+  void process(IHub* hub, std::string* connection, Message* message);
 private:
-  std::string generate_GOT(std::string target, json value);
   std::string arduinoName;
   int arduinoIndex;
 };
