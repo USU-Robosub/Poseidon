@@ -23,6 +23,13 @@ Message::Message(std::string jsonString){
   }
 }
 
+Message::Message(std::string target, std::string type, std::string sender){
+  this->target = target;
+  this->type = type;
+  this->sender = sender;
+  this->data = json({});
+}
+
 Message::Message(std::string target, std::string type, std::string sender, json data){
   this->target = target;
   this->type = type;

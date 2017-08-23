@@ -10,6 +10,7 @@ using json = nlohmann::json;
 class Message{
 public:
   Message(std::string jsonString);
+  Message(std::string target, std::string type, std::string sender);
   Message(std::string target, std::string type, std::string sender, json data);
   bool isAddressedTo(std::string target);
   bool matchesType(std::string type);

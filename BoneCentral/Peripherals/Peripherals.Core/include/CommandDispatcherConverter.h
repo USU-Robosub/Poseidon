@@ -4,13 +4,14 @@
 #include <string>
 #include <iostream>
 #include "Node.hpp"
+#include "TCPserver.hpp"
 
 class CommandDispatcherConverter : public Node{
 public:
 
   CommandDispatcherConverter(
-    std::istream& inStream,
-    std::ostream& outStream,
+    std::string host,
+    unsigned int port,
     std::string moveThrusterName,
     std::string yawPIDname,
     std::string diveThrusterName,
@@ -24,8 +25,7 @@ public:
     std::string externalTemperatureName,
     std::string externalPressureName
   ) :
-    inStream(inStream),
-    outStream(outStream),
+    tcpConnection(host, port),
     moveThrusterName(moveThrusterName),
     yawPIDname(yawPIDname),
     diveThrusterName(diveThrusterName),
@@ -37,13 +37,12 @@ public:
     internalTemperatureName(internalTemperatureName),
     internalPressureName(internalPressureName),
     externalTemperatureName(externalTemperatureName),
-    externalPressureName(externalPressureName) {}
+    externalPressureName(externalPressureName) { }
 
   void update(IHub* hub);
   void process(IHub* hub, std::string* connection, Message* message);
 private:
-  std::istream& inStream;
-  std::ostream& outStream;
+  TCPserver tcpConnection;
   std::string moveThrusterName;
   std::string yawPIDname;
   std::string diveThrusterName;

@@ -1,59 +1,60 @@
 #include "CommandDispatcherConverter.h"
 
-void CommandDispatcherConverter::update(IHub*){
-  /*while(inStream.hasLine()){
-    std::string commandString = inStream.readLine();
-    std::stringstream command(commandString);
+void CommandDispatcherConverter::update(IHub* hub){
+  std::queue<std::string> messages = tcpConnection.read();
+  while(!messages.empty()){
+    std::stringstream command(messages.front());
     dispatchCommand(hub, command);
-  }*/
+    messages.pop();
+  }
 }
 
 void CommandDispatcherConverter::process(IHub*, std::string*, Message* message){
   if(message->isAddressedTo(nodeName)){
     if(message->matchesType("GOT")){
       if(message->isFrom(accelerometerName)){
-        outStream << json({
+        tcpConnection.send(json({
           {"Type", "Acceleration"},
           {"X", message->getData()["x"]},
           {"Y", message->getData()["y"]},
           {"Z", message->getData()["z"]}
-        });
+        }).dump());
       }else if(message->isFrom(gyroscopeName)){
-        outStream << json({
+        tcpConnection.send(json({
           {"Type", "AngularAcceleration"},
           {"X", message->getData()["x"]},
           {"Y", message->getData()["y"]},
           {"Z", message->getData()["z"]}
-        });
+        }).dump());
       }else if(message->isFrom(compassName)){
-        outStream << json({
+        tcpConnection.send(json({
           {"Type", "Heading"},
           {"x", message->getData()["x"]},
           {"y", message->getData()["y"]},
           {"z", message->getData()["z"]},
           {"azimuth", message->getData()["azimuth"]},
           {"inclination", message->getData()["inclination"]}
-        });
+        }).dump());
       }else if(message->isFrom(internalTemperatureName)){
-        outStream << json({
+        tcpConnection.send(json({
           {"Type", "InternalPressure"},
           {"Value", message->getData()["value"]}
-        });
+        }).dump());
       }else if(message->isFrom(internalPressureName)){
-        outStream << json({
+        tcpConnection.send(json({
           {"Type", "InternalPressure"},
           {"Value", message->getData()["value"]}
-        });
+        }).dump());
       }else if(message->isFrom(externalTemperatureName)){
-        outStream << json({
+        tcpConnection.send(json({
           {"Type", "ExternalTemperature"},
           {"Value", message->getData()["value"]}
-        });
+        }).dump());
       }else if(message->isFrom(externalPressureName)){
-        outStream << json({
+        tcpConnection.send(json({
           {"Type", "ExternalPressure"},
           {"Value", message->getData()["value"]}
-        });
+        }).dump());
       }
     }
   }
@@ -107,209 +108,121 @@ void CommandDispatcherConverter::dispatchCommand(IHub* hub, std::stringstream& c
 }
 
 void CommandDispatcherConverter::start(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", yawPIDname},
-    {"type", "ENABLE"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(yawPIDname, "ENABLE", nodeName));
 }
 
 void CommandDispatcherConverter::move(IHub* hub, std::stringstream& command){
   float throttle;
   command >> throttle;
-  hub->send("LOCAL", json({
-    {"target", moveThrusterName},
-    {"type", "SET_POWER"},
-    {"from", nodeName},
-    {"data", {
-      {"power", throttle}
-    }}
-  }).dump());
+  hub->send("LOCAL", Message(moveThrusterName, "SET_POWER", nodeName, json({
+    {"power", throttle}
+  })));
 }
 
 void CommandDispatcherConverter::yaw(IHub* hub, std::stringstream& command){
   float angle;
   command >> angle;
-  hub->send("LOCAL", json({
-    {"target", yawPIDname},
-    {"type", "SET_TARGET"},
-    {"from", nodeName},
-    {"data", {
-      {"target", angle}
-    }}
-  }).dump());
+  hub->send("LOCAL", Message(yawPIDname, "SET_TARGET", nodeName, json({
+    {"target", angle}
+  })));
 }
 
 void CommandDispatcherConverter::dive(IHub* hub, std::stringstream& command){
   float throttle;
   command >> throttle;
-  hub->send("LOCAL", json({
-    {"target", diveThrusterName},
-    {"type", "SET_POWER"},
-    {"from", nodeName},
-    {"data", {
-      {"power", throttle}
-    }}
-  }).dump());
+  hub->send("LOCAL", Message(diveThrusterName, "SET_POWER", nodeName, json({
+    {"power", throttle}
+  })));
 }
 
 void CommandDispatcherConverter::kill(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", yawPIDname},
-    {"type", "DISABLE"},
-    {"from", nodeName}
-  }).dump());
-  hub->send("LOCAL", json({
-    {"target", moveThrusterName},
-    {"type", "SET_POWER"},
-    {"from", nodeName},
-    {"data", {
-      {"power", 0}
-    }}
-  }).dump());
-  hub->send("LOCAL", json({
-    {"target", diveThrusterName},
-    {"type", "SET_POWER"},
-    {"from", nodeName},
-    {"data", {
-      {"power", 0}
-    }}
-  }).dump());
+  hub->send("LOCAL", Message(yawPIDname, "DISABLE", nodeName));
+  hub->send("LOCAL", Message(moveThrusterName, "SET_POWER", nodeName, json({
+    {"power", 0}
+  })));
+  hub->send("LOCAL", Message(diveThrusterName, "SET_POWER", nodeName, json({
+    {"power", 0}
+  })));
 }
 
 void CommandDispatcherConverter::configureYaw(IHub* hub, std::stringstream& command){
   float P, I, D;
   command >> P >> I >> D;
-  hub->send("LOCAL", json({
-    {"target", yawPIDname},
-    {"type", "SET_CONFIG"},
-    {"from", nodeName},
-    {"data", {
-      {"P", P},
-      {"I", I},
-      {"D", D}
-    }}
-  }).dump());
+  hub->send("LOCAL", Message(yawPIDname, "SET_CONFIG", nodeName, json({
+    {"P", P},
+    {"I", I},
+    {"D", D}
+  })));
 }
 
 void CommandDispatcherConverter::configureTimeDelta(IHub* hub, std::stringstream& command){
   unsigned int timeDelta;
   command >> timeDelta;
-  hub->send("LOCAL", json({
-    {"target", yawPIDname},
-    {"type", "SET_DELTA_TIME"},
-    {"from", nodeName},
-    {"data", {
-      {"deltaTime", timeDelta}
-    }}
-  }).dump());
+  hub->send("LOCAL", Message(yawPIDname, "SET_DELTA_TIME", nodeName, json({
+    {"deltaTime", timeDelta}
+  })));
 }
 
 void CommandDispatcherConverter::turnOnEscs(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", escSwitchName},
-    {"type", "TURN_ON"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(escSwitchName, "TURN_ON", nodeName));
 }
 
 void CommandDispatcherConverter::turnOffEscs(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", escSwitchName},
-    {"type", "TURN_OFF"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(escSwitchName, "TURN_OFF", nodeName));
 }
 
 void CommandDispatcherConverter::switchLights(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", lightSwitchName},
-    {"type", "SWITCH"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(lightSwitchName, "SWITCH", nodeName));
 }
 
 void CommandDispatcherConverter::turnOnImuSensor(IHub* hub){
-  hub->send("LOCAL", json({{"target", accelerometerName}, {"type", "AWAKE"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", gyroscopeName}, {"type", "AWAKE"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", compassName}, {"type", "AWAKE"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", internalTemperatureName}, {"type", "AWAKE"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", internalPressureName}, {"type", "AWAKE"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", externalTemperatureName}, {"type", "AWAKE"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", externalPressureName}, {"type", "AWAKE"}, {"from", nodeName}}).dump());
+  hub->send("LOCAL", Message(accelerometerName,         "AWAKE", nodeName));
+  hub->send("LOCAL", Message(gyroscopeName,             "AWAKE", nodeName));
+  hub->send("LOCAL", Message(compassName,               "AWAKE", nodeName));
+  hub->send("LOCAL", Message(internalTemperatureName,   "AWAKE", nodeName));
+  hub->send("LOCAL", Message(internalPressureName,      "AWAKE", nodeName));
+  hub->send("LOCAL", Message(externalTemperatureName,   "AWAKE", nodeName));
+  hub->send("LOCAL", Message(externalPressureName,      "AWAKE", nodeName));
 }
 
 void CommandDispatcherConverter::turnOffImuSensor(IHub* hub){
-  hub->send("LOCAL", json({{"target", accelerometerName}, {"type", "SLEEP"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", gyroscopeName}, {"type", "SLEEP"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", compassName}, {"type", "SLEEP"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", internalTemperatureName}, {"type", "SLEEP"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", internalPressureName}, {"type", "SLEEP"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", externalTemperatureName}, {"type", "SLEEP"}, {"from", nodeName}}).dump());
-  hub->send("LOCAL", json({{"target", externalPressureName}, {"type", "SLEEP"}, {"from", nodeName}}).dump());
+  hub->send("LOCAL", Message(accelerometerName,         "SLEEP", nodeName));
+  hub->send("LOCAL", Message(gyroscopeName,             "SLEEP", nodeName));
+  hub->send("LOCAL", Message(compassName,               "SLEEP", nodeName));
+  hub->send("LOCAL", Message(internalTemperatureName,   "SLEEP", nodeName));
+  hub->send("LOCAL", Message(internalPressureName,      "SLEEP", nodeName));
+  hub->send("LOCAL", Message(externalTemperatureName,   "SLEEP", nodeName));
+  hub->send("LOCAL", Message(externalPressureName,      "SLEEP", nodeName));
 }
 
 void CommandDispatcherConverter::getAcceleration(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", accelerometerName},
-    {"type", "GET"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(accelerometerName, "GET", nodeName));
 }
 
 void CommandDispatcherConverter::getAngularAcceleration(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", gyroscopeName},
-    {"type", "GET"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(gyroscopeName, "GET", nodeName));
 }
 
 void CommandDispatcherConverter::getHeading(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", compassName},
-    {"type", "GET"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(compassName, "GET", nodeName));
 }
 
 void CommandDispatcherConverter::getInternalTemperature(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", internalTemperatureName},
-    {"type", "GET"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(internalTemperatureName, "GET", nodeName));
 }
 
 void CommandDispatcherConverter::getInternalPressure(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", internalPressureName},
-    {"type", "GET"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(internalPressureName, "GET", nodeName));
 }
 
 void CommandDispatcherConverter::getExternalTemperature(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", externalTemperatureName},
-    {"type", "GET"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(externalTemperatureName, "GET", nodeName));
 }
 
 void CommandDispatcherConverter::getExternalPressure(IHub* hub){
-  hub->send("LOCAL", json({
-    {"target", externalPressureName},
-    {"type", "GET"},
-    {"from", nodeName}
-  }).dump());
+  hub->send("LOCAL", Message(externalPressureName, "GET", nodeName));
 }
 
 void CommandDispatcherConverter::logWarning(IHub* hub, std::string warning){
-  hub->send("LOCAL", json({
-    {"target", "LOGGER"},
-    {"type", "WARNING"},
-    {"from", nodeName},
-    {"data", warning}
-  }).dump());
+  hub->send("LOCAL", Message("LOGGER", "WARNING", nodeName, json(warning)));
 }

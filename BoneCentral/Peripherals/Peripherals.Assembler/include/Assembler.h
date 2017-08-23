@@ -18,6 +18,8 @@
 #include "ArduinoUSB.h"
 #include "Thruster.h"
 #include "TCPserver.hpp"
+#include "TerminalLogger.hpp"
+#include "CommandDispatcherConverter.h"
 
 TcpClient* _getSocketStream(std::map<std::string, int>& portMap, string portName);
 std::map<std::string, int> _createPortMap(int argCount, char** arguments);

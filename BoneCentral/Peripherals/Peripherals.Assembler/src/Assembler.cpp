@@ -8,16 +8,38 @@ void App_Start(int argCount, char **arguments) {
     // gets ports by command line
     auto portMap = _createPortMap(argCount, arguments);
 
+    // Message transfer system
     Hub app("Peripherals");
+
+    // basic SOS nodes
     SOS sos;
-    //sos.becomeMaster(/*logger*/);
+    sos.becomeMaster(new TerminalLogger);
     sos.runOn(&app);
 
-    //app.use(/**/);
-    //app.use(/*old command dispatcher converter has tcp*/);
+    // Old Javascript <-> C++ TCP protocol to SOS commands
+    CommandDispatcherConverter commandDispatcher(
+      "127.0.0.1",
+      portMap["dispatcherPort"],
+      "MoveThruster",
+      "",/*std::string yawPIDname,*/
+      "DiveThruster",
+      "",/*std::string escSwitchName,*/
+      "",/*std::string lightSwitchName,*/
+      "",/*std::string accelerometerName,*/
+      "",/*std::string gyroscopeName,*/
+      "",/*std::string compassName,*/
+      "",/*std::string internalTemperatureName,*/
+      "",/*std::string internalPressureName,*/
+      "",/*std::string externalTemperatureName,*/
+      ""/*std::string externalPressureName*/
+    );
+    app.use("CommandDispatcher", &commandDispatcher);
+
     //app.use(/*i2c converter*/);
+
+    // SOS commands to USB serial to Arduino
     ArduinoUSB arduinoUSB("/dev/ttyACM0");
-    //app.use("Arduino", &arduinoUSB);
+    app.use("Arduino", &arduinoUSB);
 
     // Arduino thrusters
     Thruster moveThruster("Arduino", MOVE_IDX);
@@ -27,8 +49,9 @@ void App_Start(int argCount, char **arguments) {
     app.use("DiveThruster", &diveThruster);
     app.use("YawThruster", &yawThruster);
 
-    TCPserver brain("127.0.0.1", portMap["dispatcherPort"]);
-    app.connect("Brain", &brain);
+    // For testing
+    //TCPserver brain("127.0.0.1", portMap["dispatcherPort"]);
+    //app.connect("Brain", &brain);
 
     app.listen();
     /*
