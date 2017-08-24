@@ -51,6 +51,8 @@ if(${tests})
   include_directories(${GTEST_ROOT}/include)
   include_directories(${GMOCK_ROOT}/include)
 
+  include_directories(${Peripherals_SOURCE_DIR}/../../SOS/cpp/mocks)
+
   add_executable(Peripherals_tests test_main.cpp ${TEST_FILES} ${SOURCE_FILES})
   target_link_libraries(Peripherals_tests  ${SOS} Sockets Peripherals.Assembler ${GTEST} ${GMOCK})
 endif()
