@@ -5,21 +5,39 @@
 using ::testing::StrictMock;
 using ::testing::Return;
 
-TEST(Exit, noExit){
-  std::string connectionName = "test";
-  StrictMock<MockHub> hub;
-  Message message("otherHub_exit", "EXIT", "", json({}));
+TEST(Exit, makesHubExitOnExitMessage){
+  MockHub mockHub;
+  std::string connectionName = "connection";
   Exit exitNode;
-  exitNode.setName("MockHub_EXIT");
-  exitNode.process(&hub, &connectionName, &message);
+  exitNode.setName("exitNode");
+
+  Message exitMessage = Message().to("exitNode").ofType("exit").from("test").withNoData();
+  EXPECT_CALL(mockHub, exit());
+  ASSERT_NO_THROW(
+    exitNode.process(&mockHub, &connectionName, &exitMessage)
+  );
 }
 
-TEST(Exit, exitOn_EXIT){
-  std::string connectionName = "test";
-  MockHub hub;
-  Message message("MockHub_EXIT", "EXIT", "", json({}));
+TEST(Exit, ignoresExitMessageForAnotherHub){
+  DummyHub dummyHub;
+  std::string connectionName = "connection";
   Exit exitNode;
-  EXPECT_CALL(hub, exit());
-  exitNode.setName("MockHub_EXIT");
-  exitNode.process(&hub, &connectionName, &message);
+  exitNode.setName("exitNode");
+
+  Message exitMessage = Message().to("anotherExitNode").ofType("exit").from("test").withNoData();
+  ASSERT_NO_THROW(
+    exitNode.process(&dummyHub, &connectionName, &exitMessage)
+  );
+}
+
+TEST(Exit, ignoresNonExitMessages){
+  DummyHub dummyHub;
+  std::string connectionName = "connection";
+  Exit exitNode;
+  exitNode.setName("exitNode");
+
+  Message nonExitMessage = Message().to("exitNode").ofType("type").from("test").withNoData();
+  ASSERT_NO_THROW(
+    exitNode.process(&dummyHub, &connectionName, &nonExitMessage)
+  );
 }

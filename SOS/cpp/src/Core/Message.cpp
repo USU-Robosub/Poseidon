@@ -1,5 +1,42 @@
 #include "Message.hpp"
 
+Message::Message(){
+  this->target = "";
+  this->type = "";
+  this->sender = "";
+  this->data = json();
+}
+
+Message& Message::to(std::string target){
+  this->target = target;
+  hasTarget = true;
+  return *this;
+}
+
+Message& Message::ofType(std::string type){
+  this->type = type;
+  hasType = true;
+  return *this;
+}
+
+Message& Message::from(std::string sender){
+  this->sender = sender;
+  hasSender = true;
+  return *this;
+}
+
+Message& Message::withData(json data){
+  this->data = data;
+  hasData = true;
+  return *this;
+}
+
+Message& Message::withNoData(){
+  this->data = json({});
+  hasData = true;
+  return *this;
+}
+
 Message::Message(std::string jsonString){
   try{
     json parsedMessage = json::parse(jsonString);
@@ -9,18 +46,25 @@ Message::Message(std::string jsonString){
         parsedMessage["data"].is_null()) {
       target = type = sender = "";
       data = json::object();
-      malformed = true;
     }else{
       target = parsedMessage["target"];
       type = parsedMessage["type"];
       sender = parsedMessage["sender"];
       data = parsedMessage["data"];
+      hasTarget = hasType = hasSender = hasData = true;
     }
   }catch(...){
     target = type = sender = "";
     data = json::object();
-    malformed = true;
   }
+}
+
+Message::Message(std::string target, std::string type, std::string sender){
+  this->target = target;
+  this->type = type;
+  this->sender = sender;
+  this->data = json({});
+  hasTarget = hasType = hasSender = hasData = true;
 }
 
 Message::Message(std::string target, std::string type, std::string sender, json data){
@@ -28,6 +72,7 @@ Message::Message(std::string target, std::string type, std::string sender, json 
   this->type = type;
   this->sender = sender;
   this->data = data;
+  hasTarget = hasType = hasSender = hasData = true;
 }
 
 bool Message::isAddressedTo(std::string target){
@@ -43,7 +88,7 @@ bool Message::isFrom(std::string sender){
 }
 
 bool Message::isMalformed(){
-  return malformed;
+  return !(hasTarget && hasType && hasSender && hasData);
 }
 
 std::string& Message::getTarget(){

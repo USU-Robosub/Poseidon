@@ -1,6 +1,51 @@
 #include "gtest/gtest.h"
 #include "Message.hpp"
 
+TEST(Message, createByFromTypeToWith){
+  ASSERT_NO_THROW(
+    Message message = Message().to("node").ofType("type").from("sender").withData(json("data"))
+  );
+
+  ASSERT_NO_THROW(
+    Message message = Message().to("node").ofType("type").from("sender").withNoData()
+  );
+}
+
+TEST(Message, everyStageOfFromTypeToWithIsInvalidExeptTheLast){
+  ASSERT_NO_THROW(
+    Message message = Message().to("node");
+    ASSERT_TRUE(message.isMalformed());
+  );
+
+  ASSERT_NO_THROW(
+    Message message = Message().ofType("type");
+    ASSERT_TRUE(message.isMalformed());
+  );
+
+  ASSERT_NO_THROW(
+    Message message = Message().from("sender");
+    ASSERT_TRUE(message.isMalformed());
+  );
+
+  ASSERT_NO_THROW(
+    Message message = Message().withData(json("data"));
+    ASSERT_TRUE(message.isMalformed());
+  );
+
+  ASSERT_NO_THROW(
+    Message message = Message();
+    ASSERT_TRUE(message.isMalformed());
+    message.to("node");
+    ASSERT_TRUE(message.isMalformed());
+    message.ofType("type");
+    ASSERT_TRUE(message.isMalformed());
+    message.from("sender");
+    ASSERT_TRUE(message.isMalformed());
+    message.withData(json("data"));
+    ASSERT_FALSE(message.isMalformed());
+  );
+}
+
 TEST(Message, fromString){
   json rawMessage = json({
     {"target", "target_node"},

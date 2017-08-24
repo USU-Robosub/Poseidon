@@ -9,8 +9,15 @@ using json = nlohmann::json;
 
 class Message{
 public:
+  Message();
   Message(std::string jsonString);
+  Message(std::string target, std::string type, std::string sender);
   Message(std::string target, std::string type, std::string sender, json data);
+  Message& to(std::string target);
+  Message& ofType(std::string type);
+  Message& from(std::string sender);
+  Message& withData(json data);
+  Message& withNoData();
   bool isAddressedTo(std::string target);
   bool matchesType(std::string type);
   bool isFrom(std::string sender);
@@ -23,10 +30,8 @@ public:
   bool operator==(const Message message) const;
   friend std::ostream& operator<<(std::ostream& os, const Message& message);
 private:
-  bool malformed = false;
-  std::string target;
-  std::string type;
-  std::string sender;
+  bool hasTarget = false, hasType = false, hasSender = false, hasData = false;
+  std::string target, type, sender;
   json data;
 };
 
