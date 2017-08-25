@@ -16,7 +16,6 @@ public:
 private:
   void lock(IHub* hub, std::string* connection, Message* message);
   void unlock(IHub* hub, std::string* connection, Message* message);
-  void forceUnlockAll(IHub* hub, std::string* connection, Message* message);
   std::map<std::string, std::string> locks;
   UUIDgenerator generateUUID;
 };

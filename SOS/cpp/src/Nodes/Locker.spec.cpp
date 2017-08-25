@@ -3,58 +3,129 @@
 #include "Hub.mock.hpp"
 
 using ::testing::_;
+using ::testing::NiceMock;
 
-TEST(ActuatorLock, process_lock){
-  Message requestLock("locker", "LOCK", "locking_node", json({
-    {"node", "locked_node"}
-  }));
-  Message secondRequestLock("locker", "LOCK", "locking_node_2", json({
-    {"node", "locked_node"}
-  }));
-  Message applyLock("locked_node", "APPLY_LOCK", "locker", json({
-    {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}
-  }));
-  Message grantLock("locking_node", "GRANT_LOCK", "locker", json({
-    {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
-    {"node", "locked_node"}
-  }));
-  Message rejectLock("locking_node_2", "REJECT_LOCK", "locker", json({
-    {"node", "locked_node"}
-  }));
-
-  std::string connectionName = "connection_name";
-  MockHub hub;
-  Locker locker([]() -> std::string { return "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; });
+TEST(Locker, nodeCanBeLocked){
+  MockHub mockHub;
+  std::string connectionName = "connection";
+  auto UUIDgenerator = []() -> std::string { return "xxxxx"; };
+  Locker locker(UUIDgenerator);
   locker.setName("locker");
 
-  EXPECT_CALL(hub, send("LOCAL", applyLock));
-  EXPECT_CALL(hub, send("connection_name", grantLock));
-  locker.process(&hub, &connectionName, &requestLock);
+  Message lockMessage = Message().to("anotherNode").ofType("lock").from("locker").withData(json({
+    {"key", "xxxxx"}
+  }));
+  Message grantLockMessage = Message().to("test").ofType("grantLock").from("locker").withData(json({
+    {"key", "xxxxx"},
+    {"node", "anotherNode"}
+  }));
+  EXPECT_CALL(mockHub, send("LOCAL", lockMessage));
+  EXPECT_CALL(mockHub, send(connectionName, grantLockMessage));
 
-  EXPECT_CALL(hub, send("connection_name", rejectLock));
-  locker.process(&hub, &connectionName, &secondRequestLock);
+  Message getLockMessage = Message().to("locker").ofType("getLock").from("test").withData(json({
+    {"node", "anotherNode"}
+  }));
+  ASSERT_NO_THROW(
+    locker.process(&mockHub, &connectionName, &getLockMessage)
+  );
 }
 
-TEST(ActuatorLock, process_unlock){
-  Message requestLock("locker", "LOCK", "locking_node", json({
-    {"node", "locked_node"}
-  }));
-  Message removeLock("locked_node", "REMOVE_LOCK", "locker", json({
-    {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}
-  }));
-  Message requestUnlock("locker", "UNLOCK", "locking_node", json({
-    {"node", "locked_node"},
-    {"key", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
-  }));
-
-  std::string connectionName = "connection_name";
-  MockHub hub;
-  Locker locker([]() -> std::string { return "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; });
+TEST(Locker, ignoresMalformedLockMessage){
+  DummyHub dummyHub;
+  std::string connectionName = "conenction";
+  auto UUIDgenerator = []() -> std::string { return "xxxxx"; };
+  Locker locker(UUIDgenerator);
   locker.setName("locker");
 
-  EXPECT_CALL(hub, send(_, _)).Times(2);
-  locker.process(&hub, &connectionName, &requestLock);
+  Message malformedGetLockMessage = Message().to("locker").ofType("getLock").from("test").withData(json({
+    {"data", "something"}
+  }));
+  ASSERT_NO_THROW(
+    locker.process(&dummyHub, &connectionName, &malformedGetLockMessage)
+  );
+}
 
-  EXPECT_CALL(hub, send("LOCAL", removeLock));
-  locker.process(&hub, &connectionName, &requestUnlock);
+TEST(Locker, canUnlockLockedNode){
+  NiceMock<MockHub> mockHub;
+  std::string connectionName = "connection";
+  auto UUIDgenerator = []() -> std::string { return "xxxxx"; };
+  Locker locker(UUIDgenerator);
+  locker.setName("locker");
+  Message getLockMessage("locker", "getLock", "test", json({{"node", "anotherNode"}}));
+  locker.process(&mockHub, &connectionName, &getLockMessage);
+
+  Message unlockMessage = Message().to("anotherNode").ofType("unlock").from("locker").withData(json({
+    {"key", "xxxxx"}
+  }));
+  EXPECT_CALL(mockHub, send("LOCAL", unlockMessage));
+
+  Message releaseLockMessage = Message().to("locker").ofType("releaseLock").from("test").withData(json({
+    {"node", "anotherNode"},
+    {"key", "xxxxx"}
+  }));
+  ASSERT_NO_THROW(
+    locker.process(&mockHub, &connectionName, &releaseLockMessage)
+  );
+}
+
+TEST(Locker, ignoresUnlockOfNonLockedNode){
+  DummyHub dummyHub;
+  std::string connectionName = "connection";
+  auto UUIDgenerator = []() -> std::string { return "xxxxx"; };
+  Locker locker(UUIDgenerator);
+  locker.setName("locker");
+
+  Message releaseLockMessage = Message().to("locker").ofType("releaseLock").from("test").withData(json({
+    {"node", "anotherNode"},
+    {"key", "xxxxx"}
+  }));
+  ASSERT_NO_THROW(
+    locker.process(&dummyHub, &connectionName, &releaseLockMessage)
+  );
+}
+
+TEST(Locker, ignoresMalformedUnlock){
+  DummyHub dummyHub;
+  std::string connectionName = "connection";
+  auto UUIDgenerator = []() -> std::string { return "xxxxx"; };
+  Locker locker(UUIDgenerator);
+  locker.setName("locker");
+
+  Message releaseLockMessage = Message().to("locker").ofType("releaseLock").from("test").withData(json({
+    {"data", "something"}
+  }));
+  ASSERT_NO_THROW(
+    locker.process(&dummyHub, &connectionName, &releaseLockMessage)
+  );
+}
+
+TEST(locker, rejectsLockingNodeAlreadyLocked){
+  NiceMock<MockHub> mockHub;
+  std::string connectionName = "connection";
+  auto UUIDgenerator = []() -> std::string { return "xxxxx"; };
+  Locker locker(UUIDgenerator);
+  locker.setName("locker");
+  Message getLockMessageFromSomeone("locker", "getLock", "someone", json({{"node", "anotherNode"}}));
+  locker.process(&mockHub, &connectionName, &getLockMessageFromSomeone);
+
+  Message rejectLockMessage = Message().to("test").ofType("rejectLock").from("locker").withData(json({
+    {"node", "anotherNode"}
+  }));
+  EXPECT_CALL(mockHub, send(connectionName, rejectLockMessage));
+
+  Message getLockMessage = Message().to("locker").ofType("getLock").from("test").withData(json({
+    {"node", "anotherNode"}
+  }));
+  ASSERT_NO_THROW(
+    locker.process(&mockHub, &connectionName, &getLockMessage)
+  );
+}
+
+TEST(locker, updateDoesNothing){
+  DummyHub dummyHub;
+  Locker locker([]() -> std::string { return ""; });
+
+  ASSERT_NO_THROW(
+    locker.update(&dummyHub)
+  );
 }
