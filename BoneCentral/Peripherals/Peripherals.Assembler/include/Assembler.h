@@ -20,6 +20,7 @@
 #include "TCPserver.hpp"
 #include "TerminalLogger.hpp"
 #include "CommandDispatcherConverter.h"
+#include "PIDnode.h"
 
 TcpClient* _getSocketStream(std::map<std::string, int>& portMap, string portName);
 std::map<std::string, int> _createPortMap(int argCount, char** arguments);

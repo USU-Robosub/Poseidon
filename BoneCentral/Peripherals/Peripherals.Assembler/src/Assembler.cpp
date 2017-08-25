@@ -21,7 +21,7 @@ void App_Start(int argCount, char **arguments) {
       "127.0.0.1",
       portMap["dispatcherPort"],
       "MoveThruster",
-      "",/*std::string yawPIDname,*/
+      "YawPID",
       "DiveThruster",
       "",/*std::string escSwitchName,*/
       "",/*std::string lightSwitchName,*/
@@ -40,6 +40,10 @@ void App_Start(int argCount, char **arguments) {
     // SOS commands to USB serial to Arduino
     ArduinoUSB arduinoUSB("/dev/ttyACM0");
     app.use("Arduino", &arduinoUSB);
+
+    // PID controller for yaw
+    PIDnode yawPID("Heading", "Yaw", 0, 0, 0, 0);
+    app.use("yawPID", &yawPID);
 
     // Arduino thrusters
     Thruster moveThruster("Arduino", MOVE_IDX);
