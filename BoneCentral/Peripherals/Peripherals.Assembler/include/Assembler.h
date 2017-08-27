@@ -21,6 +21,7 @@
 #include "TerminalLogger.hpp"
 #include "CommandDispatcherConverter.h"
 #include "PIDnode.h"
+#include "PIDtoThruster.h"
 
 TcpClient* _getSocketStream(std::map<std::string, int>& portMap, string portName);
 std::map<std::string, int> _createPortMap(int argCount, char** arguments);

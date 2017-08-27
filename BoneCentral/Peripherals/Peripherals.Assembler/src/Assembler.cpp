@@ -41,6 +41,10 @@ void App_Start(int argCount, char **arguments) {
     ArduinoUSB arduinoUSB("/dev/ttyACM0");
     app.use("Arduino", &arduinoUSB);
 
+    // yaw PIDtoThruster
+    PIDtoThruster pidToThruster("YawThruster");
+    app.use("Yaw", &pidToThruster);
+
     // PID controller for yaw
     PIDnode yawPID("Heading", "Yaw", 0, 0, 0, 0);
     app.use("yawPID", &yawPID);

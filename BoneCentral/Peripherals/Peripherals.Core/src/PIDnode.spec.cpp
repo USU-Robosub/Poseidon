@@ -161,8 +161,6 @@ TEST(PIDnode, calculatesCorrectionValueCorrectlyOverTime){
   EXPECT_CALL(mockHub, send("LOCAL", Message("sensorName", "GET", "PID"))).Times(4);
 
   // first iteration
-  //Message gotMessage("PID", "GOT", "sensorName", json({{"value", 15}}));
-  //PID.process(&mockHub, &connectionName, &gotMessage);
   PID.setSensorValue(15);
   EXPECT_CALL(mockHub, send("LOCAL", Message("actuatorName", "SET", "PID", json({
     {"correctionValue",
