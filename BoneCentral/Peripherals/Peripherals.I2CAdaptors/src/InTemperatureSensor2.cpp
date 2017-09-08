@@ -5,5 +5,6 @@ InTemperatureSensor2::InTemperatureSensor2(std::shared_ptr<BMP085> temperatureSe
 
 float InTemperatureSensor2::getTemperature()
 {
-    return temperatureSensor_->readTemperature();
+    //return temperatureSensor_->readTemperature();
+    return 0;
 }

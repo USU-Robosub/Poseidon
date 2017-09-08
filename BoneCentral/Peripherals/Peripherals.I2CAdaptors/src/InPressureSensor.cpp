@@ -5,5 +5,6 @@ InPressureSensor::InPressureSensor(std::shared_ptr<BMP085> pressure) :
 
 int InPressureSensor::getPressure()
 {
-    return pressure_->readPressure();
+    //return pressure_->readPressure();
+    return 0;
 }

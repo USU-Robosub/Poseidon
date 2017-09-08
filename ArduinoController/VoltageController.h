@@ -6,11 +6,12 @@ class VoltageController : public IController {
     const double R2 =  7500.0;
   public:
     VoltageController() {
-      pinMode(GpioPin::VOLT_PIN, INPUT);
+      //pinMode(GpioPin::VOLT_PIN, INPUT);
     }
     
     void execute() {
-      int value = analogRead(GpioPin::VOLT_PIN);
+      //int value = analogRead(GpioPin::VOLT_PIN);
+      int value = 0;
       /*
        * Measured Values for Calibration
        * P1 = (11.32, 700); P2 = (8.38, 517)

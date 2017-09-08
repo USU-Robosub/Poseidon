@@ -17,21 +17,21 @@ private:
 public:
   EscController() {
     for(uint32_t i = 0; i < GPIO_CNT; i++) {
-      pinMode(GPIO_PINS[i], OUTPUT);
-      digitalWrite(GPIO_PINS[i], HIGH);
+      //pinMode(GPIO_PINS[i], OUTPUT);
+      //digitalWrite(GPIO_PINS[i], HIGH);
     }
   }
     
   void execute() {
     uint8_t toggle = SerialTools::readByte();
     for(uint32_t i = 0; i < GPIO_CNT; i++) {
-      digitalWrite(GPIO_PINS[i], !toggle);
+      //digitalWrite(GPIO_PINS[i], !toggle);
     }
   }
   
   void kill() {
     for(uint32_t i = 0; i < GPIO_CNT; i++) {
-      digitalWrite(GPIO_PINS[i], HIGH);
+      //digitalWrite(GPIO_PINS[i], HIGH);
     }
   }
 };

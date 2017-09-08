@@ -6,15 +6,15 @@ ImuPower::ImuPower(std::shared_ptr<MPU6050> accelerometer,
 		compass_(compass),
 		pressure_(pressure)
 {
-	pressure_->initialize();
+	//pressure_->initialize();
 }
 
 void ImuPower::sleep() {
-	accelerometer_->sleep();
-	compass_->setMode(HMC5883L::Mode::Idle);
+	//accelerometer_->sleep();
+	//compass_->setMode(HMC5883L::Mode::Idle);
 }
 
 void ImuPower::wake() {
-	accelerometer_->awake();
-	compass_->setMode(HMC5883L::Mode::Continuous);
+	//accelerometer_->awake();
+	//compass_->setMode(HMC5883L::Mode::Continuous);
 }

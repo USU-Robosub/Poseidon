@@ -5,5 +5,6 @@ InTemperatureSensor1::InTemperatureSensor1(std::shared_ptr<MPU6050> temperatureS
 
 float InTemperatureSensor1::getTemperature()
 {
-    return temperatureSensor_->temperature();
+    //return temperatureSensor_->temperature();
+    return 0;
 }

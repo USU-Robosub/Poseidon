@@ -9,5 +9,5 @@ SerialThruster::SerialThruster(Serial& serial, int thrusterIndex)
 
 void SerialThruster::Thrust(float powerLevel) {
     serial_.writeByte(thrusterIndex_);
-    serial_.writeShort((powerLevel * 500) + 1500);
+    serial_.writeUShort((powerLevel * 500) + 1500);
 }

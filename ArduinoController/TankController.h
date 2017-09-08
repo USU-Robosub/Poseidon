@@ -30,7 +30,7 @@ public:
     update();
   }
   void updateMove(float power) {
-
+    movePower = power;
     update();
   }
   void update(){
@@ -76,9 +76,12 @@ public:
   void kill() {
     MOTOR_STOP
   }
+  bool inRange(float value, float delta) {
+    return (value <= delta) && (value >= -delta);
+  }
 private:
-  float yawPower;
-  float movePower;
+  float yawPower = 0;
+  float movePower = 0;
 };
 
 class TankYawController : public IController {
@@ -86,7 +89,7 @@ public:
   TankYawController(TankController* tankController) : tankController(tankController) {}
   void execute() {
     uint16_t val = SerialTools::readUShort();
-    float power = (val - 1500) / 500;
+    float power = (static_cast<int16_t>(val) - 1500) / 500.0F;
     tankController->updateYaw(power);
   }
   void kill() {
@@ -101,7 +104,7 @@ public:
   TankMoveController(TankController* tankController) : tankController(tankController) {}
   void execute() {
     uint16_t val = SerialTools::readUShort();
-    float power = (val - 1500) / 500;
+    float power = (static_cast<int16_t>(val) - 1500) / 500.0F;
     tankController->updateMove(power);
   }
   void kill() {

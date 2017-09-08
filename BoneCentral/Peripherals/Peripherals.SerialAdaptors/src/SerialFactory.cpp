@@ -6,7 +6,7 @@
 
 #define Pin_9_15 48
 
-SerialFactory::SerialFactory(std::ostream& out) : out_(out), serial_("/dev/ttyACM0") { }
+SerialFactory::SerialFactory(std::ostream& out) : out_(out), serial_("/dev/ttyUSB0") { }
 
 std::shared_ptr<IThruster> SerialFactory::createMoveThruster() {
     return std::make_shared<SerialThruster>(serial_, MOVE_IDX);

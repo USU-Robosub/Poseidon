@@ -12,17 +12,17 @@ class ThrustController : public IController {
    Servo servo_;
  public:
   ThrustController(PwmPin servoPin) {
-    servo_.attach(servoPin);
-    servo_.writeMicroseconds(IDLE);
+    //servo_.attach(servoPin);
+    //servo_.writeMicroseconds(IDLE);
   }
   
   void execute() {
     uint16_t val = SerialTools::readUShort();
-    servo_.writeMicroseconds(getBoundedThrottle(val));
+    //servo_.writeMicroseconds(getBoundedThrottle(val));
   }
   
   void kill() {
-    servo_.writeMicroseconds(IDLE);
+    //servo_.writeMicroseconds(IDLE);
   }
   
   uint16_t getBoundedThrottle(uint16_t value) {

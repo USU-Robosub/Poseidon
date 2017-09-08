@@ -49,7 +49,7 @@ var brake = timer.map(function() {
 var speed = Rx.Observable.combineLatest([throttle, brake])
   .throttle(100)
   .map(function(x){
-    return x[0] - x[1];
+    return x[1] - x[0];
   })
   .map(deadZone)
   .distinctUntilChanged(null, sameValue);
@@ -134,10 +134,16 @@ steering.subscribe(function(x) {
   steeringImg.style.msTransform     = 'rotate('+deg+'deg)';
   steeringImg.style.oTransform      = 'rotate('+deg+'deg)';
   steeringImg.style.transform       = 'rotate('+deg+'deg)';
+  
+  fetch("/yaw", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({"angle": x.toString()})
+  })
 });
 
 heading.subscribe(function(x) {
-  var angle = getAngle(x * Math.PI, 0, Math.PI);
+  var angle = x;
   var deg = getAngle(x * 180, 0, 180);
   console.log("Angle: ", angle);
   headingImg.style.webkitTransform = 'rotate('+deg+'deg)';
@@ -147,9 +153,9 @@ heading.subscribe(function(x) {
   headingImg.style.transform       = 'rotate('+deg+'deg)';
   headingDisplayDiv.innerHTML = "Target heading: " + Math.round(deg) + "°";
 
-  fetch("/yaw", {
+  /*fetch("/yaw", {
     method: "POST",
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({"angle": angle.toString()})
-  })
+  })*/
 });
