@@ -10,7 +10,7 @@ The pins used by each controller are set in `PinMap.h`.
 ### Controllers
 
 | name | index | parameter | type | output | type | note |
-| - | - | - |
+| - | - | - | - | - | - | - |
 | Kill Switch | 0 | | | isActive 0=inactive 1=active | byte | When kill switch goes active then all controllers are killed. |
 | Move Thrust | 1 | power 1000-2000 | ushort | | | A value of 1500 will set the motors to idle (off). |
 | Strafe Thrust | 2 | power 1000-2000 | ushort | | | A value of 1500 will set the motors to idle (off). |
