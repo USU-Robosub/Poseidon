@@ -1,13 +1,13 @@
 Poseidon
 ===========
 
-[Utah State RoboSub team website](http://usub.cs.usu.edu/)
+#### [Utah State RoboSub team website](http://usub.cs.usu.edu/)
 
 This repository contains the software for Poseidon and its new twin PoGen2, USU's latest autonomous submarines.
 
 This submarine is the third generation of our submarine, built by the mechanical, electrical, and software engineers at Utah State University.
 
-The quality of Poseidon sets it apart from previous generations of submarines. Poseidon contains cutting edge hardware, has a easy to maintain design, and cleaner code.
+The quality of Poseidon sets it apart from previous generations of submarines. Poseidon contains cutting edge hardware, has an easy to maintain design, and cleaner code.
 
 ### Setting up Poseidon
 
