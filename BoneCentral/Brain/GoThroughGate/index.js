@@ -10,16 +10,19 @@ const States = {
     INITIAL: 0,
     DIVING: 1,
     MOVING: 2,
+    BUOYS: 4,
     FINAL: 3
 };
 
 const DIVE_TIME = 1000; //milliseconds
-const MOVE_TIME = 60000; //milliseconds
+const MOVE_TIME = 30000; //milliseconds
+const BUOY_TIME = 60000;
 
 const DIVE_POWER = 0.8;
 const MAINTAIN_DIVE = 0.31;
-const MOVE_POWER = 0.15;
-const heading = -1.65;
+const MOVE_POWER = 0.5;
+const HEADING = 1.621;
+const OCTAGON_HEADING = 1.829;
 
 module.exports = {init: function(){
 
@@ -39,13 +42,14 @@ module.exports = {init: function(){
         if (this._state === States.INITIAL) this._transitionFromInitial();
         if (this._state === States.DIVING) this._transitionFromDiving();
         else if (this._state === States.MOVING) this._transitionFromMoving();
+        else if (this._state === States.BUOYS) this._transitionFromBuoys();
     };
 
     GoThroughGate.prototype._transitionFromInitial = function () {
         this._startTime = new Date();
         this._state = States.DIVING;
         this._thrustController.dive( -DIVE_POWER );
-        this._thrustController.yaw( heading );
+        this._thrustController.yaw( HEADING );
     };
 
     GoThroughGate.prototype._transitionFromDiving = function () {
@@ -61,6 +65,13 @@ module.exports = {init: function(){
     };
 
     GoThroughGate.prototype._transitionFromMoving = function () {
+        if (new Date()-this._startTime < BUOY_TIME) return;
+        this._state = States.BUOYS;
+        this._thrustController.yaw( HEADING );
+        this._startTime = new Date();
+    };
+
+    GoThroughGate.prototype._transitionFromBuoys = function () {
         if (this._shouldContinueMoving()) return;
         this._state = States.FINAL;
         clearInterval(this._ticker);
