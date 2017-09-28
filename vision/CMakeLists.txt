@@ -18,6 +18,10 @@ endforeach()
 
 add_library(Vision ${SOURCE_FILES})
 
+find_package(OpenCV REQUIRED)
+
+target_link_libraries(Vision ${OpenCV_LIBS})
+
 if(${tests})
   include_directories(${Vision_SOURCE_DIR}/mocks)
 
