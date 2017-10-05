@@ -16,7 +16,11 @@ foreach(SOURCE_FILE ${SOURCE_FILES})
   endif()
 endforeach()
 
-add_library(PiCentral ${SOURCE_FILES})
+set(VISION_ROOT ${PiCentral_SOURCE_DIR}/../vision)
+find_library(Vision NAMES libvision.a PATHS ${VISION_ROOT}/build)
+include_directories(${VISION_ROOT}/include)
+
+add_executable(PiCentral src/main.cpp ${SOURCE_FILES})
 
 if(${tests})
   include_directories(${PiCentral_SOURCE_DIR}/mocks)
@@ -33,5 +37,5 @@ if(${tests})
   include_directories(${GMOCK_ROOT}/include)
 
   add_executable(PiCentralTests test_main.cpp ${TEST_FILES})
-  target_link_libraries(PiCentralTests PiCentral ${GTEST} ${GMOCK})
+  target_link_libraries(PiCentralTests ${GTEST} ${GMOCK})
 endif()
