@@ -20,7 +20,7 @@ set(VISION_ROOT ${PiCentral_SOURCE_DIR}/../vision)
 find_library(Vision NAMES libvision.a PATHS ${VISION_ROOT}/build)
 include_directories(${VISION_ROOT}/include)
 
-add_executable(PiCentral src/main.cpp ${SOURCE_FILES})
+add_executable(PiCentral ${SOURCE_FILES})
 
 if(${tests})
   include_directories(${PiCentral_SOURCE_DIR}/mocks)
