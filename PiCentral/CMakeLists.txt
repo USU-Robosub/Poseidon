@@ -22,6 +22,10 @@ include_directories(${VISION_ROOT}/include)
 
 add_executable(PiCentral ${SOURCE_FILES})
 
+find_package(OpenCV REQUIRED)
+
+target_link_libraries(PiCentral ${Vision} ${OpenCV_LIBS})
+
 if(${tests})
   include_directories(${PiCentral_SOURCE_DIR}/mocks)
 
@@ -37,5 +41,5 @@ if(${tests})
   include_directories(${GMOCK_ROOT}/include)
 
   add_executable(PiCentralTests test_main.cpp ${TEST_FILES})
-  target_link_libraries(PiCentralTests ${GTEST} ${GMOCK})
+  target_link_libraries(PiCentralTests ${GTEST} ${GMOCK} ${OpenCV_LIBS})
 endif()
