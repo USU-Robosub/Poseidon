@@ -3,7 +3,7 @@ project(PiCentral)
 
 option(tests "Build tests" OFF)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror -Wextra -pedantic -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -pthread")
 
 include_directories(${PiCentral_SOURCE_DIR}/include)
 
@@ -24,7 +24,12 @@ add_executable(PiCentral ${SOURCE_FILES})
 
 find_package(OpenCV REQUIRED)
 
-target_link_libraries(PiCentral ${Vision} ${OpenCV_LIBS})
+set(TACOPIE_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../Libraries/tacopie)
+add_subdirectory(${TACOPIE_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/tacopie)
+include_directories(${TACOPIE_ROOT}/includes)
+find_library(Tacopie NAMES libtacopie.a PATHS ${CMAKE_CURRENT_SOURCE_DIR}/build/lib)
+
+target_link_libraries(PiCentral ${Vision} ${OpenCV_LIBS} ${Tacopie})
 
 if(${tests})
   include_directories(${PiCentral_SOURCE_DIR}/mocks)
@@ -41,5 +46,5 @@ if(${tests})
   include_directories(${GMOCK_ROOT}/include)
 
   add_executable(PiCentralTests test_main.cpp ${TEST_FILES})
-  target_link_libraries(PiCentralTests ${GTEST} ${GMOCK} ${OpenCV_LIBS})
+  target_link_libraries(PiCentralTests ${GTEST} ${GMOCK} ${OpenCV_LIBS} ${Tacopie})
 endif()
