@@ -7,3 +7,7 @@
 [submodule "Libraries/Catch"]
 	path = Libraries/Catch
 	url = https://github.com/philsquared/Catch.git
+[submodule "Libraries/tacopie"]
+	path = Libraries/tacopie
+	url = https://github.com/Cylix/tacopie.git
+	branch = 3.0.1
