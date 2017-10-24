@@ -9,12 +9,15 @@ ThrustController::ThrustController(
         diveThruster_(thrusterFactory.createDiveThruster()),
         yawThruster_(thrusterFactory.createYawThruster()),
         imuSensor_(imuSensor),
-        isDead_(true),
         pidThread_(nullptr),
         logger_(logger) { }
 
 void ThrustController::start() {
     if (pidThread_ != nullptr) return;
+<<<<<<< HEAD
+=======
+    //setNeutral();
+>>>>>>> 304e928db9a792113303893a07fdcd3e0ae3fad3
     unsetShouldDie();
     pidThread_ = new std::thread([&](){
         runPidLoop();
@@ -38,6 +41,14 @@ void ThrustController::runPidLoop() {
         auto deltaInMicroseconds = timeDelta_ * 1000;
         usleep( deltaInMicroseconds );
     }
+}
+
+void ThrustController::createYawController() {
+    if (yawController_) delete yawController_;
+    yawController_ = PidController()
+            .withBounds(MIN_THROTTLE, MAX_THROTTLE)
+            .withTimeDelta(timeDelta_)
+            .withConstants(yawConfiguration_);
 }
 
 void ThrustController::updateMoveThruster() {}

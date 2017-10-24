@@ -41,7 +41,6 @@ private:
     const float MIN_THROTTLE = -1.0f;
     unsigned int timeDelta_ = 100; //ms
 
-    bool isDead_;
     std::mutex setPointMutex_;
     std::thread* pidThread_;
     bool shouldDie_;
@@ -50,6 +49,7 @@ private:
 
     void setNeutral();
     void runPidLoop();
+    void createYawController();
     void updateMoveThruster();
     void updateYawThruster();
     void updateDiveThruster();

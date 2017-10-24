@@ -7,7 +7,11 @@ const path = require("path");
 
 module.exports = (function(){
 
+<<<<<<< HEAD
     const configFileName = path.resolve(__dirname) + "/thrusterConfig.json";
+=======
+    const configFileName = path.resolve(__dirname) + "thrusterConfig.json";
+>>>>>>> 304e928db9a792113303893a07fdcd3e0ae3fad3
 
     function ThrustController(cmdOut){
         this._cmdOut = cmdOut;
