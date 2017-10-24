@@ -10,7 +10,6 @@
 #include <memory>
 #include <mutex>
 #include <math.h>
-#include <thread>
 #include <unistd.h>
 
 class ThrustController
@@ -40,23 +39,13 @@ private:
     const float MIN_THROTTLE = -1.0f;
     unsigned int timeDelta_ = 100; //ms
 
-    std::mutex setPointMutex_;
-    std::thread* pidThread_;
-    bool shouldDie_;
-
     std::shared_ptr<ILogger> logger_;
 
     void setNeutral();
-    void runPidLoop();
     void createYawController();
     void updateMoveThruster();
     void updateYawThruster();
     void updateDiveThruster();
-
-    void setShouldDie();
-    void unsetShouldDie();
-    bool shouldDie();
-    void endPidThread();
 };
 
 #endif

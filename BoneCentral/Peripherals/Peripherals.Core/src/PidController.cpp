@@ -21,6 +21,12 @@ PidController& PidController::withTimeDelta(unsigned int timeDelta) {
     return *this;
 }
 
+PidController& PidController::updateSetPoint(float setPoint) {
+    std::lock_guard<std::mutex> lock(setPointMutex_);
+    setPoint_ = setPoint;
+    return *this;
+}
+
 float PidController::calculateAdjustmentFor(float setPoint, float processValue) {
     auto currentError = setPoint - processValue;
     auto errorDifference = currentError - previousError_;
@@ -31,4 +37,38 @@ float PidController::calculateAdjustmentFor(float setPoint, float processValue) 
     if(adjustment > max_) return max_;
     if(adjustment < min_) return min_;
     return adjustment;
+}
+
+PidController& PidController::start() {
+    if (thread_ != nullptr) return *this;
+    //setNeutral();
+    stop_ = false;
+    thread_ = new std::thread([&](){
+        run();
+    });
+	return *this;
+}
+
+PidController& PidController::stop() {
+    stop_ = true;
+    thread_->join();
+    delete thread_;
+    thread_ = nullptr;
+	return *this;
+}
+
+void PidController::run() {
+    while (!stop_) {
+		float curSetPoint = 0.0f;
+        float processValue = getProcessValue();
+        {
+            std::lock_guard<std::mutex> lock(setPointMutex_);
+            curSetPoint = setPoint_;
+        }
+        float power = calculateAdjustmentFor(curSetPoint,processValue);
+        setControlValue(power);
+        auto deltaInMicroseconds = timeDelta_ * 1000;
+        usleep( deltaInMicroseconds );
+    }
+    setControlValue(0);
 }

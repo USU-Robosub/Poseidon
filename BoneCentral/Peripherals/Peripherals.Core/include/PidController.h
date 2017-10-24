@@ -5,7 +5,10 @@
 #ifndef PERIPHERALS_PID_CONTROLLER_H
 #define PERIPHERALS_PID_CONTROLLER_H
 
-
+#include <atomic>
+#include <thread>
+#include <mutex>
+#include <unistd.h>
 
 class PidController {
 
@@ -17,40 +20,19 @@ private:
     float i_;
     float d_;
     float integral_;
-    float timeDelta_;
+    std::atomic<unsigned int> timeDelta_;
 
-public:
+    std::thread* thread_;
+    std::atomic<bool> stop_;
 
-    struct Configuration {
-        float P;
-        float I;
-        float D;
-    };
+    float setPoint_;
+    std::mutex setPointMutex_;
+    
+    void (*setControlValue)(float); //this->setControlValue(value);
+    float (*getProcessValue)(void);
 
-    PidController() : previousError_(0.0f), integral_(0.0f) {}
-
-    /**
-     * Configures constants.
-     * @param configuration
-     * @return `this` for chaining
-     */
-    PidController& withConstants(Configuration configuration);
-
-    /**
-     * Configures bounds. The adjustment returned will always be within these bounds
-     * @param minimum
-     * @param maximum
-     * @return `this` for chaining
-     */
-    PidController& withBounds(float minimum, float maximum);
-
-    /**
-     * Configure the time delta between updates.
-     * @param timeDelta in milliseconds
-     * @return `this` for chaining
-     */
-    PidController& withTimeDelta(unsigned int timeDelta);
-
+    void run();
+    
     /**
      * Calculates the current adjustment needed
      * Attention: this function contains a side-effect: updates the running error
@@ -60,6 +42,70 @@ public:
      */
     float calculateAdjustmentFor(float setPoint, float processValue);
 
+public:
+
+    struct Configuration {
+        float P;
+        float I;
+        float D;
+    };
+
+    PidController() 
+	: previousError_(0.0f)
+	, integral_(0.0f)
+	, setControlValue([](float val){val++;})
+	, getProcessValue([](){return 0.0f;})
+	{}
+
+    /**
+     * Configures constants.
+     * @param configuration
+     * @return `this` for chaining
+     */
+    PidController& withConstants(Configuration configuration);
+
+    /**
+     * Configures constants.
+     * @param configuration
+     * @return `this` for chaining
+     */
+    PidController& withTimeDelta(unsigned int timeDelta);
+
+    /**
+     * Configures bounds. The adjustment returned will always be within these bounds
+     * @param processValueFunction
+     * @param controlValueFunction
+     * @return `this` for chaining
+     */
+    PidController& withBounds(float processValueFunction, float controlValueFunction);
+
+    /**
+     * Configures functions to be used for getting process value and setting control value
+     * @param set
+     * @param maximum
+     * @return `this` for chaining
+     */
+    PidController& withFunctions(float (*processValueFunction)(void), void (*controlValueFunction)(float));
+	
+
+    /**
+     * Updates setpoint.  The set point will be used the next PID cycle.
+     * @param setpoint
+     * @return `this` for chaining
+     */
+    PidController& updateSetPoint(float setPoint);
+
+    /**
+     * Start the PID Controller
+     * @return `this` for chaining
+     */
+    PidController& start();
+    
+    /**
+     * Stops the PID Controller
+     * @return `this` for chaining
+     */
+    PidController& stop();
 };
 
 
