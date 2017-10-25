@@ -18,7 +18,7 @@ class ThrustController : public IController {
   
   void execute() {
     uint16_t val = SerialTools::readUShort();
-    servo_.writeMicroseconds(getBoundedThrottle(val));
+    servo_.writeMicroseconds(val);
   }
   
   void kill() {

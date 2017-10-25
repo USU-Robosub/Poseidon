@@ -14,7 +14,10 @@ ThrustController::ThrustController(
 
 void ThrustController::start() {
     if (pidThread_ != nullptr) return;
+<<<<<<< HEAD
+=======
     //setNeutral();
+>>>>>>> 304e928db9a792113303893a07fdcd3e0ae3fad3
     unsetShouldDie();
     pidThread_ = new std::thread([&](){
         runPidLoop();
@@ -27,6 +30,10 @@ void ThrustController::unsetShouldDie() {
 }
 
 void ThrustController::runPidLoop() {
+    yawController_ = PidController()
+            .withBounds(MIN_THROTTLE, MAX_THROTTLE)
+            .withTimeDelta(timeDelta_)
+            .withConstants(yawConfiguration_);
     while (!shouldDie()) {
         updateMoveThruster();
         updateYawThruster();
@@ -46,10 +53,19 @@ void ThrustController::createYawController() {
 
 void ThrustController::updateMoveThruster() {}
 
+float ThrustController::modmod(float dividend, float divisor){
+    return dividend - floor(dividend / divisor) * divisor;
+}
+
+float ThrustController::angleDelta(float base, float target){
+    auto dif = target - base;
+    return modmod(dif + M_PI, M_PI * 2) - M_PI;
+}
+
 void ThrustController::updateYawThruster() {
     std::lock_guard<std::mutex> lock(setPointMutex_);
     float azimuth = imuSensor_.getHeading().angles().azimuth;
-    auto throttle = yawController_.calculateAdjustmentFor(0, yawSetPoint_ - azimuth);
+    auto throttle = yawController_.calculateAdjustmentFor(0, angleDelta(yawSetPoint_, azimuth));
     yawThruster_->Thrust( throttle );
 }
 

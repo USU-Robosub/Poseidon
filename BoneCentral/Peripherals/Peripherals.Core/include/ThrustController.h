@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <mutex>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <thread>
 #include <unistd.h>
@@ -57,6 +58,9 @@ private:
     void unsetShouldDie();
     bool shouldDie();
     void endPidThread();
+    
+    float modmod(float dividend, float divisor);
+    float angleDelta(float base, float target);
 };
 
 #endif

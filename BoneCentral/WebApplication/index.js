@@ -36,6 +36,7 @@ actionSwitch.on("kill", function () {
 
 app             	= express();
 app.use('/', express.static('static'));
+app.use("/gamepad", express.static('gamepad'));
 app.use(bodyParser.json());
 
 app.get("/goThroughGate", function (req, res) {
@@ -92,6 +93,7 @@ app.get('/killThrusters', function(req, res) {
 
 app.post('/configureYaw', function (req, res) {
     var params = req.body;
+    console.log("p: " + params.p + ", i: " + params.i + ", d: " + params.d);
     thrustController.configureYaw({
         p: params.p,
         i: params.i,
@@ -100,8 +102,13 @@ app.post('/configureYaw', function (req, res) {
     res.send('');
 });
 
+<<<<<<< HEAD
+app.post('/configureTimeDelta', function (req, res) {
+=======
 app.post('configureTimeDelta', function (req, res) {
+>>>>>>> 304e928db9a792113303893a07fdcd3e0ae3fad3
     var params = req.body;
+    console.log("td: " + params.timeDelta);
     thrustController.configureTimeDelta( params.timeDelta );
     res.send('');
 });

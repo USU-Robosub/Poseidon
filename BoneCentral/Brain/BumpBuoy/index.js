@@ -12,6 +12,7 @@ module.exports = {init: function () {
     BumpBuoy.prototype.execute = function () {
         this._deferred = utilities.Promises.Deferred();
         this._deferred.resolve();
+        return this._deferred;
     };
 
     BumpBuoy.prototype.kill = function () { };

@@ -30,7 +30,7 @@ var run = null;
 var _killSub = function () {
     try {
         console.log("Killing...");
-        run.kill();
+        if (run) run.kill();
         run = null;
     } catch(exception) {
         thrustController.kill();
