@@ -18,6 +18,9 @@ include_directories(${I2CAdaptor_Includes})
 add_subdirectory(Peripherals.SerialAdaptors)
 include_directories(${SerialAdaptor_Includes})
 
+add_subdirectory(Peripherals.Api)
+include_directories(${Api_Includes})
+
 add_subdirectory(Peripherals.Assembler)
 include_directories(${Assembler_Includes})
 
